@@ -1,0 +1,19 @@
+---
+import { renderReading, type ReadingRef } from "../data/books";
+import type { Lang } from "../data/types";
+interface Props { refs: ReadingRef[]; lang: Lang; }
+const { refs, lang } = Astro.props;
+const items = refs.map((r) => renderReading(r, lang)).filter((x) => x !== null);
+---
+<div class="reads">
+  {items.map((r) => (
+    <div class="read">
+      <span class="ch">{r!.label}</span>
+      <span class="who">
+        <b>{r!.authors}</b>, {r!.title}
+        {r!.chapters.length > 0 && <> — {r!.chapters.map((c) => c.title).join("; ")}</>}
+        {r!.section && <span class="sec"> · {r!.section}</span>}
+      </span>
+    </div>
+  ))}
+</div>

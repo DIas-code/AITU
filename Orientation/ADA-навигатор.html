@@ -1,0 +1,2085 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Навигатор ADA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..800&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:opsz,wght@6..72,300..600&display=swap">
+
+<style>
+:root{
+  --bg:#F1F5F6; --surface:#FFFFFF; --surface2:#E8EFF1; --sunk:#DCE5E8;
+  --ink:#0F1F28; --ink2:#3C525D; --muted:#6B818C;
+  --line:#D3DDE0; --line2:#B2C2C8;
+  --accent:#0C6672; --accent-ink:#08505A; --accent-soft:#DDEDEF;
+  --gold:#8E6708; --gold-soft:#F6EBD2;
+  --bd:#0C6672; --pd:#3A4A83; --nir:#4A6B3C; --ia:#8E6708;
+  --ok:#2C6B4E; --warn:#9C5418;
+  --shadow:0 1px 2px rgba(15,31,40,.05), 0 8px 24px -16px rgba(15,31,40,.28);
+  --r:10px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0B1316; --surface:#121C20; --surface2:#18252A; --sunk:#0E181B;
+    --ink:#E5ECEF; --ink2:#AFC0C7; --muted:#7E939C;
+    --line:#233238; --line2:#33474E;
+    --accent:#4FB0BD; --accent-ink:#7FCBD5; --accent-soft:#103137;
+    --gold:#D6AB59; --gold-soft:#2E2510;
+    --bd:#4FB0BD; --pd:#8B96DC; --nir:#8FB878; --ia:#D6AB59;
+    --ok:#6DBE94; --warn:#DA9459;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0B1316; --surface:#121C20; --surface2:#18252A; --sunk:#0E181B;
+  --ink:#E5ECEF; --ink2:#AFC0C7; --muted:#7E939C;
+  --line:#233238; --line2:#33474E;
+  --accent:#4FB0BD; --accent-ink:#7FCBD5; --accent-soft:#103137;
+  --gold:#D6AB59; --gold-soft:#2E2510;
+  --bd:#4FB0BD; --pd:#8B96DC; --nir:#8FB878; --ia:#D6AB59;
+  --ok:#6DBE94; --warn:#DA9459;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:"Archivo","Segoe UI",system-ui,sans-serif;
+  font-size:15px; line-height:1.5; margin:0;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1120px; margin:0 auto; padding:0 22px}
+h1,h2,h3,h4{margin:0; text-wrap:balance; font-weight:600; letter-spacing:-.015em}
+p{margin:0}
+a{color:var(--accent-ink)}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:4px}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace; font-variant-numeric:tabular-nums}
+.prose{font-family:"Newsreader",Georgia,serif; font-size:16.5px; line-height:1.55; color:var(--ink2); max-width:72ch}
+
+/* ---------- top bar ---------- */
+.topbar{
+  position:sticky; top:0; z-index:60; background:var(--surface);
+  border-bottom:1px solid var(--line);
+}
+.topbar-in{display:flex; align-items:center; gap:18px; height:58px}
+.brand{display:flex; align-items:baseline; gap:9px; margin-right:auto; min-width:0}
+.brand b{font-size:16px; font-weight:700; letter-spacing:-.02em; font-stretch:112%}
+.brand span{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); white-space:nowrap}
+.nav{display:flex; gap:2px; overflow-x:auto; scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav a{
+  font-size:13px; color:var(--ink2); text-decoration:none; padding:6px 11px;
+  border-radius:99px; white-space:nowrap; transition:background .15s,color .15s;
+}
+.nav a:hover{background:var(--surface2); color:var(--ink)}
+.ctrls{display:flex; gap:6px; flex-shrink:0}
+.btn{
+  font:inherit; font-size:12px; font-weight:600; letter-spacing:.02em;
+  background:var(--surface2); color:var(--ink2); border:1px solid var(--line);
+  border-radius:99px; padding:6px 12px; cursor:pointer; transition:.15s;
+}
+.btn:hover{border-color:var(--line2); color:var(--ink)}
+.seg{display:flex; border:1px solid var(--line); border-radius:99px; overflow:hidden; background:var(--surface2)}
+.seg button{
+  font:inherit; font-size:12px; font-weight:600; letter-spacing:.04em;
+  background:none; border:0; color:var(--muted); padding:6px 11px; cursor:pointer;
+}
+@media(max-width:900px){.brand span{display:none}}
+@media(max-width:760px){
+  .topbar-in{height:auto; flex-wrap:wrap; gap:0 12px; padding:9px 0 0}
+  .brand{order:1}
+  .ctrls{order:2}
+  .nav{order:3; width:100%; margin:8px -22px 0; padding:0 22px 7px}
+}
+.seg button[aria-pressed="true"]{background:var(--accent); color:#fff}
+:root[data-theme="dark"] .seg button[aria-pressed="true"]{color:#08181B}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .seg button[aria-pressed="true"]{color:#08181B}}
+
+/* ---------- sections ---------- */
+section{padding:52px 0 8px; scroll-margin-top:70px}
+.sec-head{display:flex; align-items:flex-end; gap:14px; margin-bottom:20px; flex-wrap:wrap}
+.eyebrow{
+  font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--muted);
+}
+.sec-head h2{font-size:26px; font-stretch:108%; line-height:1.15}
+.sec-head .note{font-size:13px; color:var(--muted); margin-left:auto}
+.rule{height:1px; background:var(--line); margin:0}
+
+.card{background:var(--surface); border:1px solid var(--line); border-radius:var(--r); box-shadow:var(--shadow)}
+.grid{display:grid; gap:14px}
+
+/* ---------- now panel ---------- */
+.now{
+  display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); gap:0;
+  overflow:hidden; margin-top:34px;
+}
+.now-main{padding:26px 26px 24px; border-right:1px solid var(--line)}
+.now-side{padding:22px 24px; background:var(--surface2)}
+.now-date{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted)}
+.now-phase{font-size:29px; font-stretch:110%; font-weight:700; line-height:1.1; margin:10px 0 8px}
+.now-sub{font-size:14px; color:var(--ink2)}
+.now-bar{margin-top:20px}
+.track{height:7px; border-radius:99px; background:var(--sunk); overflow:hidden; border:1px solid var(--line)}
+.track i{display:block; height:100%; background:var(--accent); border-radius:99px}
+.track-lab{display:flex; justify-content:space-between; margin-top:7px; font-size:11.5px; color:var(--muted)}
+.up-h{font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); margin-bottom:12px}
+.up{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:11px}
+.up li{display:flex; gap:11px; align-items:baseline; font-size:13.5px}
+.up .d{font-size:12px; color:var(--accent-ink); min-width:82px; flex-shrink:0}
+.up .n{color:var(--ink2)}
+.up .in{margin-left:auto; font-size:11.5px; color:var(--muted); white-space:nowrap; padding-left:8px}
+@media(max-width:760px){.now{grid-template-columns:1fr}.now-main{border-right:0; border-bottom:1px solid var(--line)}}
+
+/* ---------- stats ---------- */
+.stats{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:14px}
+.stat{padding:16px 18px}
+.stat .v{font-size:30px; font-weight:700; font-stretch:105%; line-height:1; letter-spacing:-.03em}
+.stat .k{font-size:12px; color:var(--muted); margin-top:7px}
+@media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr)}}
+
+/* ---------- facts ---------- */
+.facts{margin-top:14px; padding:4px 20px}
+.facts dl{display:grid; grid-template-columns:210px 1fr; margin:0}
+.facts dt{padding:11px 0; font-size:12.5px; color:var(--muted); border-top:1px solid var(--line)}
+.facts dd{padding:11px 0; margin:0; font-size:14px; border-top:1px solid var(--line)}
+.facts dl>dt:first-of-type,.facts dl>dt:first-of-type+dd{border-top:0}
+@media(max-width:640px){
+  .facts dl{grid-template-columns:1fr}
+  .facts dt{padding-bottom:0; border-top:1px solid var(--line)}
+  .facts dd{padding-top:3px; border-top:0}
+}
+
+/* ---------- load chart ---------- */
+.charts{display:grid; grid-template-columns:minmax(0,1.4fr) minmax(0,1fr); gap:14px; margin-top:14px}
+@media(max-width:820px){.charts{grid-template-columns:1fr}}
+.chart{padding:20px 22px 18px}
+.chart h3{font-size:14px; margin-bottom:2px}
+.chart .cap{font-size:12px; color:var(--muted); margin-bottom:20px}
+.bars{display:grid; grid-template-columns:repeat(6,1fr); gap:10px; align-items:stretch; height:132px}
+.bar{display:flex; flex-direction:column; justify-content:flex-end; height:100%; gap:6px}
+.bar .col{border-radius:4px 4px 2px 2px; background:var(--accent); opacity:.86; position:relative}
+.bar .col.on{opacity:1; box-shadow:inset 0 0 0 2px var(--gold)}
+.bar .v{font-size:12px; text-align:center; color:var(--ink2)}
+.bar-x{display:grid; grid-template-columns:repeat(6,1fr); gap:10px; margin-top:9px; padding-top:8px; border-top:1px solid var(--line)}
+.bar-x span{font-size:11px; text-align:center; color:var(--muted)}
+.split{display:flex; flex-direction:column; gap:13px}
+.sp{display:grid; grid-template-columns:1fr auto; gap:4px 10px; align-items:baseline}
+.sp .nm{font-size:13px}
+.sp .nu{font-size:13px; color:var(--ink2)}
+.sp .tr{grid-column:1/-1; height:6px; border-radius:99px; background:var(--sunk); overflow:hidden}
+.sp .tr i{display:block; height:100%; border-radius:99px}
+.sp .sub{grid-column:1/-1; font-size:11.5px; color:var(--muted)}
+
+/* ---------- calendar ---------- */
+.cal{margin-top:6px; overflow:hidden}
+.tri-h{
+  display:flex; align-items:center; gap:12px; padding:13px 20px;
+  background:var(--surface2); border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+}
+.tri-h:first-child{border-top:0}
+.tri-h b{font-size:14px; font-stretch:106%}
+.tri-h .rng{font-size:12px; color:var(--muted); margin-left:auto}
+.crow{display:grid; grid-template-columns:26px 1fr 210px 96px; gap:12px; align-items:center;
+  padding:11px 20px; border-top:1px solid var(--line); font-size:14px}
+.crow:first-of-type{border-top:0}
+.crow .idx{font-size:11px; color:var(--muted)}
+.crow .nm{color:var(--ink)}
+.crow .dt{font-size:12.5px; color:var(--ink2); white-space:nowrap}
+.crow .st{font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; text-align:right; color:var(--muted)}
+.crow.past{color:var(--muted)}
+.crow.past .nm{color:var(--muted)}
+.crow.live{background:var(--gold-soft)}
+.crow.live .st{color:var(--gold); font-weight:600}
+.crow.key .nm{font-weight:600}
+.crow.hol{grid-template-columns:26px 1fr; align-items:start}
+.crow.hol .nm{font-size:13px; color:var(--ink2)}
+.crow.hol .nm em{font-style:normal; color:var(--muted)}
+@media(max-width:720px){
+  .crow{grid-template-columns:22px 1fr; row-gap:3px}
+  .crow .dt{grid-column:2}
+  .crow .st{grid-column:2; text-align:left}
+}
+
+/* ---------- filters ---------- */
+.filters{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:16px}
+.chip{
+  font:inherit; font-size:12px; font-weight:500; background:var(--surface); color:var(--ink2);
+  border:1px solid var(--line); border-radius:99px; padding:6px 12px; cursor:pointer; transition:.15s;
+}
+.chip:hover{border-color:var(--line2)}
+.chip[aria-pressed="true"]{background:var(--ink); color:var(--surface); border-color:var(--ink)}
+.fsep{width:1px; height:20px; background:var(--line)}
+.search{
+  font:inherit; font-size:13px; background:var(--surface); color:var(--ink);
+  border:1px solid var(--line); border-radius:99px; padding:7px 14px; min-width:190px; flex:1;
+}
+.search::placeholder{color:var(--muted)}
+
+/* ---------- course cards ---------- */
+.courses{display:flex; flex-direction:column; gap:10px}
+.cc{overflow:hidden}
+.cc-head{
+  display:grid; grid-template-columns:34px 1fr auto; gap:14px; align-items:start;
+  width:100%; text-align:left; background:none; border:0; font:inherit; color:inherit;
+  padding:16px 18px; cursor:pointer;
+}
+.cc-head:hover{background:var(--surface2)}
+.cc-n{font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--muted); padding-top:3px}
+.cc-t{min-width:0}
+.cc-t h3{font-size:16px; line-height:1.28; font-stretch:104%}
+.cc-t .alt{font-size:12.5px; color:var(--muted); margin-top:3px; font-family:"Newsreader",Georgia,serif}
+.tags{display:flex; flex-wrap:wrap; gap:5px; margin-top:9px}
+.tag{
+  font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.04em;
+  padding:2px 7px; border-radius:4px; background:var(--surface2); color:var(--ink2);
+  border:1px solid var(--line);
+}
+.tag.cyc{color:#fff; border:0}
+:root[data-theme="dark"] .tag.cyc{color:#0B1316}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tag.cyc{color:#0B1316}}
+.tag.kv{background:var(--gold-soft); border-color:transparent; color:var(--gold)}
+.tag.hb{background:var(--accent-soft); border-color:transparent; color:var(--accent-ink)}
+.cc-m{display:flex; align-items:center; gap:16px; flex-shrink:0; padding-top:2px}
+.cc-cr{text-align:right}
+.cc-cr b{display:block; font-size:19px; font-weight:700; letter-spacing:-.02em; line-height:1}
+.cc-cr span{font-size:10.5px; color:var(--muted); letter-spacing:.06em; text-transform:uppercase}
+.caret{width:11px; height:11px; border-right:1.6px solid var(--muted); border-bottom:1.6px solid var(--muted);
+  transform:rotate(45deg); transition:transform .2s; margin-top:-4px}
+.cc[open] .caret{transform:rotate(225deg); margin-top:2px}
+@media(max-width:620px){.cc-head{grid-template-columns:1fr auto} .cc-n{display:none}}
+
+.cc-body{border-top:1px solid var(--line); padding:4px 18px 22px}
+.blk{padding-top:20px}
+.blk-h{font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--muted); margin-bottom:9px}
+.kv{display:grid; grid-template-columns:150px 1fr; gap:6px 14px; font-size:13.5px}
+.kv dt{color:var(--muted); font-size:12.5px}
+.kv dd{margin:0; color:var(--ink)}
+@media(max-width:560px){.kv{grid-template-columns:1fr; gap:1px 0} .kv dd{margin-bottom:9px}}
+ul.lo{margin:0; padding-left:19px; display:flex; flex-direction:column; gap:6px}
+ul.lo li{font-family:"Newsreader",Georgia,serif; font-size:15.5px; line-height:1.45; color:var(--ink2); max-width:74ch}
+ul.lo li::marker{color:var(--line2)}
+.topics{display:flex; flex-wrap:wrap; gap:6px}
+.topic{font-size:12.5px; padding:4px 10px; border-radius:99px; background:var(--surface2);
+  border:1px solid var(--line); color:var(--ink2)}
+.books{margin:0; padding-left:19px; display:flex; flex-direction:column; gap:6px}
+.books li{font-family:"Newsreader",Georgia,serif; font-size:14.5px; line-height:1.4; color:var(--ink2)}
+.books li::marker{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--muted)}
+
+table.t{width:100%; border-collapse:collapse; font-size:13px}
+table.t th{
+  font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--muted); font-weight:500; text-align:left; padding:0 10px 7px 0; border-bottom:1px solid var(--line);
+}
+table.t td{padding:8px 10px 8px 0; border-bottom:1px solid var(--line); vertical-align:top}
+table.t tr:last-child td{border-bottom:0}
+table.t .num{font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums; white-space:nowrap}
+table.t .ct{font-weight:600}
+.scroll{overflow-x:auto}
+.hbar{display:flex; height:9px; border-radius:99px; overflow:hidden; border:1px solid var(--line); margin-bottom:9px}
+.hbar i{display:block; height:100%}
+.hleg{display:flex; flex-wrap:wrap; gap:14px; font-size:12px; color:var(--ink2)}
+.hleg span{display:flex; align-items:center; gap:6px}
+.dot{width:8px; height:8px; border-radius:2px; flex-shrink:0}
+.formula{
+  font-family:"IBM Plex Mono",monospace; font-size:13px; background:var(--accent-soft);
+  color:var(--accent-ink); padding:9px 13px; border-radius:6px; display:inline-block;
+}
+.callout{
+  border-left:3px solid var(--gold); background:var(--gold-soft); padding:13px 16px;
+  border-radius:0 6px 6px 0; font-size:13.5px; color:var(--ink2);
+}
+.callout b{color:var(--ink)}
+
+/* ---------- grade table ---------- */
+.gcols{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; margin-top:14px}
+@media(max-width:800px){.gcols{grid-template-columns:1fr}}
+.pad{padding:20px 22px}
+.pad h3{font-size:15px; margin-bottom:14px}
+.plist{margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:11px}
+.plist li{display:grid; grid-template-columns:16px 1fr; gap:10px; font-size:13.5px; color:var(--ink2)}
+.plist .mk{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--warn); padding-top:2px}
+
+/* ---------- sources ---------- */
+.srcs{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:14px}
+@media(max-width:800px){.srcs{grid-template-columns:1fr}}
+.src{padding:18px 20px}
+.src .fn{font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--accent-ink); word-break:break-word}
+.src h3{font-size:14px; margin:9px 0 6px}
+.src p{font-size:12.5px; color:var(--muted); line-height:1.45}
+footer{padding:44px 0 60px; margin-top:44px; border-top:1px solid var(--line); font-size:12px; color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important; animation:none!important}}
+</style>
+</head><body>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <div class="brand"><b>ADA</b><span data-ru="Магистратура · Astana IT University" data-en="MSc · Astana IT University"></span></div>
+    <nav class="nav">
+      <a href="#now" data-ru="Сейчас" data-en="Now"></a>
+      <a href="#program" data-ru="Программа" data-en="Programme"></a>
+      <a href="#calendar" data-ru="Календарь" data-en="Calendar"></a>
+      <a href="#courses" data-ru="Курсы" data-en="Courses"></a>
+      <a href="#grading" data-ru="Оценки" data-en="Grading"></a>
+      <a href="#notes" data-ru="Нестыковки" data-en="Conflicts"></a>
+    </nav>
+    <div class="ctrls">
+      <div class="seg" role="group" aria-label="Язык / Language">
+        <button id="l-ru" aria-pressed="true">RU</button><button id="l-en" aria-pressed="false">EN</button>
+      </div>
+      <button class="btn" id="theme" aria-label="Тема">◐</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+<section id="now" style="padding-top:36px">
+  <div class="card now">
+    <div class="now-main">
+      <div class="now-date mono" id="nowDate"></div>
+      <h1 class="now-phase" id="nowPhase"></h1>
+      <p class="now-sub" id="nowSub"></p>
+      <div class="now-bar" id="nowBar"></div>
+    </div>
+    <div class="now-side">
+      <div class="up-h" data-ru="Что дальше" data-en="What is next"></div>
+      <ul class="up" id="upNext"></ul>
+    </div>
+  </div>
+  <div class="stats" id="stats"></div>
+</section>
+
+<section id="program">
+  <div class="sec-head">
+    <span class="eyebrow" data-ru="Учебный план" data-en="Curriculum"></span>
+    <h2 data-ru="Из чего состоит программа" data-en="What the programme is made of"></h2>
+  </div>
+  <div class="card facts" id="facts"></div>
+  <div class="charts">
+    <div class="card chart">
+      <h3 data-ru="Нагрузка по триместрам" data-en="Load by trimester"></h3>
+      <div class="cap" data-ru="Академические кредиты, всего 120 за 2 года. Рамкой отмечен текущий или ближайший триместр" data-en="Academic credits, 120 over 2 years. The outlined bar is the current or nearest trimester"></div>
+      <div class="bars" id="bars"></div>
+      <div class="bar-x" id="barsX"></div>
+    </div>
+    <div class="card chart">
+      <h3 data-ru="Кредиты по циклам" data-en="Credits by cycle"></h3>
+      <div class="cap" data-ru="ВК — вузовский компонент, КВ — по выбору" data-en="ВК — university component, КВ — elective"></div>
+      <div class="split" id="split"></div>
+    </div>
+  </div>
+</section>
+
+<section id="calendar">
+  <div class="sec-head">
+    <span class="eyebrow" data-ru="2026–2027 · 1 курс" data-en="2026–2027 · Year 1"></span>
+    <h2 data-ru="Академический календарь" data-en="Academic calendar"></h2>
+    <span class="note" data-ru="Утверждён Учёным советом AITU" data-en="Approved by the AITU Academic Council"></span>
+  </div>
+  <div class="card cal" id="cal"></div>
+</section>
+
+<section id="courses">
+  <div class="sec-head">
+    <span class="eyebrow" data-ru="23 позиции плана + 7 модулей хендбука" data-en="23 plan entries + 7 handbook modules"></span>
+    <h2 data-ru="Все дисциплины" data-en="Every course"></h2>
+    <span class="note" id="ccount"></span>
+  </div>
+  <div class="filters" id="filters"></div>
+  <div class="courses" id="courseList"></div>
+</section>
+
+<section id="grading">
+  <div class="sec-head">
+    <span class="eyebrow" data-ru="Правила" data-en="Rules"></span>
+    <h2 data-ru="Как считается оценка" data-en="How the grade is computed"></h2>
+  </div>
+  <div class="gcols" id="gcols"></div>
+</section>
+
+<section id="notes">
+  <div class="sec-head">
+    <span class="eyebrow" data-ru="Читай внимательно" data-en="Read carefully"></span>
+    <h2 data-ru="Где документы расходятся" data-en="Where the documents disagree"></h2>
+  </div>
+  <div class="grid" id="notesGrid"></div>
+  <div class="srcs" id="srcs"></div>
+</section>
+
+<footer class="wrap" id="foot"></footer>
+</main>
+
+<script>
+var L = "ru";
+function T(o){ return o == null ? "" : (typeof o === "string" ? o : (o[L] || o.en || o.ru || "")); }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function P(ru,en){ return {ru:ru, en:en}; }
+
+/* ============ shared blocks from the Module Handbook ============ */
+var MEDIA = P(
+  "Мультимедийные аудитории: компьютер, проектор, аудиосистема; (интерактивная) доска; Microsoft Teams; LMS Moodle.",
+  "Multimedia classrooms equipped with computer, projection and audio system; (interactive) whiteboard; Microsoft Teams; LMS Moodle."
+);
+var POLICY = [
+  P("Посещение обязательно. Пропуск 30% занятий → оценка F (или летняя школа).",
+    "Attendance is mandatory. Missing 30% of lessons results in an F grade (or summer school)."),
+  P("Работы, сданные с опозданием, не принимаются.",
+    "Late submissions are not accepted."),
+  P("Запрещены списывание, дублирование, фальсификация данных, плагиат и шпаргалки.",
+    "No cheating, duplication, falsification of data, plagiarism or cribs."),
+  P("Можно записаться на личную встречу с преподавателем в его office hours.",
+    "Students may arrange one-to-one meetings with the teacher during office hours.")
+];
+var FORMS = P(
+  "Лекции вводят новые понятия и дают теоретическую и методологическую базу. Практические занятия (семинары) — активные сессии: новые примеры и обсуждение задач. СРОП (ISIS) — разбор и углублённое изучение материала под руководством преподавателя. СРО (SIS) — самостоятельная работа, включая подготовку ко всем формам контроля.",
+  "Lectures introduce new concepts and provide theoretical and methodological foundations. Practice sessions (seminars) are active sessions with new examples and discussion of problems. Instructor-supervised independent study (ISIS) covers review and deeper exploration of the material. Student's independent study (SIS) is self-study time, including preparation for all assessments."
+);
+/* the project-based assessment pattern shared by most professional courses */
+var PROJ = [
+  {per:P("1 аттестация","1st attestation"), t:P("Промежуточный проект","Mid-term project"), pts:100, f:P("Сдача письменного проекта","Submission of the written project"), w:P("5 неделя","Week 5")},
+  {per:P("2 аттестация","2nd attestation"), t:P("Итоговый проект","End-term project"), pts:60, f:P("Сдача письменного проекта","Submission of the written project"), w:P("8–9 недели","Weeks 8–9")},
+  {per:P("2 аттестация","2nd attestation"), t:P("Итоговый тест","End-term quiz"), pts:40, f:P("Письменно","Written"), w:P("10 неделя","Week 10")},
+  {per:P("Экзамен","Final exam"), t:P("Финальный экзамен","Final exam"), pts:100, f:P("Письменно","Written"), w:P("Экзаменационная сессия","During final exam session")}
+];
+var FORMULA = P("0,3 × РК1 + 0,3 × РК2 + 0,4 × Экзамен = 100", "0.3 × Att.1 + 0.3 × Att.2 + 0.4 × Final = 100");
+var PBL = P(
+  "Problem-based learning (PBL) — работа в группах над открытой задачей, групповая дискуссия, интерактивно-коммуникативное обучение.",
+  "Problem-based learning (PBL): students work in groups on an open-ended problem; group discussion; interactive-communicative learning."
+);
+var INTER = P(
+  "Интерактивная лекция: мини-лекции по ~20 минут, между ними — короткие активности. Взаимодействие идёт и «преподаватель ↔ студенты», и между студентами.",
+  "Interactive lecturing: mini-lectures of about 20 minutes with short content-related activities in between; interaction happens both instructor-to-student and student-to-student."
+);
+var INQ = P(
+  "Inquiry Guided Learning — студент осваивает или применяет материал, чтобы решить задачу, ответить на вопрос, поставить эксперимент или интерпретировать данные.",
+  "Inquiry Guided Learning: students learn or apply material in order to meet a challenge, answer a question, conduct an experiment, or interpret data."
+);
+
+/* ============ Module Handbook: полные карточки модулей ============ */
+var HB = {
+
+flp:{
+  title:P("Иностранный язык (профессиональный)","Foreign Language (Professional)"),
+  tri:1, rel:P("Обязательный курс","Compulsory course"), lang:P("Английский","English"),
+  person:"Aliya Ayazbayeva, Assistant Professor, Candidate of Philological Sciences; Elmira Gerfanova, Assistant Professor, PhD",
+  lect:"Aliya Ayazbayeva; Elmira Gerfanova; Diana Zhanabilova, Senior Lecturer, MA",
+  ects:4, h:{lec:40, pr:40, isis:40, sis:40, tot:120},
+  hnote:P("В хендбуке контактные часы даны одной строкой: 40 лекционных + 40 практических.","The handbook lists contact hours as 40 lectures + 40 practice sessions."),
+  meth:P("Проектное обучение, презентация результатов кейса, обучение через задачи, интерактивно-коммуникативное обучение.","Project-based learning, case study result presentation, task-based learning, interactive-communicative learning."),
+  assess:[
+    {per:P("1 аттестация","1st attestation"), t:P("Подготовка и защита презентаций","Preparing and defending presentations"), pts:15, f:P("Защита презентации","Presentation defense"), w:P("3 неделя","Week 3")},
+    {per:P("1 аттестация","1st attestation"), t:P("Тест","Quiz"), pts:15, f:P("На компьютере","Computer-based"), w:P("5 неделя","Week 5")},
+    {per:P("2 аттестация","2nd attestation"), t:P("Подготовка и защита презентаций","Preparing and defending presentations"), pts:15, f:P("Защита презентации","Presentation defense"), w:P("8 неделя","Week 8")},
+    {per:P("2 аттестация","2nd attestation"), t:P("Тест","Quiz"), pts:15, f:P("Письменно","Written"), w:P("10 неделя","Week 10")},
+    {per:P("Экзамен","Final exam"), t:P("Финальный экзамен","Final exam"), pts:40, f:P("Устно","Oral"), w:P("Экзаменационная сессия","During final exam session")}
+  ],
+  pre:P("Иностранный язык (английский), English for Academic Purposes — уровень бакалавриата","Foreign language (English), English for Academic Purposes (BSc degree)"),
+  post:P("НИР магистранта, включая стажировки и магистерскую диссертацию","Master research work, including internships and a master thesis"),
+  know:[
+    P("Чтение аутентичных профессионально-ориентированных текстов и распознавание их структуры","Reading authentic professionally oriented texts and identifying reading structures"),
+    P("Чтение таких текстов на понимание главной мысли и поиск подтверждающих деталей","Reading authentic professionally oriented texts for main ideas and supporting details"),
+    P("Эффективное восприятие на слух формальных и неформальных дискуссий в своей области","Listening effectively to formal and informal discussions in the relevant professional fields"),
+    P("Развитие устной речи для эффективной коммуникации в профессиональной среде","Developing speaking skills to communicate effectively in a professional setting")
+  ],
+  skills:[
+    P("Синтезировать, делать выводы, оценивать и обсуждать идеи из прочитанного","Synthesize, draw conclusions, evaluate and discuss ideas from a reading"),
+    P("Следить за профессиональным дискурсом и понимать его","Follow and comprehend professional discourse"),
+    P("Планировать и проводить устные презентации по проекту курса и отвечать на вопросы","Plan and deliver oral presentations based on the course project and answer questions"),
+    P("Анализировать письменные профессионально-ориентированные тексты","Analyze written professionally oriented texts")
+  ],
+  comp:[
+    P("Писать тексты на профессиональные темы","Write texts on professional topics"),
+    P("Читать и понимать лексику и стилистику аутентичных источников","Read and understand a range of vocabulary and stylistics in authentic sources"),
+    P("Слушать лекции и презентации по профессиональной тематике","Listen to lectures and presentations related to professional fields"),
+    P("Участвовать в групповых дискуссиях, готовить и проводить презентации","Participate in group discussions, prepare and give presentations"),
+    P("Распознавать и применять грамматику и специальную лексику; рефлексировать и оценивать собственную аргументацию","Recognize and use grammar and specific vocabulary; self-reflect and evaluate reasoning")
+  ],
+  cont:P("Курс сфокусирован на базовых навыках аудирования, чтения, письма и говорения с упором на профессиональный английский: структуры научной речи и презентаций, лексика и словоупотребление. Результаты выстроены так, чтобы магистрант применял профессиональный английский в академическом контексте и демонстрировал языковую компетенцию.","The course focuses on listening, reading, writing and speaking with an emphasis on professional English: research and presentation structures, vocabulary and language usage. The learning outcomes are designed so that students can apply their professional English in an academic context and demonstrate professional language competence."),
+  media:P("Мультимедийные аудитории: компьютер, проектор, аудиосистема; доска; Microsoft Teams; LMS Moodle.","Multimedia classrooms equipped with computer, projection and audio system; whiteboard; Microsoft Teams; LMS Moodle."),
+  books:[
+    "Esteras S. R., Fabre E. M. Professional English in Use — ICT. Cambridge University Press, 2010",
+    "Paterson K. Oxford Grammar for EAP. Oxford University Press, 2013",
+    "Chazal E., Moore J. Oxford EAP: A Course in English for Academic Purposes. Oxford University Press, 2022",
+    "Swales J., Feak Ch. Academic Writing for Graduate Students. Michigan Series in English for Academic and Professional Purposes, 2012"
+  ]
+},
+
+hps:{
+  title:P("История и философия науки","History and Philosophy of Science"),
+  tri:1, rel:P("Обязательный курс","Compulsory course"), lang:P("Русский, английский","Russian, English"),
+  person:"Assoc. Prof. A. Uyzbayeva, PhD", lect:"Assoc. Prof. A. Uyzbayeva, PhD",
+  ects:4, h:{lec:20, pr:20, isis:20, sis:60, tot:120},
+  meth:P("Лекционное обучение, дискуссии в классе, обучение через анализ, геймификация, командная и индивидуальная работа.","Lecture-based learning, class discussions, analysis-based learning, gamification, teamwork and individual learning."),
+  assess:[
+    {per:P("1 аттестация","1st attestation"), t:P("Устная презентация","Oral presentation"), pts:35, f:P("Устная защита","Oral defense"), w:P("3 неделя","Week 3")},
+    {per:P("1 аттестация","1st attestation"), t:P("Устная презентация","Oral presentation"), pts:35, f:P("Устная защита","Oral defense"), w:P("4 неделя","Week 4")},
+    {per:P("1 аттестация","1st attestation"), t:P("Рубежный тест (MCQ)","Mid-term MCQ"), pts:30, f:P("Тест","Test"), w:P("5 неделя","Week 5")},
+    {per:P("2 аттестация","2nd attestation"), t:P("Устная презентация","Oral presentation"), pts:35, f:P("Устная защита","Oral defense"), w:P("7 неделя","Week 7")},
+    {per:P("2 аттестация","2nd attestation"), t:P("Устная презентация","Oral presentation"), pts:35, f:P("Устная защита","Oral defense"), w:P("9 неделя","Week 9")},
+    {per:P("2 аттестация","2nd attestation"), t:P("Рубежный тест (MCQ)","Mid-term MCQ"), pts:30, f:P("Тест","Test"), w:P("10 неделя","Week 10")},
+    {per:P("Экзамен","Final exam"), t:P("MCQ","MCQ"), pts:100, f:P("Тест","Test"), w:P("Экзаменационная сессия","During final exam session")}
+  ],
+  pre:P("Философия (бакалавриат)","Philosophy (BSc programme)"),
+  post:P("Практика по методологии исследования, написание магистерской диссертации","Research methodology internship, master thesis writing"),
+  know:[
+    P("Генезис и история науки: становление её моделей, образов и стилей мышления","The genesis and history of science: the formation of its models, images and styles of thinking"),
+    P("Взаимосвязь научной и философской мысли","The relationship between scientific and philosophical thought"),
+    P("Фундаментальные основания и понятийный аппарат истории и философии науки","The fundamental basis and conceptual apparatus of the history and philosophy of science"),
+    P("Базовые принципы исследовательской деятельности","Basic principles of research activities")
+  ],
+  skills:[
+    P("Применять философское знание в комплексных исследованиях","Application of philosophical knowledge in complex research"),
+    P("Искать научную литературу по философии науки","Searching for scientific literature on the philosophy of science"),
+    P("Писать рецензии на научные статьи","Writing reviews of scientific articles")
+  ],
+  comp:[
+    P("Формулировать и решать задачи, возникающие в ходе исследования и требующие глубоких профессиональных знаний","Formulate and solve problems that arise in research and require in-depth professional knowledge"),
+    P("Давать критический анализ и оценку современных научных достижений","Give critical analysis and evaluation of modern scientific achievements"),
+    P("Выбирать нужные методы исследования, модифицировать существующие и разрабатывать новые","Choose the necessary research methods, modify existing ones and develop new ones"),
+    P("Анализировать и осмыслять реалии современной теории и практики на основе истории и философии науки","Analyze and comprehend modern theory and practice based on the history and philosophy of science")
+  ],
+  cont:P("Курс вводит проблему феномена науки как предмета философского анализа; формирует знания об истории и теории науки, законах её развития и структуре научного знания; о науке как профессии и социальном институте; о методах научного исследования и роли науки в развитии общества.","The course introduces science as a subject of philosophical analysis; forms knowledge about the history and theory of science, the laws of its development and the structure of scientific knowledge; science as a profession and a social institution; research methods; and the role of science in the development of society."),
+  media:MEDIA,
+  books:[
+    "История и философия науки / под ред. Ю. В. Крянева, Л. Е. Моториной. М.: ИНФРА-М, 2011. 416 с.",
+    "Стёпин В. С. История и философия науки. М.: Академический проект, 2011. 423 с.",
+    "Хасанов М. Ш., Петрова В. Ф. История и философия науки. Алматы: Қазақ университеті, 2013. 150 с.",
+    "Философия науки / под ред. А. И. Липкина. М.: Эксмо, 2009. 608 с.",
+    "Мырзалы С. Философия, 2018",
+    "Лебедев С. А., Ильин В. В. Введение в философию и историю науки. М.: Едиториал УРСС, 2009. 344 с.",
+    "Кохановский В. П. и др. Основы философии науки. М.: Феникс, 2010. 603 с.",
+    "Нурышева Г. Ж. Философия. Алматы, 2016"
+  ]
+},
+
+pm:{
+  title:P("Психология управления","Psychology of Management"),
+  tri:1, rel:P("Обязательный курс","Compulsory course"), lang:P("Русский","Russian"),
+  person:"Assoc. Prof. A. Issakhanova, PhD",
+  lect:"Issakhanova Assel Alimakhanovna, PhD in Pedagogy and Psychology",
+  ects:4, h:{lec:20, pr:20, isis:20, sis:60, tot:120},
+  meth:P("Формальные и интерактивные лекции, геймификация, ролевые игры, кейс-стади.","Formal and interactive lecturing, gamification, role playing and case study."),
+  assess:[
+    {per:P("1 аттестация","1st attestation"), t:P("Наборы задач (Problem Sets)","Problem sets"), pts:60, f:P("Сдача письменных отчётов","Submission of written reports"), w:P("Еженедельно","Weekly")},
+    {per:P("1 аттестация","1st attestation"), t:P("Рубежный экзамен","Mid-term exam"), pts:40, f:P("Письменно, индивидуальный проект","Written, individual project"), w:P("5 неделя","Week 5")},
+    {per:P("2 аттестация","2nd attestation"), t:P("Наборы задач (Problem Sets)","Problem sets"), pts:60, f:P("Сдача письменных отчётов","Submission of written reports"), w:P("Еженедельно","Weekly")},
+    {per:P("2 аттестация","2nd attestation"), t:P("Итоговый экзамен","End-term exam"), pts:40, f:P("Письменно, индивидуальный проект","Written, individual project"), w:P("10 неделя","Week 10")},
+    {per:P("Экзамен","Final exam"), t:P("Финальный экзамен","Final exam"), pts:100, f:P("Тест","Quiz"), w:P("Экзаменационная сессия","During final exam session")}
+  ],
+  pre:P("Психология, философия, история (бакалавриат)","Psychology, Philosophy, History (BSc modules)"),
+  post:P("Исследовательская практика","Research practice"),
+  know:[
+    P("Понятийный аппарат, описывающий управленческую деятельность","The conceptual apparatus describing management activities"),
+    P("Теоретические закономерности жизни и динамики систем управления","The theoretical laws of life and dynamics of control systems")
+  ],
+  skills:[
+    P("Управлять способами самоанализа, саморазвития и самоорганизации","Manage the ways of introspection, self-development and self-organization"),
+    P("Организовывать методы командной работы","Organize methods of teamwork"),
+    P("Применять техники дискуссий, групповой работы, самостоятельного разбора кейсов","Apply the techniques of discussions, group work and independent analysis of cases"),
+    P("Самостоятельно ориентироваться в подходах к психологическим процессам и явлениям в управлении","Independently navigate the various approaches to psychological processes and phenomena arising in management"),
+    P("Использовать социально-психологические механизмы управления групповыми процессами; анализировать мотивацию сотрудников","Use socio-psychological mechanisms for managing group phenomena and processes; analyze employee motivation")
+  ],
+  comp:[
+    P("Организовывать управленческую деятельность; объяснять психологические феномены управления; подбирать диагностический инструментарий и корректирующие техники при разборе кейсов","Organize management activities; explain the psychological phenomena of management; select diagnostic tools and corrective techniques in the analysis of cases")
+  ],
+  cont:P("Курс даёт научно обоснованную подготовку на основе изучения и анализа психологических условий и особенностей управленческой деятельности в процессе профессионального становления по выбранной специальности и с ориентацией на личностное саморазвитие.","The course provides scientifically based training grounded in the study and analysis of the psychological conditions and features of managerial activity in the process of professional formation within the chosen specialty, with an orientation on personal self-development."),
+  media:MEDIA,
+  books:[
+    "Ахтаева Н. С., Абдигаппарова А. И., Бекбаева З. Н. Психология управления. Алматы: Қазақ университеті, 2018",
+    "Robbins S. P., Judge T. A. Essentials of Organizational Behavior. 14th ed. Алматы: Национальное бюро переводов, 2019",
+    "Balzac R., Stephen R. Organizational Psychology for Managers, 2020",
+    "Looij, August van. Psychology of Emotions, Motivations and Actions. New York: Nova, 2019",
+    "Weinschenk S. W. 100 Things Every Designer Needs To Know About People. USA: Pearson, 2020",
+    "Social Psychology: Handbook of Basic Principles / Van Lange P. A. M., Higgins E. T., Kruglanski A. W. New York: The Guilford Press, 2021",
+    "Myers D. G., DeWall C. N. Psychology. 13th ed. Macmillan International Higher Education, 2021",
+    "Schultz D. P., Schultz S. E. Theories of Personality. 11th ed. Cengage, 2017",
+    "Армстронг М. Стратегическое управление человеческими ресурсами. М.: ИНФРА-М, 2014",
+    "Бакирова Г. Х. Управление человеческими ресурсами. СПб.: Речь, 2008",
+    "Becker G. S. Human Capital: Theoretical and Empirical Analysis. N-Y., 2011",
+    "Добреньков В. И. Управление человеческими ресурсами: социально-психологический подход. М.: КДУ, 2015",
+    "Игнатов В. Г., Албастова Л. Н. Теория управления: курс лекций. М.: МарТ, 2012"
+  ]
+},
+
+hep:{
+  title:P("Педагогика высшей школы","Higher Education Pedagogy"),
+  tri:1, rel:P("Обязательный курс","Compulsory course"), lang:P("Английский","English"),
+  person:"Assoc. Prof. Zh. Tleshova, Candidate of Pedagogical Sciences",
+  lect:"Assoc. Prof. Zh. Tleshova, Candidate of Pedagogical Sciences",
+  ects:4, h:{lec:20, pr:20, isis:20, sis:60, tot:120},
+  meth:P("Лекционное обучение, дискуссии, обучение через анализ, геймификация, командная и индивидуальная работа, активное обучение, вопросно-ответные методы.","Lecture-based learning, class discussions, analysis-based learning, gamification, teamwork and individual learning, active learning, interrogative teaching methods."),
+  assess:[
+    {per:P("1 аттестация","1st attestation"), t:P("Обсуждение прочитанного","Reading material discussions"), pts:25, f:P("Презентация и обсуждение устных докладов по прочитанному","Presentation and discussion of oral reports based on the reading material"), w:P("Раз в две недели","Once in two weeks")},
+    {per:P("1 аттестация","1st attestation"), t:P("Тест","Quiz"), pts:5, f:P("Письменно","Written"), w:P("5 неделя","Week 5")},
+    {per:P("2 аттестация","2nd attestation"), t:P("Обсуждение прочитанного","Reading material discussions"), pts:25, f:P("Презентация и обсуждение устных докладов","Presentation and discussion of oral reports"), w:P("Раз в две недели","Once in two weeks")},
+    {per:P("2 аттестация","2nd attestation"), t:P("Тест","Quiz"), pts:5, f:P("Письменно","Written"), w:P("10 неделя","Week 10")},
+    {per:P("Экзамен","Final exam"), t:P("Финальный экзамен","Final exam"), pts:40, f:P("Устно","Oral"), w:P("Экзаменационная сессия","During final exam session")}
+  ],
+  anote:P("Внимание: у этого курса баллы аттестаций по 30, а не по 100 — итог по курсу собирается напрямую из 30 + 30 + 40 = 100.","Note: this course scores each attestation out of 30, not 100 — the course total adds up directly as 30 + 30 + 40 = 100."),
+  pre:P("Психология; методология исследования (бакалавриат)","Psychology; Research Methodology (BSc modules)"),
+  post:P("Педагогическая практика","Teaching practice"),
+  know:[
+    P("Методология, система и процессы высшего образования","Higher education methodology, system and processes"),
+    P("Управление в высшем образовании: процессы, преподаватели и студенты","Management in higher education: processes, faculty members and students"),
+    P("Проектирование образовательных программ","Educational programme design"),
+    P("Результаты обучения, методология и методы оценивания и преподавания","Teaching and learning outcomes, assessment methodology, methods of teaching and learning"),
+    P("Организация учебной среды","Organization of teaching and learning environments"),
+    P("Нормативные акты об образовании и преподавании в высшей школе","Regulatory acts in education on teaching in higher education"),
+    P("Студентоцентрированный подход и роль самостоятельной работы","Student-centered teaching approach and the roles of self-study"),
+    P("Роль IT-технологий в преподавании и обучении","Roles of IT technology in teaching and learning"),
+    P("Проектирование курса и плана занятия","Course and lesson plan design"),
+    P("Исследовательские вопросы в проблемах преподавания в высшей школе","Research questions in higher education teaching and learning problems")
+  ],
+  skills:[
+    P("Аргументировать «за» и «против» концепций методологии высшего образования и обсуждать их в классе","Give arguments for and against concepts in higher education methodology and discuss them in class"),
+    P("Проектировать содержание образовательных программ","Design the content of educational programmes"),
+    P("Проектировать формы оценивания","Design assessment forms"),
+    P("Определять благоприятную учебную среду","Define a favorable learning environment"),
+    P("Соблюдать регламенты учебного процесса и учебной среды","Follow regulations in teaching and learning processes and the learning environment"),
+    P("Применять студентоцентрированный подход и задания для самостоятельной работы","Apply a student-centered teaching approach and self-study assignments"),
+    P("Проектировать курс и план занятия","Design a course and a lesson plan"),
+    P("Исследовать локальные проблемы высшего образования","Research local problems in higher education")
+  ],
+  comp:[
+    P("Критически оценивать концепции методологии педагогических наук","Critically evaluate the concepts in the methodology of pedagogical sciences"),
+    P("Оценивать современные тенденции в высшем образовании","Evaluate modern tendencies in higher education"),
+    P("Применять современные образовательные технологии","Employ modern educational technologies"),
+    P("Применять методы преподавания и обучения","Apply teaching and learning methods"),
+    P("Определять формы оценивания исходя из содержания, целей и задач программы","Define assessment forms based on the educational programme content, goals and objectives"),
+    P("Интерпретировать результаты исследований по проблемам высшего образования","Interpret the findings of research questions on higher education problems")
+  ],
+  cont:P("Курс формирует у магистрантов знания о системах высшего образования, парадигме, компетенциях университетского преподавателя, теориях преподавания и обучения, методологии оценивания и организации учебного процесса.","The course is designed for MA students to shape their knowledge about higher education systems, paradigm, university teacher competence, teaching and learning theories, assessment methodology and the organization of teaching and learning processes."),
+  media:MEDIA,
+  books:[
+    "Hartley M., Ruby A. Higher Education Reform and Development: The Case of Kazakhstan. Cambridge Press, UK, 2017",
+    "Silova I., Niyozov S. Globalization on the Margins. Education and Post-Socialist Transformations in Central Asia. Information Age Publishing Inc., USA, 2020",
+    "Shunk D. H. Learning Theories: An Educational Perspective. 8th ed. Pearson, 2019",
+    "OECD. Higher Education in Kazakhstan. Reviews of National Policies for Education. OECD Publishing, Paris, 2017",
+    "UNESCO. Thinking Higher and Beyond. Perspectives on the Futures of Higher Education to 2050, 2021",
+    "Fry H., Ketteridge S., Marshall S. A Handbook for Teaching and Learning in Higher Education. Taylor & Francis, NY, USA, 2009"
+  ]
+},
+
+math:{
+  title:P("Математика для науки о данных","Mathematics for Data Science"),
+  tri:1, rel:P("Обязательный курс","Compulsory course"), lang:P("Английский, русский","English, Russian"),
+  person:"Prof. Svitlana Biloshchytska, Doctor of Technical Sciences",
+  lect:"Prof. Svitlana Biloshchytska",
+  ects:5, h:{lec:30, pr:20, isis:30, sis:70, tot:150},
+  meth:P("Problem-based learning (PBL): студентоцентрированный подход, работа в группах над открытой задачей; групповая дискуссия; интерактивно-коммуникативное обучение.","Problem-based learning (PBL): a student-centered approach where students learn by working in groups on an open-ended problem; group discussion; interactive-communicative learning."),
+  assess:[
+    {per:P("1 аттестация","1st attestation"), t:P("Лабораторные работы 1–4","Laboratory works 1–4"), pts:60, f:P("Сдача письменных отчётов","Submission of written reports"), w:P("Еженедельно","Weekly")},
+    {per:P("1 аттестация","1st attestation"), t:P("Рубежный экзамен","Mid-term exam"), pts:40, f:P("Письменно","Written"), w:P("5 неделя","Week 5")},
+    {per:P("2 аттестация","2nd attestation"), t:P("Лабораторные работы 5–8","Laboratory works 5–8"), pts:60, f:P("Сдача письменных отчётов","Submission of written reports"), w:P("Еженедельно","Weekly")},
+    {per:P("2 аттестация","2nd attestation"), t:P("Итоговый экзамен","End-term exam"), pts:40, f:P("Письменно","Written"), w:P("10 неделя","Week 10")},
+    {per:P("Экзамен","Final exam"), t:P("Финальный экзамен","Final exam"), pts:100, f:P("Письменно","Written"), w:P("Экзаменационная сессия","During final exam session")}
+  ],
+  pre:P("Линейная алгебра, матанализ I/II, теория вероятностей и статистика (бакалавриат)","Linear Algebra, Calculus I/II, Probability Theory and Statistics (BSc modules)"),
+  post:P("Прикладной проект по аналитике данных","Applied Project in Data Analytics"),
+  know:[
+    P("Принципы и методы сбора, обработки и визуального представления статистической информации","Principles and methods of collecting, processing and visually presenting statistical information"),
+    P("Суть обобщающих статистических показателей — абсолютных, относительных и средних величин, показателей вариации, дифференциации и концентрации","The essence of generalizing statistical indicators: absolute, relative and average values, indicators of variation, differentiation and concentration"),
+    P("Статистические показатели наличия и тесноты связи, методы количественного описания взаимосвязи признаков","Statistical indicators of the presence and tightness of a relationship; methods for quantitative description of the relationship of signs"),
+    P("Основы статистического моделирования и прогнозирования","Basics of statistical modeling and forecasting")
+  ],
+  skills:[
+    P("Формулировать гипотезы и исследовательские вопросы с количественными данными","Formulate hypotheses and research questions involving quantitative data"),
+    P("Проектировать эксперименты и статистические модели под исследовательские вопросы","Design experiments and statistical models to represent quantitative research questions"),
+    P("Сравнивать уровни статистических показателей во времени и пространстве через показатели динамики и индексы","Compare levels of statistical indicators in time and space using indicators of dynamics and indices"),
+    P("Подбирать и применять разные статистические инструменты и формализовать степень уверенности в ответах","Select and apply a variety of statistical tools and formalize certainty in the answers"),
+    P("Анализировать и доносить результаты применения статистических инструментов","Analyze and communicate the findings of statistical tools")
+  ],
+  comp:[
+    P("Применять подходящие методы статистического вывода к анализу данных в разных предметных областях","Apply appropriate statistical inference techniques to the analysis of data across a variety of domains"),
+    P("Интерпретировать вывод статистических пакетов и языков программирования","Interpret the outputs from statistical software packages and programming languages"),
+    P("Сообщать статистические результаты полно, этично и профессионально","Report and communicate statistical results in a comprehensive, ethical and professional manner"),
+    P("Применять подходящие методы прогнозирования к временным рядам","Apply appropriate forecasting techniques to time series"),
+    P("Выявлять закономерности в данных и применять методы снижения размерности","Identify patterns in data and implement dimension reduction techniques")
+  ],
+  cont:P("За десять недель разбираются подходы к описанию данных исследования, основные методы и принципы статистического анализа, интерпретация и визуализация результатов. Магистранты знакомятся с дисперсионным, регрессионным и кластерным анализом, учатся сравнивать группы, считать коэффициенты корреляции и строить уравнения регрессии. Основной упор — на математические идеи, интуицию и логику, стоящие за методами и расчётными формулами.","Over the ten-week course students cover approaches to describing research data, the main methods and principles of statistical analysis, interpretation and visualization of results. Students get acquainted with variance, regression and cluster analysis; they learn to compare groups, calculate correlation coefficients and build regression equations. The main emphasis is on the mathematical ideas, intuition and logic behind the methods and calculation formulas."),
+  media:P("Мультимедийные аудитории: компьютер, проектор, аудиосистема; аудио-визуальные пакеты (PowerPoint, PDF) для ключевых тезисов; Microsoft Teams; LMS Moodle.","Multimedia classrooms with computer, projection and audio system; audio-visual software such as PowerPoint or PDF to highlight key points; Microsoft Teams; LMS Moodle."),
+  books:[
+    "Bruce P., Bruce A. Practical Statistics for Data Scientists, 2017. 303 p.",
+    "Orland P. Math for Programmers. V. 11, 2020",
+    "Hastie T., Tibshirani R., Friedman J. The Elements of Statistical Learning: Data Mining, Inference, and Prediction. 2nd ed. Springer, 2017. 764 p.",
+    "Ross S. M. Introduction to Probability Models. 6th ed., 1997. 669 p.",
+    "Hartman G. Fundamentals of Matrix Algebra, 2011. 236 p."
+  ]
+},
+
+prog:{
+  title:P("Программирование для анализа данных и баз данных","Programming for Data Analysis and Databases"),
+  tri:1, rel:P("Обязательный курс","Compulsory course"), lang:P("Английский","English"),
+  person:"Turar Olzhas, PhD", lect:"Turar Olzhas, PhD",
+  ects:5, h:{lec:30, pr:20, isis:30, sis:70, tot:150},
+  meth:PBL,
+  assess:PROJ,
+  pre:P("Теория вероятностей и статистика (бакалавриат)","Probability and Statistics (BSc module)"),
+  post:P("Бизнес-аналитика","Business Analytics"),
+  know:[
+    P("Основы языков программирования и их применение к анализу данных и базам данных","The fundamentals of programming languages and their application to data analysis and databases"),
+    P("Владение языком (Python или R) и его применение к анализу, визуализации данных и управлению БД","Proficiency in a programming language such as Python or R and applying it to data analysis, visualization and database management")
+  ],
+  skills:[
+    P("Создавать и преобразовывать наборы данных разных типов: структурированные, полуструктурированные, неструктурированные","Create and manipulate data sets using structured, semi-structured and unstructured data"),
+    P("Проектировать, реализовывать и оптимизировать сложные схемы БД с помощью SQL и других инструментов","Design, implement and optimize complex database schemas using SQL and other database management tools"),
+    P("Применять очистку и предобработку данных, вести разведочный анализ (EDA)","Use data cleaning and preprocessing techniques and apply exploratory data analysis to gain insights")
+  ],
+  comp:[
+    P("Критически анализировать и рефлексировать над прикладными методами машинного обучения — с учителем и без — для анализа и моделирования сложных данных","Critically analyze and reflect on applied machine learning techniques, both supervised and unsupervised, to analyze and model complex data sets"),
+    P("Подбирать инструменты и методы визуализации для донесения результатов и инсайтов до стейкхолдеров","Select methods for applying data visualization tools and techniques to communicate results and insights to stakeholders")
+  ],
+  topics:[
+    P("Введение в языки программирования для анализа данных и баз данных","Introduction to programming languages for data analysis and databases"),
+    P("Типы и структуры данных в Python и R","Data types and structures in Python and R"),
+    P("Методы очистки и предобработки данных","Data cleaning and preprocessing techniques"),
+    P("Визуализация данных и отчётность","Data visualization and reporting")
+  ],
+  media:MEDIA,
+  books:[
+    "McKinney W. Python for Data Analysis: Data Wrangling with Pandas, NumPy, and IPython. O'Reilly Media, 2017",
+    "Wickham H. R for Data Science: Import, Tidy, Transform, Visualize, and Model Data. O'Reilly Media, 2017",
+    "Widom J. Database Systems: The Complete Book. 2nd ed. Pearson, 2018",
+    "VanderPlas J. Python Data Science Handbook: Essential Tools for Working with Data. O'Reilly Media, 2016",
+    "James G., Witten D., Hastie T., Tibshirani R. An Introduction to Statistical Learning. 2nd ed."
+  ]
+},
+
+methods:{
+  title:P("Методы и инструменты анализа данных","Methods and Tools for Data Analysis"),
+  tri:2, rel:P("Обязательный курс","Compulsory course"), lang:P("Английский","English"),
+  person:"Nugumanova Aliya, PhD", lect:"Nugumanova Aliya, PhD",
+  ects:5, h:{lec:30, pr:20, isis:30, sis:70, tot:150},
+  meth:P("Интерактивная лекция (мини-лекции по ~20 мин с активностями между ними). Inquiry-based learning — обучение через исследование: студент сам ставит вопросы и находит ответы, преподаватель выступает ресурсом. Inquiry Guided Learning — освоение материала ради решения задачи, ответа на вопрос, постановки эксперимента или интерпретации данных.","Interactive lecturing (mini-lectures of about 20 minutes with activities in between). Inquiry-based learning: students investigate, complete projects, ask questions and find answers themselves, with teachers acting as resources. Inquiry Guided Learning: learning or applying material to meet a challenge, answer a question, conduct an experiment or interpret data."),
+  assess:PROJ,
+  pre:P("Программирование для анализа данных и баз данных","Programming for Data Analysis and Databases"),
+  post:P("Прикладной проект по аналитике данных; НИР магистранта, включая стажировки и диссертацию; подготовка и защита диссертации","Data Analytics application project; master research work including internships and a thesis; preparation and defense of a master thesis"),
+  know:[
+    P("Ключевые методы и инструменты анализа данных: предобработка, отбор признаков, обучение и оценка моделей","Key methods and tools of data analysis, including data preprocessing, feature selection, model training and evaluation"),
+    P("Разные техники анализа для реальных задач: обучение с учителем и без, анализ временных рядов, текстовая аналитика","Different data analysis techniques for real-world problems: supervised and unsupervised learning, time series analysis, text analytics")
+  ],
+  skills:[
+    P("Использовать пакеты scikit-learn, TensorFlow, PyTorch для построения и оценки моделей машинного обучения","Use data analysis software tools and packages such as scikit-learn, TensorFlow and PyTorch to build and evaluate machine learning models"),
+    P("Оценивать качество и надёжность данных, выявлять проблемы и смещения и устранять их","Evaluate the quality and reliability of data, identify data issues and potential biases and take appropriate steps to address them")
+  ],
+  comp:[
+    P("Доносить результаты анализа до стейкхолдеров с уместной визуализацией и убедительным сторителлингом","Communicate data analysis results and insights to stakeholders using appropriate data visualization and effective storytelling"),
+    P("Демонстрировать критическое мышление и решение задач, опираясь на данные в быстро меняющейся и неопределённой среде","Show critical thinking and problem-solving skills, using data to inform decision-making in a rapidly changing and uncertain environment")
+  ],
+  topics:[
+    P("Предобработка данных и отбор признаков","Data preprocessing and feature selection"),
+    P("Линейная регрессия и классификация","Linear regression and classification"),
+    P("Стационарность и автокорреляция","Stationarity and autocorrelation"),
+    P("Предобработка текста и извлечение признаков","Text preprocessing and feature extraction"),
+    P("Разбиение train/test и кросс-валидация","Train-test split and cross-validation"),
+    P("Глубокое обучение и нейронные сети","Deep learning and neural networks")
+  ],
+  media:MEDIA,
+  books:[
+    "VanderPlas J. Python Data Science Handbook: Essential Tools for Working with Data. O'Reilly Media, 2016",
+    "Géron A. Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow. O'Reilly Media, 2019",
+    "Hastie T., Tibshirani R., Friedman J. The Elements of Statistical Learning. Springer, 2017",
+    "Kuhn M., Johnson K. Applied Predictive Modeling. Springer, 2013",
+    "Jurafsky D., Martin J. H. Speech and Language Processing. 3rd ed. draft. Pearson, 2020"
+  ]
+},
+
+csda:{
+  title:P("Тематическое исследование (Case study) по аналитике данных","Case Study on Data Analytics"),
+  tri:2, rel:P("Обязательный курс","Compulsory course"), lang:P("Английский","English"),
+  person:"Timur Akhmetov, PhD", lect:"Timur Akhmetov, PhD",
+  ects:5, h:{lec:30, pr:20, isis:30, sis:70, tot:150},
+  meth:P("Problem-based learning; интерактивное преподавание (мини-лекции по ~20 мин с активностями); лекция-демонстрация: содержание разворачивается как показ процесса в хронологическом порядке, преподаватель выделяет и поясняет этапы.","Problem-based learning; interactive teaching with 20-minute mini-lectures and activities in between; lecture-demonstration, where content is a demonstration of a process presented in a sequence of events that the lecturer highlights and explains."),
+  assess:PROJ,
+  pre:P("Программирование для анализа данных и баз данных","Programming for Data Analysis and Databases"),
+  post:P("Прикладной проект по аналитике данных; обработка и понимание данных","Data Analytics application project; Data Processing and Understanding"),
+  know:[
+    P("Основные подходы к кластеризации","Main approaches in clustering"),
+    P("Уверенное понимание ключевых понятий, методов и техник аналитики данных и их применения к большим данным","A solid understanding of the key concepts, methods and techniques in data analytics and their application to big data analysis"),
+    P("Анализ больших и сложных наборов данных","Analysis of large and complex data sets")
+  ],
+  skills:[
+    P("Использовать спектр статистических и вычислительных методов","Use a range of statistical and computational techniques"),
+    P("Выбирать и применять подходящие статистические модели, алгоритмы и инструменты","Select and apply appropriate statistical models, algorithms and software tools"),
+    P("Различать признаки, корреляции, числовые и категориальные данные","Differentiate features, correlations, numerical and categorical data"),
+    P("Извлекать инсайты из структурированных и неструктурированных данных, включая текст, изображения и видео","Extract insights from structured and unstructured data, including text, image and video data")
+  ],
+  comp:[
+    P("Оценивать построение графов","Evaluate graph construction"),
+    P("Выбирать и применять модели","Select and apply models"),
+    P("Определять качество и надёжность данных, выявлять проблемы и смещения и устранять их","Identify the quality and reliability of data, data issues and potential biases, and take appropriate steps to address them")
+  ],
+  cont:P("Курс обсуждает ключевые принципы процесса извлечения знаний через кейсы из разных прикладных областей. Магистранты осваивают основные шаги, которые нужно пройти при столкновении с новой задачей аналитики данных. На каждом кейсе разбираются инструменты очистки, обработки и преобразования данных. Особое внимание — инспекции данных, сокращению признакового пространства и выбору модели. Каждый кейс завершается детальным обсуждением и интерпретацией результатов.","The course discusses the key principles of the knowledge discovery process through case studies from different application areas. Students learn the main steps to traverse when facing new data analytics problems. Each case study revisits the tools for cleaning, processing and altering data. Particular attention is given to data inspection, feature reduction and model selection. Each case study is completed by a thorough discussion and interpretation of the results."),
+  media:MEDIA,
+  books:[
+    "Andersson C. A replicated empirical study of a selection method for software reliability growth models. Empirical Software Engineering, 12(2):161–182, 2007",
+    "Meyer B. Object-Oriented Software Construction. Prentice Hall, 2000"
+  ]
+},
+
+bpa:{
+  title:P("Анализ бизнес-процессов","Business Process Analysis"),
+  tri:2, rel:P("Обязательный курс","Compulsory course"), lang:P("Английский","English"),
+  person:"Timur Akhmetov, PhD", lect:"Timur Akhmetov, PhD",
+  ects:5, h:{lec:30, pr:20, isis:30, sis:70, tot:150},
+  meth:PBL, assess:PROJ,
+  pre:P("Бизнес-аналитика. Цифровые финансы. Цифровая бизнес-экосистема","Business Analytics. Digital Finance. Digital Business Ecosystem"),
+  post:P("НИР магистранта, включая исследовательские стажировки и написание диссертации","Master research work, including research internships and thesis writing"),
+  know:[
+    P("Ключевые понятия и принципы аналитики бизнес-процессов и их применение к анализу больших данных","The key concepts and principles of business process analytics and their application to big data analysis"),
+    P("Анализ и оценка результативности и эффективности бизнес-процессов средствами аналитики: process mining, визуализация, статистический анализ","Analyzing and evaluating the effectiveness and efficiency of business processes using data analytics techniques including process mining, data visualization and statistical analysis")
+  ],
+  skills:[
+    P("Выявлять и количественно измерять узкие места, неэффективности и отклонения процессов и давать практические рекомендации по их улучшению","Identify and quantify process bottlenecks, inefficiencies and deviations, and develop actionable recommendations to improve business processes"),
+    P("Применять продвинутую аналитику для поиска паттернов, трендов и аномалий в данных процессов, чтобы оптимизировать и автоматизировать процессы","Apply advanced data analytics methods to identify patterns, trends and anomalies in business process data and use this to optimize and automate processes")
+  ],
+  comp:[
+    P("Демонстрировать критическое мышление и решение задач, принимая решения по управлению процессами на основе данных","Show critical thinking and problem-solving skills, using data to inform decision-making related to business process management"),
+    P("Оценивать влияние новых технологий — ИИ и машинного обучения — на аналитику процессов и применять лучшие практики их использования для улучшения процессов","Evaluate the impact of emerging technologies such as artificial intelligence and machine learning on business process analytics and apply best practices to leverage them for process improvement")
+  ],
+  cont:P("Курс вводит важнейшие базовые понятия и методы бизнес-анализа. Кроме того, магистранты учатся сравнивать результаты между разными выборками.","The course introduces the most important and basic concepts and methods in business analysis. In addition, students learn how to compare results between different samples."),
+  media:MEDIA,
+  books:[
+    "Meyer B. Object-Oriented Software Construction. Prentice Hall, 2000",
+    "Martin J., Odell J. J. Object-Oriented Methods: A Foundation (UML Edition). Prentice Hall, 1998",
+    "Pont M. Patterns for Time-Triggered Embedded Systems. Addison-Wesley, 2001",
+    "Buschmann F., Meunier R., Rohnert H., Sommerlad P., Stal M. Pattern-Oriented Software Architecture: A System of Patterns. Wiley, 1996",
+    "Schmidt D., Stal M., Rohnert H., Buschmann F. Pattern-Oriented Software Architecture Vol. 2: Patterns for Concurrent and Networked Objects. Wiley, 2000",
+    "Rumbaugh J. OMT Insights. SIGS Books, 1996"
+  ]
+},
+
+ba:{
+  title:P("Бизнес-аналитика","Business Analytics"),
+  tri:2, rel:P("Элективный курс","Elective course"), lang:P("Английский","English"),
+  person:"Timur Akhmetov, PhD", lect:"Timur Akhmetov, PhD",
+  ects:5, h:{lec:30, pr:20, isis:30, sis:70, tot:150},
+  meth:P("Problem-based learning; интерактивное преподавание с мини-лекциями; лекция-демонстрация процесса или деятельности.","Problem-based learning; interactive teaching with mini-lectures; lecture-demonstration of a process or activity."),
+  assess:PROJ,
+  pre:P("Математика для науки о данных","Mathematics for Data Science"),
+  post:P("Анализ бизнес-процессов, написание магистерской диссертации","Business Process Analysis, master thesis writing"),
+  know:[
+    P("Уверенное понимание ключевых понятий, методов и техник бизнес-аналитики и их применения к большим данным","A solid understanding of the key concepts, methods and techniques in business analytics and their application to big data analysis"),
+    P("Анализ больших и сложных наборов данных статистическими и вычислительными методами для получения выводов, влияющих на бизнес-решения","Analysis of large and complex data sets using statistical and computational techniques to derive meaningful insights and inform business decision-making")
+  ],
+  skills:[
+    P("Выбирать и применять подходящие статистические модели, алгоритмы и инструменты","Select and apply appropriate statistical models, algorithms and software tools"),
+    P("Извлекать инсайты из структурированных и неструктурированных данных, включая текст, изображения и видео","Extract insights from structured and unstructured data, including text, image and video data")
+  ],
+  comp:[
+    P("Оценивать качество и надёжность данных, выявлять проблемы и смещения и устранять их","Evaluate the quality and reliability of data, identify data issues and potential biases and take appropriate steps to address them"),
+    P("Доносить выводы и рекомендации до стейкхолдеров с уместной визуализацией и сторителлингом","Communicate insights and recommendations to stakeholders using appropriate data visualization and effective storytelling")
+  ],
+  cont:P("Курс вводит важнейшие базовые понятия и методы бизнес-анализа. Кроме того, магистранты учатся сравнивать результаты между разными выборками.","The course introduces the most important and basic concepts and methods in business analysis. In addition, students learn how to compare results between different samples."),
+  media:MEDIA,
+  books:[
+    "Meyer B. Object-Oriented Software Construction. Prentice Hall, 2000",
+    "Martin J., Odell J. J. Object-Oriented Methods: A Foundation (UML Edition). Prentice Hall, 1998",
+    "Pont M. Patterns for Time-Triggered Embedded Systems. Addison-Wesley, 2001",
+    "Buschmann F. et al. Pattern-Oriented Software Architecture: A System of Patterns. Wiley, 1996",
+    "Schmidt D. et al. Pattern-Oriented Software Architecture Vol. 2. Wiley, 2000"
+  ]
+},
+
+dfin:{
+  title:P("Цифровые финансы","Digital Finance"),
+  tri:2, rel:P("Элективный курс","Elective course"), lang:P("Английский","English"),
+  person:"Turar Olzhas, Computational & Data Science Department Director, PhD", lect:"—",
+  ects:5, h:{lec:30, pr:20, isis:30, sis:70, tot:150},
+  meth:P("Интерактивная лекция (мини-лекции ~20 мин с активностями). Inquiry-based learning: обучение через исследование — студенты сами ставят вопросы и находят ответы, преподаватель выступает ресурсом.","Interactive lecturing with 20-minute mini-lectures and activities in between. Inquiry-based learning: students complete projects, ask questions and find answers themselves, with teachers acting as resources."),
+  assess:PROJ,
+  pre:P("Психология управления, программирование для анализа данных и баз данных","Psychology of Management, Programming for Data Analysis and Databases"),
+  post:P("Анализ бизнес-процессов, написание магистерской диссертации","Business Process Analysis, master thesis writing"),
+  know:[
+    P("Фундаментальные понятия цифровых финансов и то, как они меняют финансовую индустрию","The fundamental concepts of digital finance and how they are transforming the financial industry"),
+    P("Влияние новых технологий на финансовые рынки: блокчейн, искусственный интеллект, машинное обучение","The impact of emerging technologies on financial markets, including blockchain, artificial intelligence and machine learning")
+  ],
+  skills:[
+    P("Оценивать риски и возможности цифровых финансов и разрабатывать стратегии управления рисками","Evaluate the risks and opportunities of digital finance and develop strategies to manage and mitigate these risks"),
+    P("Глубоко понимать финансовые данные и аналитику: сбор, анализ, интерпретацию","Develop a deep understanding of financial data and analytics, including data acquisition, analysis and interpretation")
+  ],
+  comp:[
+    P("Демонстрировать критическое мышление и решение задач, принимая решения на основе данных в быстро меняющейся и неопределённой среде","Show critical thinking and problem-solving skills, using data and analytics to inform decision-making in a rapidly changing and uncertain environment")
+  ],
+  topics:[
+    P("Введение в цифровые финансы","Introduction to digital finance"),
+    P("Приложения и технологии цифровых финансов","Digital finance applications and technologies"),
+    P("Финансовые данные и аналитика","Financial data and analytics"),
+    P("Регуляторные и этические аспекты","Regulatory and ethical considerations"),
+    P("Новые тренды в цифровых финансах","Emerging trends in digital finance")
+  ],
+  media:MEDIA,
+  books:[
+    "Tapscott D., Tapscott A. Blockchain Revolution. Penguin Random House, 2016",
+    "López de Prado M. Advances in Financial Machine Learning. Wiley, 2018",
+    "Lo A. W. Adaptive Markets: Financial Evolution at the Speed of Thought. Princeton University Press, 2018",
+    "Easley D., López de Prado M. Microstructure and Noise in Financial Markets: A Comprehensive Overview. Elsevier, 2018",
+    "Werbach K. The Blockchain and the New Architecture of Trust. MIT Press, 2018"
+  ]
+},
+
+dbe:{
+  title:P("Цифровая бизнес-экосистема","Digital Business Ecosystem"),
+  tri:2, rel:P("Элективный курс","Elective course"), lang:P("Английский","English"),
+  person:"Turar Olzhas, Computational & Data Science Department Director, PhD", lect:"—",
+  ects:5, h:{lec:30, pr:20, isis:30, sis:70, tot:150},
+  meth:P("Интерактивное преподавание с мини-лекциями; problem-based learning в группах над открытой задачей; групповая дискуссия и интерактивно-коммуникативное обучение.","Interactive teaching with mini-lectures; problem-based learning in groups on an open-ended problem; group discussion and interactive-communicative learning."),
+  assess:PROJ,
+  pre:P("Базовые знания менеджмента, психология управления","Background knowledge of Management, Psychology of Management"),
+  post:P("Анализ бизнес-процессов, написание магистерской диссертации","Business Process Analysis, master thesis writing"),
+  know:[
+    P("Понятие цифровых бизнес-экосистем и то, как они меняют традиционные бизнес-модели","The concept of digital business ecosystems and how they are transforming traditional business models"),
+    P("Ключевые драйверы и вызовы цифровых экосистем: новые технологии, аналитика данных, платформенные стратегии","The key drivers and challenges of digital business ecosystems, including emerging technologies, data analytics and platform strategies")
+  ],
+  skills:[
+    P("Оценивать конкурентный ландшафт цифровых бизнес-экосистем","Evaluate the competitive landscape of digital business ecosystems"),
+    P("Разрабатывать стратегии конкуренции и кооперации внутри них","Develop strategies to compete and collaborate within them")
+  ],
+  comp:[
+    P("Глубоко понимать роль данных и аналитики в цифровых экосистемах: сбор, анализ, обмен данными","Develop a deep understanding of the role of data and analytics in digital business ecosystems, including data acquisition, analysis and sharing"),
+    P("Демонстрировать критическое мышление и решение задач на основе данных в изменчивой среде","Show critical thinking and problem-solving skills, using data and analytics to inform decision-making in a rapidly changing and uncertain environment")
+  ],
+  topics:[
+    P("Введение в цифровые бизнес-экосистемы","Introduction to digital business ecosystems"),
+    P("Стратегии цифровых платформ","Digital platform strategies"),
+    P("Данные и аналитика в цифровых экосистемах","Data and analytics in digital business ecosystems"),
+    P("Управление цифровыми бизнес-экосистемами","Managing digital business ecosystems"),
+    P("Новые тренды","Emerging trends in digital business ecosystems")
+  ],
+  media:MEDIA,
+  books:[
+    "Van Alstyne M., Parker G. G., Choudary S. P. Platform Revolution. W. W. Norton & Company, 2016",
+    "Kaplan A., Haenlein M. Siri, Siri in my hand, who's the fairest in the land? Business Horizons, Vol. 62, No. 1, 2019",
+    "Iansiti M., Lakhani K. R. Competing in the Age of AI. Harvard Business Review Press, 2020",
+    "McAfee A., Brynjolfsson E. Machine, Platform, Crowd: Harnessing Our Digital Future. W. W. Norton & Company, 2017",
+    "Porter M. E., Heppelmann J. E. How Smart, Connected Products Are Transforming Competition. Harvard Business Review, November 2014"
+  ]
+},
+
+tint:{
+  title:P("Педагогическая практика","Teaching Internship"),
+  tri:2, rel:P("Обязательный курс","Compulsory course"), lang:P("Английский","English"),
+  person:"Assoc. Prof. Zh. Tleshova, Candidate of Pedagogical Sciences",
+  lect:"Assoc. Prof. Zh. Tleshova, Candidate of Pedagogical Sciences",
+  ects:4, h:{lec:0, pr:0, isis:40, sis:80, tot:120},
+  hnote:P("8-недельный период практики.","An 8-week period of internship."),
+  meth:P("Педагогическая практика под руководством преподавателя. Методы: 1) анализ учебных планов и силлабусов смежных специальностей и дисциплин; 2) посещение и наблюдение занятий; 3) организация мероприятия / встречи со студентами; 4) разработка планов занятий и проведение минимум 3 занятий (лекция, практическое, семинар или лаба); 5) разработка собственного teaching philosophy statement по итогам практики.","Instructor-supervised teaching practice. Methods: 1) analysis of curriculum and syllabi of related majors and disciplines; 2) class visitation and observation of the teaching and learning process; 3) organizing an event or meeting with students; 4) developing lesson plans and conducting at least 3 classes (a lecture, practical session, seminar or lab); 5) developing a teaching philosophy statement based on the teaching practice."),
+  assess:[
+    {per:P("Итоговая оценка","Final grade"), t:P("Организация кураторского часа для бакалавров","Organizing a tutorial hour for BA students"), pts:100, f:P("Защита отчёта по кураторскому часу","Report defense on a tutorial hour"), w:P("1–3 недели","Weeks 1–3")},
+    {per:P("Итоговая оценка","Final grade"), t:P("Посещение и наблюдение занятий","Class and lesson observation"), pts:100, f:P("Защита отчёта","Report defense"), w:P("1–3 недели","Weeks 1–3")},
+    {per:P("Итоговая оценка","Final grade"), t:P("Три занятия, проведённые магистрантом","Three lessons given by the MA student"), pts:100, f:P("—","—"), w:P("4–8 недели","Weeks 4–8")},
+    {per:P("Итоговая оценка","Final grade"), t:P("Teaching philosophy statement","A teaching philosophy statement"), pts:100, f:P("Письменно","Written"), w:P("4–8 недели","Weeks 4–8")},
+    {per:P("Итоговая оценка","Final grade"), t:P("Оценка преподавателя дисциплины","Discipline instructor's grade"), pts:100, f:P("Письменно","Written"), w:P("4–8 недели","Weeks 4–8")}
+  ],
+  pre:P("Педагогика высшей школы, психология управления","Pedagogy of Higher Education, Psychology of Management"),
+  post:P("НИР магистранта, включая исследовательские стажировки и диссертацию","Master research work, including research internships and a thesis"),
+  know:[
+    P("Педагогика профильной дисциплины","Pedagogy of a major discipline"),
+    P("Методика преподавания профильной дисциплины","Methodology of teaching a major discipline"),
+    P("Методология оценивания","Methodology of assessment"),
+    P("Управление в высшем образовании","Management in higher education"),
+    P("Проектирование образовательных программ","Design of educational programmes"),
+    P("Результаты обучения, методология и методы оценивания и преподавания","Teaching and learning outcomes, assessment methodology and methods of teaching and learning"),
+    P("Организация учебной среды","Organization of teaching and learning environments")
+  ],
+  skills:[
+    P("Демонстрировать hard и soft skills в профильной дисциплине и педагогике","Demonstrate hard and soft skills in a major discipline and pedagogy"),
+    P("Применять принципы процессов преподавания и обучения","Apply the principles of learning and teaching processes"),
+    P("Применять методы и подходы в преподавании","Apply methods and approaches in teaching"),
+    P("Применять разные IT-технологии","Apply various IT technologies"),
+    P("Применять подходы к мотивации и вовлечению студентов","Apply approaches to motivation and engagement of students")
+  ],
+  comp:[
+    P("Работать со студентами в роли тьютора","Work with students as tutors"),
+    P("Оценивать поведение студентов и их реакцию на преподавание и контент","Evaluate student behaviour and their response to teaching and content"),
+    P("Применять современные образовательные технологии и методы преподавания","Employ modern educational technologies and apply teaching and learning methods"),
+    P("Оценивать знания и навыки студентов","Assess student knowledge and skills"),
+    P("Определить собственную философию преподавания","Define their own teaching philosophy")
+  ],
+  cont:P("Практика формирует у магистранта знания и навыки работы со студентами: передавать знания, применять разные методы и подходы, сотрудничать с преподавателями дисциплин для развития собственных компетенций в педагогике преподавания.","The internship is designed to shape MA students knowledge and develop their skills of working with students: delivering knowledge, applying various teaching methods and approaches, and cooperating with discipline instructors to develop competences in the pedagogy of teaching."),
+  media:MEDIA,
+  books:[
+    "Учебные материалы, части 1, 3–12. Pearson, 2019",
+    "Учебные материалы, части 2–4. Bloomsbury Academic, 2019",
+    "MIT OpenCourseWare — Teaching College-Level Science and Engineering: https://ocw.mit.edu/courses/chemistry/5-95j-teaching-college-level-science-and-engineering-fall-2015/instructor-insights/"
+  ]
+},
+
+mlai:{
+  title:P("Машинное обучение и искусственный интеллект","Machine Learning and Artificial Intelligence"),
+  tri:3, rel:P("Обязательный курс","Compulsory course"), lang:P("Английский","English"),
+  person:"Akhmetov Timur, PhD", lect:"Akhmetov Timur, PhD",
+  ects:4, h:{lec:20, pr:20, isis:20, sis:60, tot:120},
+  meth:PBL, assess:PROJ,
+  pre:P("Программирование для анализа данных и баз данных; обработка и понимание данных","Programming for Data Analysis and Databases; Data Processing and Understanding"),
+  post:P("НИР магистранта, включая исследовательские стажировки и написание диссертации","Master research work, including research internships and thesis writing"),
+  know:[
+    P("Фундаментальные понятия машинного обучения и ИИ и их применение в разных доменах","The fundamental concepts of machine learning and artificial intelligence and their applications in different domains"),
+    P("Разные алгоритмы ML и ИИ и выбор наиболее подходящего под задачу","Different machine learning and artificial intelligence algorithms and how to select the most appropriate one for a given task")
+  ],
+  skills:[
+    P("Разрабатывать и реализовывать модели ML и ИИ с помощью языков программирования и инструментов","Develop and implement machine learning and artificial intelligence models using programming languages and tools"),
+    P("Оценивать качество моделей ML и ИИ и интерпретировать результаты","Evaluate the performance of machine learning and artificial intelligence models and interpret the results")
+  ],
+  comp:[
+    P("Демонстрировать глубокое понимание принятия решений на основе данных и роли аналитики в ML и ИИ","Demonstrate a deep understanding of data-driven decision making and the role of data and analytics in machine learning and artificial intelligence"),
+    P("Демонстрировать критическое мышление и решение задач, применяя ML и ИИ для решений в изменчивой среде","Demonstrate critical thinking and problem-solving skills, using machine learning and artificial intelligence to inform decision-making in a rapidly changing and uncertain environment")
+  ],
+  topics:[
+    P("Введение в машинное обучение и ИИ","Introduction to machine learning and artificial intelligence"),
+    P("Алгоритмы обучения с учителем: регрессия и классификация","Supervised learning algorithms, including regression and classification"),
+    P("Обучение без учителя: кластеризация и снижение размерности","Unsupervised learning algorithms, including clustering and dimensionality reduction"),
+    P("Обучение с подкреплением и его применения","Reinforcement learning algorithms and their applications in different domains"),
+    P("Обработка естественного языка и её применения","Natural language processing algorithms and their applications"),
+    P("Компьютерное зрение и его применения","Computer vision algorithms and their applications"),
+    P("Глубокое обучение и его применения в разных доменах","Deep learning algorithms and their applications in different domains"),
+    P("Инструменты и технологии ML и ИИ","Machine learning and artificial intelligence tools and technologies"),
+    P("Принятие решений на основе данных с помощью ML и ИИ","Data-driven decision making with machine learning and artificial intelligence")
+  ],
+  media:MEDIA,
+  books:[
+    "Hastie T., Tibshirani R., Friedman J. The Elements of Statistical Learning. Springer, 2017",
+    "Goodfellow I., Bengio Y., Courville A. Deep Learning. MIT Press, 2016",
+    "Raschka S., Mirjalili V. Python Machine Learning. Packt Publishing, 2017",
+    "Norvig P., Russell S. Artificial Intelligence: A Modern Approach. Pearson, 2021"
+  ]
+},
+
+daap:{
+  title:P("Прикладной проект по аналитике данных","Data Analytics Application Project"),
+  tri:3, rel:P("Обязательный курс","Compulsory course"), lang:P("Английский","English"),
+  person:"Shomanov Aday, PhD", lect:"Shomanov Aday, PhD",
+  ects:4, h:{lec:20, pr:20, isis:20, sis:60, tot:120},
+  meth:P("Решение задач с выделением главной проблемы. Inquiry Guided Learning. Групповая дискуссия и интерактивно-коммуникативное обучение.","Problem-solving with outlining of the main problem. Inquiry Guided Learning. Group discussion and interactive-communicative learning."),
+  assess:PROJ,
+  pre:P("Обработка и понимание данных; принятие решений на основе данных","Data Processing and Understanding; Data-Driven Decision Making"),
+  post:P("НИР магистранта, включая исследовательские стажировки и написание диссертации","Master research work, including research internships and thesis writing"),
+  know:[
+    P("Аспекты работы в междисциплинарной команде, сотрудничества с индустриальными партнёрами и применения принципов проектного управления","Aspects of work in a multidisciplinary team, collaboration with industry partners, and application of project management principles")
+  ],
+  skills:[
+    P("Применять научный метод к исследовательской задаче: постановка проблемы, выдвижение гипотез, сбор и анализ данных, интерпретация результатов","Apply the scientific method to a research problem, including problem identification, hypothesis generation, data collection and analysis, and interpretation of results")
+  ],
+  comp:[
+    P("Разрабатывать и внедрять решение реальной задачи на основе данных с подходящими статистическими и вычислительными инструментами","Develop and implement a data-driven solution to a real-world problem using appropriate statistical and computational tools"),
+    P("Эффективно доносить результаты проекта до разной аудитории: индустриальных партнёров, стейкхолдеров и коллег","Communicate the results of a data-driven project effectively to a diverse audience, including industry partners, stakeholders and peers")
+  ],
+  topics:[
+    P("Принципы и лучшие практики проектного управления","Project management principles and best practices"),
+    P("Научный метод и дизайн исследования","Scientific method and research design"),
+    P("Сбор и анализ данных","Data collection and analysis"),
+    P("Интерпретация результатов и выводы","Interpretation of results and drawing conclusions"),
+    P("Написание исследовательских отчётов и статей","Writing research reports and papers"),
+    P("Разработка решения на основе данных","Data-driven solution development"),
+    P("Масштабирование решения на большие данные и другие домены","Scaling the solution for larger data sets and different problem domains"),
+    P("Отчёты и статьи для партнёров, стейкхолдеров и коллег","Writing reports and papers for industry partners, stakeholders and peers"),
+    P("Разработка и проведение презентаций и докладов","Developing and delivering presentations and talks"),
+    P("Этика и приватность","Ethics and privacy considerations")
+  ],
+  media:MEDIA,
+  books:[
+    "Список литературы зависит от конкретного проекта и потребностей индустриального партнёра. Могут потребоваться статьи, отчёты и книги по теме проекта — материалы укажут преподаватель курса и индустриальный партнёр. / The reading list depends on the specific project and the needs of the industry partner; the course instructor and the partner provide guidance on the required materials."
+  ]
+},
+
+dpu:{
+  title:P("Обработка и понимание данных","Data Processing and Understanding"),
+  tri:3, rel:P("Элективный курс","Elective course"), lang:P("Английский","English"),
+  person:"Kuchanskiy Alexandr, PhD", lect:"—",
+  ects:5, h:{lec:30, pr:20, isis:30, sis:70, tot:150},
+  meth:P("Интерактивное преподавание с мини-лекциями; Inquiry Guided Learning; problem-based learning в группах над открытой задачей.","Interactive teaching with mini-lectures; Inquiry Guided Learning; problem-based learning in groups on an open-ended problem."),
+  assess:PROJ,
+  pre:P("Программирование для анализа данных и баз данных","Programming for Data Analysis and Databases"),
+  post:P("НИР магистранта, включая исследовательские стажировки и написание диссертации","Master research work, including research internships and thesis writing"),
+  know:[
+    P("Фундаментальные понятия обработки данных и их применение в аналитике","The fundamental concepts of data processing and how they are used in data analytics"),
+    P("Влияние предобработки на качество данных и точность моделей машинного обучения","The impact of data preprocessing on data quality and the accuracy of machine learning models")
+  ],
+  skills:[
+    P("Оценивать разные методы обработки данных: отбор признаков, feature engineering, преобразование данных","Evaluate different data processing techniques, including feature selection, feature engineering and data transformation"),
+    P("Глубоко понимать статистические методы обработки данных: распределения вероятностей, проверка гипотез, регрессионный анализ","Develop a deep understanding of statistical techniques for data processing, including probability distributions, hypothesis testing and regression analysis")
+  ],
+  comp:[
+    P("Демонстрировать критическое мышление и решение задач на основе данных в изменчивой и неопределённой среде","Demonstrate critical thinking and problem-solving skills, using data and analytics to inform decision-making in a rapidly changing and uncertain environment")
+  ],
+  topics:[
+    P("Введение в обработку данных","Introduction to data processing"),
+    P("Отбор и конструирование признаков","Feature selection and engineering"),
+    P("Преобразование данных","Data transformation"),
+    P("Статистические методы обработки данных","Statistical techniques for data processing"),
+    P("Этика и приватность","Ethics and privacy considerations"),
+    P("Кейсы по обработке данных","Case studies in data processing")
+  ],
+  media:MEDIA,
+  books:[
+    "Witten I. H., Frank E., Hall M. A. Data Mining: Practical Machine Learning Tools and Techniques. Morgan Kaufmann, 2016",
+    "Hastie T., Tibshirani R., Friedman J. The Elements of Statistical Learning. Springer, 2009",
+    "Delen D. Predictive Analytics and Data Mining: Concepts and Practice with RapidMiner. Elsevier, 2014",
+    "Embrechts P., Klüppelberg C., Mikosch T. Modeling Extremal Events for Insurance and Finance. Springer, 1997",
+    "Tukey J. W. Exploratory Data Analysis. Addison-Wesley, 1977"
+  ]
+},
+
+dddm:{
+  title:P("Принятие решений на основе данных","Making Decisions Based on Data"),
+  tri:3, rel:P("Элективный курс","Elective course"), lang:P("Английский","English"),
+  person:"Turar Olzhas, Computational & Data Science Department Director, PhD", lect:"Turar Olzhas",
+  ects:5, h:{lec:30, pr:20, isis:30, sis:70, tot:150},
+  meth:P("Inquiry Guided Learning; problem-based learning в группах над открытой задачей; групповая дискуссия и интерактивно-коммуникативное обучение.","Inquiry Guided Learning; problem-based learning in groups on an open-ended problem; group discussion and interactive-communicative learning."),
+  assess:PROJ,
+  pre:P("Программирование для анализа данных и баз данных; методы и инструменты анализа данных","Programming for Data Analysis and Databases; Methods and Tools for Data Analysis"),
+  post:P("НИР магистранта, включая стажировки и написание диссертации","Master research work, including internships and thesis writing"),
+  know:[
+    P("Фундаментальные понятия принятия решений на основе данных и их использование в разных отраслях","The fundamental concepts of data-driven decision making and how it is used in different industries"),
+    P("Влияние данных и аналитики на процессы принятия решений: постановка задачи, сбор, анализ, интерпретация","The impact of data and analytics on decision-making processes, including problem definition, data collection, analysis and interpretation")
+  ],
+  skills:[
+    P("Оценивать разные модели принятия решений и их применение в бизнесе, здравоохранении и социальных науках","Evaluate different decision-making models and their applications in domains including business, healthcare and social sciences"),
+    P("Глубоко понимать статистические методы для принятия решений: распределения, проверка гипотез, регрессионный анализ","Develop a deep understanding of statistical techniques for decision making, including probability distributions, hypothesis testing and regression analysis")
+  ],
+  comp:[
+    P("Демонстрировать критическое мышление и решение задач на основе данных в изменчивой и неопределённой среде","Demonstrate critical thinking and problem-solving skills, using data and analytics to inform decision-making in a rapidly changing and uncertain environment")
+  ],
+  topics:[
+    P("Введение в принятие решений на основе данных","Introduction to data-driven decision making"),
+    P("Модели и фреймворки принятия решений","Decision-making models and frameworks"),
+    P("Статистические методы для принятия решений","Statistical techniques for decision making"),
+    P("Распределения вероятностей и их применение в решениях","Probability distributions and their applications in decision making"),
+    P("Проверка гипотез для принятия решений","Hypothesis testing for decision making"),
+    P("Регрессионный анализ для принятия решений","Regression analysis for decision making"),
+    P("Этика и приватность","Ethics and privacy considerations"),
+    P("Кейсы принятия решений на основе данных","Case studies in data-driven decision making")
+  ],
+  media:P("Мультимедийные аудитории: компьютер, проектор, аудиосистема; доска; Microsoft Teams; LMS Moodle.","Multimedia classrooms with computer, projector and audio system; whiteboard; Microsoft Teams; LMS Moodle."),
+  books:[
+    "Deming W. E. Out of the Crisis. MIT Press, 1986",
+    "Liebowitz J. Big Data and Business Analytics. CRC Press, 2013",
+    "Kahneman D. Thinking, Fast and Slow. Farrar, Straus and Giroux, 2011",
+    "Sharpe N. R., De Veaux R. D., Velleman P. F. Business Statistics. Pearson, 2019",
+    "Klein G. Sources of Power: How People Make Decisions. MIT Press, 1999"
+  ]
+},
+
+prodm:{
+  title:P("Продуктовый менеджмент","Product Management"),
+  tri:3, rel:P("Элективный курс","Elective course"), lang:P("Английский","English"),
+  person:"Mukhamedkarimova Aneliya, PhD", lect:"Mukhamedkarimova Aneliya, PhD",
+  ects:5, h:{lec:30, pr:20, isis:30, sis:70, tot:150},
+  meth:P("Problem-based learning в группах над открытой задачей; Inquiry Guided Learning.","Problem-based learning in groups on an open-ended problem; Inquiry Guided Learning."),
+  assess:PROJ,
+  pre:P("Психология управления; тематическое исследование по аналитике данных","Psychology of Management; Case Study on Data Analytics"),
+  post:P("НИР магистранта, включая стажировки и написание диссертации","Master research work, including internships and thesis writing"),
+  know:[
+    P("Фундаментальные понятия продуктового менеджмента и его роль в инновациях и росте компаний","The fundamental concepts of product management and its role in driving innovation and growth in companies"),
+    P("Потребности клиентов и рыночные тренды для построения успешных продуктовых стратегий и роадмапов","Customer needs and market trends to develop successful product strategies and roadmaps")
+  ],
+  skills:[
+    P("Оценивать разные фреймворки и методологии продуктового менеджмента, включая agile и lean, и применять их к реальным ситуациям","Evaluate different product management frameworks and methodologies, including agile and lean development, and apply them to real-world situations")
+  ],
+  comp:[
+    P("Демонстрировать глубокое понимание решений на основе данных и роли аналитики в продуктовом менеджменте","Demonstrate a deep understanding of data-driven decision making and the role of data and analytics in product management"),
+    P("Демонстрировать критическое мышление и решение задач на основе данных в изменчивой среде","Demonstrate critical thinking and problem-solving skills, using data and analytics to inform decision-making in a rapidly changing and uncertain environment")
+  ],
+  topics:[
+    P("Обзор продуктового менеджмента и его роль в инновациях и росте","Overview of product management and its importance in driving innovation and growth"),
+    P("Роль продакт-менеджера в разных отраслях и организациях","The role of product managers in different industries and organizations"),
+    P("Анализ потребностей клиентов и рыночных трендов, стратегии и роадмапы","Analyzing customer needs and market trends to develop product strategies and roadmaps"),
+    P("Маркетинговые исследования и пользовательское тестирование","Conducting market research and user testing"),
+    P("Конкурентный ландшафт и позиционирование продукта","Understanding the competitive landscape and positioning products for success"),
+    P("Принятие решений на основе данных в продуктовом менеджменте","Data-driven decision making in product management"),
+    P("A/B-тестирование и эксперименты для валидации продуктовых гипотез","Conducting A/B testing and experimentation to validate product ideas"),
+    P("Соблюдение правовых и регуляторных требований","Complying with legal and regulatory frameworks"),
+    P("Кейсы продуктового менеджмента","Case studies in product management")
+  ],
+  media:MEDIA,
+  books:[
+    "Cagan M. Inspired: How to Create Tech Products Customers Love. John Wiley & Sons, 2017",
+    "Ries E. The Lean Startup. Crown Business, 2011",
+    "Patton J. User Story Mapping: Discover the Whole Story, Build the Right Product. O'Reilly Media, 2014",
+    "Blank S., Dorf B. The Startup Owner's Manual. K & S Ranch, 2012",
+    "Eriksson M. Product Leadership. O'Reilly Media, 2017"
+  ]
+},
+
+ind4:{
+  title:P("Индустрия 4.0","Industry 4.0"),
+  tri:3, rel:P("Элективный курс","Elective course"), lang:P("Английский","English"),
+  person:"Neftissov Alexandr, PhD", lect:"Neftissov Alexandr, PhD",
+  ects:5, h:{lec:30, pr:20, isis:30, sis:70, tot:150},
+  meth:P("Inquiry Guided Learning; problem-based learning в группах над открытой задачей; групповая дискуссия и интерактивно-коммуникативное обучение.","Inquiry Guided Learning; problem-based learning in groups on an open-ended problem; group discussion and interactive-communicative learning."),
+  assess:PROJ,
+  pre:P("Программирование для анализа данных и баз данных","Programming for Data Analysis and Databases"),
+  post:P("НИР магистранта, включая стажировки и написание диссертации","Master research work, including internships and thesis writing"),
+  know:[
+    P("Фундаментальные понятия Индустрии 4.0 и её влияние на будущее труда","The fundamental concepts of Industry 4.0 and its impact on the future of work"),
+    P("Компоненты Индустрии 4.0: киберфизические системы, интернет вещей (IoT), облачные вычисления","The components of Industry 4.0, including cyber-physical systems, the Internet of Things and cloud computing")
+  ],
+  skills:[
+    P("Оценивать разные технологии Индустрии 4.0 и их применение в производстве, здравоохранении, транспорте","Evaluate different Industry 4.0 technologies and their applications in domains including manufacturing, healthcare and transportation")
+  ],
+  comp:[
+    P("Глубоко понимать роль данных и аналитики в Индустрии 4.0 при принятии решений","Develop a deep understanding of data-driven decision making and the role of data and analytics in Industry 4.0"),
+    P("Развивать критическое мышление и решение задач на основе данных в изменчивой среде","Develop critical thinking and problem-solving skills, using data and analytics to inform decision-making in a rapidly changing and uncertain environment")
+  ],
+  topics:[
+    P("Введение в Индустрию 4.0","Introduction to Industry 4.0"),
+    P("Компоненты Индустрии 4.0","Components of Industry 4.0"),
+    P("Технологии Индустрии 4.0 и их применение","Industry 4.0 technologies and applications"),
+    P("Обзор технологий: робототехника, автоматизация, искусственный интеллект","Overview of technologies including robotics, automation and artificial intelligence"),
+    P("Применение в производстве, здравоохранении, транспорте","Application to problem domains including manufacturing, healthcare and transportation"),
+    P("Кейсы и лучшие практики Индустрии 4.0","Industry 4.0 case studies and best practices"),
+    P("Будущие направления Индустрии 4.0","Future directions of Industry 4.0")
+  ],
+  media:MEDIA,
+  books:[
+    "Kagermann H., Wahlster W., Helbig J. Recommendations for Implementing the Strategic Initiative INDUSTRIE 4.0. Springer, 2013",
+    "Ustundag A., Cevikcan E. Industry 4.0: Managing the Digital Transformation. Springer, 2018",
+    "Tolk A., Jain L. C., Hill J. R. Modeling and Simulation for Industry 4.0 and Beyond. Springer, 2020"
+  ]
+},
+
+infsec:{
+  title:P("Информационная безопасность","Information Security"),
+  tri:3, rel:P("Элективный курс","Elective course"), lang:P("Английский","English"),
+  person:"Begimbayeva Englik, PhD", lect:"Begimbayeva Englik, PhD",
+  ects:5, h:{lec:30, pr:20, isis:30, sis:70, tot:150},
+  meth:P("Групповая дискуссия, проектный подход, решение задач.","Group discussion, project-based approach, problem-solving."),
+  assess:PROJ,
+  pre:P("Программирование для анализа данных и баз данных","Programming for Data Analysis and Databases"),
+  post:P("НИР магистранта, включая стажировки и написание диссертации","Master research work, including internships and thesis writing"),
+  know:[
+    P("Фундаментальные понятия информационной безопасности и её значимость","The fundamental concepts of information security and its importance"),
+    P("Компоненты информационной безопасности: моделирование угроз, оценка рисков, управление уязвимостями","The components of information security, including threat modeling, risk assessment and vulnerability management")
+  ],
+  skills:[
+    P("Оценивать разные технологии информационной безопасности и их применение в кибербезопасности, сетевой и облачной безопасности","Evaluate different information security technologies and their applications in domains including cybersecurity, network security and cloud security")
+  ],
+  comp:[
+    P("Глубоко понимать роль данных и аналитики в информационной безопасности при принятии решений","Develop a deep understanding of data-driven decision making and the role of data and analytics in information security"),
+    P("Развивать критическое мышление и решение задач на основе данных в изменчивой среде","Develop critical thinking and problem-solving skills, using data and analytics to inform decision-making in a rapidly changing and uncertain environment")
+  ],
+  topics:[
+    P("Компоненты информационной безопасности","Components of information security"),
+    P("Технологии информационной безопасности и их применение","Information security technologies and applications"),
+    P("Обзор технологий: криптография, файрволы, системы обнаружения вторжений","Overview of technologies including cryptography, firewalls and intrusion detection systems"),
+    P("Применение в кибербезопасности, сетевой и облачной безопасности","Application to cybersecurity, network security and cloud security"),
+    P("Роль данных и аналитики в информационной безопасности","The role of data and analytics in information security"),
+    P("Будущие направления информационной безопасности","Future directions of information security")
+  ],
+  media:MEDIA,
+  books:[
+    "Whitman M. E., Mattord H. J. Principles of Information Security. Cengage Learning, 2018",
+    "Schneier B. Applied Cryptography: Protocols, Algorithms, and Source Code in C. John Wiley & Sons, 1995",
+    "Conrad E., Feldman J., Misenar S. CISSP Study Guide. Syngress, 2020",
+    "Anderson R. J. Security Engineering: A Guide to Building Dependable Distributed Systems. Wiley, 2008",
+    "Singer P. W., Friedman A. Cybersecurity and Cyberwar: What Everyone Needs to Know. Oxford University Press, 2014"
+  ]
+},
+
+rp:{
+  title:P("Исследовательская практика","Research Practice"),
+  tri:4, rel:P("Обязательный модуль","Compulsory module"), lang:P("Английский","English"),
+  person:"Turar Olzhas, PhD", lect:"—",
+  ects:16, h:{lec:0, pr:0, isis:90, sis:330, tot:420},
+  meth:P("Симуляционные упражнения, воспроизводящие реальные индустриальные исследовательские проекты: опыт принятия решений в условиях ограниченного времени. Групповые проекты: работа в командах над исследовательским проектом даёт практический опыт исследования и совместной работы. Воркшопы и семинары: практические навыки и информация по отраслевым темам.","Simulation exercises that reproduce real-world industrial research projects and give experience of making decisions under time constraints. Group projects: working in teams on a research project provides hands-on experience of conducting research and working with others. Workshops and seminars provide practical skills training and industry-specific information."),
+  assess:[
+    {per:P("4 семестр","4th semester"), t:P("Защита отчёта","Report defense"), pts:100, f:P("Защита","Defense"), w:P("2 курс, 4 семестр","Year 2, semester 4")}
+  ],
+  reqs:P("Защита отчёта по практике проходит в форме мини-конференции. Каждый магистрант презентует результаты проведённого исследования. Практику оценивает преподаватель, ответственный за организацию исследовательской практики магистрантов, на основании представленного отчёта и отзыва руководителя практики.","The defense of the practice report is carried out in the form of a mini-conference. Each master student presents the results of the research conducted. The practice is assessed by the teacher responsible for organizing research practice, based on the submitted report and the review of the practice supervisor."),
+  pre:P("Программирование для анализа данных и баз данных; методы и инструменты анализа данных","Programming for Data Analysis and Databases; Methods and Tools for Data Analysis"),
+  post:P("НИР магистранта и написание магистерской диссертации","Master research work and master thesis writing"),
+  know:[
+    P("Принципы методологии и дизайна исследования, включая качественные и количественные методы","The principles of research methodology and design, including qualitative and quantitative research methods")
+  ],
+  skills:[
+    P("Формулировать исследовательские вопросы и гипотезы по задаче аналитики данных","Formulate research questions and hypotheses related to a data analytics problem"),
+    P("Разрабатывать и реализовывать план исследования, включая сбор и анализ данных","Develop and implement a research plan, including data collection and analysis"),
+    P("Оценивать качество исследования и интерпретировать результаты анализа данных","Evaluate the quality of research and interpret the results of data analysis")
+  ],
+  comp:[
+    P("Демонстрировать критическое мышление и решение задач на основе данных в исследовательском контексте","Demonstrate critical thinking and problem-solving skills, using data and analytics to inform decision-making in a research context"),
+    P("Эффективно доносить результаты исследования до разных аудиторий — академических и индустриальных","Communicate research findings effectively to different audiences, including academic and industry stakeholders")
+  ],
+  cont:P("Цель исследовательской практики — обеспечить преемственность и последовательность в приобретении магистрантами профессиональных навыков в соответствии с требованиями к уровню программы подготовки, сформировать профессиональные компетенции в: сборе и анализе данных; визуализации данных и представлении результатов исследования; оценке качества и интерпретации исследования; этике и приватности в исследовании.","The purpose of research practice is to ensure continuity and consistency in the acquisition of professional skills in accordance with the requirements of the programme, forming professional competences in: data collection and analysis; data visualization and presentation of research findings; quality evaluation and interpretation of research; ethics and privacy considerations in research."),
+  media:MEDIA,
+  books:[
+    "Booth W. C., Colomb G. G., Williams J. M. The Craft of Research. University of Chicago Press, 2008",
+    "Landauer T. K. The Trouble with Computers: Usefulness, Usability, and Productivity. MIT Press, 1995",
+    "Allison P. D. Multiple Regression: A Primer. Pine Forge Press, 1999",
+    "Gelman A., Hill J. Data Analysis Using Regression and Multilevel/Hierarchical Models. Cambridge University Press, 2006",
+    "Mutz D. C. Impersonal Influence: How Perceptions of Mass Collectives Affect Political Attitudes. Cambridge University Press, 1998"
+  ]
+},
+
+mrw:{
+  title:P("Научно-исследовательская работа магистранта (НИРМ)","Master Research Work"),
+  tri:"2, 3, 4, 5", rel:P("Обязательный модуль","Compulsory module"), lang:P("Английский","English"),
+  person:"Turar Olzhas, Computational & Data Science Department Director, PhD", lect:"—",
+  ects:24, h:{lec:0, pr:0, isis:220, sis:500, tot:720},
+  meth:P("Решение задач с выделением главной проблемы; обзор литературы; количественные и качественные методы; сравнительный анализ. Формы: СРОП (разбор и углублённое изучение материала с преподавателем) и СРО (самостоятельная работа).","Problem-solving with outlining of the main problem; literature review; quantitative and qualitative methods; comparative analysis. Forms: instructor-supervised independent study and student independent study."),
+  assess:[
+    {per:P("1 аттестация","1st attestation"), t:P("Первая аттестация","1st attestation"), pts:100, f:P("Сдача отчёта","Submission of the report"), w:P("1 курс","Year 1")},
+    {per:P("2 аттестация","2nd attestation"), t:P("Вторая аттестация","2nd attestation"), pts:100, f:P("Сдача отчёта","Submission of the report"), w:P("2 курс","Year 2")}
+  ],
+  reqs:P("Результаты НИР магистранта за весь период обучения представляются в письменном виде (отчёт), утверждаются и оцениваются научным руководителем (выставляется оценка). При оценке учитывается: подготовка статей и докладов; выступления на семинарах и конференциях; отчёт по результатам НИР магистранта.","The results of the research work for the entire period of study are presented in writing (a report), approved and assessed by the scientific supervisor (a grade is awarded). Assessment considers: preparation of articles and reports; speaking at seminars and conferences; the report on the results of the research work."),
+  pre:P("Все курсы программы","All courses of the programme"),
+  post:P("НИР магистранта, включая исследовательские стажировки и написание магистерской диссертации","Master research work, including research internships and thesis writing"),
+  know:[
+    P("Предметная область и публикации по теме своего исследования, а также по анализу больших данных, Data Science и машинному обучению в целом","The subject and publications in the field of the research topic and in the fields of big data analysis, data science and machine learning in general")
+  ],
+  skills:[
+    P("Формулировать и развивать исследовательский вопрос или проблему по анализу данных и подбирать методы для их решения","Formulate and develop a research question or problem related to data analysis and apply appropriate research methods"),
+    P("Проектировать и выполнять исследовательский проект: сбор, анализ и интерпретация данных","Design and execute a research project, including data collection, analysis and interpretation"),
+    P("Развивать академическое письмо и презентационные навыки: писать статью и представлять результаты публично","Develop skills in academic writing and presentation, including writing a research paper and presenting findings in a public forum"),
+    P("Применять продвинутые исследовательские техники к конкретной задаче в области анализа данных","Apply advanced research techniques and methods to a specific research problem in the field of data analysis")
+  ],
+  comp:[
+    P("Вести самостоятельное исследование и отвечать за весь процесс: постановка проблемы, поиск литературы, выбор методов, представление результатов","Conduct independent research and take responsibility for the entire research process, including defining the problem, identifying relevant literature, selecting research methods and presenting the results"),
+    P("Планировать эксперимент с подбором необходимых методов исследования","Plan an experiment with the selection of necessary research methods"),
+    P("Модифицировать существующие методы и разрабатывать новые для получения конкретных результатов","Modify existing methods and develop new ones needed to obtain specific results"),
+    P("Проводить теоретические и экспериментальные исследования современными методами и технологиями","Conduct theoretical and experimental research using modern methods and technologies"),
+    P("Находить лучший подход к решению практических вопросов","Find the best approach to solving practical issues"),
+    P("Анализировать обсуждение и оценку полученных результатов","Analyze the discussion and evaluation of obtained results"),
+    P("Формулировать выводы и рекомендации по результатам исследования","Formulate conclusions and recommendations based on the research results"),
+    P("Представлять результаты учебной и научной работы: обзоры, доклады, статьи, тезисы, презентации","Present results of educational and research work: reviews, reports, articles, abstracts, presentations"),
+    P("Участвовать в научной дискуссии","Participate in scientific discussion")
+  ],
+  topics:[
+    P("Подготовительная сессия: выбор направления исследования, определение проблемы, целей и задач, выдвижение гипотезы, обсуждение методов","Preparatory session: choosing the direction of research, defining the problem, goals and objectives, proposing a hypothesis, discussing research methods"),
+    P("Планирование, подготовка и проведение экспериментов по выбранной теме","Planning, preparation and carrying out experiments on the chosen topics"),
+    P("Обсуждение полученных результатов (анализ данных), формулирование выводов, составление отчёта и презентации","Discussion of the obtained results (data analysis), formulating conclusions, drawing up a report and preparing presentation material"),
+    P("Защита результатов научно-исследовательской работы","Defending the results of the research work"),
+    P("Формулирование исследовательских вопросов и гипотез","Formulating research questions and hypotheses"),
+    P("Дизайн и выполнение исследования","Research design and execution"),
+    P("Написание научной статьи","Writing a research paper"),
+    P("Представление результатов исследования","Presenting research findings"),
+    P("Этика в исследовании","Ethics in research")
+  ],
+  media:MEDIA,
+  books:[
+    "Booth W. C., Colomb G. G., Williams J. M. The Craft of Research. University of Chicago Press, 2016",
+    "Dawson C. Introduction to Research Methods: A Practical Guide for Anyone Undertaking a Research Project. How to Books, 2009",
+    "Bryman A., Bell E. Business Research Methods. Oxford University Press, 2019",
+    "Greenhall M., Bui Y. N. A Guide to the Dissertation Process: Practical Wisdom for Planning, Writing, and Defending Your Dissertation. Sage Publications, 2019",
+    "Kerzner H. Project Management: A Systems Approach to Planning, Scheduling, and Controlling. Wiley, 2017"
+  ]
+},
+
+thesis:{
+  title:P("Написание и защита магистерской диссертации / проекта","The Master Thesis / Project Work Preparation and Defense"),
+  tri:5, rel:P("Обязательный модуль","Compulsory module"), lang:P("Английский","English"),
+  person:"Turar Olzhas, PhD", lect:"—",
+  ects:12, h:{lec:0, pr:0, isis:110, sis:250, tot:360},
+  meth:P("Диссертация / проектная работа выполняется с индивидуальным научным руководством: написание научного отчёта; количественные и качественные методы; сравнительный анализ; презентации для обсуждения результатов; индивидуальная рецензия и обратная связь по текстам и презентациям.","The master thesis or project work is done with individual supervision: writing of a scientific report; quantitative and qualitative methods; comparative analysis; presentations to communicate and discuss the findings; individual review and feedback on papers and presentations."),
+  grades:true,
+  reqs:P("При оценке магистерской диссертации / проекта учитываются: объём выполненной работы; самостоятельность исследования; использование новых технологий; полнота обзора литературы и актуальность источников; новизна результатов; грамотность и ясность изложения; соблюдение требований к оформлению; качество презентации на защите (ясность, грамотность, владение профессиональной терминологией, качество демонстрационного материала); корректность и полнота ответов на вопросы и замечания рецензента; количество публикаций по работе, в том числе за рубежом, и доклады магистранта на научных конференциях.","When assessing a master thesis or project work the following is considered: the volume of work performed; independence of research; use of new technologies; completeness of the literature review and relevance of the sources; novelty of the research results; literacy and clarity of presentation; compliance with design requirements; quality of the presentation at the defense (clarity, literacy, ability to use professional terms, quality of demonstration material); correctness and completeness of answers to questions and to the reviewer comments; the number of publications on the work, including those published abroad, and reports at scientific conferences."),
+  admit:P("Магистрант защищает диссертацию / проект, если получены: отзыв научного руководителя с аргументированным выводом «допущен к защите»; рецензия на диссертацию (проект) с всесторонней характеристикой работы и аргументированным выводом с оценкой по балльно-рейтинговой буквенной системе; решение координатора образовательной программы о рекомендации к защите (приказ о допуске к защите); справка (в произвольной форме) о прохождении проверки диссертации (проекта) на плагиат.","The master student defends the thesis or project if he or she receives: a review by the supervisor with a reasoned conclusion of admitted to defense; a review of the thesis (project) with a comprehensive description and a reasoned conclusion indicating the assessment according to the point-rating letter system; a decision by the coordinator of the educational programme recommending defense (an order on admission to defense); a certificate (in any form) on passing the plagiarism check."),
+  pre:P("Все курсы программы","All courses of the programme"),
+  post:P("—","—"),
+  know:[
+    P("Состояние дел (state of the art) в определённой научной области","The state of the art in a certain scientific field"),
+    P("Открытые исследовательские вопросы в этой области","Open research questions in this field"),
+    P("Релевантная литература","Relevant literature"),
+    P("Методология и инструменты для выполнения проекта","Methodology and tools to execute the project"),
+    P("Как документировать новые результаты по научным стандартам","How to document new findings according to scientific standards")
+  ],
+  skills:[
+    P("Формулировать и развивать исследовательский вопрос по анализу данных и подбирать методы","Formulate and develop a research question or problem related to data analysis and apply appropriate research methods"),
+    P("Проектировать и выполнять исследовательский проект: сбор, анализ и интерпретация данных","Design and execute a research project, including data collection, analysis and interpretation"),
+    P("Развивать академическое письмо и презентационные навыки","Develop skills in academic writing and presentation"),
+    P("Применять продвинутые исследовательские техники к конкретной задаче","Apply advanced research techniques and methods to a specific research problem")
+  ],
+  comp:[
+    P("Вести самостоятельное исследование и отвечать за весь исследовательский процесс","Conduct independent research and take responsibility for the entire research process")
+  ],
+  cont:P("Магистерская диссертация / исследовательский проект вводит магистранта в научно-исследовательскую работу в широком контексте. Отправная точка — определение исследовательских вопросов, на которые он хочет ответить, и выбор подходящей методологии. Магистрант планирует и выполняет работу самостоятельно при регулярном обсуждении и консультировании, обобщает результаты в тексте диссертации (отчёте по проекту). Смысл работы — освоить методологию исследования в конкретной научной области, сформулировать состояние дел и исследовательские вопросы. Магистрант доказывает способность вести собственное самостоятельное исследование магистерского уровня определённой сложности.","The master thesis or research project introduces the student to scientific research in a bigger context. The starting point is the definition of the research questions to answer and the selection of an appropriate methodology. Students plan and execute the work independently with regular review and consulting, and summarize their findings in a thesis (project report). The intention is to familiarize students with the research methodology of a scientific field and to formulate the state of the art and the research questions. Students prove the ability to execute their own independent research at master level and of a certain complexity."),
+  media:MEDIA,
+  books:[
+    "Академическая политика ТОО «Astana IT University», Астана, 2022",
+    "Правила итоговой аттестации обучающихся ТОО «Astana IT University», Астана, 2022",
+    "Прочие источники — по теме работы / Other references according to topic"
+  ]
+}
+
+};
+
+/* ============ Учебный план 7M06103 (год поступления 2025) ============ */
+/* h: [всего, лекции, лабораторные, практические, СРОП, СРО] */
+function U(n,cyc,comp,code,ru,en,kk,cr,tri,ctrl,h,hb,note){
+  return {n:n,cyc:cyc,comp:comp,code:code,ru:ru,en:en,kk:kk,cr:cr,tri:tri,ctrl:ctrl,h:h,hb:hb||[],note:note||null};
+}
+var EXAM = P("экзамен","exam"), REPORT = P("отчёт","report"), DEF = P("защита","defense");
+
+var UP = [
+U(1,"БД","ВК","NONE",
+  "Педагогика высшей школы","Higher Education Pedagogy","Жоғары мектеп педагогикасы",
+  4,1,EXAM,[120,20,0,20,10,70],["hep"]),
+U(2,"БД","ВК","FLP",
+  "Иностранный язык (профессиональный)","Foreign language (professional)","Шет тілі (кәсіби)",
+  4,1,EXAM,[120,0,0,40,10,70],["flp"]),
+U(3,"БД","ВК","HPS",
+  "История и философия науки","History and Philosophy of Science","Ғылым тарихы мен философиясы",
+  4,2,EXAM,[120,20,0,20,10,70],["hps"]),
+U(4,"БД","ВК","PP 5206",
+  "Педагогическая практика","Teaching Practicum (Internship)","Педагогикалық практика",
+  4,2,REPORT,[120,0,0,120,0,0],["tint"]),
+U(5,"БД","ВК","PM",
+  "Психология управления","Psychology of Management","Басқару психологиясы",
+  4,3,EXAM,[120,20,0,20,10,70],["pm"]),
+U(6,"БД","КВ","МП 3289 / CODE404 / Op 1",
+  "Методы и инструменты анализа данных / Обработка и понимание данных / Оптимизация 1",
+  "Methods and tools for data analysis / Data processing and understanding / Optimization 1",
+  "Деректерді талдау әдістері мен құралдары / Деректерді өңдеу және түсіну / Оптимизация 1",
+  5,2,EXAM,[150,30,0,20,10,90],["methods","dpu"],
+  P("Выбор из трёх дисциплин. «Оптимизации 1» в хендбуке нет.","A choice of three courses. Optimization 1 is not described in the handbook.")),
+U(7,"БД","КВ","Op 2 / INN1210 / HPCBD",
+  "Оптимизация 2 / Введение в нейронные сети / Высокопроизводительные вычисления для больших данных",
+  "Optimization 2 / Introduction to neural networks / High Performance Computing for Big Data",
+  "Оптимизация 2 / Нейрондық желілерге кіріспе / Үлкен деректер үшін жоғары өнімді есептеулер",
+  5,3,EXAM,[150,20,0,30,10,90],[],
+  P("Ни одной из трёх дисциплин нет в хендбуке модулей.","None of these three courses are described in the module handbook.")),
+U(8,"ПД","ВК","5",
+  "Математика для науки о данных","Mathematics for data science","Деректер ғылымына арналған математика",
+  5,1,EXAM,[150,30,0,20,10,90],["math"]),
+U(9,"ПД","ВК","NONE",
+  "Программирование для анализа данных и баз данных","Programming for data analysis and databases",
+  "Деректерді талдау мен деректер базасына бағдарламалау",
+  5,1,EXAM,[150,30,0,20,10,90],["prog"]),
+U(10,"ПД","ВК","CODE404",
+  "Машинное обучение и искусственный интеллект","Machine learning and artificial intelligence",
+  "Машиналық оқыту және жасанды интеллект",
+  5,2,EXAM,[150,30,0,20,10,90],["mlai"]),
+U(11,"ПД","ВК","TMS",
+  "Методы и стратегии преподавания","Teaching methods and strategies","Оқытудың әдістері мен стратегиялары",
+  5,3,EXAM,[150,10,0,40,10,90],[],
+  P("Этой дисциплины нет в хендбуке модулей.","This course is not described in the module handbook.")),
+U(12,"ПД","ВК","RP 1-2",
+  "Исследовательская практика","Research Practice","Зерттеу практикасы",
+  10,4,REPORT,[300,0,0,300,0,0],["rp"]),
+U(13,"ПД","ВК","CSDA",
+  "Тематическое исследование (Case study) по аналитике данных","Case study on data Analytics",
+  "Деректерді талдау бойынша тақырыптық зерттеу (Case study)",
+  6,4,EXAM,[180,30,0,30,20,100],["csda"]),
+U(14,"ПД","ВК","RP 2-2",
+  "Исследовательская практика","Research Practice","Зерттеу практикасы",
+  10,5,REPORT,[300,0,0,300,0,0],["rp"]),
+U(15,"ПД","КВ","GA / BDMT / MCDMP 4",
+  "Генеративные алгоритмы / Методы и инструменты Big Data / Марковские цепи и процессы принятия решений",
+  "Generative Algorithms / Big Data Methods and Tools / Markov chains and decision-making processes",
+  "Генеративті алгоритмдер / Big Data әдістері мен құралдары / Марков тізбектері және шешім қабылдау үрдістері",
+  4,4,EXAM,[120,20,0,20,10,70],[],
+  P("Ни одной из трёх дисциплин нет в хендбуке модулей.","None of these three courses are described in the module handbook.")),
+U(16,"ПД","КВ","HP / DDDM / RL 5120",
+  "Гетерогенная параллелизация / Принятие решений, основанных на данных / Обучение с подкреплением",
+  "Heterogeneous Parallelization / Making decisions based on data / Reinforcement learning",
+  "Гетерогенді параллельдеу / Деректерге негізделген шешімдер қабылдау / Күшейтілген оқыту",
+  4,5,EXAM,[120,20,0,20,10,70],["dddm"],
+  P("В хендбуке описана только одна из трёх — «Принятие решений на основе данных».","Only one of the three, Making Decisions Based on Data, is described in the handbook.")),
+U(17,"ПД","КВ","SMPM / BPA / CTPSM / ITPM",
+  "Сервисная модель в управлении проектами / Анализ бизнес-процессов / Управление заинтересованными сторонами проекта / Управление IT-проектами",
+  "Service model in project management / Business process analysis / Project Stakeholder Management / IT Project Management",
+  "Жобаны басқарудағы сервистік үлгі / Бизнес-үдерістерді талдау / Жобаның мүдделі тараптарын басқару / IT жобаларды басқару",
+  4,5,EXAM,[120,20,0,20,10,70],["bpa"],
+  P("В хендбуке описана только одна из четырёх — «Анализ бизнес-процессов».","Only one of the four, Business Process Analysis, is described in the handbook.")),
+U(18,"НИР","ВК","NIRM 4",
+  "Научно-исследовательская работа магистранта, включая прохождение стажировки и выполнение магистерской диссертации",
+  "Research work of a master's student, including an internship and the completion of a master's thesis",
+  "Магистранттың ғылыми-зерттеу жұмысы, тағылымдамадан өту және магистрлік диссертацияны орындау",
+  4,2,REPORT,[120,0,0,0,0,0],["mrw"]),
+U(19,"НИР","ВК","NIRM 6",
+  "Научно-исследовательская работа магистранта, включая прохождение стажировки и выполнение магистерской диссертации",
+  "Research work of a master's student, including an internship and the completion of a master's thesis",
+  "Магистранттың ғылыми-зерттеу жұмысы",
+  6,3,REPORT,[180,0,0,0,0,0],["mrw"]),
+U(20,"НИР","ВК","NIRM 1-2",
+  "Научно-исследовательская работа магистранта, включая прохождение стажировки и выполнение магистерской диссертации",
+  "Research work of a master's student, including an internship and the completion of a master's thesis",
+  "Магистранттың ғылыми-зерттеу жұмысы",
+  2,4,REPORT,[60,0,0,0,0,0],["mrw"]),
+U(21,"НИР","ВК","NIRM 5216",
+  "Научно-исследовательская работа магистранта, включая прохождение стажировки и выполнение магистерской диссертации",
+  "Research work of a master's student, including an internship and the completion of a master's thesis",
+  "Магистранттың ғылыми-зерттеу жұмысы",
+  4,5,REPORT,[120,0,0,0,0,0],["mrw"]),
+U(22,"НИР","ВК","NIRM 3-2",
+  "Научно-исследовательская работа магистранта, включая прохождение стажировки и выполнение магистерской диссертации",
+  "Research work of a master's student, including an internship and the completion of a master's thesis",
+  "Магистранттың ғылыми-зерттеу жұмысы",
+  8,6,REPORT,[240,0,0,0,0,0],["mrw"]),
+U(23,"ИА","ВК","—",
+  "Написание и защита магистерской диссертации / проекта","Writing and defense of master's thesis / project",
+  "Магистрлік диссертацияны / жобаны жазу және қорғау",
+  8,6,DEF,[240,0,0,0,0,0],["thesis"])
+];
+
+/* модули хендбука, которых нет в учебном плане 2025 */
+var EXTRA = ["ba","dfin","dbe","daap","prodm","ind4","infsec"];
+
+/* ============ Академический календарь 2026–2027, 1 курс ============ */
+function E(id,ru,en,a,b,kind){ return {id:id,ru:ru,en:en,a:a,b:b,kind:kind||"nrm"}; }
+var TRI = [
+  {key:"fall", ru:"Осенний триместр", en:"Fall term", sub:P("2026–2027 учебный год","2026–2027 academic year"),
+   items:[
+    E(4,"Теоретическое обучение","Theoretical learning","2026-09-07","2026-11-14","key"),
+    E(5,"Рубежный контроль 1","Mid-term control","2026-10-05","2026-10-10"),
+    E(6,"Рубежный контроль 2","End-term control","2026-11-09","2026-11-14"),
+    E(7,"Промежуточная аттестация по результатам осеннего триместра","Fall term examination period","2026-11-16","2026-11-28","key"),
+    E(8,"Каникулы","Break","2026-11-30","2026-12-05","rest")
+   ],
+   hol:[P("25 октября — День Республики","October 25 — Republic Day")]},
+  {key:"winter", ru:"Зимний триместр", en:"Winter term", sub:P("2026–2027 учебный год","2026–2027 academic year"),
+   items:[
+    E(11,"Теоретическое обучение","Theoretical learning","2026-12-07","2027-02-13","key"),
+    E(12,"Рубежный контроль 1","Mid-term control","2027-01-04","2027-01-09"),
+    E(13,"Рубежный контроль 2","End-term control","2027-02-08","2027-02-13"),
+    E(14,"НИРМ — научно-исследовательская работа магистранта","Master students' research","2026-12-07","2027-02-13"),
+    E(15,"Промежуточная аттестация по результатам зимнего триместра","Winter term examination period","2027-02-15","2027-02-27","key"),
+    E(16,"Отчёт по НИРМ","Master students' research report","2027-02-15","2027-02-27"),
+    E(17,"Каникулы","Break","2027-03-01","2027-03-06","rest")
+   ],
+   hol:[P("16 декабря — День Независимости","December 16 — Independence Day"),
+        P("1–2 января — Новый год","January 1–2 — New Year"),
+        P("7 января — Рождество","January 7 — Christmas")]},
+  {key:"spring", ru:"Весенний триместр", en:"Spring term", sub:P("2026–2027 учебный год","2026–2027 academic year"),
+   items:[
+    E(20,"Теоретическое обучение","Theoretical learning","2027-03-08","2027-05-15","key"),
+    E(21,"Педагогическая практика","Pedagogical internship","2027-03-08","2027-05-15"),
+    E(22,"Рубежный контроль 1","Mid-term control","2027-04-05","2027-04-10"),
+    E(23,"Рубежный контроль 2","End-term control","2027-05-10","2027-05-15"),
+    E(24,"НИРМ, включая прохождение стажировки","Master students' research, including internship","2027-03-08","2027-05-29"),
+    E(25,"Промежуточная аттестация по результатам весеннего триместра","Spring term examination period","2027-05-31","2027-06-12","key"),
+    E(26,"Отчёт по педагогической практике","Pedagogical internship report","2027-05-31","2027-06-12"),
+    E(27,"Отчёт по НИРМ","Master students' research report","2027-05-31","2027-06-12"),
+    E(28,"Академическая аттестация на предмет выполнения индивидуального плана работы","Academic attestation of the completion of the individual work plan","2027-06-14","2027-06-26","key"),
+    E(29,"Летний семестр","Summer term","2027-07-05","2027-08-14"),
+    E(30,"Каникулы","Break","2027-06-28","2027-08-31","rest")
+   ],
+   hol:[P("8 марта — Международный женский день","March 8 — International Women's Day"),
+        P("21, 22, 23 марта — Наурыз мейрамы","March 21, 22, 23 — Nauryz holiday"),
+        P("1 мая — Праздник единства народа Казахстана","May 1 — Kazakhstan People Solidarity Holiday"),
+        P("7 мая — День защитника Отечества","May 7 — Defender's Day"),
+        P("9 мая — День Победы","May 9 — Victory Day"),
+        P("6 июля — День столицы","July 6 — Capital City Day")]}
+];
+var PRE = [
+  E(1,"Ознакомительная неделя","Induction week","2026-09-01","2026-09-05","key"),
+  E(2,"Регистрация на учебные дисциплины","Registration to academic disciplines","2026-09-01","2026-09-05","key")
+];
+
+/* ============ static UI strings ============ */
+var S = {
+  ects:P("кредитов","credits"), ectsShort:P("кр","cr"), hours:P("часов","hours"),
+  tri:P("триместр","trimester"), triN:function(n){ return L==="ru" ? n+" триместр" : "Trimester "+n; },
+  lec:P("Лекции","Lectures"), lab:P("Лабораторные","Labs"), pr:P("Практические","Practice"),
+  srop:P("СРОП","ISIS"), sro:P("СРО","SIS"), tot:P("Всего","Total"),
+  past:P("прошло","done"), live:P("идёт","now"), soon:P("впереди","ahead"),
+  dayShort:P("д","d")
+};
+var MON = {
+  ru:["янв","фев","мар","апр","мая","июн","июл","авг","сен","окт","ноя","дек"],
+  en:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+};
+function D(s){ var p = s.split("-"); return new Date(+p[0], +p[1]-1, +p[2]); }
+function fmt(s){ var d = D(s); return d.getDate()+" "+MON[L][d.getMonth()]+" "+d.getFullYear(); }
+function fmtShort(s){ var d = D(s); return d.getDate()+" "+MON[L][d.getMonth()]; }
+function range(a,b){ return fmtShort(a)+" — "+fmt(b); }
+function days(a,b){ return Math.round((b-a)/86400000); }
+function plural(n,f){ /* f = [1, 2-4, 5+] */
+  var m10 = n%10, m100 = n%100;
+  if(m10===1 && m100!==11) return f[0];
+  if(m10>=2 && m10<=4 && (m100<12||m100>14)) return f[1];
+  return f[2];
+}
+function inDays(n){
+  if(L==="en") return n===1 ? "in 1 day" : "in "+n+" days";
+  return "через "+n+" "+plural(n,["день","дня","дней"]);
+}
+
+/* ============ NOW ============ */
+var TODAY = new Date(); TODAY.setHours(0,0,0,0);
+var ALL_EV = PRE.slice();
+TRI.forEach(function(t){ t.items.forEach(function(e){ ALL_EV.push(e); }); });
+ALL_EV.sort(function(x,y){ return D(x.a) - D(y.a); });
+
+function state(e){
+  var a = D(e.a), b = D(e.b);
+  if(TODAY > b) return "past";
+  if(TODAY >= a) return "live";
+  return "soon";
+}
+
+function renderNow(){
+  var live = ALL_EV.filter(function(e){ return state(e)==="live"; });
+  var soon = ALL_EV.filter(function(e){ return state(e)==="soon"; });
+  var first = D(PRE[0].a), last = D(TRI[2].items[TRI[2].items.length-1].b);
+
+  var phase, sub, bar = "";
+  if(TODAY < first){
+    var d = days(TODAY, first);
+    phase = L==="ru" ? "Учёба ещё не началась" : "The year has not started yet";
+    sub = (L==="ru"
+      ? "Ознакомительная неделя стартует "+fmt(PRE[0].a)+" — "+inDays(d)+"."
+      : "Induction week starts on "+fmt(PRE[0].a)+" — "+inDays(d)+".");
+    var t1 = UP.filter(function(c){ return c.tri===1; });
+    bar = '<div class="up-h" style="margin-top:4px">'
+      + (L==="ru" ? "Первый триместр — "+t1.reduce(function(s,c){return s+c.cr;},0)+" кредитов"
+                  : "Trimester one — "+t1.reduce(function(s,c){return s+c.cr;},0)+" credits")
+      + '</div><ul class="up">'
+      + t1.map(function(c){
+          return '<li><span class="d mono" style="min-width:34px">'+c.cr+' '+esc(T(S.ectsShort))
+            + '</span><span class="n">'+esc(T(c))+'</span>'
+            + '<span class="in mono">'+esc(T(c.ctrl))+'</span></li>';
+        }).join("") + '</ul>';
+  } else if(TODAY > last){
+    phase = L==="ru" ? "Первый курс пройден" : "Year one is complete";
+    sub = L==="ru" ? "Календарь 2026–2027 закончился. Дальше — второй курс." : "The 2026–2027 calendar is over. Year two is next.";
+  } else {
+    var main = live.filter(function(e){ return e.kind==="key"; })[0] || live[0];
+    phase = main ? T(main) : (L==="ru" ? "Между этапами" : "Between phases");
+    if(main){
+      var tot = days(D(main.a), D(main.b)) + 1, gone = days(D(main.a), TODAY) + 1;
+      var pct = Math.max(2, Math.min(100, Math.round(gone/tot*100)));
+      sub = range(main.a, main.b) + " · " + (L==="ru" ? "день "+gone+" из "+tot : "day "+gone+" of "+tot);
+      bar = '<div class="track"><i style="width:'+pct+'%"></i></div>'
+          + '<div class="track-lab"><span>'+fmtShort(main.a)+'</span><span>'+pct+'%</span><span>'+fmt(main.b)+'</span></div>';
+    } else {
+      sub = L==="ru" ? "Сейчас по календарю ничего не идёт." : "Nothing scheduled is running right now.";
+    }
+    if(live.length > 1){
+      var others = live.filter(function(e){ return e !== main; })
+        .map(function(e){ return T(e); }).join(" · ");
+      sub += (L==="ru" ? " · Параллельно: " : " · Also running: ") + others;
+    }
+  }
+
+  document.getElementById("nowDate").textContent =
+    (L==="ru" ? "Сегодня " : "Today ") + fmt(
+      TODAY.getFullYear()+"-"+String(TODAY.getMonth()+1).padStart(2,"0")+"-"+String(TODAY.getDate()).padStart(2,"0"));
+  document.getElementById("nowPhase").textContent = phase;
+  document.getElementById("nowSub").textContent = sub;
+  document.getElementById("nowBar").innerHTML = bar;
+
+  document.getElementById("upNext").innerHTML = soon.slice(0,6).map(function(e){
+    var d = days(TODAY, D(e.a));
+    return '<li><span class="d mono">'+fmtShort(e.a)+'</span><span class="n">'+esc(T(e))
+      +'</span><span class="in mono">'+(d===0 ? (L==="ru"?"сегодня":"today") : inDays(d))+'</span></li>';
+  }).join("") || '<li><span class="n">'+(L==="ru"?"Впереди по календарю ничего не осталось.":"Nothing left ahead in this calendar.")+'</span></li>';
+}
+
+/* ============ stats + facts + charts ============ */
+var TRI_CR = [18,22,20,22,22,16];
+var CYC = [
+  {k:"БД", cr:30, vk:20, kv:10, v:"--bd", ru:"Базовые дисциплины", en:"Basic disciplines"},
+  {k:"ПД", cr:58, vk:46, kv:12, v:"--pd", ru:"Профилирующие дисциплины", en:"Major disciplines"},
+  {k:"НИР", cr:24, vk:24, kv:0, v:"--nir", ru:"Научно-исследовательская работа", en:"Research work"},
+  {k:"ИА", cr:8, vk:8, kv:0, v:"--ia", ru:"Итоговая аттестация", en:"Final attestation"}
+];
+
+/* какой триместр идёт сейчас — или какой ближайший, если ещё не начался */
+function currentTri(){
+  for(var i=0;i<TRI.length;i++){
+    var it = TRI[i].items, a = D(it[0].a), b = D(it[it.length-1].b);
+    if(TODAY <= b) return i+1;
+    void a;
+  }
+  return 4;
+}
+
+function renderProgram(){
+  document.getElementById("stats").innerHTML = [
+    ["120", P("академических кредитов за 2 года","academic credits over 2 years")],
+    ["3600", P("часов общей нагрузки","hours of total workload")],
+    ["6", P("триместров по 10 недель","trimesters of 10 weeks each")],
+    ["23", P("позиции в учебном плане","entries in the curriculum")]
+  ].map(function(x){
+    return '<div class="card stat"><div class="v mono">'+x[0]+'</div><div class="k">'+esc(T(x[1]))+'</div></div>';
+  }).join("");
+
+  var F = [
+    [P("Образовательная программа","Educational programme"), "7M06103 — " + (L==="ru" ? "Прикладная аналитика данных" : "Applied Data Analytics")],
+    [P("Группа ОП","Programme group"), "M094 — " + (L==="ru" ? "Информационные технологии" : "Information Technology")],
+    [P("Направление подготовки","Field of preparation"), "7M061 — " + (L==="ru" ? "Информационно-коммуникационные технологии" : "Information and Communication Technologies")],
+    [P("Степень","Degree"), P("Магистр по научно-педагогическому направлению","Master of Science, academic and teaching track")],
+    [P("Форма и срок обучения","Mode and duration"), P("Очная, магистратура 2 года (6 триместров)","Full-time, 2-year master programme (6 trimesters)")],
+    [P("Учебные годы плана","Curriculum years"), P("2025–2027, год поступления 2025","2025–2027, year of admission 2025")],
+    [P("Календарь на этом сайте","Calendar on this page"), P("2026–2027, 1 курс — утверждён Учёным советом AITU","2026–2027, year 1 — approved by the AITU Academic Council")],
+    [P("Университет","University"), P("ТОО «Astana IT University», Астана","Astana IT University LLP, Astana")]
+  ];
+  document.getElementById("facts").innerHTML = "<dl>" + F.map(function(x){
+    return "<dt>"+esc(T(x[0]))+"</dt><dd>"+esc(T(x[1]))+"</dd>";
+  }).join("") + "</dl>";
+
+  var mx = Math.max.apply(null, TRI_CR), cur = currentTri();
+  document.getElementById("bars").innerHTML = TRI_CR.map(function(c,i){
+    return '<div class="bar"><div class="v mono">'+c+'</div><div class="col'+(i+1===cur?" on":"")
+      +'" style="height:'+Math.round(c/mx*100)+'%"></div></div>';
+  }).join("");
+  document.getElementById("barsX").innerHTML = TRI_CR.map(function(c,i){
+    return '<span class="mono">'+(L==="ru"?"Т":"T")+(i+1)+'</span>';
+  }).join("");
+
+  document.getElementById("split").innerHTML = CYC.map(function(c){
+    var sub = c.kv > 0
+      ? (L==="ru" ? "ВК "+c.vk+" · по выбору "+c.kv : "University "+c.vk+" · elective "+c.kv)
+      : (L==="ru" ? "вузовский компонент" : "university component");
+    return '<div class="sp"><span class="nm">'+esc(T(c))+' <span class="mono" style="color:var(--muted);font-size:11px">'+c.k+'</span></span>'
+      + '<span class="nu mono">'+c.cr+'</span>'
+      + '<span class="tr"><i style="width:'+Math.round(c.cr/120*100)+'%;background:var('+c.v+')"></i></span>'
+      + '<span class="sub">'+esc(sub)+'</span></div>';
+  }).join("");
+}
+
+/* ============ calendar ============ */
+function evRow(e){
+  var st = state(e);
+  var lab = st==="past" ? S.past : st==="live" ? S.live : S.soon;
+  return '<div class="crow '+st+(e.kind==="key"?" key":"")+'">'
+    + '<span class="idx mono">'+e.id+'</span>'
+    + '<span class="nm">'+esc(T(e))+'</span>'
+    + '<span class="dt mono">'+fmt(e.a)+' — '+fmt(e.b)+'</span>'
+    + '<span class="st mono">'+esc(T(lab))+'</span></div>';
+}
+function renderCal(){
+  var html = '<div class="tri-h"><b>'+(L==="ru"?"До начала занятий":"Before classes start")
+    +'</b><span class="rng mono">'+range(PRE[0].a, PRE[0].b)+'</span></div>'
+    + PRE.map(evRow).join("");
+  TRI.forEach(function(t){
+    var a = t.items[0].a, b = t.items[t.items.length-1].b;
+    html += '<div class="tri-h"><b>'+esc(L==="ru"?t.ru:t.en)+'</b><span class="mono" style="font-size:11px;color:var(--muted)">'
+      + esc(T(t.sub))+'</span><span class="rng mono">'+range(a,b)+'</span></div>';
+    html += t.items.map(evRow).join("");
+    html += '<div class="crow hol"><span class="idx mono">·</span><span class="nm"><em>'
+      + (L==="ru"?"Праздничные дни: ":"Holidays: ")+'</em>'
+      + t.hol.map(function(h){ return esc(T(h)); }).join(" · ")+'</span></div>';
+  });
+  document.getElementById("cal").innerHTML = html;
+}
+
+/* ============ courses ============ */
+var CYC_VAR = {"БД":"--bd","ПД":"--pd","НИР":"--nir","ИА":"--ia"};
+var F_TRI = 0, F_CYC = "", F_SRC = "", Q = "";
+
+function hoursBar(h){
+  var parts = [["lec",h[1],"--pd"],["lab",h[2],"--nir"],["pr",h[3],"--bd"],["srop",h[4],"--ia"],["sro",h[5],"--line2"]];
+  var tot = h[0] || 1;
+  var bar = parts.filter(function(p){ return p[1]>0; }).map(function(p){
+    return '<i style="width:'+(p[1]/tot*100)+'%;background:var('+p[2]+')"></i>';
+  }).join("");
+  var names = {lec:S.lec, lab:S.lab, pr:S.pr, srop:S.srop, sro:S.sro};
+  var leg = parts.filter(function(p){ return p[1]>0; }).map(function(p){
+    return '<span><i class="dot" style="background:var('+p[2]+')"></i>'+esc(T(names[p[0]]))+' <b class="mono">'+p[1]+'</b></span>';
+  }).join("");
+  return '<div class="hbar">'+bar+'</div><div class="hleg">'+leg
+    +'<span style="color:var(--muted)">'+esc(T(S.tot))+' <b class="mono">'+h[0]+'</b></span></div>';
+}
+
+function assessTable(rows, anote){
+  var t = '<div class="scroll"><table class="t"><thead><tr>'
+    + '<th>'+(L==="ru"?"Период":"Period")+'</th><th>'+(L==="ru"?"Вид работы":"Assessment")+'</th>'
+    + '<th>'+(L==="ru"?"Баллы":"Points")+'</th><th>'+(L==="ru"?"Форма":"Form")+'</th>'
+    + '<th>'+(L==="ru"?"Когда":"When")+'</th></tr></thead><tbody>'
+    + rows.map(function(r){
+        return '<tr><td>'+esc(T(r.per))+'</td><td class="ct">'+esc(T(r.t))+'</td>'
+          + '<td class="num">'+r.pts+'</td><td>'+esc(T(r.f))+'</td><td class="num">'+esc(T(r.w))+'</td></tr>';
+      }).join("")
+    + '</tbody></table></div>';
+  if(anote) t += '<div class="callout" style="margin-top:12px">'+esc(T(anote))+'</div>';
+  return t;
+}
+
+function gradeTable(){
+  return '<p style="font-size:13px;color:var(--ink2);margin-bottom:12px">'
+    + esc(L==="ru"
+      ? "Результаты защиты магистерской диссертации / проекта оцениваются по балльно-рейтинговой системе оценки учебных достижений магистрантов."
+      : "The results of the master thesis or project defense are assessed using the point-rating system for evaluating the academic achievements of master students.")
+    + '</p><div class="scroll"><table class="t"><thead><tr><th>'+(L==="ru"?"Буква":"Letter")+'</th><th>GPA</th><th>%</th>'
+    + '<th>'+(L==="ru"?"Традиционная шкала":"Traditional scale")+'</th></tr></thead><tbody>'
+    + GRADES.map(function(g){
+        return '<tr><td class="ct mono">'+g[0]+'</td><td class="num">'+g[1]+'</td><td class="num">'+g[2]
+          + '</td><td>'+(g[3] ? esc(T(g[3])) : "")+'</td></tr>';
+      }).join("")
+    + '</tbody></table></div>';
+}
+
+function loBlock(label, arr){
+  if(!arr || !arr.length) return "";
+  return '<div class="blk"><div class="blk-h">'+esc(label)+'</div><ul class="lo">'
+    + arr.map(function(x){ return "<li>"+esc(T(x))+"</li>"; }).join("") + "</ul></div>";
+}
+
+function hbBody(m){
+  var o = "";
+  var kv = [];
+  kv.push([L==="ru"?"Ответственный за модуль":"Person responsible", m.person]);
+  if(m.lect && m.lect !== "—") kv.push([L==="ru"?"Преподаватели":"Lecturers", m.lect]);
+  kv.push([L==="ru"?"Язык преподавания":"Language", T(m.lang)]);
+  kv.push([L==="ru"?"Статус в программе":"Relation to curriculum", T(m.rel)]);
+  kv.push([L==="ru"?"Триместр по хендбуку":"Trimester in handbook", String(m.tri)]);
+  kv.push([L==="ru"?"Кредиты ECTS":"ECTS credits", String(m.ects)]);
+  o += '<div class="blk"><div class="blk-h">'+(L==="ru"?"Хендбук модулей":"Module handbook")+'</div>'
+    + '<dl class="kv">'+kv.map(function(p){ return "<dt>"+esc(p[0])+"</dt><dd>"+esc(p[1])+"</dd>"; }).join("")+'</dl></div>';
+
+  var hh = m.h;
+  o += '<div class="blk"><div class="blk-h">'+(L==="ru"?"Нагрузка по хендбуку":"Workload per handbook")+'</div>'
+    + hoursBar([hh.tot, hh.lec, 0, hh.pr, hh.isis, hh.sis]);
+  if(m.hnote) o += '<div style="margin-top:10px;font-size:12.5px;color:var(--muted)">'+esc(T(m.hnote))+'</div>';
+  o += '</div>';
+
+  o += '<div class="blk"><div class="blk-h">'+(L==="ru"?"Как преподаётся":"How it is taught")+'</div>'
+    + '<p class="prose" style="font-size:15.5px">'+esc(T(m.meth))+'</p>'
+    + '<p class="prose" style="font-size:15.5px;margin-top:10px">'+esc(T(FORMS))+'</p></div>';
+
+  o += '<div class="blk"><div class="blk-h">'+(L==="ru"?"Оценивание":"Assessment")+'</div>';
+  if(m.assess) o += assessTable(m.assess, m.anote);
+  if(m.grades) o += gradeTable();
+  if(!m.grades && !m.anote && m.assess && m.assess.length > 1)
+    o += '<div style="margin-top:12px"><span class="formula">'+esc(T(FORMULA))+'</span></div>';
+  if(m.reqs) o += '<p class="prose" style="font-size:15px;margin-top:12px">'+esc(T(m.reqs))+'</p>';
+  if(m.admit) o += '<div class="callout" style="margin-top:12px"><b>'+(L==="ru"?"Допуск к защите. ":"Admission to defense. ")+'</b>'+esc(T(m.admit))+'</div>';
+  o += '</div>';
+
+  o += '<div class="blk"><div class="blk-h">'+(L==="ru"?"Пре- и постреквизиты":"Pre- and post-requisites")+'</div>'
+    + '<dl class="kv"><dt>'+(L==="ru"?"Пререквизиты":"Prerequisites")+'</dt><dd>'+esc(T(m.pre))+'</dd>'
+    + '<dt>'+(L==="ru"?"Постреквизиты":"Post-requisites")+'</dt><dd>'+esc(T(m.post))+'</dd></dl></div>';
+
+  o += loBlock(L==="ru"?"Знания: студент будет владеть":"Knowledge: the student will show a working knowledge in", m.know);
+  o += loBlock(L==="ru"?"Навыки: студент сможет":"Skills: students will have the skill to", m.skills);
+  o += loBlock(L==="ru"?"Компетенции: студент будет способен":"Competences: students will be able to", m.comp);
+
+  if(m.topics && m.topics.length){
+    o += '<div class="blk"><div class="blk-h">'+(L==="ru"?"Содержание курса":"Course content")+'</div><div class="topics">'
+      + m.topics.map(function(x){ return '<span class="topic">'+esc(T(x))+'</span>'; }).join("") + '</div></div>';
+  }
+  if(m.cont){
+    o += '<div class="blk"><div class="blk-h">'+(L==="ru"?"О чём курс":"What the course is about")+'</div>'
+      + '<p class="prose">'+esc(T(m.cont))+'</p></div>';
+  }
+  o += '<div class="blk"><div class="blk-h">'+(L==="ru"?"Требования и политика":"Requirements and policy")+'</div>'
+    + '<ul class="plist">'+POLICY.map(function(x){ return '<li><span class="mk">!</span><span>'+esc(T(x))+'</span></li>'; }).join("")+'</ul></div>';
+  o += '<div class="blk"><div class="blk-h">'+(L==="ru"?"Среда обучения":"Media employed")+'</div>'
+    + '<p style="font-size:13.5px;color:var(--ink2)">'+esc(T(m.media))+'</p></div>';
+  o += '<div class="blk"><div class="blk-h">'+(L==="ru"?"Литература":"Reading list")+'</div>'
+    + '<ol class="books">'+m.books.map(function(b){ return "<li>"+esc(b)+"</li>"; }).join("")+'</ol></div>';
+  return o;
+}
+
+function upCard(c){
+  var tags = '<span class="tag cyc" style="background:var('+CYC_VAR[c.cyc]+')">'+c.cyc+'</span>'
+    + '<span class="tag'+(c.comp==="КВ"?" kv":"")+'">'+(c.comp==="КВ"
+        ? (L==="ru"?"по выбору":"elective") : (L==="ru"?"обязательный":"required"))+'</span>'
+    + '<span class="tag">'+S.triN(c.tri)+'</span>'
+    + '<span class="tag">'+esc(T(c.ctrl))+'</span>'
+    + (c.code && c.code!=="NONE" && c.code!=="—" ? '<span class="tag">'+esc(c.code)+'</span>' : '')
+    + (c.hb.length ? '<span class="tag hb">'+(L==="ru"?"есть в хендбуке":"in handbook")+'</span>'
+                   : '<span class="tag" style="color:var(--warn)">'+(L==="ru"?"нет в хендбуке":"not in handbook")+'</span>');
+
+  var body = '<div class="blk"><div class="blk-h">'+(L==="ru"?"Учебный план":"Curriculum entry")+'</div>'
+    + '<dl class="kv">'
+    + '<dt>'+(L==="ru"?"Шифр модуля":"Module no.")+'</dt><dd class="mono">'+c.n+'</dd>'
+    + '<dt>'+(L==="ru"?"Код дисциплины":"Course code")+'</dt><dd class="mono">'+esc(c.code)+'</dd>'
+    + '<dt>'+(L==="ru"?"Цикл / компонент":"Cycle / component")+'</dt><dd>'+c.cyc+' / '+c.comp+'</dd>'
+    + '<dt>'+(L==="ru"?"Триместр":"Trimester")+'</dt><dd>'+c.tri+'</dd>'
+    + '<dt>'+(L==="ru"?"Форма контроля":"Control form")+'</dt><dd>'+esc(T(c.ctrl))+'</dd>'
+    + '<dt>'+(L==="ru"?"Кредиты":"Credits")+'</dt><dd class="mono">'+c.cr+'</dd>'
+    + '<dt>'+(L==="ru"?"На английском":"In English")+'</dt><dd>'+esc(c.en)+'</dd>'
+    + '<dt>'+(L==="ru"?"Қазақша":"In Kazakh")+'</dt><dd>'+esc(c.kk)+'</dd>'
+    + '</dl></div>';
+  if(c.h[0]) body += '<div class="blk"><div class="blk-h">'+(L==="ru"?"Часы по учебному плану":"Hours per curriculum")+'</div>'+hoursBar(c.h)+'</div>';
+  if(c.note) body += '<div class="blk"><div class="callout">'+esc(T(c.note))+'</div></div>';
+  c.hb.forEach(function(k){
+    var m = HB[k];
+    body += '<div class="blk"><div class="blk-h" style="color:var(--accent-ink);letter-spacing:.1em">'
+      + esc(T(m.title))+'</div></div>' + hbBody(m);
+  });
+
+  return '<details class="card cc" data-tri="'+c.tri+'" data-cyc="'+c.cyc+'" data-src="up" data-q="'
+    + esc((c.ru+" "+c.en+" "+c.kk+" "+c.code).toLowerCase())+'">'
+    + '<summary class="cc-head"><span class="cc-n">'+String(c.n).padStart(2,"0")+'</span>'
+    + '<span class="cc-t"><h3>'+esc(T(c))+'</h3><div class="alt">'+esc(L==="ru"?c.en:c.ru)+'</div>'
+    + '<div class="tags">'+tags+'</div></span>'
+    + '<span class="cc-m"><span class="cc-cr"><b class="mono">'+c.cr+'</b><span>'+esc(T(S.ectsShort))+'</span></span>'
+    + '<span class="caret"></span></span></summary>'
+    + '<div class="cc-body">'+body+'</div></details>';
+}
+
+function extraCard(k){
+  var m = HB[k];
+  var tags = '<span class="tag" style="color:var(--warn)">'+(L==="ru"?"нет в учебном плане 2025":"not in the 2025 curriculum")+'</span>'
+    + '<span class="tag hb">'+(L==="ru"?"только хендбук":"handbook only")+'</span>'
+    + '<span class="tag">'+S.triN(m.tri)+'</span>'
+    + '<span class="tag">'+esc(T(m.rel))+'</span>';
+  return '<details class="card cc" data-tri="'+m.tri+'" data-cyc="extra" data-src="hb" data-q="'
+    + esc(((T(m.title)||"")+" "+m.title.en+" "+m.title.ru).toLowerCase())+'">'
+    + '<summary class="cc-head"><span class="cc-n">—</span>'
+    + '<span class="cc-t"><h3>'+esc(T(m.title))+'</h3><div class="alt">'+esc(L==="ru"?m.title.en:m.title.ru)+'</div>'
+    + '<div class="tags">'+tags+'</div></span>'
+    + '<span class="cc-m"><span class="cc-cr"><b class="mono">'+m.ects+'</b><span>'+esc(T(S.ectsShort))+'</span></span>'
+    + '<span class="caret"></span></span></summary>'
+    + '<div class="cc-body">'+hbBody(m)+'</div></details>';
+}
+
+function renderFilters(){
+  var f = '<div class="filters-row" style="display:contents">';
+  f += '<button class="chip" data-f="tri" data-v="0" aria-pressed="'+(F_TRI===0)+'">'+(L==="ru"?"Все триместры":"All trimesters")+'</button>';
+  for(var i=1;i<=6;i++) f += '<button class="chip mono" data-f="tri" data-v="'+i+'" aria-pressed="'+(F_TRI===i)+'">'+(L==="ru"?"Т":"T")+i+'</button>';
+  f += '<span class="fsep"></span>';
+  f += '<button class="chip" data-f="cyc" data-v="" aria-pressed="'+(F_CYC==="")+'">'+(L==="ru"?"Все циклы":"All cycles")+'</button>';
+  ["БД","ПД","НИР","ИА"].forEach(function(c){
+    f += '<button class="chip" data-f="cyc" data-v="'+c+'" aria-pressed="'+(F_CYC===c)+'">'+c+'</button>';
+  });
+  f += '<span class="fsep"></span>';
+  f += '<button class="chip" data-f="src" data-v="up" aria-pressed="'+(F_SRC==="up")+'">'+(L==="ru"?"Только учебный план":"Curriculum only")+'</button>';
+  f += '<button class="chip" data-f="src" data-v="hb" aria-pressed="'+(F_SRC==="hb")+'">'+(L==="ru"?"Только хендбук":"Handbook only")+'</button>';
+  f += '<input class="search" id="q" type="search" placeholder="'+(L==="ru"?"Поиск по названию или коду…":"Search by name or code…")+'" value="'+esc(Q)+'">';
+  f += '</div>';
+  document.getElementById("filters").innerHTML = f;
+
+  document.getElementById("filters").querySelectorAll(".chip").forEach(function(b){
+    b.addEventListener("click", function(){
+      var k = b.dataset.f, v = b.dataset.v;
+      if(k==="tri") F_TRI = +v;
+      else if(k==="cyc") F_CYC = v;
+      else F_SRC = (F_SRC===v ? "" : v);
+      renderFilters(); applyFilter();
+    });
+  });
+  var q = document.getElementById("q");
+  q.addEventListener("input", function(){ Q = q.value.trim().toLowerCase(); applyFilter(); });
+}
+
+function applyFilter(){
+  var n = 0;
+  document.querySelectorAll("#courseList .cc").forEach(function(el){
+    var ok = true;
+    if(F_TRI && +el.dataset.tri !== F_TRI) ok = false;
+    if(F_CYC && el.dataset.cyc !== F_CYC) ok = false;
+    if(F_SRC && el.dataset.src !== F_SRC) ok = false;
+    if(Q && el.dataset.q.indexOf(Q) === -1) ok = false;
+    el.style.display = ok ? "" : "none";
+    if(ok) n++;
+  });
+  document.getElementById("ccount").textContent = L==="ru"
+    ? "показано "+n+" "+plural(n,["курс","курса","курсов"])
+    : n+" shown";
+}
+
+function renderCourses(){
+  document.getElementById("courseList").innerHTML =
+    UP.map(upCard).join("") + EXTRA.map(extraCard).join("");
+  renderFilters();
+  applyFilter();
+}
+
+/* ============ grading + notes + sources ============ */
+var GRADES = [
+  ["A","4,00","95–100",P("Отлично","Excellent")], ["A−","3,67","90–94",""],
+  ["B+","3,33","85–89",P("Хорошо","Good")], ["B","3,00","80–84",""],
+  ["B−","2,67","75–79",""], ["C+","2,33","70–74",""],
+  ["C","2,00","65–69",P("Удовлетворительно","Satisfactory")], ["C−","1,67","60–64",""],
+  ["D+","1,33","55–59",""], ["D","1,00","50–54",""],
+  ["F","0","0–49",P("Неудовлетворительно","Fail")]
+];
+function renderGrading(){
+  var left = '<div class="card pad"><h3>'+(L==="ru"?"Формула итоговой оценки":"The final grade formula")+'</h3>'
+    + '<span class="formula">'+esc(T(FORMULA))+'</span>'
+    + '<p class="prose" style="margin-top:16px">'
+    + esc(L==="ru"
+      ? "Почти в каждом курсе программы работает одна и та же схема: два рубежных контроля по 100 баллов дают по 30% итога, финальный экзамен — оставшиеся 40%. Исключение — «Педагогика высшей школы», где аттестации считаются из 30 баллов, и практики с НИР, которые оцениваются защитой отчёта."
+      : "Nearly every course in the programme uses the same scheme: two attestations out of 100 points contribute 30% each, and the final exam contributes the remaining 40%. The exceptions are Higher Education Pedagogy, whose attestations are scored out of 30, and the internships and research work, which are assessed by a report defense.")
+    + '</p>'
+    + '<h3 style="margin-top:22px">'+(L==="ru"?"Общие правила курсов":"Course and university policies")+'</h3>'
+    + '<ul class="plist">'+POLICY.map(function(x){ return '<li><span class="mk">!</span><span>'+esc(T(x))+'</span></li>'; }).join("")+'</ul>'
+    + '</div>';
+
+  var right = '<div class="card pad"><h3>'+(L==="ru"?"Балльно-рейтинговая буквенная система":"Point-rating letter system")+'</h3>'
+    + '<p style="font-size:12.5px;color:var(--muted);margin-bottom:14px">'
+    + esc(L==="ru" ? "Применяется в том числе при оценке защиты магистерской диссертации." : "Used, among other things, to assess the master thesis defense.")+'</p>'
+    + '<div class="scroll"><table class="t"><thead><tr><th>'+(L==="ru"?"Буква":"Letter")+'</th><th>GPA</th><th>%</th>'
+    + '<th>'+(L==="ru"?"Традиционная шкала":"Traditional scale")+'</th></tr></thead><tbody>'
+    + GRADES.map(function(g){
+        return '<tr><td class="ct mono">'+g[0]+'</td><td class="num">'+g[1]+'</td><td class="num">'+g[2]
+          + '</td><td>'+(g[3] ? esc(T(g[3])) : "")+'</td></tr>';
+      }).join("")
+    + '</tbody></table></div></div>';
+
+  document.getElementById("gcols").innerHTML = left + right;
+}
+
+var NOTES = [
+  {t:P("Учебный план и хендбук — разные редакции программы","The curriculum and the handbook are different editions"),
+   b:P("Учебный план 2025 года содержит дисциплины, которых нет в хендбуке модулей: Оптимизация 1 и 2, Введение в нейронные сети, HPC для больших данных, Методы и стратегии преподавания, Генеративные алгоритмы, Марковские цепи, Гетерогенная параллелизация, Управление IT-проектами и другие. И наоборот: в хендбуке подробно описаны Business Analytics, Digital Finance, Digital Business Ecosystem, Data Analytics Application Project, Product Management, Industry 4.0 и Information Security, которых в плане 2025 года нет. На сайте показано и то и другое, с пометками.",
+        "The 2025 curriculum contains courses absent from the module handbook: Optimization 1 and 2, Introduction to Neural Networks, HPC for Big Data, Teaching Methods and Strategies, Generative Algorithms, Markov Chains, Heterogeneous Parallelization, IT Project Management and others. Conversely, the handbook describes in detail Business Analytics, Digital Finance, Digital Business Ecosystem, Data Analytics Application Project, Product Management, Industry 4.0 and Information Security, none of which appear in the 2025 plan. Both sets are shown here, each labelled.")},
+  {t:P("Год поступления в плане — 2025, а календарь — на 2026–2027","The plan is for 2025 entrants, the calendar for 2026–2027"),
+   b:P("Учебный план подписан на 2025–2027 учебные годы и указывает год поступления 2025. Академический календарь на этом сайте — для магистрантов 1 курса 2026–2027. Даты, недели и структура триместров берутся из календаря и верны для тебя; конкретный список дисциплин стоит подтвердить в офисе послевузовского образования — план твоего года поступления может отличаться.",
+        "The curriculum is signed for the 2025–2027 academic years and states 2025 as the year of admission, while the academic calendar shown here is for first-year master students of 2026–2027. The dates, weeks and trimester structure come from the calendar and apply to you; the exact list of courses is worth confirming with the Office of Postgraduate Education, since the plan for your admission year may differ.")},
+  {t:P("Триместры разложены по-разному","The trimesters are split differently"),
+   b:P("Учебный план распределяет 120 кредитов по шести триместрам: 18 · 22 · 20 · 22 · 22 · 16. Обзор в хендбуке даёт пять терминов с раскладкой 26 · 30 · 22 · 20 · 22 — тоже 120 кредитов, но по другой сетке. Графики на этой странице построены по учебному плану, поле «Триместр по хендбуку» в карточке курса показывает вторую версию.",
+        "The curriculum spreads 120 credits over six trimesters: 18 · 22 · 20 · 22 · 22 · 16. The handbook overview lists five terms as 26 · 30 · 22 · 20 · 22 — also 120 credits, but on a different grid. The charts on this page follow the curriculum; the Trimester in handbook field on each course card shows the other version.")},
+  {t:P("Летний семестр пересекается с каникулами","The summer term overlaps the break"),
+   b:P("В календаре летний семестр стоит на 05.07.2027 — 14.08.2027, а каникулы — на 28.06.2027 — 31.08.2027. Это не ошибка сайта: так напечатано в документе. Летний семестр — период пересдач и добора кредитов, он касается не всех.",
+        "The calendar puts the summer term at 05.07.2027 — 14.08.2027 and the break at 28.06.2027 — 31.08.2027. This is not a rendering error: that is what the document prints. The summer term is a retake and credit-recovery period and does not apply to everyone.")},
+  {t:P("Часы в двух документах не всегда сходятся","Hours do not always match between the documents"),
+   b:P("Для одного и того же курса учебный план и хендбук иногда дают разную разбивку часов при одинаковой сумме. Пример: «Педагогика высшей школы» — 20/20/10/70 по плану и 20/20/20/60 по хендбуку, в обоих случаях 120 часов. В карточке курса показаны обе разбивки: сначала по плану, потом по хендбуку.",
+        "For the same course the curriculum and the handbook sometimes give a different split of hours while agreeing on the total. For example, Higher Education Pedagogy is 20/20/10/70 in the plan and 20/20/20/60 in the handbook — 120 hours either way. Each course card shows both splits: the curriculum first, then the handbook.")}
+];
+function renderNotes(){
+  document.getElementById("notesGrid").innerHTML = NOTES.map(function(n){
+    return '<div class="card pad"><h3>'+esc(T(n.t))+'</h3><p class="prose">'+esc(T(n.b))+'</p></div>';
+  }).join("");
+
+  var SRC = [
+    {f:"УП ADA.pdf", t:P("Учебный план","Curriculum"),
+     d:P("Официальный учебный план ОП 7M06103 на 2025–2027 годы: 23 строки, коды, циклы, кредиты, часы, распределение по шести триместрам. Утверждён ректором, 2025. Скан на 2 страницах.",
+         "The official curriculum for programme 7M06103, 2025–2027: 23 rows with codes, cycles, credits, hours and the split across six trimesters. Approved by the rector, 2025. A two-page scan.")},
+    {f:"ADA_MS_Module Handbook_2025.pdf", t:P("Хендбук модулей","Module handbook"),
+     d:P("65 страниц: по каждому из 23 модулей — ответственный, преподаватели, язык, нагрузка, схема оценивания по неделям, пре- и постреквизиты, результаты обучения, содержание и литература. Astana IT University, 2024.",
+         "65 pages: for each of the 23 modules — the person responsible, lecturers, language, workload, week-by-week assessment scheme, pre- and post-requisites, learning outcomes, content and reading list. Astana IT University, 2024.")},
+    {f:"Академ календарь 2026-2027_1 курс_ADA_МАГ.pdf", t:P("Академический календарь","Academic calendar"),
+     d:P("31 пункт на 2026–2027 учебный год для магистрантов 1 курса: триместры, рубежные контроли, аттестации, отчёты, каникулы и праздники. Утверждён решением Учёного совета, подписан офисом послевузовского образования.",
+         "31 entries for the 2026–2027 academic year for first-year master students: trimesters, mid- and end-term controls, examination periods, reports, breaks and holidays. Approved by the Academic Council and signed by the Office of Postgraduate Education.")}
+  ];
+  document.getElementById("srcs").innerHTML = SRC.map(function(s){
+    return '<div class="card src"><div class="fn">'+esc(s.f)+'</div><h3>'+esc(T(s.t))+'</h3><p>'+esc(T(s.d))+'</p></div>';
+  }).join("");
+
+  document.getElementById("foot").innerHTML = esc(L==="ru"
+    ? "Собрано из трёх документов Astana IT University: учебного плана 7M06103, хендбука модулей и академического календаря 2026–2027. Ничего не додумано — при расхождениях показаны обе версии. По спорным местам источник истины — офис послевузовского образования."
+    : "Compiled from three Astana IT University documents: the 7M06103 curriculum, the module handbook and the 2026–2027 academic calendar. Nothing is invented — where the documents disagree, both versions are shown. For anything contested, the Office of Postgraduate Education is the source of truth.");
+}
+
+/* ============ boot ============ */
+function applyStatic(){
+  document.querySelectorAll("[data-ru]").forEach(function(el){
+    el.textContent = L==="ru" ? el.dataset.ru : el.dataset.en;
+  });
+  document.documentElement.lang = L;
+}
+function renderAll(){
+  applyStatic(); renderNow(); renderProgram(); renderCal(); renderCourses(); renderGrading(); renderNotes();
+}
+function setLang(l){
+  L = l;
+  document.getElementById("l-ru").setAttribute("aria-pressed", String(l==="ru"));
+  document.getElementById("l-en").setAttribute("aria-pressed", String(l==="en"));
+  try{ localStorage.setItem("ada-lang", l); }catch(e){}
+  renderAll();
+}
+document.getElementById("l-ru").addEventListener("click", function(){ setLang("ru"); });
+document.getElementById("l-en").addEventListener("click", function(){ setLang("en"); });
+
+document.getElementById("theme").addEventListener("click", function(){
+  var cur = document.documentElement.getAttribute("data-theme");
+  var next = cur === "dark" ? "light" : cur === "light" ? "" : "dark";
+  if(next) document.documentElement.setAttribute("data-theme", next);
+  else document.documentElement.removeAttribute("data-theme");
+  try{ localStorage.setItem("ada-theme", next); }catch(e){}
+});
+
+(function init(){
+  var l = "ru", th = null;
+  try{ l = localStorage.getItem("ada-lang") || "ru"; th = localStorage.getItem("ada-theme"); }catch(e){}
+  if(th) document.documentElement.setAttribute("data-theme", th);
+  setLang(l === "en" ? "en" : "ru");
+})();
+</script>
+</body></html>

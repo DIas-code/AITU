@@ -1,0 +1,17 @@
+---
+import type { PrepBlock, Lang } from "../data/types";
+import { t } from "../data/types";
+import Reading from "./Reading.astro";
+interface Props { blocks: PrepBlock[]; lang: Lang; }
+const { blocks, lang } = Astro.props;
+---
+<div class="cols3">
+  {blocks.map((p) => (
+    <div class="card pad">
+      <h3 style="font-size:16px">{t(p.title, lang)}</h3>
+      <p style="font-size:13px;color:var(--muted);margin:7px 0 13px">{t(p.why, lang)}</p>
+      <ul class="plain">{p.items[lang].map((i) => <li>{i}</li>)}</ul>
+      {p.reading && <div style="margin-top:14px"><Reading refs={p.reading} lang={lang} /></div>}
+    </div>
+  ))}
+</div>

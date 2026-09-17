@@ -1,0 +1,9 @@
+---
+interface Props { title: string; sub?: string; accent?: string; }
+const { title, sub, accent } = Astro.props;
+---
+<div class={"block" + (accent ? " " + accent : "")}>
+  <h2 class="sec">{title}</h2>
+  {sub && <p class="sec-sub">{sub}</p>}
+  <slot />
+</div>

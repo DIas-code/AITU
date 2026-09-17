@@ -1,0 +1,17 @@
+---
+// Корень сайта: уводим на английскую версию (основной язык).
+import { url } from "../lib/urls";
+const target = url("en", "index");
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content={`0; url=${target}`} />
+    <link rel="canonical" href={target} />
+    <title>Runway into trimester one</title>
+  </head>
+  <body>
+    <p>Redirecting to <a href={target}>the English version</a>. <a href={url("ru", "index")}>Русская версия</a>.</p>
+  </body>
+</html>

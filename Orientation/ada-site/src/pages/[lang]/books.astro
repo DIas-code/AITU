@@ -1,0 +1,103 @@
+---
+/** Литература: какая глава какой книги нужна на какой неделе. */
+import Base from "../../layouts/Base.astro";
+import Section from "../../components/Section.astro";
+import { BOOKS } from "../../data/books";
+import { COURSES } from "../../data/courses";
+import { WEEKS } from "../../data/plan";
+import { UI } from "../../data/ui";
+import { LANGS, t, type Lang } from "../../data/types";
+
+export function getStaticPaths() {
+  return LANGS.map((lang) => ({ params: { lang }, props: { lang } }));
+}
+
+const { lang } = Astro.props as { lang: Lang };
+const L = (k: string) => t(UI[k], lang);
+
+/** Для каждой книги: какая глава в каких неделях используется. */
+const usage = new Map<string, Map<number, number[]>>();
+for (const w of WEEKS) {
+  for (const topic of Object.values(w.topics)) {
+    for (const ref of topic.reading) {
+      if (!usage.has(ref.book)) usage.set(ref.book, new Map());
+      const m = usage.get(ref.book)!;
+      for (const ch of ref.chapters) {
+        if (!m.has(ch)) m.set(ch, []);
+        if (!m.get(ch)!.includes(w.n)) m.get(ch)!.push(w.n);
+      }
+    }
+  }
+}
+for (const c of COURSES) {
+  for (const p of c.prep) {
+    for (const ref of p.reading ?? []) {
+      if (!usage.has(ref.book)) usage.set(ref.book, new Map());
+      const m = usage.get(ref.book)!;
+      for (const ch of ref.chapters) if (!m.has(ch)) m.set(ch, []);
+    }
+  }
+}
+
+const accentOf = (course: string) =>
+  course === "math" ? "t-math" : course === "prog" ? "t-prog" : "";
+const courseName = (c: string) => {
+  const found = COURSES.find((x) => x.slug === c);
+  return found ? t(found.short, lang) : lang === "en" ? "both courses" : "обе дисциплины";
+};
+const weekWord = lang === "en" ? "wk" : "нед.";
+const prepWord = lang === "en" ? "warm-up" : "разминка";
+---
+
+<Base lang={lang} page="books" title={L("booksTitle")} active="books">
+  <div class="crumb">{L("booksCrumb")}</div>
+  <h1 class="big">{L("booksTitle")}</h1>
+  <p class="lede">{L("booksLede")}</p>
+
+  <Section title={L("chaptersUsed")} sub={t(UI.editionNote, lang)}>
+    <div class="grid" style="gap:14px">
+      {
+        BOOKS.map((b) => {
+          const used = usage.get(b.id);
+          return (
+            <div class={`card bk ${accentOf(b.course)} rail`}>
+              <div class="bk-h">
+                <h3>{b.title}</h3>
+                <span class="pill">{courseName(b.course)}</span>
+                {b.kind === "extra" && (
+                  <span class="pill go">{lang === "en" ? "beyond the syllabus" : "сверх силлабуса"}</span>
+                )}
+                {b.free && (
+                  <span class="pill">
+                    <a href={b.free} target="_blank" rel="noopener">{L("freeFull")}</a>
+                  </span>
+                )}
+              </div>
+              <div class="bk-a">{b.authors}</div>
+              <div class="bk-e">{b.edition}</div>
+              <p style="font-size:14px;color:var(--ink2);margin-top:11px;max-width:66ch">{b.note[lang]}</p>
+              <div class="bk-ch">
+                {b.chapters.map((ch) => {
+                  const weeks = used?.get(ch.n);
+                  return (
+                    <div class="bk-ch-i">
+                      <span class="n">{ch.n}</span>
+                      <span>{ch.title}</span>
+                      <span class="w">
+                        {weeks && weeks.length
+                          ? `${weekWord} ${weeks.sort((x, y) => x - y).join(", ")}`
+                          : used?.has(ch.n)
+                            ? prepWord
+                            : ""}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })
+      }
+    </div>
+  </Section>
+</Base>

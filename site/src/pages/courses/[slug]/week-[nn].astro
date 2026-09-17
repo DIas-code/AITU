@@ -1,0 +1,101 @@
+---
+import Base from "../../../layouts/Base.astro";
+import { COURSES } from "../../../data/courses";
+import { byWeek, weeksWithMaterial } from "../../../data/lessons";
+import { WEEK_PLAN } from "../../../data/plan";
+import { lessonId, rich, KIND_LABEL } from "../../../data/types";
+import { url, asset, weekTag } from "../../../lib/urls";
+
+export function getStaticPaths() {
+  return COURSES.flatMap((course) =>
+    [...weeksWithMaterial(course.slug)].map((week) => ({
+      params: { slug: course.slug, nn: String(week).padStart(2, "0") },
+      props: { course, week },
+    }))
+  );
+}
+
+const { course, week } = Astro.props;
+const materials = byWeek(course.slug, week);
+const plan = (WEEK_PLAN[course.slug] ?? []).find((w) => w.week === week);
+const tag = weekTag(week);
+
+// Все файлы данных недели — одним списком, без повторов.
+const dataFiles = [...new Set(materials.flatMap((m) => m.dataFiles ?? []))];
+const minutes = materials.reduce((sum, m) => sum + m.minutes, 0);
+---
+
+<Base
+  title={`Неделя ${week} · ${course.short}`}
+  active={course.slug}
+  accent={course.accent}
+  course={course.slug}
+  week={week}
+  description={plan?.topic}
+>
+  <p class="crumb"><a href={url(`courses/${course.slug}`)}>{course.short}</a> · Неделя {week}</p>
+  <h1 class="big">{plan?.short ?? `Неделя ${week}`}</h1>
+  {plan && <p class="lede">{plan.topic}</p>}
+
+  {
+    plan && (
+      <div class="goals">
+        <b>Что разбирается на этой неделе</b>
+        <ul>
+          {plan.points.map((p) => <li>{p}</li>)}
+        </ul>
+      </div>
+    )
+  }
+
+  <div class="lesson-meta">
+    <span>{materials.length} материала · примерно {minutes} мин чтения</span>
+    {plan?.due && <span>Сдаём: {plan.due}</span>}
+  </div>
+
+  <div class="block">
+    <h2 class="sec">Материалы</h2>
+    <div class="stack">
+      {
+        materials.map((m) => (
+          <a class="mat" href={url(`lessons/${lessonId(m)}`)}>
+            <div>
+              <span class="chip">
+                {KIND_LABEL[m.kind]}{m.label ? ` ${m.label}` : ""}
+              </span>
+              <h3>{rich(m.title).ru}</h3>
+              <p>{rich(m.summary).ru}</p>
+            </div>
+            <span class="go">{m.minutes} мин →</span>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="block">
+    <h2 class="sec">Файлы</h2>
+    <p class="body">
+      Исходные ноутбуки лекций — как их выдал преподаватель. Файлы данных нужны, чтобы примеры
+      из лекций запускались без изменений: положите их рядом с ноутбуком.
+    </p>
+    <div class="lesson-meta">
+      {
+        materials
+          .filter((m) => m.source)
+          .map((m) => (
+            <a href={asset(`source/${course.slug}/${tag}/${m.source}`)} download>
+              ↓ {m.source}
+            </a>
+          ))
+      }
+      {
+        dataFiles.map((f) => (
+          <a href={asset(`data/${course.slug}/${tag}/${f}`)} download>
+            ↓ {f}
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</Base>

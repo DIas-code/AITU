@@ -1,0 +1,89 @@
+---
+import Base from "../../layouts/Base.astro";
+import Section from "../../components/Section.astro";
+import WeekList from "../../components/WeekList.astro";
+import { COURSES } from "../../data/courses";
+import { WEEKS, WARMUP } from "../../data/plan";
+import { EXAM_SESSION } from "../../data/calendar";
+import { EXAM_PREP_NOTE } from "../../data/resources";
+import { UI } from "../../data/ui";
+import { LANGS, t, type Lang } from "../../data/types";
+import { parse, weekday, full } from "../../lib/dates";
+
+export function getStaticPaths() {
+  return LANGS.map((lang) => ({ params: { lang }, props: { lang } }));
+}
+
+const { lang } = Astro.props as { lang: Lang };
+const L = (k: string) => t(UI[k], lang);
+---
+
+<Base lang={lang} page="plan" title={L("planTitle")} active="plan">
+  <div class="crumb">{L("planCrumb")}</div>
+  <h1 class="big">{L("planTitle")}</h1>
+  <p class="lede">{L("planLede")}</p>
+
+  <Section title={L("secWarmup")} sub={L("warmupSub")}>
+    <div class="weeks">
+      {
+        WARMUP.map((day, i) => (
+          <div class="card wk" data-date={day.date}>
+            <div class="wk-n">
+              <b>{parse(day.date).getDate()}</b>
+              <span>{weekday(day.date, lang)}</span>
+            </div>
+            <div class="wk-b">
+              <div class="wk-top">
+                <h3 style="font-size:15px">{L("dayN")} {i + 1}</h3>
+                <span class="pill">{t(day.load, lang)}</span>
+                {day.university && <span class="pill go">{t(day.university, lang)}</span>}
+              </div>
+              {
+                COURSES.map((c) => {
+                  const tr = day.tracks[c.slug];
+                  return tr ? (
+                    <div class={"trk " + c.accent}>
+                      <span class="lab">{t(c.short, lang).toLowerCase()}</span>
+                      <span class="txt">
+                        <strong>{t(tr.title, lang)}</strong>
+                        <em>{t(tr.detail, lang)}</em>
+                        <em style="color:var(--tint)">{t(tr.source, lang)}</em>
+                      </span>
+                    </div>
+                  ) : null;
+                })
+              }
+              <div class="deliver">
+                <b>{L("outcomeOfDay")}</b>
+                <span>{t(day.outcome, lang)}</span>
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </Section>
+
+  <Section title={L("secWeeks")} sub={L("weeksSub")}>
+    <WeekList weeks={WEEKS} lang={lang} />
+  </Section>
+
+  <Section
+    title={L("secExams")}
+    sub={`${full(EXAM_SESSION.from, lang)} — ${full(EXAM_SESSION.to, lang)}. ${L("examsSub")}`}
+  >
+    <div class="cols2">
+      {
+        COURSES.map((c) => (
+          <div class={`card pad ${c.accent} rail`}>
+            <span class="ctag">{t(c.short, lang)}</span>
+            <ul class="plain" style="margin-top:12px">
+              {c.examPrep[lang].map((x) => <li>{x}</li>)}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+    <div class="note" style="margin-top:14px">{t(EXAM_PREP_NOTE, lang)}</div>
+  </Section>
+</Base>

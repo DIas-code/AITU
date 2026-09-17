@@ -1,0 +1,96 @@
+---
+/**
+ * Рендерит список блоков секции лекции.
+ * Один компонент на все виды блоков — так данные лекции остаются плоскими.
+ */
+import CodeCell from "./CodeCell.astro";
+import Rich from "./Rich.astro";
+import { rich, TONE_LABEL, type Block } from "../data/types";
+import { inline } from "../lib/inline";
+
+interface Props {
+  blocks: Block[];
+  /** Префикс пути к картинкам: /media/<курс>/<wNN>/ */
+  media: string;
+}
+
+const { blocks, media } = Astro.props;
+---
+
+{
+  blocks.map((b) => {
+    switch (b.kind) {
+      case "text":
+        return <Rich value={b.value} as="p" class="body b" />;
+
+      case "list": {
+        const Tag = b.ordered ? "ol" : "ul";
+        return (
+          <Tag class="b">
+            {b.items.map((it) => (
+              <li>
+                <Rich value={it} />
+              </li>
+            ))}
+          </Tag>
+        );
+      }
+
+      case "code":
+        return (
+          <CodeCell
+            code={b.code}
+            out={b.out}
+            result={b.result}
+            error={b.error}
+            stdin={b.stdin}
+            note={b.note}
+            lang={b.lang}
+          />
+        );
+
+      case "image":
+        return (
+          <figure>
+            <img src={`${media}${b.src}`} alt={b.alt} loading="lazy" />
+            {b.caption && <figcaption set:html={inline(rich(b.caption).ru)} />}
+          </figure>
+        );
+
+      case "note":
+        return (
+          <div class={`note ${b.tone}`}>
+            <b>{TONE_LABEL[b.tone]}</b>
+            <Rich value={b.value} as="p" />
+          </div>
+        );
+
+      case "table":
+        return (
+          <>
+            <div class="tbl-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    {b.head.map((h) => (
+                      <th set:html={inline(h)} />
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {b.rows.map((row) => (
+                    <tr>
+                      {row.map((cell) => (
+                        <td set:html={inline(cell)} />
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {b.caption && <figcaption set:html={inline(rich(b.caption).ru)} />}
+          </>
+        );
+    }
+  })
+}

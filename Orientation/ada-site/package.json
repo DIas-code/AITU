@@ -1,0 +1,23 @@
+{
+  "name": "ada-site",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Учебный навигатор и программа подготовки — магистратура Applied Data Analytics, Astana IT University",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "astro": "^5.13.0",
+    "katex": "^0.18.4"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@types/katex": "^0.16.8",
+    "typescript": "^5.7.0"
+  }
+}

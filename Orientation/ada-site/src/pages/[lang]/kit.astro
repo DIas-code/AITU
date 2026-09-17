@@ -1,0 +1,122 @@
+---
+import Base from "../../layouts/Base.astro";
+import Section from "../../components/Section.astro";
+import { STACK, SETUP, REPO_TREE, FREE, DATASETS, METHOD } from "../../data/resources";
+import { UI } from "../../data/ui";
+import { LANGS, t, type Lang } from "../../data/types";
+
+export function getStaticPaths() {
+  return LANGS.map((lang) => ({ params: { lang }, props: { lang } }));
+}
+
+const { lang } = Astro.props as { lang: Lang };
+const L = (k: string) => t(UI[k], lang);
+---
+
+<Base lang={lang} page="kit" title={L("kitTitle")} active="kit">
+  <div class="crumb">{L("kitCrumb")}</div>
+  <h1 class="big">{L("kitTitle")}</h1>
+  <p class="lede">{L("kitLede")}</p>
+
+  <Section title={L("secSetup")} sub={L("setupSub")}>
+    <div class="cols2">
+      {
+        SETUP.map((s) => (
+          <div class="card pad">
+            <h3 style="font-size:15px;margin-bottom:12px">{t(s.title, lang)}</h3>
+            <pre class="sh t-prog">{
+              s.lines.map((l) => (
+                <span class={l.kind === "comment" ? "c line" : "k line"}>{l.text || " "}</span>
+              ))
+            }</pre>
+          </div>
+        ))
+      }
+    </div>
+  </Section>
+
+  <Section title={L("secStack")} sub={L("stackSub")}>
+    <div class="cols2">
+      {
+        STACK.map((g) => (
+          <div class="card pad">
+            <h3 style="font-size:15px;margin-bottom:12px">{t(g.group, lang)}</h3>
+            <div class="res">
+              {g.items.map((i) => (
+                <div class="res-i">
+                  <span class="nm mono" style="font-size:13.5px">{i.name}</span>
+                  <span></span>
+                  <span class="ds">{t(i.note, lang)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </Section>
+
+  <Section title={L("secRepo")} sub={L("repoSub")}>
+    <div class="card pad">
+      <div class="scroll">
+        <table class="t">
+          <tbody>
+            {
+              REPO_TREE.map((r) => (
+                <tr>
+                  <td class="mono" style="white-space:pre;font-size:13px">{r.path}</td>
+                  <td style="color:var(--muted)">{t(r.note, lang)}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </Section>
+
+  <Section title={L("secFree")} sub={L("freeSub")}>
+    <div class="card pad">
+      <div class="res">
+        {
+          FREE.map((f) => (
+            <div class="res-i">
+              <span class="nm"><a href={f.url} target="_blank" rel="noopener">{f.name}</a></span>
+              <span class="kd">{t(f.kind, lang)}</span>
+              <span class="ds">{t(f.note, lang)}</span>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </Section>
+
+  <Section title={L("secDatasets")} sub={L("datasetsSub")}>
+    <div class="card pad">
+      <div class="res">
+        {
+          DATASETS.map((d) => (
+            <div class="res-i">
+              <span class="nm">{d.name}</span>
+              <span></span>
+              <span class="ds">{t(d.note, lang)}</span>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </Section>
+
+  <Section title={L("secMethod")} sub={L("methodSub")}>
+    <div class="cols2">
+      {
+        METHOD.map((m) => (
+          <div class="card pad">
+            <h3 style="font-size:15.5px">{t(m.title, lang)}</h3>
+            <p class="body" style="font-size:15px;margin-top:8px">{t(m.text, lang)}</p>
+          </div>
+        ))
+      }
+    </div>
+  </Section>
+</Base>

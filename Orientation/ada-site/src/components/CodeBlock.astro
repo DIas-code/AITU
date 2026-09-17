@@ -1,0 +1,11 @@
+---
+import type { CodeBlock } from "../data/lessons/types";
+import { t, type Lang } from "../data/types";
+interface Props { c: CodeBlock; lang: Lang; }
+const { c, lang } = Astro.props;
+---
+<figure class="codewrap">
+  {c.caption && <figcaption class="code-cap">{t(c.caption, lang)}</figcaption>}
+  <pre class={"sh code-" + c.lang}><code>{c.code}</code></pre>
+  {c.out && <p class="code-out"><b>→</b> {t(c.out, lang)}</p>}
+</figure>

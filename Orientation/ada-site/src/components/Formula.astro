@@ -1,0 +1,22 @@
+---
+import katex from "katex";
+import type { Formula } from "../data/lessons/types";
+import { t, type Lang } from "../data/types";
+
+interface Props { f: Formula; lang: Lang; }
+const { f, lang } = Astro.props;
+
+let html = "";
+let failed = false;
+try {
+  html = katex.renderToString(f.tex, { displayMode: f.display !== false, throwOnError: true, output: "html" });
+} catch {
+  failed = true;
+}
+---
+{failed ? (
+  <pre class="sh"><code>{f.tex}</code></pre>
+) : (
+  <div class="formula" set:html={html} />
+)}
+{f.note && <p class="formula-note">{t(f.note, lang)}</p>}

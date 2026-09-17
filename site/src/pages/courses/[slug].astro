@@ -1,0 +1,182 @@
+---
+import Base from "../../layouts/Base.astro";
+import { COURSES } from "../../data/courses";
+import { byWeek } from "../../data/lessons";
+import { WEEK_PLAN, ASSESSMENT, FORMULA, BOOKS } from "../../data/plan";
+import { rich, KIND_LABEL } from "../../data/types";
+import { asset, weekUrl } from "../../lib/urls";
+
+export function getStaticPaths() {
+  return COURSES.map((course) => ({ params: { slug: course.slug }, props: { course } }));
+}
+
+const { course: c } = Astro.props;
+const plan = WEEK_PLAN[c.slug] ?? [];
+const assessment = ASSESSMENT[c.slug] ?? [];
+const books = BOOKS[c.slug] ?? [];
+const formula = FORMULA[c.slug];
+---
+
+<Base
+  title={c.short}
+  active={c.slug}
+  accent={c.accent}
+  course={c.slug}
+  description={c.about}
+  wide
+>
+  <p class="crumb">Курс · {c.term}</p>
+  <h1 class="big">{c.title}</h1>
+  <p class="lede">{c.about}</p>
+
+  <div class="block">
+    <div class="cols3">
+      <div class="card pad">
+        <b class="side-note">Преподаватель</b>
+        <p class="body" style="margin-top:6px">{c.lecturer}</p>
+      </div>
+      <div class="card pad">
+        <b class="side-note">Кредиты и часы</b>
+        <p class="body" style="margin-top:6px">
+          {c.credits} кредита · всего {c.hours?.total} ч<br />
+          лекции {c.hours?.lec} · практика {c.hours?.pr} · IASS {c.hours?.iass} · СРС {c.hours?.sis}
+        </p>
+      </div>
+      <div class="card pad">
+        <b class="side-note">Язык и пререквизиты</b>
+        <p class="body" style="margin-top:6px">
+          {c.language}<br />{c.prerequisites}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h2 class="sec">Десять недель</h2>
+    <p class="body">
+      Плитка недели открывается, когда в ней появились материалы. Остальные показывают тему из
+      силлабуса — что вас ждёт.
+    </p>
+    <div class="weeks" style="margin-top:18px">
+      {
+        plan.map((w) => {
+          const materials = byWeek(c.slug, w.week);
+          if (materials.length === 0) {
+            return (
+              <div class="week empty">
+                <div>
+                  <div class="n">Неделя {w.week}</div>
+                  <p>{w.short}</p>
+                </div>
+              </div>
+            );
+          }
+          return (
+            <a class="week" href={weekUrl(c.slug, w.week)}>
+              <div class="n">Неделя {w.week} · {materials.length} материала</div>
+              <h3>{w.short}</h3>
+              <ul>
+                {materials.map((m) => (
+                  <li>{KIND_LABEL[m.kind]} {m.label}: {rich(m.title).ru}</li>
+                ))}
+              </ul>
+            </a>
+          );
+        })
+      }
+    </div>
+  </div>
+
+  <div class="block">
+    <h2 class="sec">Программа по неделям</h2>
+    <p class="body">Темы лекций так, как они записаны в силлабусе курса.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>№</th>
+            <th>Тема</th>
+            <th>Сдаём</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            plan.map((w) => (
+              <tr>
+                <td class="mono">{w.week}</td>
+                <td>
+                  <b>{w.short}</b>
+                  <br />
+                  <span style="color:var(--muted); font-size:13px">{w.topic}</span>
+                </td>
+                <td style="white-space:nowrap">{w.due ?? "—"}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="block">
+    <h2 class="sec">Оценивание</h2>
+    <p class="body">{formula}</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Период</th>
+            <th>Работа</th>
+            <th>Баллы</th>
+            <th>Форма</th>
+            <th>Когда</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            assessment.map((a) => (
+              <tr>
+                <td>{a.period}</td>
+                <td>{a.what}</td>
+                <td class="mono">{a.points}</td>
+                <td>{a.form}</td>
+                <td>{a.when}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="block">
+    <h2 class="sec">Литература</h2>
+    <div class="cols2" style="margin-top:16px">
+      {
+        books.map((b) => (
+          <div class="card pad">
+            <p class="body" style="font-size:15px">
+              <b>{b.author}</b>
+              <br />
+              {b.url ? <a href={b.url}>{b.title}</a> : b.title}
+              {b.note && <><br /><span style="color:var(--muted); font-size:13px">{b.note}</span></>}
+            </p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
+  {
+    c.syllabus && (
+      <div class="block">
+        <h2 class="sec">Документы</h2>
+        <p class="body" style="margin-top:12px">
+          <a href={asset(`source/${c.slug}/${c.syllabus}`)} download>
+            ↓ Силлабус курса ({c.syllabus})
+          </a>
+        </p>
+      </div>
+    )
+  }
+</Base>

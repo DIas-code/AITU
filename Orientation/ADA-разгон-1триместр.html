@@ -1,0 +1,1132 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Разгон в первый триместр</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans+Condensed:wght@500;600;700&family=Fira+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+
+<style>
+:root{
+  --bg:#F0F2F4; --surface:#FFFFFF; --surface2:#E8EBEF; --sunk:#DDE1E6;
+  --ink:#14171C; --ink2:#3F4650; --muted:#6C7480;
+  --line:#D6DAE0; --line2:#B7BDC6;
+  --math:#1E4FA3; --math-soft:#E1E9F7;
+  --prog:#A4531A; --prog-soft:#F7EBDE;
+  --go:#1E6A48; --stop:#A02E2A; --stop-soft:#F7E5E4;
+  --shadow:0 1px 2px rgba(20,23,28,.05), 0 10px 26px -18px rgba(20,23,28,.30);
+  --r:9px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1115; --surface:#171A20; --surface2:#1E222A; --sunk:#0B0D10;
+    --ink:#E5E9EF; --ink2:#B0B8C3; --muted:#7C8593;
+    --line:#272C35; --line2:#3A414C;
+    --math:#82A8E9; --math-soft:#152540; --prog:#E0A264; --prog-soft:#2F2217;
+    --go:#69BE94; --stop:#E28A86; --stop-soft:#331B1A;
+    --shadow:0 1px 2px rgba(0,0,0,.5), 0 10px 26px -18px rgba(0,0,0,.9);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1115; --surface:#171A20; --surface2:#1E222A; --sunk:#0B0D10;
+  --ink:#E5E9EF; --ink2:#B0B8C3; --muted:#7C8593;
+  --line:#272C35; --line2:#3A414C;
+  --math:#82A8E9; --math-soft:#152540; --prog:#E0A264; --prog-soft:#2F2217;
+  --go:#69BE94; --stop:#E28A86; --stop-soft:#331B1A;
+  --shadow:0 1px 2px rgba(0,0,0,.5), 0 10px 26px -18px rgba(0,0,0,.9);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Fira Sans","Segoe UI",system-ui,sans-serif; font-size:15px; line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{margin:0; font-family:"Fira Sans Condensed","Fira Sans",sans-serif; font-weight:600; letter-spacing:.002em; text-wrap:balance}
+p{margin:0}
+a{color:var(--math); text-decoration:underline; text-underline-offset:2px; text-decoration-thickness:1px}
+a:hover{text-decoration-thickness:2px}
+:focus-visible{outline:2px solid var(--math); outline-offset:2px; border-radius:3px}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace; font-variant-numeric:tabular-nums}
+.serif{font-family:"Source Serif 4",Georgia,serif}
+
+/* ================= shell ================= */
+.shell{display:grid; grid-template-columns:250px minmax(0,1fr); min-height:100vh}
+.side{
+  border-right:1px solid var(--line); background:var(--surface);
+  padding:22px 18px 34px; position:sticky; top:0; height:100vh; overflow-y:auto;
+  display:flex; flex-direction:column; gap:22px;
+}
+.mark{display:flex; flex-direction:column; gap:3px}
+.mark b{font-family:"Fira Sans Condensed",sans-serif; font-size:19px; font-weight:700; line-height:1.1}
+.mark span{font-size:11px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted)}
+.today{
+  font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--ink2);
+  background:var(--surface2); border:1px solid var(--line); border-radius:6px; padding:8px 10px;
+}
+.today b{display:block; font-size:15px; color:var(--ink); margin-top:3px; font-weight:600}
+nav.pages{display:flex; flex-direction:column; gap:1px}
+nav.pages a{
+  display:grid; grid-template-columns:22px 1fr; gap:9px; align-items:baseline;
+  padding:8px 10px; border-radius:7px; text-decoration:none; color:var(--ink2);
+  font-size:14px; transition:background .13s,color .13s;
+}
+nav.pages a:hover{background:var(--surface2); color:var(--ink)}
+nav.pages a[aria-current="page"]{background:var(--ink); color:var(--surface)}
+nav.pages a[aria-current="page"] i{color:var(--surface); opacity:.55}
+nav.pages i{font-family:"JetBrains Mono",monospace; font-size:11px; font-style:normal; color:var(--muted)}
+.side-foot{margin-top:auto; display:flex; flex-direction:column; gap:10px}
+.tbtn{
+  font:inherit; font-size:12px; background:var(--surface2); color:var(--ink2);
+  border:1px solid var(--line); border-radius:7px; padding:7px 11px; cursor:pointer; text-align:left;
+}
+.tbtn:hover{border-color:var(--line2); color:var(--ink)}
+.side-note{font-size:11px; line-height:1.45; color:var(--muted)}
+
+main{padding:0 0 90px; min-width:0}
+.page{max-width:880px; margin:0 auto; padding:40px 32px 0}
+@media(max-width:980px){
+  .shell{grid-template-columns:1fr}
+  .side{
+    position:sticky; top:0; height:auto; flex-direction:row; align-items:center; gap:14px;
+    padding:10px 16px; border-right:0; border-bottom:1px solid var(--line); z-index:50; overflow:visible;
+  }
+  .today,.side-note{display:none}
+  .mark{flex-shrink:0}
+  .mark b{font-size:16px}
+  .mark span{display:none}
+  nav.pages{flex-direction:row; gap:2px; overflow-x:auto; scrollbar-width:none; margin-left:auto}
+  nav.pages::-webkit-scrollbar{display:none}
+  nav.pages a{grid-template-columns:1fr; padding:6px 10px; white-space:nowrap; font-size:13px}
+  nav.pages i{display:none}
+  .side-foot{margin-top:0; flex-direction:row}
+  .page{padding:26px 18px 0}
+}
+
+/* ================= type ================= */
+.crumb{font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin-bottom:11px}
+h1.big{font-size:38px; line-height:1.08; font-weight:700; letter-spacing:-.012em}
+.lede{font-family:"Source Serif 4",Georgia,serif; font-size:19px; line-height:1.5; color:var(--ink2); margin-top:14px; max-width:64ch}
+h2.sec{font-size:23px; margin-bottom:4px; line-height:1.2}
+.sec-sub{font-size:13.5px; color:var(--muted); margin-bottom:18px; max-width:70ch}
+.block{margin-top:46px}
+.block:first-of-type{margin-top:38px}
+.hr{height:1px; background:var(--line); border:0; margin:0}
+p.body{font-family:"Source Serif 4",Georgia,serif; font-size:16.5px; line-height:1.58; color:var(--ink2); max-width:68ch}
+p.body + p.body{margin-top:12px}
+.tint{color:var(--ink)}
+code{font-family:"JetBrains Mono",monospace; font-size:.88em; background:var(--surface2); border:1px solid var(--line); border-radius:4px; padding:1px 5px}
+
+/* ================= cards ================= */
+.card{background:var(--surface); border:1px solid var(--line); border-radius:var(--r); box-shadow:var(--shadow)}
+.pad{padding:20px 22px}
+.cols2{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px}
+.cols3{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px}
+@media(max-width:760px){.cols2,.cols3{grid-template-columns:1fr}}
+
+/* course accent */
+.t-math{--tint:var(--math); --tint-soft:var(--math-soft)}
+.t-prog{--tint:var(--prog); --tint-soft:var(--prog-soft)}
+.rail{border-left:3px solid var(--tint,var(--line2))}
+
+.ctag{
+  display:inline-flex; align-items:center; gap:6px; font-family:"JetBrains Mono",monospace;
+  font-size:10.5px; letter-spacing:.06em; text-transform:uppercase;
+  background:var(--tint-soft,var(--surface2)); color:var(--tint,var(--ink2));
+  border-radius:5px; padding:3px 8px; font-weight:500;
+}
+.pill{
+  display:inline-block; font-family:"JetBrains Mono",monospace; font-size:10.5px;
+  background:var(--surface2); color:var(--ink2); border:1px solid var(--line);
+  border-radius:99px; padding:2px 9px;
+}
+.pill.stop{background:var(--stop-soft); color:var(--stop); border-color:transparent; font-weight:600}
+.pill.go{background:var(--surface2); color:var(--go); border-color:transparent; font-weight:600}
+
+/* course header card */
+.chead{padding:22px 24px; display:grid; gap:14px}
+.chead h3{font-size:20px; line-height:1.2}
+.chead .en{font-family:"Source Serif 4",serif; font-size:14px; color:var(--muted); margin-top:2px}
+.metrics{display:flex; flex-wrap:wrap; gap:0}
+.metric{padding-right:26px; margin-right:26px; border-right:1px solid var(--line)}
+.metric:last-child{border-right:0; padding-right:0; margin-right:0}
+.metric b{display:block; font-family:"JetBrains Mono",monospace; font-size:22px; font-weight:600; line-height:1.1; color:var(--tint,var(--ink))}
+.metric span{font-size:11px; color:var(--muted); letter-spacing:.03em}
+
+/* ================= key/value ================= */
+dl.kv{display:grid; grid-template-columns:190px 1fr; gap:0; margin:0; font-size:14px}
+dl.kv dt{padding:10px 14px 10px 0; color:var(--muted); font-size:12.5px; border-top:1px solid var(--line)}
+dl.kv dd{padding:10px 0; margin:0; border-top:1px solid var(--line)}
+dl.kv>dt:first-of-type,dl.kv>dt:first-of-type+dd{border-top:0}
+@media(max-width:620px){
+  dl.kv{grid-template-columns:1fr}
+  dl.kv dt{padding-bottom:0; border-top:1px solid var(--line)}
+  dl.kv dd{padding-top:2px; border-top:0}
+}
+
+/* ================= tables ================= */
+.scroll{overflow-x:auto}
+table.t{width:100%; border-collapse:collapse; font-size:13.5px}
+table.t th{
+  font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--muted); font-weight:500; text-align:left; padding:0 12px 8px 0; border-bottom:1px solid var(--line2);
+  white-space:nowrap;
+}
+table.t td{padding:9px 12px 9px 0; border-bottom:1px solid var(--line); vertical-align:top}
+table.t tr:last-child td{border-bottom:0}
+table.t .num{font-family:"JetBrains Mono",monospace; font-variant-numeric:tabular-nums; white-space:nowrap}
+table.t .em{font-weight:600; color:var(--ink)}
+table.t tr.hot td{background:var(--stop-soft)}
+
+/* ================= week list ================= */
+.weeks{display:flex; flex-direction:column; gap:10px}
+.wk{display:grid; grid-template-columns:58px minmax(0,1fr); gap:0; overflow:hidden}
+.wk-n{
+  background:var(--surface2); border-right:1px solid var(--line);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; padding:14px 4px;
+}
+.wk-n b{font-family:"JetBrains Mono",monospace; font-size:19px; font-weight:600; line-height:1}
+.wk-n span{font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted)}
+.wk.hot .wk-n{background:var(--stop-soft)}
+.wk.hot .wk-n b{color:var(--stop)}
+.wk-b{padding:14px 18px; display:flex; flex-direction:column; gap:11px}
+.wk-top{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap}
+.wk-top .dt{font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--muted)}
+.trk{display:grid; grid-template-columns:96px minmax(0,1fr); gap:12px; align-items:baseline; font-size:14px}
+.trk .lab{font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--tint); padding-top:3px}
+.trk .txt strong{font-weight:600}
+.trk .txt em{font-style:normal; color:var(--muted); font-size:13px; display:block; margin-top:2px}
+@media(max-width:620px){
+  .wk{grid-template-columns:44px minmax(0,1fr)}
+  .trk{grid-template-columns:1fr; gap:2px}
+  .trk .lab{padding-top:0}
+}
+.deliver{
+  font-size:13px; color:var(--ink2); background:var(--surface2);
+  border-radius:6px; padding:8px 11px; display:flex; gap:8px; align-items:baseline;
+}
+.deliver b{font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); flex-shrink:0}
+
+/* ================= lists ================= */
+ul.plain{margin:0; padding-left:20px; display:flex; flex-direction:column; gap:7px}
+ul.plain li{font-size:14.5px; color:var(--ink2)}
+ul.plain li::marker{color:var(--line2)}
+ul.serifed{margin:0; padding-left:20px; display:flex; flex-direction:column; gap:8px}
+ul.serifed li{font-family:"Source Serif 4",Georgia,serif; font-size:16px; line-height:1.5; color:var(--ink2); max-width:66ch}
+ul.serifed li::marker{color:var(--line2)}
+ol.steps{margin:0; padding:0; list-style:none; counter-reset:s; display:flex; flex-direction:column; gap:14px}
+ol.steps li{counter-increment:s; display:grid; grid-template-columns:26px 1fr; gap:12px}
+ol.steps li::before{
+  content:counter(s); font-family:"JetBrains Mono",monospace; font-size:11px; font-weight:600;
+  color:var(--tint,var(--muted)); border:1px solid var(--line); border-radius:5px;
+  height:24px; display:flex; align-items:center; justify-content:center;
+}
+ol.steps b{display:block; font-size:14.5px; margin-bottom:2px}
+ol.steps span{font-size:13.5px; color:var(--ink2)}
+
+.chips{display:flex; flex-wrap:wrap; gap:6px}
+.chip{font-size:12.5px; padding:4px 10px; border-radius:6px; background:var(--surface2); border:1px solid var(--line); color:var(--ink2)}
+.chip.en{font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--tint,var(--muted)); background:var(--tint-soft,var(--surface2)); border-color:transparent}
+
+/* ================= self check ================= */
+.qa{border:1px solid var(--line); border-radius:var(--r); overflow:hidden; background:var(--surface)}
+.qa + .qa{margin-top:8px}
+.qa summary{
+  padding:13px 16px; cursor:pointer; display:grid; grid-template-columns:24px 1fr 16px; gap:11px;
+  align-items:baseline; font-size:14.5px; list-style:none;
+}
+.qa summary::-webkit-details-marker{display:none}
+.qa summary:hover{background:var(--surface2)}
+.qa .qn{font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--muted)}
+.qa .caret{width:8px; height:8px; border-right:1.6px solid var(--muted); border-bottom:1.6px solid var(--muted); transform:rotate(45deg); margin-top:3px}
+.qa[open] .caret{transform:rotate(225deg); margin-top:6px}
+.qa .ans{padding:0 16px 15px 51px; font-family:"Source Serif 4",Georgia,serif; font-size:15.5px; line-height:1.5; color:var(--ink2)}
+@media(max-width:620px){.qa .ans{padding-left:16px}}
+
+/* ================= callouts ================= */
+.note{border-left:3px solid var(--tint,var(--line2)); background:var(--surface2); padding:13px 16px; border-radius:0 7px 7px 0; font-size:14px; color:var(--ink2)}
+.note b{color:var(--ink)}
+.warn{border-left-color:var(--stop); background:var(--stop-soft)}
+.warn b{color:var(--stop)}
+
+pre.sh{
+  background:var(--sunk); border:1px solid var(--line); border-radius:7px;
+  padding:14px 16px; overflow-x:auto; margin:0;
+  font-family:"JetBrains Mono",monospace; font-size:12.5px; line-height:1.65; color:var(--ink2);
+}
+pre.sh .c{color:var(--muted)}
+pre.sh .k{color:var(--tint,var(--ink)); font-weight:500}
+
+.res{display:flex; flex-direction:column; gap:0}
+.res-i{display:grid; grid-template-columns:1fr auto; gap:4px 16px; padding:12px 0; border-top:1px solid var(--line)}
+.res-i:first-child{border-top:0}
+.res-i .nm{font-size:14.5px; font-weight:500}
+.res-i .ds{grid-column:1; font-size:13px; color:var(--muted); max-width:62ch}
+.res-i .kd{font-family:"JetBrains Mono",monospace; font-size:10.5px; color:var(--muted); white-space:nowrap; padding-top:3px}
+
+.foot{max-width:880px; margin:70px auto 0; padding:22px 32px 0; border-top:1px solid var(--line); font-size:12.5px; color:var(--muted)}
+@media(max-width:980px){.foot{padding:22px 18px 0}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head><body>
+
+<div class="shell">
+  <aside class="side">
+    <div class="mark">
+      <b>Разгон</b>
+      <span>1 триместр · ADA · AITU</span>
+    </div>
+    <div class="today" id="today"></div>
+    <nav class="pages" id="nav"></nav>
+    <div class="side-foot">
+      <button class="tbtn" id="theme">Сменить тему</button>
+      <p class="side-note">Официальные данные — из хендбука модулей и академического календаря AITU. План подготовки и понедельная разбивка тем — реконструкция, а не документ университета.</p>
+    </div>
+  </aside>
+  <main>
+    <div class="page" id="page"></div>
+    <div class="foot" id="foot"></div>
+  </main>
+</div>
+
+<script>
+/* ===================== helpers ===================== */
+function h(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+var MON=["янв","фев","мар","апр","мая","июн","июл","авг","сен","окт","ноя","дек"];
+var WD=["вс","пн","вт","ср","чт","пт","сб"];
+function D(s){ var p=s.split("-"); return new Date(+p[0],+p[1]-1,+p[2]); }
+function fd(s){ var d=D(s); return d.getDate()+" "+MON[d.getMonth()]; }
+function fdy(s){ var d=D(s); return d.getDate()+" "+MON[d.getMonth()]+" "+d.getFullYear(); }
+function wdOf(s){ return WD[D(s).getDay()]; }
+function plur(n,f){ var a=n%10,b=n%100; if(a===1&&b!==11)return f[0]; if(a>=2&&a<=4&&(b<12||b>14))return f[1]; return f[2]; }
+var TODAY=new Date(); TODAY.setHours(0,0,0,0);
+function daysTo(s){ return Math.round((D(s)-TODAY)/86400000); }
+
+/* ===================== курсы (из хендбука + УП) ===================== */
+var COURSES = {
+  math:{
+    key:"math", cls:"t-math", short:"Математика",
+    ru:"Математика для науки о данных",
+    en:"Mathematics for Data Science",
+    code:"5", cycle:"ПД / ВК", cr:5, ctrl:"экзамен",
+    lecturer:"Prof. Svitlana Biloshchytska, Doctor of Technical Sciences",
+    lang:"английский, русский",
+    hUP:{tot:150, lec:30, pr:20, srop:10, sro:90},
+    hHB:{tot:150, lec:30, pr:20, isis:30, sis:70},
+    method:"Problem-based learning: работа в группах над открытой задачей, групповая дискуссия, интерактивно-коммуникативное обучение.",
+    pre:"Линейная алгебра, матанализ I/II, теория вероятностей и статистика (бакалавриат)",
+    post:"Прикладной проект по аналитике данных",
+    assess:[
+      {p:"1 аттестация", t:"Лабораторные работы 1–4", pts:60, f:"Письменные отчёты", w:"еженедельно", hot:false},
+      {p:"1 аттестация", t:"Рубежный экзамен", pts:40, f:"Письменно", w:"неделя 5", hot:true},
+      {p:"2 аттестация", t:"Лабораторные работы 5–8", pts:60, f:"Письменные отчёты", w:"еженедельно", hot:false},
+      {p:"2 аттестация", t:"Итоговый экзамен", pts:40, f:"Письменно", w:"неделя 10", hot:true},
+      {p:"Экзамен", t:"Финальный экзамен", pts:100, f:"—", w:"16–28 ноя", hot:true}
+    ],
+    lever:"60 из 100 баллов каждой аттестации — это восемь лабораторных, которые сдаются еженедельно. Их нельзя нагнать в последнюю ночь: пропустил неделю — потерял баллы навсегда, потому что работы с опозданием не принимаются. Это главный рычаг курса.",
+    about:"За десять недель разбираются подходы к описанию данных исследования, основные методы и принципы статистического анализа, интерпретация и визуализация результатов. Дисперсионный, регрессионный и кластерный анализ; сравнение групп, коэффициенты корреляции, уравнения регрессии. Упор — на математические идеи, интуицию и логику, которые стоят за методами и расчётными формулами."
+  },
+  prog:{
+    key:"prog", cls:"t-prog", short:"Программирование",
+    ru:"Программирование для анализа данных и баз данных",
+    en:"Programming for Data Analysis and Databases",
+    code:"NONE", cycle:"ПД / ВК", cr:5, ctrl:"экзамен",
+    lecturer:"Turar Olzhas, PhD — директор департамента Computational & Data Science",
+    lang:"английский",
+    hUP:{tot:150, lec:30, pr:20, srop:10, sro:90},
+    hHB:{tot:150, lec:30, pr:20, isis:30, sis:70},
+    method:"Problem-based learning: работа в группах над открытой задачей, групповая дискуссия, интерактивно-коммуникативное обучение.",
+    pre:"Теория вероятностей и статистика (бакалавриат)",
+    post:"Бизнес-аналитика",
+    assess:[
+      {p:"1 аттестация", t:"Промежуточный проект", pts:100, f:"Сдача письменного проекта", w:"неделя 5", hot:true},
+      {p:"2 аттестация", t:"Итоговый проект", pts:60, f:"Сдача письменного проекта", w:"недели 8–9", hot:true},
+      {p:"2 аттестация", t:"Итоговый тест", pts:40, f:"Письменно", w:"неделя 10", hot:true},
+      {p:"Экзамен", t:"Финальный экзамен", pts:100, f:"Письменно", w:"16–28 ноя", hot:true}
+    ],
+    lever:"Обе аттестации — это проекты, а не тесты: 100 баллов первой аттестации целиком висят на одной сдаче на пятой неделе. Заводи репозиторий с первого дня и доводи каждую тему до работающего ноутбука — иначе к пятой неделе нечего будет сдавать. При этом финальный экзамен письменный, значит теорию и SQL надо знать на бумаге, а не только уметь загуглить.",
+    about:"Курс покрывает четыре блока: введение в языки программирования для анализа данных и баз данных; типы и структуры данных в Python и R; методы очистки и предобработки данных; визуализация и отчётность. По результатам обучения добавляются проектирование и оптимизация схем БД на SQL, разведочный анализ и критический разбор прикладных методов машинного обучения."
+  }
+};
+
+/* ===================== учебные недели ===================== */
+var WEEK1 = "2026-09-07";
+function weekDates(n){
+  var a=D(WEEK1); a.setDate(a.getDate()+(n-1)*7);
+  var b=new Date(a); b.setDate(b.getDate()+6);
+  var f=function(d){ return d.getDate()+" "+MON[d.getMonth()]; };
+  return f(a)+" — "+f(b);
+}
+
+var WEEKS = [
+  {n:1, math:{t:"Описательная статистика и типы данных",
+    d:"Шкалы измерения, абсолютные, относительные и средние величины. Показатели вариации: размах, дисперсия, стандартное отклонение, коэффициент вариации.",
+    en:["descriptive statistics","measures of central tendency","variance","standard deviation"]},
+   prog:{t:"Python для данных: среда и основы",
+    d:"Jupyter и VS Code, типы данных, списки, словари, множества, срезы, comprehensions, функции, модули. Чтение файлов.",
+    en:["Jupyter","list comprehension","dict","slicing"]},
+   do:"Собрать рабочую среду и сдать первую лабораторную по описательной статистике в срок — это задаёт ритм на весь триместр."},
+
+  {n:2, math:{t:"Вероятность и случайные величины",
+    d:"Условная вероятность, формула Байеса, математическое ожидание и дисперсия. Ключевые распределения: нормальное, биномиальное, Пуассона.",
+    en:["conditional probability","Bayes rule","expected value","probability distribution"]},
+   prog:{t:"NumPy: массивы и векторизация",
+    d:"ndarray, dtype, форма и решейп, индексация, broadcasting, векторные операции вместо циклов, случайные числа.",
+    en:["ndarray","broadcasting","vectorization","axis"]},
+   do:"Переписать три любых цикла из первой недели в векторную форму на NumPy и замерить разницу во времени."},
+
+  {n:3, math:{t:"Выборка и оценивание",
+    d:"Генеральная совокупность и выборка, точечные и интервальные оценки, центральная предельная теорема, доверительные интервалы, стандартная ошибка.",
+    en:["sampling","point estimate","confidence interval","central limit theorem"]},
+   prog:{t:"pandas I: Series, DataFrame, ввод-вывод",
+    d:"Создание и загрузка данных (CSV, Excel, JSON), .loc и .iloc, фильтрация, сортировка, новые столбцы, describe и info.",
+    en:["DataFrame","loc / iloc","boolean mask","read_csv"]},
+   do:"Взять один публичный датасет и написать ноутбук, который загружает его и отвечает на пять содержательных вопросов."},
+
+  {n:4, math:{t:"Проверка гипотез",
+    d:"Нулевая и альтернативная гипотезы, уровень значимости, p-значение, ошибки первого и второго рода, мощность. t-тесты для одной и двух выборок, χ².",
+    en:["null hypothesis","p-value","type I / type II error","t-test"]},
+   prog:{t:"pandas II: агрегация и соединения",
+    d:"groupby и агрегирующие функции, merge и join, concat, сводные таблицы pivot_table, преобразование формы melt.",
+    en:["groupby","merge","pivot_table","aggregation"]},
+   do:"Собрать черновик промежуточного проекта: данные загружены, очищены, есть первые агрегаты и графики."},
+
+  {n:5, hot:true, ctl:"РК1 · 5–10 октября",
+   math:{t:"Рубежный экзамен + дисперсионный анализ",
+    d:"Экзамен по темам недель 1–4. Дальше: однофакторный ANOVA, сравнение средних в нескольких группах, F-статистика, межгрупповая и внутригрупповая дисперсия.",
+    en:["ANOVA","F-test","between-group variance","post-hoc"]},
+   prog:{t:"Сдача промежуточного проекта + очистка данных",
+    d:"Проект на 100 баллов. Параллельно: пропуски, дубликаты, выбросы, приведение типов, кодирование категорий, нормализация.",
+    en:["missing values","outliers","imputation","encoding"]},
+   do:"Сдать проект и рубежный экзамен. После них — разобрать ошибки, а не выдохнуть: половина второй аттестации опирается на те же основы."},
+
+  {n:6, math:{t:"Корреляция и связь признаков",
+    d:"Ковариация, коэффициент Пирсона, ранговый Спирмена, корреляционная матрица. Почему корреляция не равна причинности и где Пирсон слепнет.",
+    en:["covariance","Pearson correlation","Spearman","correlation matrix"]},
+   prog:{t:"SQL I: реляционная модель и запросы",
+    d:"Таблицы, ключи, связи. SELECT, WHERE, ORDER BY, LIMIT, агрегаты, GROUP BY и HAVING, INNER и LEFT JOIN, подзапросы.",
+    en:["SELECT","JOIN","GROUP BY","HAVING"]},
+   do:"Пройти тренажёр по SQL до конца раздела с соединениями и решить 30 запросов на учебной базе."},
+
+  {n:7, math:{t:"Линейная регрессия",
+    d:"Метод наименьших квадратов, интерпретация коэффициентов, R², остатки и предпосылки модели: линейность, гомоскедастичность, независимость, нормальность остатков.",
+    en:["ordinary least squares","residuals","R-squared","homoscedasticity"]},
+   prog:{t:"SQL II: проектирование и оптимизация схем",
+    d:"Нормальные формы 1NF–3NF, первичные и внешние ключи, ограничения, индексы, план выполнения запроса, денормализация как компромисс.",
+    en:["normalization","primary / foreign key","index","query plan"]},
+   do:"Спроектировать схему БД под свой датасет: ER-набросок, DDL-скрипт, загрузка данных, пять аналитических запросов. 25 октября — День Республики, выходной приходится на воскресенье."},
+
+  {n:8, math:{t:"Множественная регрессия",
+    d:"Несколько предикторов, мультиколлинеарность и VIF, категориальные признаки и фиктивные переменные, отбор модели, скорректированный R².",
+    en:["multiple regression","multicollinearity","dummy variable","model selection"]},
+   prog:{t:"Python и БД: связка и ETL",
+    d:"sqlite3 и SQLAlchemy, pandas.read_sql и to_sql, параметризованные запросы, сборка воспроизводимого ETL-конвейера. Старт итогового проекта.",
+    en:["SQLAlchemy","read_sql","ETL","parameterized query"]},
+   do:"Начать итоговый проект: сквозной путь от сырых данных через базу к аналитике. Сдача — на девятой неделе."},
+
+  {n:9, math:{t:"Временные ряды и прогнозирование",
+    d:"Показатели динамики и индексы, тренд и сезонность, стационарность, автокорреляция, скользящее среднее, простые модели прогноза.",
+    en:["time series","trend","seasonality","autocorrelation"]},
+   prog:{t:"Визуализация и отчётность",
+    d:"matplotlib и seaborn, выбор типа графика под задачу, оси и подписи, читаемость. Сборка результата в отчёт или дашборд. Сдача итогового проекта.",
+    en:["matplotlib","seaborn","chart selection","reporting"]},
+   do:"Сдать итоговый проект на 60 баллов. Каждый график должен отвечать на вопрос, а не украшать страницу."},
+
+  {n:10, hot:true, ctl:"РК2 · 9–14 ноября",
+   math:{t:"Итоговый экзамен + кластеризация и снижение размерности",
+    d:"Экзамен по темам недель 6–9. Дальше: k-means, иерархическая кластеризация, метрики расстояния, метод главных компонент как проекция на собственные векторы.",
+    en:["k-means","hierarchical clustering","PCA","dimensionality reduction"]},
+   prog:{t:"Итоговый тест + разведочный анализ",
+    d:"Тест на 40 баллов. Сквозной EDA: от сырых данных к выводам, воспроизводимость, структура репозитория, README. Основы R и tidyverse.",
+    en:["exploratory data analysis","reproducibility","tidyverse","R"]},
+   do:"Закрыть обе аттестации и сразу составить конспект-шпаргалку для финального экзамена, пока материал свежий."}
+];
+
+/* ===================== неделя 0: разминка ===================== */
+var WARMUP = [
+  {d:"2026-08-31", load:"полный день",
+   math:{t:"Линейная алгебра, часть 1",
+     d:"Векторы, скалярное произведение, норма. Матрицы: умножение, транспонирование, единичная матрица. Матрица как линейное отображение.",
+     src:"3Blue1Brown, «Essence of Linear Algebra», выпуски 1–4"},
+   prog:{t:"Собрать среду",
+     d:"Python 3.12, менеджер пакетов, JupyterLab, VS Code, git и репозиторий на GitHub. Первый ноутбук, первый коммит.",
+     src:"См. страницу «Инструменты» — там готовые команды"},
+   out:"Работающий ноутбук в репозитории, в нём — умножение двух матриц вручную и через NumPy, результаты совпадают."},
+
+  {d:"2026-09-01", load:"вечер, ~2 ч", uni:"Ознакомительная неделя и регистрация на дисциплины — начинается сегодня",
+   math:{t:"Линейная алгебра, часть 2",
+     d:"Определитель, ранг, обратная матрица. Условие существования обратной. Собственные векторы и собственные значения — зачем они понадобятся в PCA.",
+     src:"3Blue1Brown, выпуски 5–7 и 13–14"},
+   prog:{t:"Python: типы и структуры",
+     d:"Числа, строки, списки, кортежи, словари, множества. Изменяемость и ссылки. Срезы. Comprehensions.",
+     src:"McKinney, «Python for Data Analysis», глава 3"},
+   out:"Зарегистрироваться на дисциплины — это дедлайн университета, он важнее любого конспекта."},
+
+  {d:"2026-09-02", load:"вечер, ~2 ч", uni:"Ознакомительная неделя",
+   math:{t:"Производные и градиент",
+     d:"Производная, правила дифференцирования, цепное правило. Частные производные и градиент. Условие экстремума — обнуление градиента.",
+     src:"3Blue1Brown, «Essence of Calculus», выпуски 1–4"},
+   prog:{t:"Python: функции и файлы",
+     d:"Функции, аргументы по умолчанию, области видимости. Работа с файлами, обработка исключений, модули и импорт.",
+     src:"McKinney, глава 3"},
+   out:"Вывести формулу МНК для одной переменной: приравнять частные производные суммы квадратов к нулю."},
+
+  {d:"2026-09-03", load:"вечер, ~2 ч", uni:"Ознакомительная неделя",
+   math:{t:"Случайные величины",
+     d:"Дискретные и непрерывные величины, функция плотности и распределения. Математическое ожидание, дисперсия, стандартное отклонение.",
+     src:"Seeing Theory, разделы «Basic Probability» и «Probability Distributions»"},
+   prog:{t:"NumPy с нуля",
+     d:"Создание массивов, форма, индексация, срезы, агрегаты по осям, broadcasting.",
+     src:"McKinney, глава 4"},
+   out:"Смоделировать 10 000 бросков монеты на NumPy и увидеть, как выборочная частота сходится к 0,5."},
+
+  {d:"2026-09-04", load:"вечер, ~2 ч", uni:"Ознакомительная неделя завершается завтра",
+   math:{t:"Распределения и ЦПТ",
+     d:"Нормальное, биномиальное, Пуассона, t-распределение. Центральная предельная теорема и почему она делает статистику возможной.",
+     src:"StatQuest — ролики по нормальному распределению и ЦПТ"},
+   prog:{t:"pandas: первое знакомство",
+     d:"Series и DataFrame, read_csv, head, info, describe, выбор столбцов, фильтрация по условию.",
+     src:"McKinney, глава 5"},
+   out:"Взять любое несимметричное распределение, усреднять по 30 значений тысячу раз и получить нормальную гистограмму."},
+
+  {d:"2026-09-05", load:"полный день",
+   math:{t:"Описательная статистика на практике",
+     d:"Среднее, медиана, мода, квартили, размах, дисперсия, коэффициент вариации. Гистограмма, боксплот, диаграмма рассеяния и что каждый из них скрывает.",
+     src:"Bruce & Bruce, «Practical Statistics for Data Scientists», глава 1"},
+   prog:{t:"SQL: первые запросы",
+     d:"Реляционная модель. SELECT, WHERE, ORDER BY, LIMIT, агрегаты, GROUP BY. Установить DuckDB или SQLite и загрузить учебную базу.",
+     src:"SQLBolt, уроки 1–12"},
+   out:"Один датасет, разобранный двумя способами: сводка через pandas и те же цифры через SQL-запросы. Числа должны сойтись."},
+
+  {d:"2026-09-06", load:"полдня",
+   math:{t:"Повторение и самопроверка",
+     d:"Пройти чек-лист самопроверки на страницах обеих дисциплин. Всё, где ответ не пришёл за минуту, выписать отдельно — это твой список пробелов.",
+     src:"Чек-листы на страницах «Математика» и «Программирование»"},
+   prog:{t:"Заготовка на триместр",
+     d:"Структура репозитория под курс: папки по неделям, шаблон ноутбука, README, .gitignore. Календарь с дедлайнами.",
+     src:"—"},
+   out:"Репозиторий готов, пробелы выписаны, расписание на неделю составлено. Завтра — первая пара."}
+];
+
+/* ===================== чек-листы самопроверки ===================== */
+var QA = {
+math:[
+ {g:"Линейная алгебра", q:"Что такое ранг матрицы и почему он критичен для регрессии?",
+  a:"Ранг — число линейно независимых строк или столбцов. Если столбцы матрицы признаков X линейно зависимы, то есть ранг меньше числа признаков, произведение XᵀX необратимо и оценка МНК не единственна. Именно это стоит за мультиколлинеарностью, которую разбирают на восьмой неделе."},
+ {g:"Линейная алгебра", q:"Чему равно (AB)ᵀ?",
+  a:"BᵀAᵀ — порядок множителей переворачивается. Частая ошибка на экзамене: написать AᵀBᵀ."},
+ {g:"Линейная алгебра", q:"Что геометрически делают собственные векторы матрицы?",
+  a:"Задают направления, которые матрица только растягивает или сжимает в λ раз, но не поворачивает. На этом стоит метод главных компонент: главные компоненты — собственные векторы ковариационной матрицы, а собственные значения показывают, сколько дисперсии объясняет каждая."},
+ {g:"Линейная алгебра", q:"Когда у квадратной матрицы нет обратной?",
+  a:"Когда её определитель равен нулю. Это то же самое, что линейная зависимость столбцов и неполный ранг — три формулировки одного факта."},
+ {g:"Матанализ", q:"Что такое градиент и зачем он в статистике?",
+  a:"Вектор частных производных функции нескольких переменных; указывает направление наибыстрейшего роста. Приравняв градиент к нулю, находят экстремум — так выводится формула МНК и так работает обучение почти всех моделей."},
+ {g:"Матанализ", q:"Чему равна производная сложной функции f(g(x))?",
+  a:"f′(g(x)) · g′(x) — цепное правило. Без него не вывести ни МНК, ни градиентный спуск."},
+ {g:"Матанализ", q:"Зачем в теории вероятностей интеграл от плотности?",
+  a:"Интеграл плотности по отрезку равен вероятности попасть в этот отрезок, а интеграл по всей оси равен единице. Для непрерывной величины вероятность конкретного значения равна нулю — смысл есть только у интервалов."},
+ {g:"Вероятность и статистика", q:"Почему выборочная дисперсия делится на n−1, а не на n?",
+  a:"Поправка Бесселя. Отклонения считаются от выборочного среднего, которое само подстроено под данные, поэтому деление на n систематически занижает дисперсию. Деление на n−1 даёт несмещённую оценку."},
+ {g:"Вероятность и статистика", q:"Что утверждает центральная предельная теорема?",
+  a:"При росте объёма выборки распределение выборочного среднего стремится к нормальному независимо от того, как распределена исходная величина, — при условии конечной дисперсии. Отсюда берутся доверительные интервалы и z- и t-тесты."},
+ {g:"Вероятность и статистика", q:"Что такое p-значение и чем оно не является?",
+  a:"Вероятность получить наблюдаемый или более экстремальный результат при условии, что нулевая гипотеза верна. Это не вероятность того, что нулевая гипотеза верна, и не вероятность того, что результат получен случайно. Подмену этих смыслов проверяют на экзаменах особенно охотно."},
+ {g:"Вероятность и статистика", q:"В чём разница между ошибками первого и второго рода?",
+  a:"Ошибка первого рода — отвергли верную нулевую гипотезу, ложная тревога, её вероятность равна α. Ошибка второго рода — не отвергли ложную нулевую, пропуск сигнала, вероятность β. Мощность теста равна 1 − β."},
+ {g:"Вероятность и статистика", q:"Нулевая корреляция означает независимость?",
+  a:"Нет. Коэффициент Пирсона измеряет только линейную связь. Для y = x² на симметричном отрезке корреляция около нуля при полной функциональной зависимости. Обратное верно: независимые величины некоррелированы."}
+],
+prog:[
+ {g:"Python", q:"Чем список отличается от кортежа?",
+  a:"Список изменяемый, кортеж — нет. Поэтому кортеж хешируем и может быть ключом словаря или элементом множества, а список — нет."},
+ {g:"Python", q:"Что напечатает a = [1, 2]; b = a; b.append(3); print(a)?",
+  a:"[1, 2, 3]. Присваивание копирует ссылку, а не объект: a и b — одно и то же. Чтобы получить копию, нужно a.copy(), list(a) или срез a[:]."},
+ {g:"Python", q:"Что такое list comprehension и чем он лучше цикла?",
+  a:"Запись вида [f(x) for x in xs if cond(x)]. Короче, быстрее цикла с append и, главное, является выражением — его можно передать в функцию или вложить."},
+ {g:"Python", q:"Чем is отличается от ==?",
+  a:"is сравнивает идентичность объектов в памяти, == сравнивает значения. Для сравнения с None используют is None, для всего остального почти всегда ==."},
+ {g:"pandas и NumPy", q:"В чём разница между .loc и .iloc?",
+  a:".loc обращается по меткам индекса и столбцов, .iloc — по целочисленным позициям. df.loc[0] и df.iloc[0] совпадут только если индекс — это 0, 1, 2 подряд."},
+ {g:"pandas и NumPy", q:"Что такое broadcasting в NumPy?",
+  a:"Правило, по которому массивы разной формы автоматически согласуются в поэлементных операциях: недостающие размерности достраиваются, размерности длины 1 растягиваются. Массив на 1000×3 можно поделить на массив из 3 чисел без единого цикла и без копирования данных."},
+ {g:"pandas и NumPy", q:"Как получить среднюю цену по каждой категории?",
+  a:"df.groupby(\"category\")[\"price\"].mean(). Это связка split-apply-combine: разбить по ключу, применить функцию, собрать обратно."},
+ {g:"pandas и NumPy", q:"Чем merge отличается от concat?",
+  a:"merge соединяет таблицы по ключу, как JOIN в SQL. concat просто склеивает их вдоль оси — сверху вниз или слева направо, — не сопоставляя строки по значению."},
+ {g:"SQL", q:"В чём разница между INNER JOIN и LEFT JOIN?",
+  a:"INNER JOIN оставляет только строки, для которых нашлось совпадение в обеих таблицах. LEFT JOIN сохраняет все строки левой таблицы, а недостающие поля правой заполняет NULL. Если после LEFT JOIN строк стало больше, значит справа несколько совпадений на одну левую строку."},
+ {g:"SQL", q:"Чем WHERE отличается от HAVING?",
+  a:"WHERE фильтрует отдельные строки до группировки, HAVING фильтрует уже сформированные группы после агрегации. Условие на COUNT или SUM можно поставить только в HAVING."},
+ {g:"SQL", q:"Что такое первичный и внешний ключ?",
+  a:"Первичный ключ уникально идентифицирует строку в своей таблице и не может быть NULL. Внешний ключ — столбец, который ссылается на первичный ключ другой таблицы и тем самым обеспечивает ссылочную целостность."},
+ {g:"SQL", q:"Чем COUNT(*) отличается от COUNT(column)?",
+  a:"COUNT(*) считает все строки группы. COUNT(column) считает только те, где значение столбца не NULL. Разница между ними — быстрый способ узнать, сколько пропусков в столбце."}
+]};
+
+/* ===================== что подтянуть заранее ===================== */
+var PREP = {
+math:[
+ {t:"Линейная алгебра", why:"Нужна на неделях 7–8 и 10: регрессия в матричной форме, мультиколлинеарность, метод главных компонент.",
+  items:["Векторы, скалярное произведение, норма","Умножение и транспонирование матриц","Определитель, ранг, обратная матрица","Собственные векторы и собственные значения","Матрица как линейное отображение"]},
+ {t:"Математический анализ", why:"Нужен, чтобы понимать, откуда берутся формулы: МНК выводится приравниванием градиента к нулю.",
+  items:["Производная и правила дифференцирования","Цепное правило","Частные производные и градиент","Экстремум функции нескольких переменных","Интеграл как площадь и как вероятность"]},
+ {t:"Теория вероятностей", why:"Фундамент недель 2–5. Без него проверка гипотез превращается в заучивание рецептов.",
+  items:["Условная вероятность и формула Байеса","Случайные величины, плотность и функция распределения","Математическое ожидание и дисперсия","Нормальное, биномиальное, Пуассона, t и χ²","Центральная предельная теорема"]}
+],
+prog:[
+ {t:"Python", why:"Курс стартует сразу с анализа данных и не тратит недели на основы языка. Базовый синтаксис нужно принести с собой.",
+  items:["Типы, списки, словари, множества, кортежи","Изменяемость и ссылочная семантика","Срезы и comprehensions","Функции, аргументы, области видимости","Чтение файлов и обработка исключений","Модули, виртуальные окружения, pip"]},
+ {t:"Инструменты", why:"Проекты сдаются как артефакты. Тот, кто на пятой неделе воюет с git, теряет баллы не за знания.",
+  items:["Командная строка: перемещение, пути, запуск скриптов","git: commit, branch, push, разрешение конфликтов","Jupyter: ячейки, порядок выполнения, перезапуск ядра","Markdown для README и отчётов"]},
+ {t:"Статистика", why:"Официальный пререквизит курса — теория вероятностей и статистика. Разведочный анализ на неделе 10 держится на ней.",
+  items:["Среднее, медиана, квартили, выбросы","Дисперсия и стандартное отклонение","Корреляция и её ограничения","Как читать гистограмму и боксплот"]}
+]};
+
+/* ===================== инструменты ===================== */
+var STACK = [
+ {g:"База", items:[
+   ["Python 3.12","Основной язык курса. Ставится вместе с менеджером пакетов uv."],
+   ["uv","Быстрый менеджер пакетов и виртуальных окружений. Альтернатива — conda или Miniforge."],
+   ["JupyterLab","Среда для ноутбуков: в них сдаются лабораторные и проекты."],
+   ["VS Code","Редактор для скриптов, SQL и git. Расширения Python и Jupyter."],
+   ["git и GitHub","История работы и место, откуда сдаются проекты."]
+ ]},
+ {g:"Анализ данных", items:[
+   ["numpy","Массивы и векторные вычисления."],
+   ["pandas","Таблицы, очистка, агрегация, соединения."],
+   ["matplotlib и seaborn","Графики: от быстрых до публикационных."],
+   ["scipy.stats","Распределения и статистические тесты — рабочая лошадь курса математики."],
+   ["statsmodels","Регрессия с полноценной статистической сводкой: коэффициенты, p-значения, R²."],
+   ["scikit-learn","Кластеризация, PCA, предобработка признаков."]
+ ]},
+ {g:"Базы данных", items:[
+   ["DuckDB","SQL прямо по CSV и DataFrame, без сервера. Лучший способ тренироваться."],
+   ["SQLite","Файловая база, учебные схемы вроде Chinook разворачиваются в одну команду."],
+   ["SQLAlchemy","Связка Python и БД, работает с pandas.read_sql."],
+   ["PostgreSQL","Опционально: настоящий сервер, если дойдёте до планов выполнения и индексов."],
+   ["DBeaver","Графический клиент, чтобы видеть схему и не писать всё вслепую."]
+ ]},
+ {g:"Второй язык", items:[
+   ["R и RStudio","Силлабус называет R наравне с Python, а в списке литературы стоит «R for Data Science»."],
+   ["tidyverse","dplyr и ggplot2 — тот же анализ, другая идеология."]
+ ]}
+];
+
+var SETUP = [
+ {t:"Python и окружение", code:[
+   ["c","# в PowerShell"],
+   ["k","winget install --id=astral-sh.uv -e"],
+   ["k","uv python install 3.12"],
+   ["", ""],
+   ["c","# проект под триместр"],
+   ["k","uv init ada-t1"],
+   ["k","cd ada-t1"]
+ ]},
+ {t:"Пакеты", code:[
+   ["k","uv add numpy pandas matplotlib seaborn scipy statsmodels \\"],
+   ["k","       scikit-learn jupyterlab duckdb sqlalchemy"],
+   ["", ""],
+   ["c","# запуск"],
+   ["k","uv run jupyter lab"]
+ ]},
+ {t:"Git и репозиторий", code:[
+   ["k","git init"],
+   ["k","git add . && git commit -m \"среда собрана\""],
+   ["c","# создать пустой репозиторий на github, затем:"],
+   ["k","git remote add origin https://github.com/USER/ada-t1.git"],
+   ["k","git push -u origin main"]
+ ]},
+ {t:"Учебная база для SQL", code:[
+   ["c","# Chinook — классическая учебная схема"],
+   ["c","# скачать chinook.db и открыть:"],
+   ["k","duckdb"],
+   ["k","ATTACH 'chinook.db' AS db (TYPE sqlite);"],
+   ["k","SELECT name FROM db.sqlite_master WHERE type='table';"]
+ ]}
+];
+
+var REPO = [
+ ["ada-t1/","корень репозитория"],
+ ["├── math/","по одной папке на лабораторную: lab-01 … lab-08"],
+ ["├── prog/","week-01 … week-10, внутри ноутбук и данные"],
+ ["├── projects/","midterm и final — то, что реально сдаётся"],
+ ["├── data/","сырые данные, в git не коммитятся"],
+ ["├── notes/","конспекты и шпаргалка к экзамену"],
+ ["├── .gitignore","data/, .ipynb_checkpoints/, .venv/"],
+ ["└── README.md","что где лежит и как запустить"]
+];
+
+/* ===================== ресурсы ===================== */
+var BOOKS = {
+math:[
+ {n:"Bruce P., Bruce A. — Practical Statistics for Data Scientists", y:"2017", k:"силлабус",
+  d:"Начинать отсюда. Компактно и без академической воды закрывает недели 1–8: описательная статистика, распределения, тесты, регрессия."},
+ {n:"Orland P. — Math for Programmers", y:"2020", k:"силлабус",
+  d:"Линейная алгебра и матанализ языком программиста, с кодом. Хороший мост, если формальные учебники не заходят."},
+ {n:"Hastie T., Tibshirani R., Friedman J. — The Elements of Statistical Learning", y:"2017", k:"силлабус",
+  d:"Справочник, а не учебник для чтения подряд. Открывать точечно под тему. Авторы выложили PDF бесплатно."},
+ {n:"Ross S. M. — Introduction to Probability Models", y:"1997", k:"силлабус",
+  d:"Классика по теории вероятностей. Для подтягивания пререквизита."},
+ {n:"Hartman G. — Fundamentals of Matrix Algebra", y:"2011", k:"силлабус",
+  d:"Короткий бесплатный учебник по матричной алгебре."},
+ {n:"Downey A. — Think Stats", y:"—", k:"дополнительно",
+  d:"Статистика через Python, бесплатно у автора. Хорошо ложится рядом с лабораторными."}
+],
+prog:[
+ {n:"McKinney W. — Python for Data Analysis", y:"2017 · 3-е изд. 2022", k:"силлабус",
+  d:"Главная книга курса: автор pandas. Третье издание бесплатно читается на сайте автора. Главы 3–5 — это ваши первые четыре недели."},
+ {n:"Wickham H. — R for Data Science", y:"2017 · 2-е изд.", k:"силлабус",
+  d:"Если дойдёте до R. Второе издание бесплатно на r4ds.hadley.nz."},
+ {n:"Widom J. — Database Systems: The Complete Book", y:"2018", k:"силлабус",
+  d:"Теория БД для недель 6–8: реляционная модель, нормализация, оптимизация запросов."},
+ {n:"VanderPlas J. — Python Data Science Handbook", y:"2016", k:"силлабус",
+  d:"NumPy, pandas, matplotlib. Полный текст бесплатно на сайте автора."},
+ {n:"James G., Witten D., Hastie T., Tibshirani R. — An Introduction to Statistical Learning", y:"2-е изд.", k:"силлабус",
+  d:"Мост между двумя дисциплинами: статистика с кодом. PDF бесплатно на statlearning.com. Есть версия и на Python, и на R."}
+]};
+
+var FREE = [
+ {n:"3Blue1Brown — Essence of Linear Algebra", u:"https://www.3blue1brown.com/topics/linear-algebra", k:"видео",
+  d:"Пятнадцать роликов, которые дают геометрическую интуицию вместо зубрёжки. Обязательное к просмотру перед неделями 7–8 и 10."},
+ {n:"3Blue1Brown — Essence of Calculus", u:"https://www.3blue1brown.com/topics/calculus", k:"видео",
+  d:"То же самое для производных и интегралов."},
+ {n:"StatQuest with Josh Starmer", u:"https://www.youtube.com/@statquest", k:"видео",
+  d:"Разбор каждой темы курса математики по отдельности: p-значение, ANOVA, регрессия, PCA, кластеризация."},
+ {n:"Seeing Theory", u:"https://seeing-theory.brown.edu/", k:"интерактив",
+  d:"Университет Брауна: вероятность и статистика в анимациях, с которыми можно играть. Быстрее любого учебника даёт интуицию."},
+ {n:"MIT OCW 18.06 — Linear Algebra, Gilbert Strang", u:"https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/", k:"курс",
+  d:"Полный университетский курс с лекциями и задачами, если хочется системно."},
+ {n:"MIT OCW 18.05 — Introduction to Probability and Statistics", u:"https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2014/", k:"курс",
+  d:"Конспекты и задачи ровно по пререквизиту курса математики."},
+ {n:"Khan Academy — Statistics and Probability", u:"https://www.khanacademy.org/math/statistics-probability", k:"курс",
+  d:"Пошагово и с упражнениями. Хорошо для закрытия конкретных дыр из чек-листа."},
+ {n:"SQLBolt", u:"https://sqlbolt.com/", k:"тренажёр",
+  d:"Интерактивные уроки SQL прямо в браузере. Пройти до конца раздела с соединениями — это неделя 6."},
+ {n:"Mode — SQL Tutorial", u:"https://mode.com/sql-tutorial/", k:"тренажёр",
+  d:"От базового SELECT до оконных функций, на реальных данных."},
+ {n:"PostgreSQL Exercises", u:"https://pgexercises.com/", k:"тренажёр",
+  d:"Задачи с проверкой. Сложнее SQLBolt, ближе к экзаменационному уровню."},
+ {n:"Python for Data Analysis, 3-е издание — полный текст", u:"https://wesmckinney.com/book/", k:"книга",
+  d:"Основная книга курса программирования, открыта автором бесплатно."},
+ {n:"An Introduction to Statistical Learning", u:"https://www.statlearning.com/", k:"книга",
+  d:"PDF и наборы данных бесплатно."},
+ {n:"Kaggle Learn", u:"https://www.kaggle.com/learn", k:"практика",
+  d:"Короткие практические модули: pandas, визуализация, SQL, feature engineering."}
+];
+
+var DATASETS = [
+ ["Palmer Penguins","Маленький и чистый. Идеален для первых недель: группы, средние, боксплоты, t-тесты."],
+ ["Titanic","Классика для очистки: пропуски в возрасте, категории, кодирование."],
+ ["Chinook","Учебная база SQLite: магазин музыки, одиннадцать таблиц. Лучший датасет для соединений и группировок."],
+ ["Northwind","Вторая классическая учебная схема БД: заказы, клиенты, поставщики."],
+ ["NYC Taxi Trips","Крупный набор для практики с производительностью и временными рядами."],
+ ["UCI Adult / Wine Quality","Смесь числовых и категориальных признаков — то, что нужно для регрессии."],
+ ["World Bank Open Data","Панельные данные по странам и годам: динамика, индексы, тренды для недели 9."],
+ ["Открытые данные Казахстана","Локальные данные делают проект интереснее для защиты."]
+];
+
+var METHOD = [
+ {t:"Сдавать в неделю, когда задали",
+  d:"Правило курсов прямое: работы с опозданием не принимаются. У математики восемь лабораторных — это 60 % каждой аттестации. Пропущенная неделя не отыгрывается ничем."},
+ {t:"Считать руками до того, как считать кодом",
+  d:"Финальные экзамены обеих дисциплин письменные. На бумаге не будет ни pandas, ни справки по scipy. Раз в неделю решайте один пример полностью вручную."},
+ {t:"Одна тема — один ноутбук",
+  d:"К пятой неделе нужен проект. Если каждая тема уже лежит отдельным работающим ноутбуком, проект собирается из готовых кусков, а не пишется с нуля за выходные."},
+ {t:"Активное вспоминание вместо перечитывания",
+  d:"Закрыть конспект и восстановить вывод формулы или структуру запроса по памяти. Чек-листы самопроверки на страницах дисциплин сделаны ровно для этого."},
+ {t:"Английские термины с первого дня",
+  d:"Программирование читается на английском, математика — на английском и русском. Экзамен, литература и задания будут в английской терминологии. На карте тем английские термины вынесены отдельно — учите их вместе с понятием."},
+ {t:"Проверять себя чужими данными",
+  d:"Свой ноутбук всегда «работает». Возьмите чужой датасет с другой структурой и прогоните тот же анализ — там и вскроются реальные пробелы."}
+];
+
+/* ===================== общие куски разметки ===================== */
+function courseHeadCard(c){
+  var u=c.hUP;
+  return '<div class="card chead '+c.cls+' rail">'
+    + '<div><span class="ctag">'+h(c.cycle)+' · '+h(c.ctrl)+'</span>'
+    + '<h3 style="margin-top:9px">'+h(c.ru)+'</h3>'
+    + '<div class="en">'+h(c.en)+'</div></div>'
+    + '<div class="metrics">'
+      + '<div class="metric"><b>'+c.cr+'</b><span>кредита ECTS</span></div>'
+      + '<div class="metric"><b>'+u.tot+'</b><span>часов всего</span></div>'
+      + '<div class="metric"><b>'+(u.lec+u.pr)+'</b><span>часов в аудитории</span></div>'
+      + '<div class="metric"><b>'+(u.srop+u.sro)+'</b><span>часов самостоятельно</span></div>'
+    + '</div></div>';
+}
+
+function assessTable(c){
+  return '<div class="scroll"><table class="t"><thead><tr>'
+    + '<th>Период</th><th>Вид работы</th><th>Баллы</th><th>Форма</th><th>Когда</th>'
+    + '</tr></thead><tbody>'
+    + c.assess.map(function(a){
+        return '<tr'+(a.hot?' class="hot"':'')+'><td>'+h(a.p)+'</td><td class="em">'+h(a.t)+'</td>'
+          + '<td class="num">'+a.pts+'</td><td>'+h(a.f)+'</td><td class="num">'+h(a.w)+'</td></tr>';
+      }).join("")
+    + '</tbody></table></div>';
+}
+
+function qaBlock(list){
+  var out="", g=null;
+  list.forEach(function(q,i){
+    if(q.g!==g){ g=q.g; out+='<div class="crumb" style="margin:22px 0 9px">'+h(g)+'</div>'; }
+    out+='<details class="qa"><summary><span class="qn">'+String(i+1).padStart(2,"0")+'</span>'
+      +'<span>'+h(q.q)+'</span><span class="caret"></span></summary>'
+      +'<div class="ans">'+h(q.a)+'</div></details>';
+  });
+  return out;
+}
+
+function prepBlocks(list){
+  return '<div class="cols3">'+list.map(function(p){
+    return '<div class="card pad"><h3 style="font-size:16px">'+h(p.t)+'</h3>'
+      + '<p style="font-size:13px;color:var(--muted);margin:7px 0 13px">'+h(p.why)+'</p>'
+      + '<ul class="plain">'+p.items.map(function(i){return "<li>"+h(i)+"</li>";}).join("")+'</ul></div>';
+  }).join("")+'</div>';
+}
+
+function topicMap(key){
+  var c=COURSES[key];
+  return '<div class="weeks '+c.cls+'">'+WEEKS.map(function(w){
+    var t=w[key];
+    return '<div class="card wk'+(w.hot?" hot":"")+'">'
+      + '<div class="wk-n"><b>'+w.n+'</b><span>нед.</span></div>'
+      + '<div class="wk-b"><div class="wk-top"><h3 style="font-size:16px">'+h(t.t)+'</h3>'
+      + '<span class="dt">'+weekDates(w.n)+'</span>'
+      + (w.ctl?'<span class="pill stop">'+h(w.ctl)+'</span>':'')+'</div>'
+      + '<p style="font-size:14px;color:var(--ink2);max-width:66ch">'+h(t.d)+'</p>'
+      + '<div class="chips">'+t.en.map(function(e){return '<span class="chip en">'+h(e)+'</span>';}).join("")+'</div>'
+      + '</div></div>';
+  }).join("")+'</div>';
+}
+
+function booksList(list){
+  return '<div class="res">'+list.map(function(b){
+    return '<div class="res-i"><span class="nm">'+h(b.n)+'</span><span class="kd">'+h(b.k)+' · '+h(b.y)+'</span>'
+      + '<span class="ds">'+h(b.d)+'</span></div>';
+  }).join("")+'</div>';
+}
+
+/* ===================== страница: обзор ===================== */
+function pageHome(){
+  var d=daysTo("2026-09-07");
+  var when = d>0 ? "через "+d+" "+plur(d,["день","дня","дней"])
+           : d===0 ? "сегодня" : "занятия уже идут";
+  var o='<div class="crumb">Astana IT University · Applied Data Analytics · магистратура</div>'
+    + '<h1 class="big">Разгон в первый триместр</h1>'
+    + '<p class="lede">План подготовки к двум профильным дисциплинам первого триместра. Считает от сегодняшней даты, разложен по одиннадцати неделям и привязан к реальным контрольным точкам из академического календаря.</p>';
+
+  o+='<div class="block"><div class="card pad" style="display:flex;flex-wrap:wrap;gap:26px;align-items:baseline">'
+    + '<div class="metric" style="border-right:1px solid var(--line)"><b class="mono" style="font-size:26px">'+(d>0?d:0)+'</b><span>'+(d>0?plur(d,["день до первой пары","дня до первой пары","дней до первой пары"]):"занятия начались")+'</span></div>'
+    + '<div class="metric" style="border-right:1px solid var(--line)"><b class="mono" style="font-size:26px">10</b><span>недель теоретического обучения</span></div>'
+    + '<div class="metric" style="border-right:1px solid var(--line)"><b class="mono" style="font-size:26px">10</b><span>кредитов на две дисциплины</span></div>'
+    + '<div class="metric"><b class="mono" style="font-size:26px">300</b><span>часов на две дисциплины</span></div>'
+    + '</div></div>';
+
+  o+='<div class="block"><h2 class="sec">Две дисциплины</h2>'
+    + '<p class="sec-sub">Обе — профилирующие, вузовский компонент, по 5 кредитов, обе заканчиваются экзаменом. Вместе это 10 из 18 кредитов первого триместра.</p>'
+    + '<div class="cols2">'
+    + [COURSES.math, COURSES.prog].map(function(c){
+        return '<a href="#/'+c.key+'" style="text-decoration:none;color:inherit;display:block">'
+          + courseHeadCard(c).replace('class="card chead','class="card chead hoverable')
+          + '</a>';
+      }).join("")
+    + '</div></div>';
+
+  o+='<div class="block"><h2 class="sec">Сколько это в часах</h2>'
+    + '<p class="sec-sub">Цифры из учебного плана. Полезно посчитать до начала, а не в октябре.</p>'
+    + '<div class="card pad"><div class="scroll"><table class="t"><thead><tr>'
+    + '<th>Дисциплина</th><th>Лекции</th><th>Практика</th><th>СРОП</th><th>СРО</th><th>Всего</th><th>Самостоятельно в неделю</th>'
+    + '</tr></thead><tbody>'
+    + [COURSES.math, COURSES.prog].map(function(c){
+        var u=c.hUP;
+        return '<tr><td class="em">'+h(c.short)+'</td><td class="num">'+u.lec+'</td><td class="num">'+u.pr
+          + '</td><td class="num">'+u.srop+'</td><td class="num">'+u.sro+'</td><td class="num">'+u.tot
+          + '</td><td class="num">'+Math.round((u.srop+u.sro)/10)+' ч</td></tr>';
+      }).join("")
+    + '<tr><td class="em">Вместе</td><td class="num">60</td><td class="num">40</td><td class="num">20</td>'
+    + '<td class="num">180</td><td class="num">300</td><td class="num em">20 ч</td></tr>'
+    + '</tbody></table></div>'
+    + '<div class="note" style="margin-top:16px"><b>Двадцать часов в неделю сверх пар — только на эти две дисциплины.</b> '
+    + 'Плюс педагогика высшей школы и иностранный язык: весь первый триместр — 18 кредитов и 540 часов примерно за одиннадцать недель, '
+    + 'то есть около 49 часов в неделю суммарно. Это полная занятость, и планировать её лучше заранее.</div>'
+    + '</div></div>';
+
+  o+='<div class="block"><h2 class="sec">Как устроен план</h2>'
+    + '<div class="card pad"><ol class="steps">'
+    + '<li><b>Неделя 0 — разминка, 31 августа — 6 сентября</b><span>Семь дней до первой пары. Собрать среду, освежить линейную алгебру, матанализ и вероятность, впервые потрогать pandas и SQL. Первого сентября параллельно идёт ознакомительная неделя и регистрация на дисциплины.</span></li>'
+    + '<li><b>Недели 1–10 — параллельно с курсом</b><span>На каждую неделю: тема по математике, тема по программированию, английские термины и одно конкретное действие, которое нужно закрыть до воскресенья.</span></li>'
+    + '<li><b>Контрольные точки</b><span>РК1 на пятой неделе, 5–10 октября. РК2 на десятой, 9–14 ноября. Экзамены 16–28 ноября. Всё остальное подчинено этим трём датам.</span></li>'
+    + '</ol></div></div>';
+
+  o+='<div class="block"><h2 class="sec">Что здесь официальное, а что нет</h2>'
+    + '<div class="cols2">'
+    + '<div class="card pad"><h3 style="font-size:15px;color:var(--go)">Из документов университета</h3>'
+    + '<ul class="plain" style="margin-top:11px">'
+    + '<li>Кредиты, часы, форма контроля — учебный план 7M06103</li>'
+    + '<li>Преподаватели, язык, схема оценивания и баллы — хендбук модулей</li>'
+    + '<li>Содержание курсов, пререквизиты, литература — хендбук модулей</li>'
+    + '<li>Все даты, недели и контрольные точки — академический календарь 2026–2027</li>'
+    + '</ul></div>'
+    + '<div class="card pad"><h3 style="font-size:15px;color:var(--stop)">Моя реконструкция</h3>'
+    + '<ul class="plain" style="margin-top:11px">'
+    + '<li>Разбивка тем по неделям — выведена из содержания курса, а не из календарно-тематического плана</li>'
+    + '<li>План разминки и еженедельные задания</li>'
+    + '<li>Чек-листы самопроверки, подборка ресурсов и датасетов</li>'
+    + '<li>Стек инструментов и структура репозитория</li>'
+    + '</ul></div></div>'
+    + '<div class="note warn" style="margin-top:14px"><b>На первой неделе возьмите силлабусы у преподавателей.</b> '
+    + 'Порядок тем и точные даты работ задаёт преподаватель, и они могут отличаться от этой реконструкции. '
+    + 'Контрольные точки и итоговые баллы — не отличатся, они закреплены документами.</div>'
+    + '</div>';
+  return o;
+}
+
+/* ===================== страница: дисциплина ===================== */
+function pageCourse(key){
+  var c=COURSES[key], other=key==="math"?COURSES.prog:COURSES.math;
+  var o='<div class="crumb">Дисциплина · 1 триместр · '+c.cr+' кредита</div>'
+    + '<h1 class="big">'+h(c.ru)+'</h1>'
+    + '<p class="lede">'+h(c.en)+'. '+h(c.about)+'</p>';
+
+  o+='<div class="block '+c.cls+'"><h2 class="sec">Паспорт курса</h2>'
+    + '<div class="card pad"><dl class="kv">'
+    + '<dt>Преподаватель</dt><dd>'+h(c.lecturer)+'</dd>'
+    + '<dt>Язык преподавания</dt><dd>'+h(c.lang)+'</dd>'
+    + '<dt>Код в учебном плане</dt><dd class="mono">'+h(c.code)+'</dd>'
+    + '<dt>Цикл и компонент</dt><dd>'+h(c.cycle)+'</dd>'
+    + '<dt>Форма контроля</dt><dd>'+h(c.ctrl)+'</dd>'
+    + '<dt>Часы по учебному плану</dt><dd class="mono">'+c.hUP.tot+' = '+c.hUP.lec+' лек + '+c.hUP.pr+' практ + '+c.hUP.srop+' СРОП + '+c.hUP.sro+' СРО</dd>'
+    + '<dt>Часы по хендбуку</dt><dd class="mono">'+c.hHB.tot+' = '+c.hHB.lec+' лек + '+c.hHB.pr+' практ + '+c.hHB.isis+' ISIS + '+c.hHB.sis+' SIS</dd>'
+    + '<dt>Методика</dt><dd>'+h(c.method)+'</dd>'
+    + '<dt>Пререквизиты</dt><dd>'+h(c.pre)+'</dd>'
+    + '<dt>Постреквизиты</dt><dd>'+h(c.post)+'</dd>'
+    + '</dl></div></div>';
+
+  o+='<div class="block '+c.cls+'"><h2 class="sec">Как считается оценка</h2>'
+    + '<p class="sec-sub">Итог: 0,3 × первая аттестация + 0,3 × вторая аттестация + 0,4 × финальный экзамен = 100.</p>'
+    + '<div class="card pad">'+assessTable(c)
+    + '<div class="note" style="margin-top:16px;border-left-color:var(--tint)"><b>Где здесь рычаг.</b> '+h(c.lever)+'</div>'
+    + '</div></div>';
+
+  o+='<div class="block '+c.cls+'"><h2 class="sec">Что подтянуть до начала</h2>'
+    + '<p class="sec-sub">Официальные пререквизиты курса: '+h(c.pre)+'. Ниже — что именно из них понадобится и на какой неделе.</p>'
+    + prepBlocks(PREP[key])+'</div>';
+
+  o+='<div class="block '+c.cls+'"><h2 class="sec">Проверь себя</h2>'
+    + '<p class="sec-sub">Двенадцать вопросов по пререквизитам. Отвечайте вслух, потом раскрывайте ответ. Всё, где ответ не пришёл за минуту, — ваш список пробелов на разминку.</p>'
+    + qaBlock(QA[key])+'</div>';
+
+  o+='<div class="block '+c.cls+'"><h2 class="sec">Карта тем на 10 недель</h2>'
+    + '<p class="sec-sub">Реконструкция по содержанию курса из хендбука. Порядок может отличаться — сверьтесь с силлабусом преподавателя.</p>'
+    + topicMap(key)+'</div>';
+
+  o+='<div class="block '+c.cls+'"><h2 class="sec">Литература</h2>'
+    + '<p class="sec-sub">Список из силлабуса. Часть книг авторы выложили бесплатно — ссылки на странице «Инструменты и ресурсы».</p>'
+    + '<div class="card pad">'+booksList(BOOKS[key])+'</div></div>';
+
+  o+='<div class="block"><a href="#/'+other.key+'" class="card pad '+other.cls+' rail" style="display:block;text-decoration:none;color:inherit">'
+    + '<span class="ctag">Вторая дисциплина</span>'
+    + '<h3 style="font-size:18px;margin-top:9px">'+h(other.ru)+'</h3>'
+    + '<p style="font-size:13.5px;color:var(--muted);margin-top:5px">'+other.cr+' кредита · '+other.hUP.tot+' часов · '+h(other.ctrl)+'</p>'
+    + '</a></div>';
+  return o;
+}
+
+/* ===================== страница: план ===================== */
+function pagePlan(){
+  var o='<div class="crumb">31 августа — 28 ноября 2026</div>'
+    + '<h1 class="big">План на одиннадцать недель</h1>'
+    + '<p class="lede">Неделя разминки до первой пары и десять учебных недель. На каждой — тема по математике, тема по программированию и одно действие, которое нужно закрыть до воскресенья.</p>';
+
+  /* неделя 0 */
+  o+='<div class="block"><h2 class="sec">Неделя 0 · разминка</h2>'
+    + '<p class="sec-sub">31 августа — 6 сентября. С первого по пятое сентября идёт ознакомительная неделя и регистрация на дисциплины, поэтому будни здесь лёгкие, а нагрузка вынесена на понедельник и выходные.</p>'
+    + '<div class="weeks">'
+    + WARMUP.map(function(w,i){
+        var isPast = D(w.d) < TODAY;
+        return '<div class="card wk" style="'+(isPast?"opacity:.55":"")+'">'
+          + '<div class="wk-n"><b>'+D(w.d).getDate()+'</b><span>'+wdOf(w.d)+'</span></div>'
+          + '<div class="wk-b">'
+          + '<div class="wk-top"><h3 style="font-size:15px">День '+(i+1)+'</h3>'
+          + '<span class="pill">'+h(w.load)+'</span>'
+          + (w.uni?'<span class="pill go">'+h(w.uni)+'</span>':'')+'</div>'
+          + '<div class="trk t-math"><span class="lab">математика</span><span class="txt"><strong>'+h(w.math.t)+'</strong><em>'+h(w.math.d)+'</em><em style="color:var(--math)">'+h(w.math.src)+'</em></span></div>'
+          + '<div class="trk t-prog"><span class="lab">программирование</span><span class="txt"><strong>'+h(w.prog.t)+'</strong><em>'+h(w.prog.d)+'</em><em style="color:var(--prog)">'+h(w.prog.src)+'</em></span></div>'
+          + '<div class="deliver"><b>итог дня</b><span>'+h(w.out)+'</span></div>'
+          + '</div></div>';
+      }).join("")
+    + '</div></div>';
+
+  /* недели 1-10 */
+  o+='<div class="block"><h2 class="sec">Недели 1–10 · теоретическое обучение</h2>'
+    + '<p class="sec-sub">7 сентября — 14 ноября. Разбивка тем — реконструкция по содержанию курсов; контрольные точки — из академического календаря.</p>'
+    + '<div class="weeks">'
+    + WEEKS.map(function(w){
+        return '<div class="card wk'+(w.hot?" hot":"")+'">'
+          + '<div class="wk-n"><b>'+w.n+'</b><span>нед.</span></div>'
+          + '<div class="wk-b">'
+          + '<div class="wk-top"><span class="dt">'+weekDates(w.n)+'</span>'
+          + (w.ctl?'<span class="pill stop">'+h(w.ctl)+'</span>':'')+'</div>'
+          + '<div class="trk t-math"><span class="lab">математика</span><span class="txt"><strong>'+h(w.math.t)+'</strong><em>'+h(w.math.d)+'</em></span></div>'
+          + '<div class="trk t-prog"><span class="lab">программирование</span><span class="txt"><strong>'+h(w.prog.t)+'</strong><em>'+h(w.prog.d)+'</em></span></div>'
+          + '<div class="deliver"><b>закрыть</b><span>'+h(w.do)+'</span></div>'
+          + '</div></div>';
+      }).join("")
+    + '</div></div>';
+
+  /* экзамены */
+  o+='<div class="block"><h2 class="sec">Экзаменационная сессия</h2>'
+    + '<p class="sec-sub">16–28 ноября. Два письменных экзамена, каждый весит 40 % итоговой оценки по своей дисциплине.</p>'
+    + '<div class="cols2">'
+    + '<div class="card pad t-math rail"><span class="ctag">Математика</span>'
+    + '<ul class="plain" style="margin-top:12px">'
+    + '<li>Прорешать все восемь лабораторных заново, но без кода — на бумаге</li>'
+    + '<li>Выучить условия применимости тестов: когда t, когда χ², когда ANOVA</li>'
+    + '<li>Уметь вывести МНК для одной переменной и объяснить каждый коэффициент</li>'
+    + '<li>Отдельно повторить интерпретацию: p-значение, доверительный интервал, R²</li>'
+    + '</ul></div>'
+    + '<div class="card pad t-prog rail"><span class="ctag">Программирование</span>'
+    + '<ul class="plain" style="margin-top:12px">'
+    + '<li>SQL от руки: JOIN, GROUP BY, HAVING, подзапросы без подсказок редактора</li>'
+    + '<li>Нормальные формы 1NF–3NF с примерами нарушения каждой</li>'
+    + '<li>Разница между структурами данных Python и когда какая нужна</li>'
+    + '<li>Этапы очистки данных и типовые методы для каждого</li>'
+    + '</ul></div></div>'
+    + '<div class="note" style="margin-top:14px"><b>После 28 ноября — каникулы до 5 декабря,</b> '
+    + 'а 7 декабря начинается зимний триместр. Это единственная пауза в учебном году длиннее выходных.</div>'
+    + '</div>';
+  return o;
+}
+
+/* ===================== страница: инструменты и ресурсы ===================== */
+function pageKit(){
+  var o='<div class="crumb">Среда, ресурсы, метод</div>'
+    + '<h1 class="big">Инструменты и ресурсы</h1>'
+    + '<p class="lede">Что поставить до первой пары, откуда учить и как работать, чтобы не проседать к пятой неделе.</p>';
+
+  o+='<div class="block"><h2 class="sec">Среда за полчаса</h2>'
+    + '<p class="sec-sub">Команды для PowerShell на Windows. Ставится один раз и работает весь триместр.</p>'
+    + '<div class="cols2">'
+    + SETUP.map(function(s){
+        return '<div class="card pad"><h3 style="font-size:15px;margin-bottom:12px">'+h(s.t)+'</h3>'
+          + '<pre class="sh t-prog">'+s.code.map(function(l){
+              if(!l[1]) return "";
+              return '<span class="'+l[0]+'">'+h(l[1])+'</span>';
+            }).join("\n")+'</pre></div>';
+      }).join("")
+    + '</div></div>';
+
+  o+='<div class="block"><h2 class="sec">Стек</h2>'
+    + '<p class="sec-sub">Python и R названы в силлабусе прямо; остальное — стандартный инструментарий под заявленные темы.</p>'
+    + '<div class="cols2">'
+    + STACK.map(function(g){
+        return '<div class="card pad"><h3 style="font-size:15px;margin-bottom:12px">'+h(g.g)+'</h3>'
+          + '<div class="res">'+g.items.map(function(i){
+              return '<div class="res-i"><span class="nm mono" style="font-size:13.5px">'+h(i[0])+'</span><span></span>'
+                + '<span class="ds">'+h(i[1])+'</span></div>';
+            }).join("")+'</div></div>';
+      }).join("")
+    + '</div></div>';
+
+  o+='<div class="block"><h2 class="sec">Структура репозитория</h2>'
+    + '<p class="sec-sub">Проекты сдаются как артефакты. Заведите это в первый день — потом не до реорганизации.</p>'
+    + '<div class="card pad"><div class="scroll"><table class="t"><tbody>'
+    + REPO.map(function(r){
+        return '<tr><td class="mono" style="white-space:pre;font-size:13px">'+h(r[0])+'</td>'
+          + '<td style="color:var(--muted)">'+h(r[1])+'</td></tr>';
+      }).join("")
+    + '</tbody></table></div></div></div>';
+
+  o+='<div class="block"><h2 class="sec">Бесплатные материалы</h2>'
+    + '<p class="sec-sub">Всё открыто и не требует подписки. Ссылки открываются в новой вкладке.</p>'
+    + '<div class="card pad"><div class="res">'
+    + FREE.map(function(f){
+        return '<div class="res-i"><span class="nm"><a href="'+h(f.u)+'" target="_blank" rel="noopener">'+h(f.n)+'</a></span>'
+          + '<span class="kd">'+h(f.k)+'</span><span class="ds">'+h(f.d)+'</span></div>';
+      }).join("")
+    + '</div></div></div>';
+
+  o+='<div class="block"><h2 class="sec">Книги из силлабусов</h2>'
+    + '<div class="cols2">'
+    + '<div class="card pad t-math rail"><span class="ctag">Математика</span><div style="margin-top:12px">'+booksList(BOOKS.math)+'</div></div>'
+    + '<div class="card pad t-prog rail"><span class="ctag">Программирование</span><div style="margin-top:12px">'+booksList(BOOKS.prog)+'</div></div>'
+    + '</div></div>';
+
+  o+='<div class="block"><h2 class="sec">Датасеты для тренировки</h2>'
+    + '<p class="sec-sub">Открытые наборы, на которых удобно отрабатывать темы курса и собирать проекты.</p>'
+    + '<div class="card pad"><div class="res">'
+    + DATASETS.map(function(d){
+        return '<div class="res-i"><span class="nm">'+h(d[0])+'</span><span></span><span class="ds">'+h(d[1])+'</span></div>';
+      }).join("")
+    + '</div></div></div>';
+
+  o+='<div class="block"><h2 class="sec">Как учиться</h2>'
+    + '<p class="sec-sub">Шесть правил, которые следуют из того, как устроено оценивание этих двух курсов.</p>'
+    + '<div class="cols2">'
+    + METHOD.map(function(m){
+        return '<div class="card pad"><h3 style="font-size:15.5px">'+h(m.t)+'</h3>'
+          + '<p class="body" style="font-size:15px;margin-top:8px">'+h(m.d)+'</p></div>';
+      }).join("")
+    + '</div></div>';
+  return o;
+}
+
+/* ===================== роутер ===================== */
+var ROUTES = [
+  {p:"/",     n:"Обзор",             f:pageHome,  t:"Разгон в первый триместр"},
+  {p:"/math", n:"Математика",        f:function(){return pageCourse("math");}, t:"Математика для науки о данных"},
+  {p:"/prog", n:"Программирование",  f:function(){return pageCourse("prog");}, t:"Программирование для анализа данных"},
+  {p:"/plan", n:"План 11 недель",    f:pagePlan,  t:"План на одиннадцать недель"},
+  {p:"/kit",  n:"Инструменты",       f:pageKit,   t:"Инструменты и ресурсы"}
+];
+
+function current(){
+  var hsh=(location.hash||"#/").replace(/^#/,"");
+  for(var i=0;i<ROUTES.length;i++) if(ROUTES[i].p===hsh) return ROUTES[i];
+  return ROUTES[0];
+}
+
+function renderNav(){
+  var cur=current();
+  document.getElementById("nav").innerHTML = ROUTES.map(function(r,i){
+    return '<a href="#'+r.p+'"'+(r===cur?' aria-current="page"':'')+'>'
+      + '<i>'+String(i+1).padStart(2,"0")+'</i><span>'+h(r.n)+'</span></a>';
+  }).join("");
+}
+
+function renderToday(){
+  var m=TODAY.getMonth(), dd=TODAY.getDate(), y=TODAY.getFullYear();
+  var d=daysTo("2026-09-07");
+  var sub = d>0 ? "до первой пары "+d+" "+plur(d,["день","дня","дней"])
+          : d===0 ? "сегодня первая пара"
+          : "занятия идут";
+  document.getElementById("today").innerHTML =
+    '<span>сегодня</span><b>'+dd+' '+MON[m]+' '+y+'</b><span>'+h(sub)+'</span>';
+}
+
+function render(){
+  var r=current();
+  document.getElementById("page").innerHTML = r.f();
+  renderNav();
+  document.title = r.p==="/" ? "Разгон в первый триместр" : r.t+" · Разгон";
+  document.getElementById("foot").innerHTML =
+    'Собрано из трёх документов Astana IT University: учебного плана 7M06103, хендбука модулей и академического календаря 2026–2027. '
+    + 'Кредиты, часы, баллы и даты взяты из них дословно. Разбивка тем по неделям, план разминки и подборка материалов — реконструкция, '
+    + 'а не документ университета: на первой неделе сверьтесь с силлабусами преподавателей.';
+  window.scrollTo(0,0);
+}
+
+window.addEventListener("hashchange", render);
+document.getElementById("theme").addEventListener("click", function(){
+  var cur=document.documentElement.getAttribute("data-theme");
+  var next = cur==="dark" ? "light" : cur==="light" ? "" : "dark";
+  if(next) document.documentElement.setAttribute("data-theme", next);
+  else document.documentElement.removeAttribute("data-theme");
+  try{ localStorage.setItem("t1-theme", next); }catch(e){}
+});
+(function init(){
+  try{ var th=localStorage.getItem("t1-theme"); if(th) document.documentElement.setAttribute("data-theme", th); }catch(e){}
+  renderToday();
+  render();
+})();
+</script>
+</body></html>

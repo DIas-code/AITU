@@ -1,0 +1,26 @@
+---
+import type { AssessmentRow, Lang } from "../data/types";
+import { t } from "../data/types";
+import { UI } from "../data/ui";
+interface Props { rows: AssessmentRow[]; lang: Lang; }
+const { rows, lang } = Astro.props;
+const L = (k: string) => t(UI[k], lang);
+---
+<div class="scroll">
+  <table class="t">
+    <thead>
+      <tr><th>{L("thPeriod")}</th><th>{L("thKind")}</th><th>{L("thPoints")}</th><th>{L("thForm")}</th><th>{L("thWhen")}</th></tr>
+    </thead>
+    <tbody>
+      {rows.map((r) => (
+        <tr class={r.hot ? "hot" : undefined}>
+          <td>{t(r.period, lang)}</td>
+          <td class="em">{t(r.kind, lang)}</td>
+          <td class="num">{r.points}</td>
+          <td>{t(r.form, lang)}</td>
+          <td class="num">{t(r.when, lang)}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

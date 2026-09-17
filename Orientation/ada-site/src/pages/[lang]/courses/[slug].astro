@@ -1,0 +1,137 @@
+---
+/**
+ * Страница дисциплины. Маршруты — произведение языков и дисциплин:
+ * добавил объект в courses.ts — появились обе языковые версии.
+ */
+import Base from "../../../layouts/Base.astro";
+import Section from "../../../components/Section.astro";
+import AssessmentTable from "../../../components/AssessmentTable.astro";
+import SelfCheck from "../../../components/SelfCheck.astro";
+import PrepGrid from "../../../components/PrepGrid.astro";
+import WeekList from "../../../components/WeekList.astro";
+import { COURSES } from "../../../data/courses";
+import { WEEKS } from "../../../data/plan";
+import { BOOKS } from "../../../data/books";
+import { UI } from "../../../data/ui";
+import { LANGS, t, CONTROL_LABEL, type Course, type Lang } from "../../../data/types";
+import { url } from "../../../lib/urls";
+
+export function getStaticPaths() {
+  return LANGS.flatMap((lang) =>
+    COURSES.map((course) => ({ params: { lang, slug: course.slug }, props: { lang, course } })),
+  );
+}
+
+const { lang, course } = Astro.props as { lang: Lang; course: Course };
+const L = (k: string) => t(UI[k], lang);
+const h = course.hours;
+const hb = course.hoursHandbook;
+const others = COURSES.filter((c) => c.slug !== course.slug);
+const myBooks = course.books.map((id) => BOOKS.find((b) => b.id === id)).filter(Boolean);
+---
+
+<Base
+  lang={lang}
+  page={`courses/${course.slug}`}
+  title={t(course.title, lang)}
+  active={course.slug}
+  description={t(course.about, lang).slice(0, 155)}
+>
+  <div class="crumb">
+    {L("courseCrumb")} {course.trimester} · {course.credits} ECTS
+  </div>
+  <h1 class="big">{t(course.title, lang)}</h1>
+  <p class="lede">{t(course.about, lang)}</p>
+
+  <Section title={L("secPassport")} accent={course.accent}>
+    <div class="card pad">
+      <dl class="kv">
+        <dt>{L("fLecturer")}</dt><dd>{course.lecturer}</dd>
+        <dt>{L("fLanguage")}</dt><dd>{t(course.language, lang)}</dd>
+        <dt>{L("fCode")}</dt><dd class="mono">{course.code}</dd>
+        <dt>{L("fCycle")}</dt><dd>{course.cycle} / {course.component}</dd>
+        <dt>{L("fControl")}</dt><dd>{t(CONTROL_LABEL[course.control], lang)}</dd>
+        <dt>{L("fHoursUp")}</dt>
+        <dd class="mono">
+          {h.total} = {h.lec} {L("lec")} + {h.pr} {L("pr")} + {h.srop} СРОП + {h.sro} СРО
+        </dd>
+        {hb && (
+          <>
+            <dt>{L("fHoursHb")}</dt>
+            <dd class="mono">
+              {hb.total} = {hb.lec} {L("lec")} + {hb.pr} {L("pr")} + {hb.isis} ISIS + {hb.sis} SIS
+            </dd>
+          </>
+        )}
+        <dt>{L("fMethod")}</dt><dd>{t(course.method, lang)}</dd>
+        <dt>{L("fPre")}</dt><dd>{t(course.prerequisites, lang)}</dd>
+        <dt>{L("fPost")}</dt><dd>{t(course.postrequisites, lang)}</dd>
+      </dl>
+    </div>
+  </Section>
+
+  <Section title={L("secGrade")} sub={t(course.formula, lang)} accent={course.accent}>
+    <div class="card pad">
+      <AssessmentTable rows={course.assessment} lang={lang} />
+      <div class="note" style="margin-top:16px;border-left-color:var(--tint)">
+        <b>{L("leverTitle")}</b> {t(course.lever, lang)}
+      </div>
+    </div>
+  </Section>
+
+  <Section title={L("secPrep")} sub={L("prepSub")} accent={course.accent}>
+    <PrepGrid blocks={course.prep} lang={lang} />
+  </Section>
+
+  <Section title={L("secQa")} sub={L("qaSub")} accent={course.accent}>
+    <SelfCheck items={course.qa} lang={lang} />
+  </Section>
+
+  <Section title={L("secMap")} sub={L("mapSub")} accent={course.accent}>
+    <WeekList weeks={WEEKS} lang={lang} only={course.slug} />
+  </Section>
+
+  <Section title={L("secReading")} sub={L("readingSub")} accent={course.accent}>
+    <div class="card pad">
+      <div class="res">
+        {
+          myBooks.map((b) => (
+            <div class="res-i">
+              <span class="nm">
+                {b!.free ? (
+                  <a href={b!.free} target="_blank" rel="noopener">{b!.authors} — {b!.title}</a>
+                ) : (
+                  <>{b!.authors} — {b!.title}</>
+                )}
+              </span>
+              <span class="kd">{b!.edition}{b!.free ? " · " + L("freeFull") : ""}</span>
+              <span class="ds">{b!.note[lang]}</span>
+            </div>
+          ))
+        }
+      </div>
+      <p style="margin-top:14px">
+        <a href={url(lang, "books")}>{L("chaptersUsed")} →</a>
+      </p>
+    </div>
+  </Section>
+
+  <div class="block">
+    {
+      others.map((o) => (
+        <a
+          href={url(lang, `courses/${o.slug}`)}
+          class={`card pad ${o.accent} rail`}
+          style="display:block;text-decoration:none;color:inherit"
+        >
+          <span class="ctag">{L("otherCourse")}</span>
+          <h3 style="font-size:18px;margin-top:9px">{t(o.title, lang)}</h3>
+          <p style="font-size:13.5px;color:var(--muted);margin-top:5px">
+            {o.credits} ECTS · {o.hours.total} {lang === "en" ? "hours" : "часов"} ·{" "}
+            {t(CONTROL_LABEL[o.control], lang)}
+          </p>
+        </a>
+      ))
+    }
+  </div>
+</Base>

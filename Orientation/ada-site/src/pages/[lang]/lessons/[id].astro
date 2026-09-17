@@ -1,0 +1,181 @@
+---
+/** Страница урока: /en/lessons/math-01.html */
+import Base from "../../../layouts/Base.astro";
+import Formula from "../../../components/Formula.astro";
+import CodeBlock from "../../../components/CodeBlock.astro";
+import Reading from "../../../components/Reading.astro";
+import { LESSONS, lessonId, neighbours, type Lesson } from "../../../data/lessons";
+import { COURSES } from "../../../data/courses";
+import { WEEKS } from "../../../data/plan";
+import { UI } from "../../../data/ui";
+import { LANGS, t, type Lang } from "../../../data/types";
+import { weekRange } from "../../../lib/dates";
+import { url } from "../../../lib/urls";
+
+export function getStaticPaths() {
+  return LANGS.flatMap((lang) =>
+    LESSONS.map((lesson) => ({
+      params: { lang, id: lessonId(lesson.course, lesson.week) },
+      props: { lang, lesson },
+    })),
+  );
+}
+
+const { lang, lesson } = Astro.props as { lang: Lang; lesson: Lesson };
+const L = (k: string) => t(UI[k], lang);
+const course = COURSES.find((c) => c.slug === lesson.course)!;
+const week = WEEKS.find((w) => w.n === lesson.week);
+const reading = lesson.reading ?? week?.topics[lesson.course]?.reading ?? [];
+const terms = week?.topics[lesson.course]?.terms ?? [];
+const { prev, next } = neighbours(lesson.course, lesson.week);
+---
+
+<Base
+  lang={lang}
+  page={`lessons/${lessonId(lesson.course, lesson.week)}`}
+  title={t(lesson.title, lang)}
+  active={course.slug}
+  description={t(lesson.summary, lang)}
+>
+  <div class={course.accent}>
+    <div class="crumb">
+      <a href={url(lang, `courses/${course.slug}`)} style="color:inherit">{t(course.short, lang)}</a>
+      {" · "}{L("weekAbbr")} {lesson.week} · {weekRange(lesson.week, lang)}
+    </div>
+    <h1 class="big">{t(lesson.title, lang)}</h1>
+    <p class="lede">{t(lesson.summary, lang)}</p>
+
+    <div class="lesson-meta">
+      <span><b>{lesson.minutes}</b> {lang === "en" ? "min of theory" : "мин теории"}</span>
+      <span><b>{lesson.exercises.length}</b> {lang === "en" ? "exercises" : "задач"}</span>
+      <span><b>{lesson.sections.length}</b> {lang === "en" ? "sections" : "разделов"}</span>
+      {week?.control && <span class="pill stop">{t(week.control, lang)}</span>}
+    </div>
+
+    <div class="block">
+      <h2 class="sec">{lang === "en" ? "What you will be able to do" : "Чему научишься"}</h2>
+      <div class="card pad">
+        <ul class="goals">{lesson.goals[lang].map((g) => <li>{g}</li>)}</ul>
+      </div>
+    </div>
+
+    {
+      lesson.sections.map((s, i) => (
+        <section class="lsec">
+          <h3>{i + 1}. {t(s.heading, lang)}</h3>
+          {s.body[lang].map((p) => <p class="txt">{p}</p>)}
+          {s.formula && <Formula f={s.formula} lang={lang} />}
+          {s.table && (
+            <div class="scroll" style="margin-top:16px">
+              <table class="t">
+                <thead>
+                  <tr>{s.table.head[lang].map((h) => <th>{h}</th>)}</tr>
+                </thead>
+                <tbody>
+                  {(lang === "ru" && s.table.rowsRu ? s.table.rowsRu : s.table.rows).map((r) => (
+                    <tr>{r.map((cell, ci) => <td class={ci === 0 ? "em" : undefined}>{cell}</td>)}</tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+          {s.code && <CodeBlock c={s.code} lang={lang} />}
+          {s.key && (
+            <div class="keybox"><b>{lang === "en" ? "Key idea" : "Главное"}</b>{t(s.key, lang)}</div>
+          )}
+          {s.pitfall && (
+            <div class="pitbox"><b>{lang === "en" ? "Common mistake" : "Частая ошибка"}</b>{t(s.pitfall, lang)}</div>
+          )}
+        </section>
+      ))
+    }
+
+    {
+      lesson.worked && (
+        <div class="block">
+          <div class="worked">
+            <h3>{t(lesson.worked.title, lang)}</h3>
+            <p class="txt" style="font-size:15.5px">{t(lesson.worked.intro, lang)}</p>
+            <ol class="wsteps">
+              {lesson.worked.steps.map((st) => (
+                <li>
+                  <div>
+                    <div class="st">{t(st.text, lang)}</div>
+                    {st.formula && <Formula f={st.formula} lang={lang} />}
+                    {st.code && <CodeBlock c={st.code} lang={lang} />}
+                  </div>
+                </li>
+              ))}
+            </ol>
+            <div class="keybox" style="margin-top:22px">
+              <b>{lang === "en" ? "Conclusion" : "Вывод"}</b>{t(lesson.worked.conclusion, lang)}
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    <div class="block">
+      <h2 class="sec">{lang === "en" ? "Exercises" : "Задачи"}</h2>
+      <p class="sec-sub">
+        {lang === "en"
+          ? "Answer first, open the solution second. Anything you could not answer goes into your notes."
+          : "Сначала отвечай, потом открывай решение. Всё, на что не ответил, идёт в конспект."}
+      </p>
+      {
+        lesson.exercises.map((e, i) => (
+          <details class="exq">
+            <summary>
+              <span class="en-n">{String(i + 1).padStart(2, "0")}</span>
+              <span>{t(e.q, lang)}</span>
+              <span class="caret" />
+            </summary>
+            <div class="body">
+              {e.hint && <p class="hint">{lang === "en" ? "Hint: " : "Подсказка: "}{t(e.hint, lang)}</p>}
+              <p class="ans">{t(e.a, lang)}</p>
+            </div>
+          </details>
+        ))
+      }
+    </div>
+
+    <div class="block">
+      <div class="cols2">
+        <div class="card pad">
+          <h3 style="font-size:15px;margin-bottom:12px">
+            {lang === "en" ? "Before the next class" : "Перед следующим занятием"}
+          </h3>
+          <ul class="checks">{lesson.checklist[lang].map((c) => <li>{c}</li>)}</ul>
+        </div>
+        <div class="card pad">
+          <h3 style="font-size:15px;margin-bottom:12px">{L("readThis")}</h3>
+          <Reading refs={reading} lang={lang} />
+          {terms.length > 0 && (
+            <div class="chips" style="margin-top:16px">
+              {terms.map((x) => <span class="chip en">{x}</span>)}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+
+    <div class="lnav">
+      {prev ? (
+        <a class="card" href={url(lang, `lessons/${lessonId(prev.course, prev.week)}`)}>
+          <span class="dir">← {lang === "en" ? "Previous" : "Назад"} · {L("weekAbbr")} {prev.week}</span>
+          <span class="ttl">{t(prev.title, lang)}</span>
+        </a>
+      ) : (
+        <span />
+      )}
+      {next ? (
+        <a class="card next" href={url(lang, `lessons/${lessonId(next.course, next.week)}`)}>
+          <span class="dir">{lang === "en" ? "Next" : "Дальше"} · {L("weekAbbr")} {next.week} →</span>
+          <span class="ttl">{t(next.title, lang)}</span>
+        </a>
+      ) : (
+        <span />
+      )}
+    </div>
+  </div>
+</Base>

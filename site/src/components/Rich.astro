@@ -1,0 +1,32 @@
+---
+/**
+ * Текст с поддержкой RU/EN.
+ *
+ * Если английской версии нет — выводится просто русский текст, без обёрток:
+ * переключатель на такой абзац не влияет.
+ */
+import { rich, hasEn, type Rich } from "../data/types";
+import { inline } from "../lib/inline";
+
+export interface Props {
+  value: Rich | string;
+  /** Тег обёртки: p для абзаца, span для текста внутри чего-то. */
+  as?: string;
+  class?: string;
+}
+
+const { value, as: Tag = "span", class: cls } = Astro.props;
+const v = rich(value);
+const both = hasEn(v);
+---
+
+{
+  both ? (
+    <Tag class={cls}>
+      <span data-ru set:html={inline(v.ru)} />
+      <span data-en set:html={inline(v.en!)} />
+    </Tag>
+  ) : (
+    <Tag class={cls} set:html={inline(v.ru)} />
+  )
+}

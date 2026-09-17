@@ -1,0 +1,149 @@
+---
+import Base from "../../layouts/Base.astro";
+import Section from "../../components/Section.astro";
+import { COURSES } from "../../data/courses";
+import { FIRST_CLASS, CURRENT_TERM } from "../../data/calendar";
+import { UI, LISTS } from "../../data/ui";
+import { LANGS, t, CONTROL_LABEL, type Lang } from "../../data/types";
+import { daysUntil } from "../../lib/dates";
+import { url } from "../../lib/urls";
+
+export function getStaticPaths() {
+  return LANGS.map((lang) => ({ params: { lang }, props: { lang } }));
+}
+
+const { lang } = Astro.props as { lang: Lang };
+const L = (k: string) => t(UI[k], lang);
+
+const d = daysUntil(FIRST_CLASS);
+const totalCredits = COURSES.reduce((s, c) => s + c.credits, 0);
+const totalHours = COURSES.reduce((s, c) => s + c.hours.total, 0);
+const selfPerWeek = Math.round(
+  COURSES.reduce((s, c) => s + c.hours.srop + c.hours.sro, 0) / CURRENT_TERM.weeksCount,
+);
+const sum = (f: (c: (typeof COURSES)[number]) => number) => COURSES.reduce((s, c) => s + f(c), 0);
+
+---
+
+<Base lang={lang} page="index" title={L("homeTitle")} active="index">
+  <div class="crumb">{L("homeCrumb")}</div>
+  <h1 class="big">{L("homeTitle")}</h1>
+  <p class="lede">{L("homeLede")}</p>
+
+  <div class="block">
+    <div class="card pad" style="display:flex;flex-wrap:wrap;gap:26px;align-items:baseline">
+      <div class="metric" style="border-right:1px solid var(--line)">
+        <b class="mono" data-days style="font-size:26px">{d > 0 ? d : 0}</b>
+        <span>{d > 0 ? L("dayUntil") : L("classesStarted")}</span>
+      </div>
+      <div class="metric" style="border-right:1px solid var(--line)">
+        <b class="mono" style="font-size:26px">{CURRENT_TERM.weeksCount}</b>
+        <span>{L("weeksOfTeaching")}</span>
+      </div>
+      <div class="metric" style="border-right:1px solid var(--line)">
+        <b class="mono" style="font-size:26px">{totalCredits}</b>
+        <span>{L("creditsOn")} {COURSES.length} {L("coursesWord")}</span>
+      </div>
+      <div class="metric">
+        <b class="mono" style="font-size:26px">{totalHours}</b>
+        <span>{L("hoursTotal")}</span>
+      </div>
+    </div>
+  </div>
+
+  <Section title={L("secCourses")} sub={L("secCoursesSub")}>
+    <div class="cols2">
+      {
+        COURSES.map((c) => (
+          <a href={url(lang, `courses/${c.slug}`)} style="text-decoration:none;color:inherit;display:block">
+            <div class={`card chead ${c.accent} rail`}>
+              <div>
+                <span class="ctag">{c.cycle} / {c.component} · {t(CONTROL_LABEL[c.control], lang)}</span>
+                <h3 style="margin-top:9px">{t(c.title, lang)}</h3>
+                <div class="en">{lang === "en" ? c.officialRu : c.officialEn}</div>
+              </div>
+              <div class="metrics">
+                <div class="metric"><b>{c.credits}</b><span>{L("ectsCredits")}</span></div>
+                <div class="metric"><b>{c.hours.total}</b><span>{L("hoursAll")}</span></div>
+                <div class="metric"><b>{c.hours.lec + c.hours.pr}</b><span>{L("inClass")}</span></div>
+                <div class="metric"><b>{c.hours.srop + c.hours.sro}</b><span>{L("onYourOwn")}</span></div>
+              </div>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+  </Section>
+
+  <Section title={L("secHours")} sub={L("secHoursSub")}>
+    <div class="card pad">
+      <div class="scroll">
+        <table class="t">
+          <thead>
+            <tr>
+              <th>{L("thCourse")}</th><th>{L("thLectures")}</th><th>{L("thPractice")}</th>
+              <th>СРОП / ISIS</th><th>СРО / SIS</th><th>{L("thTotal")}</th><th>{L("thSelfWeek")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              COURSES.map((c) => (
+                <tr>
+                  <td class="em">{t(c.short, lang)}</td>
+                  <td class="num">{c.hours.lec}</td>
+                  <td class="num">{c.hours.pr}</td>
+                  <td class="num">{c.hours.srop}</td>
+                  <td class="num">{c.hours.sro}</td>
+                  <td class="num">{c.hours.total}</td>
+                  <td class="num">
+                    {Math.round((c.hours.srop + c.hours.sro) / CURRENT_TERM.weeksCount)}
+                  </td>
+                </tr>
+              ))
+            }
+            <tr>
+              <td class="em">{L("together")}</td>
+              <td class="num">{sum((c) => c.hours.lec)}</td>
+              <td class="num">{sum((c) => c.hours.pr)}</td>
+              <td class="num">{sum((c) => c.hours.srop)}</td>
+              <td class="num">{sum((c) => c.hours.sro)}</td>
+              <td class="num">{totalHours}</td>
+              <td class="num em">{selfPerWeek}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note" style="margin-top:16px">
+        <b>{selfPerWeek}</b> {L("hoursCallout")}
+      </div>
+    </div>
+  </Section>
+
+  <Section title={L("secHow")}>
+    <div class="card pad">
+      <ol class="steps">
+        <li><b>{L("step1t")}</b><span>{L("step1d")}</span></li>
+        <li><b>{L("step2t")}</b><span>{L("step2d")}</span></li>
+        <li><b>{L("step3t")}</b><span>{L("step3d")}</span></li>
+      </ol>
+    </div>
+  </Section>
+
+  <Section title={L("secTruth")}>
+    <div class="cols2">
+      <div class="card pad">
+        <h3 style="font-size:15px;color:var(--go)">{L("official")}</h3>
+        <ul class="plain" style="margin-top:11px">
+          {LISTS.officialList[lang].map((x) => <li>{x}</li>)}
+        </ul>
+      </div>
+      <div class="card pad">
+        <h3 style="font-size:15px;color:var(--stop)">{L("reconstructed")}</h3>
+        <ul class="plain" style="margin-top:11px">
+          {LISTS.reconstructedList[lang].map((x) => <li>{x}</li>)}
+        </ul>
+      </div>
+    </div>
+    <div class="note warn" style="margin-top:14px">{L("truthWarn")}</div>
+  </Section>
+</Base>

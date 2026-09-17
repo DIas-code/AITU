@@ -1,0 +1,26 @@
+---
+import type { QaItem, Lang } from "../data/types";
+import { t } from "../data/types";
+interface Props { items: QaItem[]; lang: Lang; }
+const { items, lang } = Astro.props;
+let seen: string | null = null;
+const rows = items.map((q, i) => {
+  const g = t(q.group, lang);
+  const head = g !== seen ? g : null;
+  seen = g;
+  return { q, i, head };
+});
+---
+{rows.map(({ q, i, head }) => (
+  <>
+    {head && <div class="crumb" style="margin:22px 0 9px">{head}</div>}
+    <details class="qa">
+      <summary>
+        <span class="qn">{String(i + 1).padStart(2, "0")}</span>
+        <span>{t(q.q, lang)}</span>
+        <span class="caret"></span>
+      </summary>
+      <div class="ans">{t(q.a, lang)}</div>
+    </details>
+  </>
+))}

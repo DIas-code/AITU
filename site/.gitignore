@@ -1,0 +1,6 @@
+node_modules/
+dist/
+.astro/
+# генерируется из ноутбуков через `npm run prep`
+public/media/
+public/source/

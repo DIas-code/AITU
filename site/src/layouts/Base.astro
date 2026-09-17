@@ -1,0 +1,174 @@
+---
+import "../styles/global.css";
+import { COURSES, WEEKS } from "../data/courses";
+import { weeksWithMaterial } from "../data/lessons";
+import { url } from "../lib/urls";
+
+interface Props {
+  title: string;
+  /** Что подсветить в меню: index | slug курса. */
+  active: string;
+  description?: string;
+  /** Класс акцента: t-prog, t-math… */
+  accent?: string;
+  /** Если открыт курс — показать в сайдбаре его недели. */
+  course?: string;
+  /** Номер открытой недели, чтобы подсветить плитку. */
+  week?: number;
+  wide?: boolean;
+}
+
+const { title, active, description, accent, course, week, wide } = Astro.props;
+
+const nav = [
+  { key: "index", href: url("index"), label: "Главная" },
+  ...COURSES.map((c) => ({ key: c.slug, href: url(`courses/${c.slug}`), label: c.short })),
+];
+
+const filled = course ? weeksWithMaterial(course) : new Set<number>();
+const desc = description ?? "Учебные материалы курсов: лекции и практики по неделям.";
+const year = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang="ru" class={accent}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>{active === "index" ? title : `${title} · Материалы курсов`}</title>
+    <meta name="description" content={desc} />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Fira+Sans+Condensed:wght@500;600;700&family=Fira+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    />
+    <script is:inline>
+      // Тему ставим до первой отрисовки, чтобы не мигало.
+      try {
+        const t = localStorage.getItem("theme");
+        if (t) document.documentElement.dataset.theme = t;
+        if (localStorage.getItem("lang") === "en") document.documentElement.classList.add("en");
+      } catch {}
+    </script>
+  </head>
+
+  <body>
+    <div class="shell">
+      <aside class="side">
+        <a class="mark" href={url("index")}>
+          <b>Материалы курсов</b>
+          <span>Astana IT University</span>
+        </a>
+
+        <nav class="pages">
+          {
+            nav.map((n, i) => (
+              <a href={n.href} aria-current={n.key === active ? "page" : undefined}>
+                <i>{String(i + 1).padStart(2, "0")}</i>
+                <span>{n.label}</span>
+              </a>
+            ))
+          }
+        </nav>
+
+        {
+          course && (
+            <div class="side-group">
+              <b>Недели</b>
+              <div class="weeks-mini">
+                {Array.from({ length: WEEKS }, (_, i) => i + 1).map((w) =>
+                  filled.has(w) ? (
+                    <a
+                      href={url(`courses/${course}/week-${String(w).padStart(2, "0")}`)}
+                      aria-current={w === week ? "page" : undefined}
+                      title={`Неделя ${w}`}
+                    >
+                      {w}
+                    </a>
+                  ) : (
+                    <span title={`Неделя ${w} — пока пусто`}>{w}</span>
+                  )
+                )}
+              </div>
+            </div>
+          )
+        }
+
+        <div class="side-foot">
+          <button class="tbtn" id="theme" type="button">Сменить тему</button>
+          <p class="side-note">
+            Материалы собраны из лекционных ноутбуков курса. Оригиналы можно скачать на
+            странице каждой лекции.
+          </p>
+        </div>
+      </aside>
+
+      <main>
+        <div class:list={["page", wide && "page-wide"]}>
+          <slot />
+          <div class="foot">
+            <span>Материалы курсов · {year}</span>
+            <a href={url("index")}>На главную</a>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script is:inline>
+      // Тема
+      const root = document.documentElement;
+      document.getElementById("theme")?.addEventListener("click", () => {
+        const dark = matchMedia("(prefers-color-scheme: dark)").matches;
+        const now = root.dataset.theme || (dark ? "dark" : "light");
+        const next = now === "dark" ? "light" : "dark";
+        root.dataset.theme = next;
+        try {
+          localStorage.setItem("theme", next);
+        } catch {}
+      });
+
+      // Язык: класс на <html>, выбор запоминается между страницами.
+      const applyLang = (lang) => {
+        root.classList.toggle("en", lang === "en");
+        document.querySelectorAll(".lang button").forEach((b) => {
+          b.setAttribute("aria-pressed", String(b.dataset.lang === lang));
+        });
+      };
+      let saved = "ru";
+      try {
+        saved = localStorage.getItem("lang") === "en" ? "en" : "ru";
+      } catch {}
+      // Страницы без переключателя всегда русские, но выбор пользователя не трогаем:
+      // в localStorage пишем только при явном нажатии на кнопку.
+      applyLang(document.querySelector(".lang") ? saved : "ru");
+      document.querySelectorAll(".lang button").forEach((b) => {
+        b.addEventListener("click", () => {
+          applyLang(b.dataset.lang);
+          try {
+            localStorage.setItem("lang", b.dataset.lang);
+          } catch {}
+        });
+      });
+
+      // Копирование кода
+      document.querySelectorAll("button.copy").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          try {
+            await navigator.clipboard.writeText(btn.dataset.code || "");
+            btn.textContent = "скопировано";
+            btn.dataset.done = "1";
+            setTimeout(() => {
+              btn.textContent = "копировать";
+              delete btn.dataset.done;
+            }, 1400);
+          } catch {
+            btn.textContent = "не вышло";
+            setTimeout(() => (btn.textContent = "копировать"), 1400);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

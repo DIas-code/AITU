@@ -1,0 +1,88 @@
+---
+import type { Week, Lang } from "../data/types";
+import { t } from "../data/types";
+import { COURSES } from "../data/courses";
+import { UI } from "../data/ui";
+import { weekRange } from "../lib/dates";
+import { lessonFor, lessonId } from "../data/lessons";
+import { url } from "../lib/urls";
+import Reading from "./Reading.astro";
+
+interface Props {
+  weeks: Week[];
+  lang: Lang;
+  /** Показать только одну дисциплину (slug). Пусто — все дорожки. */
+  only?: string;
+}
+
+const { weeks, lang, only } = Astro.props;
+const L = (k: string) => t(UI[k], lang);
+const solo = only ? COURSES.find((c) => c.slug === only) : undefined;
+---
+
+<div class={"weeks" + (solo ? " " + solo.accent : "")}>
+  {
+    weeks.map((w) => (
+      <div class={"card wk" + (w.control ? " hot" : "")}>
+        <div class="wk-n">
+          <b>{w.n}</b>
+          <span>{L("weekAbbr")}</span>
+        </div>
+        <div class="wk-b">
+          <div class="wk-top">
+            {solo && <h3 style="font-size:16px">{t(w.topics[solo.slug]!.title, lang)}</h3>}
+            <span class="dt">{weekRange(w.n, lang)}</span>
+            {w.control && <span class="pill stop">{t(w.control, lang)}</span>}
+          </div>
+
+          {
+            solo ? (
+              <>
+                <p style="font-size:14px;color:var(--ink2);max-width:66ch">
+                  {t(w.topics[solo.slug]!.detail, lang)}
+                </p>
+                <Reading refs={w.topics[solo.slug]!.reading} lang={lang} />
+                <div class="chips">
+                  {w.topics[solo.slug]!.terms.map((x) => <span class="chip en">{x}</span>)}
+                </div>
+                {lessonFor(solo.slug, w.n) ? (
+                  <a class="wk-lesson" href={url(lang, `lessons/${lessonId(solo.slug, w.n)}`)}>
+                    {lang === "en" ? "Open the lesson →" : "Открыть урок →"}
+                  </a>
+                ) : (
+                  <span class="wk-lesson soon">{lang === "en" ? "lesson not written yet" : "урок ещё не написан"}</span>
+                )}
+              </>
+            ) : (
+              COURSES.map((c) => {
+                const topic = w.topics[c.slug];
+                return topic ? (
+                  <div class={"trk " + c.accent}>
+                    <span class="lab">{t(c.short, lang).toLowerCase()}</span>
+                    <span class="txt">
+                      <strong>{t(topic.title, lang)}</strong>
+                      <em>{t(topic.detail, lang)}</em>
+                      <Reading refs={topic.reading} lang={lang} />
+                      {lessonFor(c.slug, w.n) && (
+                        <a class="wk-lesson" href={url(lang, `lessons/${lessonId(c.slug, w.n)}`)}>
+                          {t(UI.openLesson, lang)} →
+                        </a>
+                      )}
+                    </span>
+                  </div>
+                ) : null;
+              })
+            )
+          }
+
+          {!solo && (
+            <div class="deliver">
+              <b>{L("closeThis")}</b>
+              <span>{t(w.todo, lang)}</span>
+            </div>
+          )}
+        </div>
+      </div>
+    ))
+  }
+</div>

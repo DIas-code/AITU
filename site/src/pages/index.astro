@@ -1,0 +1,101 @@
+---
+import Base from "../layouts/Base.astro";
+import { COURSES } from "../data/courses";
+import { byCourse, LESSONS } from "../data/lessons";
+import { WEEK_PLAN } from "../data/plan";
+import { lessonId, rich, KIND_LABEL } from "../data/types";
+import { url } from "../lib/urls";
+
+---
+
+<Base
+  title="Материалы курсов"
+  active="index"
+  description="Лекции и практики курсов магистратуры Applied Data Analytics, разложенные по неделям."
+>
+  <div class="hero">
+    <p class="crumb">Astana IT University · Applied Data Analytics</p>
+    <h1 class="big">Материалы курсов</h1>
+    <p class="lede">
+      Лекции с занятий, переписанные в читаемый вид: связный текст, код с подсветкой и выводом,
+      картинки из ноутбуков, задачи для самопроверки. Всё разложено по курсам и неделям — триместр
+      всегда состоит из десяти недель.
+    </p>
+  </div>
+
+  <div class="block">
+    <h2 class="sec">Курсы</h2>
+    <div class="cols2" style="margin-top:18px">
+      {
+        COURSES.map((c) => {
+          const lessons = byCourse(c.slug);
+          const weeks = new Set(lessons.map((l) => l.week)).size;
+          return (
+            <a class={`course-card ${c.accent}`} href={url(`courses/${c.slug}`)}>
+              <h3>{c.title}</h3>
+              <p>{c.about}</p>
+              <div class="meta">
+                <span>{c.term}</span>
+                <span>{lessons.length} материала в {weeks} из {c.weeks} недель</span>
+              </div>
+            </a>
+          );
+        })
+      }
+    </div>
+  </div>
+
+  <div class="block">
+    <h2 class="sec">Последнее добавленное</h2>
+    <div class="stack">
+      {
+        LESSONS.map((l) => {
+          const course = COURSES.find((c) => c.slug === l.course)!;
+          const plan = (WEEK_PLAN[l.course] ?? []).find((w) => w.week === l.week);
+          return (
+            <a class={`mat ${course.accent}`} href={url(`lessons/${lessonId(l)}`)}>
+              <div>
+                <span class="chip">
+                  {KIND_LABEL[l.kind]}{l.label ? ` ${l.label}` : ""}
+                </span>
+                <h3>{rich(l.title).ru}</h3>
+                <p>{rich(l.summary).ru}</p>
+                <p style="margin-top:9px; font-size:12.5px; color:var(--muted)">
+                  {course.short} · неделя {l.week}{plan ? ` — ${plan.short}` : ""}
+                </p>
+              </div>
+              <span class="go">{l.minutes} мин →</span>
+            </a>
+          );
+        })
+      }
+    </div>
+  </div>
+
+  <div class="block">
+    <h2 class="sec">Как это устроено</h2>
+    <div class="cols3" style="margin-top:18px">
+      <div class="card pad">
+        <b class="side-note">Курс → недели</b>
+        <p class="body" style="margin-top:6px; font-size:15px">
+          У каждого курса ровно десять недель. Неделя, в которой уже есть материалы, открывается;
+          остальные показывают тему из силлабуса.
+        </p>
+      </div>
+      <div class="card pad">
+        <b class="side-note">Текст, а не выгрузка</b>
+        <p class="body" style="margin-top:6px; font-size:15px">
+          Лекции переписаны связным текстом: объяснения, выноски «главное» и «частая ошибка»,
+          задачи с ответами. Код и его вывод — из оригинальных ноутбуков.
+        </p>
+      </div>
+      <div class="card pad">
+        <b class="side-note">Оригиналы на месте</b>
+        <p class="body" style="margin-top:6px; font-size:15px">
+          На странице каждой лекции есть ссылка на исходный <code>.ipynb</code>, а где нужно — и на
+          файлы данных к примерам.
+        </p>
+      </div>
+    </div>
+  </div>
+</Base>

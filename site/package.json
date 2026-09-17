@@ -1,0 +1,22 @@
+{
+  "name": "aitu-site",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Учебные материалы курсов AITU: курс → 10 недель → лекции и практики",
+  "scripts": {
+    "prep": "node scripts/extract-media.mjs && node scripts/sync-source.mjs",
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "npm run prep && astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "astro": "^5.13.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "typescript": "^5.7.0"
+  }
+}

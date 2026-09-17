@@ -1,0 +1,147 @@
+---
+import "../styles/global.css";
+import "katex/dist/katex.min.css";
+import { COURSES } from "../data/courses";
+import { UI } from "../data/ui";
+import { t, type Lang } from "../data/types";
+import { url, other } from "../lib/urls";
+
+interface Props {
+  lang: Lang;
+  /** Заголовок вкладки без суффикса. */
+  title: string;
+  /** Что подсветить: index | plan | kit | books | slug дисциплины. */
+  active: string;
+  description?: string;
+  /** Куда ведёт переключатель языка (та же страница). */
+  page: string;
+}
+
+const { lang, title, active, description, page } = Astro.props;
+const L = (k: string) => t(UI[k], lang);
+
+const nav = [
+  { key: "index", href: url(lang, "index"), label: L("navHome") },
+  { key: "lessons", href: url(lang, "lessons"), label: L("navLessons") },
+  ...COURSES.map((c) => ({ key: c.slug, href: url(lang, `courses/${c.slug}`), label: t(c.short, lang) })),
+  { key: "plan", href: url(lang, "plan"), label: L("navPlan") },
+  { key: "books", href: url(lang, "books"), label: L("navBooks") },
+  { key: "kit", href: url(lang, "kit"), label: L("navKit") },
+];
+
+const alt = other(lang);
+const pageTitle = active === "index" ? title : `${title} · ${L("siteName")}`;
+const desc = description ?? L("homeLede").slice(0, 155);
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={desc} />
+    <link rel="alternate" hreflang={alt} href={url(alt, page)} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Fira+Sans+Condensed:wght@500;600;700&family=Fira+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap"
+    />
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="side">
+        <a class="mark" href={url(lang, "index")}>
+          <b>{L("siteName")}</b>
+          <span>{L("siteSub")}</span>
+        </a>
+        <div class="today" id="today"></div>
+        <nav class="pages">
+          {
+            nav.map((n, i) => (
+              <a href={n.href} aria-current={n.key === active ? "page" : undefined}>
+                <i>{String(i + 1).padStart(2, "0")}</i>
+                <span>{n.label}</span>
+              </a>
+            ))
+          }
+        </nav>
+        <div class="side-foot">
+          <div class="langs">
+            <a href={url("en", page)} aria-current={lang === "en" ? "true" : undefined}>EN</a>
+            <a href={url("ru", page)} aria-current={lang === "ru" ? "true" : undefined}>RU</a>
+          </div>
+          <button class="tbtn" id="theme" type="button">{L("switchTheme")}</button>
+          <p class="side-note">{L("sideNote")}</p>
+        </div>
+      </aside>
+      <main>
+        <div class="page"><slot /></div>
+        <div class="foot">{L("footer")}</div>
+      </main>
+    </div>
+
+    <script
+      is:inline
+      define:vars={{
+        lang,
+        labels: {
+          until: L("untilFirstClass"),
+          todayWord: L("today"),
+          isToday: L("firstClassToday"),
+          running: L("classesRunning"),
+        },
+      }}
+    >
+      const MON = lang === "en"
+        ? ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+        : ["янв","фев","мар","апр","мая","июн","июл","авг","сен","окт","ноя","дек"];
+      const START = new Date(2026, 8, 7);
+      const T = new Date();
+      T.setHours(0, 0, 0, 0);
+
+      const plur = (n, f) => {
+        if (lang === "en") return n === 1 ? f[0] : f[2];
+        const a = n % 10, b = n % 100;
+        if (a === 1 && b !== 11) return f[0];
+        if (a >= 2 && a <= 4 && (b < 12 || b > 14)) return f[1];
+        return f[2];
+      };
+      const dayWord = lang === "en" ? ["day", "days", "days"] : ["день", "дня", "дней"];
+      const days = Math.round((START - T) / 86400000);
+
+      const box = document.getElementById("today");
+      if (box) {
+        const sub =
+          days > 0 ? `${labels.until}: ${days} ${plur(days, dayWord)}`
+          : days === 0 ? labels.isToday
+          : labels.running;
+        box.innerHTML =
+          `<span>${labels.todayWord}</span><b>${T.getDate()} ${MON[T.getMonth()]} ${T.getFullYear()}</b><span>${sub}</span>`;
+      }
+
+      const n = document.querySelector("[data-days]");
+      if (n) n.textContent = String(days > 0 ? days : 0);
+
+      document.querySelectorAll("[data-date]").forEach((el) => {
+        const [y, m, d] = el.dataset.date.split("-").map(Number);
+        el.style.opacity = new Date(y, m - 1, d) < T ? ".55" : "";
+      });
+
+      const btn = document.getElementById("theme");
+      if (btn) btn.addEventListener("click", () => {
+        const r = document.documentElement;
+        const cur = r.getAttribute("data-theme");
+        const next = cur === "dark" ? "light" : cur === "light" ? "" : "dark";
+        if (next) r.setAttribute("data-theme", next);
+        else r.removeAttribute("data-theme");
+        try { localStorage.setItem("t1-theme", next); } catch (e) {}
+      });
+      try {
+        const th = localStorage.getItem("t1-theme");
+        if (th) document.documentElement.setAttribute("data-theme", th);
+      } catch (e) {}
+    </script>
+  </body>
+</html>

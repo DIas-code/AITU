@@ -1,0 +1,102 @@
+---
+/** Список всех уроков — точка входа в курс. */
+import Base from "../../layouts/Base.astro";
+import Section from "../../components/Section.astro";
+import { COURSES } from "../../data/courses";
+import { WEEKS } from "../../data/plan";
+import { lessonsOf, lessonFor, lessonId } from "../../data/lessons";
+import { UI } from "../../data/ui";
+import { LANGS, t, type Lang } from "../../data/types";
+import { weekRange, plural } from "../../lib/dates";
+import { url } from "../../lib/urls";
+
+export function getStaticPaths() {
+  return LANGS.map((lang) => ({ params: { lang }, props: { lang } }));
+}
+
+const { lang } = Astro.props as { lang: Lang };
+const L = (k: string) => t(UI[k], lang);
+
+const total = COURSES.reduce((s, c) => s + lessonsOf(c.slug).length, 0);
+const totalEx = COURSES.reduce(
+  (s, c) => s + lessonsOf(c.slug).reduce((a, l) => a + l.exercises.length, 0),
+  0,
+);
+const totalMin = COURSES.reduce(
+  (s, c) => s + lessonsOf(c.slug).reduce((a, l) => a + l.minutes, 0),
+  0,
+);
+---
+
+<Base lang={lang} page="lessons" title={L("lessonsTitle")} active="lessons">
+  <div class="crumb">{L("lessonsCrumb")}</div>
+  <h1 class="big">{L("lessonsTitle")}</h1>
+  <p class="lede">{L("lessonsLede")}</p>
+
+  <div class="block">
+    <div class="card pad" style="display:flex;flex-wrap:wrap;gap:26px;align-items:baseline">
+      <div class="metric" style="border-right:1px solid var(--line)">
+        <b class="mono" style="font-size:26px">{total}</b>
+        <span>{lang === "en" ? "lessons" : plural(total, ["урок", "урока", "уроков"])}</span>
+      </div>
+      <div class="metric" style="border-right:1px solid var(--line)">
+        <b class="mono" style="font-size:26px">{totalEx}</b><span>{L("exercisesWord")}</span>
+      </div>
+      <div class="metric">
+        <b class="mono" style="font-size:26px">{Math.round(totalMin / 60)}</b>
+        <span>{lang === "en" ? "hours of theory" : "часов теории"}</span>
+      </div>
+    </div>
+  </div>
+
+  {
+    COURSES.map((course) => (
+      <Section
+        title={t(course.title, lang)}
+        sub={`${lessonsOf(course.slug).length} ${lang === "en" ? "lessons" : plural(lessonsOf(course.slug).length, ["урок", "урока", "уроков"])} · ${t(course.short, lang)}`}
+        accent={course.accent}
+      >
+        <div class="weeks">
+          {WEEKS.map((w) => {
+            const lesson = lessonFor(course.slug, w.n);
+            const topic = w.topics[course.slug];
+            return (
+              <div class={"card wk" + (w.control ? " hot" : "")}>
+                <div class="wk-n">
+                  <b>{w.n}</b>
+                  <span>{L("weekAbbr")}</span>
+                </div>
+                <div class="wk-b">
+                  <div class="wk-top">
+                    <h3 style="font-size:16px">
+                      {lesson ? t(lesson.title, lang) : topic ? t(topic.title, lang) : ""}
+                    </h3>
+                    <span class="dt">{weekRange(w.n, lang)}</span>
+                    {w.control && <span class="pill stop">{t(w.control, lang)}</span>}
+                  </div>
+                  {lesson && (
+                    <p style="font-size:14px;color:var(--ink2);max-width:70ch">
+                      {t(lesson.summary, lang)}
+                    </p>
+                  )}
+                  {lesson ? (
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                      <a class="wk-lesson" href={url(lang, `lessons/${lessonId(course.slug, w.n)}`)}>
+                        {L("openLesson")} →
+                      </a>
+                      <span class="pill">{lesson.minutes} {L("minTheory")}</span>
+                      <span class="pill">{lesson.exercises.length} {L("exercisesWord")}</span>
+                      <span class="pill">{lesson.sections.length} {L("sectionsWord")}</span>
+                    </div>
+                  ) : (
+                    <span class="wk-lesson soon">{L("lessonNotYet")}</span>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </Section>
+    ))
+  }
+</Base>

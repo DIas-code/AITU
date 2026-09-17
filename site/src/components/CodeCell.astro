@@ -1,0 +1,65 @@
+---
+/**
+ * Ячейка кода: подсветка + вывод + кнопка «копировать».
+ *
+ * out    — то, что напечатал print (stdout);
+ * result — значение последней строки, как его показывает Jupyter;
+ * error  — исключение, если пример падает намеренно;
+ * stdin  — что пользователь ввёл с клавиатуры, если в примере есть input().
+ */
+import { Code } from "astro:components";
+import Rich from "./Rich.astro";
+import type { Rich as RichT } from "../data/types";
+
+interface Props {
+  code: string;
+  out?: string;
+  result?: string;
+  error?: string;
+  stdin?: string;
+  note?: RichT | string;
+  lang?: string;
+}
+
+const { code, out, result, error, stdin, note, lang = "python" } = Astro.props;
+const trimmed = code.replace(/\s+$/, "");
+---
+
+<div class="cell">
+  <div class="cell-top">
+    <span>{lang}</span>
+    <button class="copy" type="button" data-code={trimmed}>копировать</button>
+  </div>
+
+  <Code code={trimmed} lang={lang as any} themes={{ light: "github-light", dark: "github-dark" }} />
+
+  {stdin && (
+    <div class="io">
+      <b>ввод с клавиатуры</b>
+      <pre>{stdin}</pre>
+    </div>
+  )}
+
+  {out && (
+    <div class="io">
+      <b>вывод</b>
+      <pre>{out.replace(/\n+$/, "")}</pre>
+    </div>
+  )}
+
+  {result && (
+    <div class="io">
+      <b>результат</b>
+      <pre>{result.replace(/\n+$/, "")}</pre>
+    </div>
+  )}
+
+  {error && (
+    <div class="io err">
+      <b>ошибка</b>
+      <pre>{error.replace(/\n+$/, "")}</pre>
+    </div>
+  )}
+
+  {note && <Rich value={note} as="div" class="cell-note" />}
+</div>

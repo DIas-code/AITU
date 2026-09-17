@@ -1,0 +1,165 @@
+---
+import Base from "../../layouts/Base.astro";
+import Blocks from "../../components/Blocks.astro";
+import Rich from "../../components/Rich.astro";
+import { LESSONS } from "../../data/lessons";
+import { courseBySlug } from "../../data/courses";
+import { lessonId, rich, hasEn, KIND_LABEL, type Lesson, type Block } from "../../data/types";
+import { url, asset, weekTag, weekUrl } from "../../lib/urls";
+
+export function getStaticPaths() {
+  return LESSONS.map((lesson) => ({ params: { id: lessonId(lesson) }, props: { lesson } }));
+}
+
+interface Props {
+  lesson: Lesson;
+}
+
+const { lesson } = Astro.props;
+const course = courseBySlug(lesson.course)!;
+const id = lessonId(lesson);
+const tag = weekTag(lesson.week);
+const media = asset(`media/${lesson.course}/${tag}/`);
+
+// Кнопка RU/EN нужна, только если в лекции действительно есть английский текст.
+const blockHasEn = (b: Block): boolean => {
+  if (b.kind === "text" || b.kind === "note") return hasEn(rich(b.value));
+  if (b.kind === "list") return b.items.some((i) => hasEn(rich(i)));
+  return false;
+};
+const bilingual =
+  hasEn(rich(lesson.title)) ||
+  hasEn(rich(lesson.summary)) ||
+  lesson.sections.some((s) => hasEn(rich(s.heading)) || s.blocks.some(blockHasEn));
+
+// Соседние материалы той же недели — для перехода «дальше».
+const siblings = LESSONS.filter((l) => l.course === lesson.course && l.week === lesson.week).sort(
+  (a, b) => a.order - b.order
+);
+const idx = siblings.findIndex((l) => lessonId(l) === id);
+const prev = siblings[idx - 1];
+const next = siblings[idx + 1];
+
+const dataFiles = lesson.dataFiles ?? [];
+---
+
+<Base
+  title={rich(lesson.title).ru}
+  active={lesson.course}
+  accent={course.accent}
+  course={lesson.course}
+  week={lesson.week}
+  description={rich(lesson.summary).ru}
+>
+  <p class="crumb">
+    <a href={url(`courses/${course.slug}`)}>{course.short}</a> ·
+    <a href={weekUrl(course.slug, lesson.week)}>Неделя {lesson.week}</a>
+  </p>
+
+  <div class="lesson-head">
+    <span class="chip">{KIND_LABEL[lesson.kind]}{lesson.label ? ` ${lesson.label}` : ""}</span>
+    <span class="chip chip-plain">{lesson.minutes} мин</span>
+    {
+      bilingual && (
+        <span class="lang">
+          <button type="button" data-lang="ru" aria-pressed="true">RU</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        </span>
+      )
+    }
+  </div>
+
+  <h1 class="big"><Rich value={lesson.title} /></h1>
+  <Rich value={lesson.summary} as="p" class="lede" />
+
+  <div class="goals">
+    <b>Чему вы научитесь</b>
+    <ul>
+      {lesson.goals.map((g) => <li><Rich value={g} /></li>)}
+    </ul>
+  </div>
+
+  <div class="lesson-meta">
+    {
+      lesson.source && (
+        <a href={asset(`source/${lesson.course}/${tag}/${lesson.source}`)} download>
+          ↓ оригинал: {lesson.source}
+        </a>
+      )
+    }
+    {
+      dataFiles.map((f) => (
+        <a href={asset(`data/${lesson.course}/${tag}/${f}`)} download>
+          ↓ {f}
+        </a>
+      ))
+    }
+  </div>
+
+  <div class="lesson">
+    <div>
+      {
+        lesson.sections.map((s) => (
+          <section class="sec" id={s.id}>
+            <h2><Rich value={s.heading} /></h2>
+            <Blocks blocks={s.blocks} media={media} />
+          </section>
+        ))
+      }
+
+      {
+        lesson.exercises.length > 0 && (
+          <section class="sec" id="exercises">
+            <h2>Проверьте себя</h2>
+            <p class="body b">
+              Сначала попробуйте ответить сами, и только потом раскрывайте ответ.
+            </p>
+            <div class="tasks">
+              {lesson.exercises.map((e) => (
+                <details class="task">
+                  <summary><Rich value={e.q} /></summary>
+                  {e.hint && <p class="hint">Подсказка: <Rich value={e.hint} /></p>}
+                  <div class="ans"><Rich value={e.a} /></div>
+                </details>
+              ))}
+            </div>
+          </section>
+        )
+      }
+
+      {
+        lesson.checklist.length > 0 && (
+          <section class="sec" id="checklist">
+            <h2>Чеклист перед следующим занятием</h2>
+            <div class="check">
+              {lesson.checklist.map((c) => (
+                <label>
+                  <input type="checkbox" />
+                  <span><Rich value={c} /></span>
+                </label>
+              ))}
+            </div>
+          </section>
+        )
+      }
+
+      <div class="lesson-meta">
+        {prev && <a href={url(`lessons/${lessonId(prev)}`)}>← {rich(prev.title).ru}</a>}
+        {next && <a href={url(`lessons/${lessonId(next)}`)}>{rich(next.title).ru} →</a>}
+      </div>
+    </div>
+
+    <nav class="toc">
+      <b>Содержание</b>
+      <ol>
+        {lesson.sections.map((s) => (
+          <li>
+            <a href={`#${s.id}`}><Rich value={s.heading} /></a>
+          </li>
+        ))}
+        {lesson.exercises.length > 0 && <li><a href="#exercises">Проверьте себя</a></li>}
+        {lesson.checklist.length > 0 && <li><a href="#checklist">Чеклист</a></li>}
+      </ol>
+    </nav>
+  </div>
+</Base>
