@@ -1,0 +1,2019 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mathematics for Data Science — конспект AITU</title>
+
+<!-- MathJax: рендер формул. Требуется интернет при первом открытии. -->
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(','\\)'],['$','$']], displayMath: [['\\[','\\]']] },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] },
+  startup: { pageReady: () => MathJax.startup.defaultPageReady().then(() => document.body.classList.add('mathjax-ready')) }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+/* ============================================================
+   ПАЛИТРА
+   ============================================================ */
+:root{
+  --bg:#f7f8fa;
+  --surface:#ffffff;
+  --surface-2:#f1f3f7;
+  --border:#e1e5ec;
+  --border-strong:#cbd2de;
+  --text:#1c2230;
+  --text-dim:#5b6577;
+  --accent:#2f5fd0;
+  --accent-soft:#e8eefb;
+  --green:#1f7a4d;
+  --green-soft:#e6f4ec;
+  --amber:#9a6a00;
+  --amber-soft:#fdf3dd;
+  --red:#b4232b;
+  --red-soft:#fdeceb;
+  --mono:ui-monospace,"Cascadia Mono","Consolas",monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --radius:10px;
+  --shadow:0 1px 2px rgba(20,30,50,.05),0 4px 14px rgba(20,30,50,.05);
+}
+:root[data-theme="dark"]{
+  --bg:#12151c;
+  --surface:#1a1e27;
+  --surface-2:#222734;
+  --border:#2c323f;
+  --border-strong:#3c4350;
+  --text:#e5e9f0;
+  --text-dim:#9aa4b6;
+  --accent:#7aa2f7;
+  --accent-soft:#1e2740;
+  --green:#7dd3a0;
+  --green-soft:#16281f;
+  --amber:#e5c07b;
+  --amber-soft:#2a2314;
+  --red:#f07178;
+  --red-soft:#2d1719;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25);
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:var(--sans);font-size:15px;line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ============================================================
+   КАРКАС: боковая панель + контент
+   ============================================================ */
+.layout{display:flex;align-items:flex-start;max-width:1500px;margin:0 auto}
+
+#sidebar{
+  position:sticky;top:0;flex:0 0 288px;height:100vh;
+  padding:18px 10px 18px 18px;
+  display:flex;flex-direction:column;gap:12px;
+  border-right:1px solid var(--border);background:var(--surface);
+}
+.brand{display:flex;align-items:center;gap:9px;font-weight:700;font-size:15px;letter-spacing:-.01em;padding:0 6px}
+.brand .dot{width:9px;height:9px;border-radius:50%;background:var(--accent);flex:none}
+.brand small{display:block;font-weight:500;font-size:11.5px;color:var(--text-dim);letter-spacing:0}
+
+.searchbox{position:relative}
+.searchbox input{
+  width:100%;padding:9px 30px 9px 11px;font:inherit;font-size:13.5px;
+  background:var(--surface-2);color:var(--text);
+  border:1px solid var(--border);border-radius:8px;outline:none;
+}
+.searchbox input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.searchbox .clear{
+  position:absolute;right:6px;top:50%;transform:translateY(-50%);
+  border:0;background:none;color:var(--text-dim);cursor:pointer;font-size:16px;line-height:1;padding:4px;
+}
+.search-stat{font-size:11.5px;color:var(--text-dim);padding:0 6px;min-height:15px}
+
+#toc{overflow-y:auto;flex:1;padding-right:6px;margin-right:-6px}
+#toc a{
+  display:block;padding:5px 10px;border-radius:6px;text-decoration:none;
+  color:var(--text-dim);font-size:13.3px;line-height:1.4;
+  border-left:2px solid transparent;
+}
+#toc a:hover{background:var(--surface-2);color:var(--text)}
+#toc a.lvl2{font-weight:600;color:var(--text);margin-top:9px}
+#toc a.lvl3{padding-left:20px;font-size:12.8px}
+#toc a.active{background:var(--accent-soft);color:var(--accent);border-left-color:var(--accent);font-weight:600}
+#toc .week-tag{
+  font-size:10.5px;text-transform:uppercase;letter-spacing:.09em;color:var(--text-dim);
+  padding:12px 10px 3px;font-weight:700;opacity:.75;
+}
+
+.side-actions{display:flex;gap:6px;padding:0 4px}
+.side-actions button{
+  flex:1;padding:7px 8px;font:inherit;font-size:12.5px;cursor:pointer;
+  background:var(--surface-2);color:var(--text-dim);
+  border:1px solid var(--border);border-radius:7px;
+}
+.side-actions button:hover{color:var(--text);border-color:var(--border-strong)}
+
+main{flex:1;min-width:0;padding:34px 40px 100px;max-width:1000px}
+
+/* мобильная шапка */
+#mobilebar{
+  display:none;position:sticky;top:0;z-index:40;
+  padding:calc(10px + env(safe-area-inset-top,0px)) 14px 10px;
+  background:var(--surface);border-bottom:1px solid var(--border);
+  align-items:center;gap:10px;
+}
+#mobilebar button{
+  padding:7px 11px;font:inherit;font-size:13px;cursor:pointer;
+  background:var(--surface-2);border:1px solid var(--border);border-radius:7px;color:var(--text);
+}
+
+/* ============================================================
+   ТИПОГРАФИКА
+   ============================================================ */
+.page-title{font-size:30px;line-height:1.2;letter-spacing:-.02em;margin:0 0 6px;font-weight:750}
+.page-sub{color:var(--text-dim);margin:0 0 26px;font-size:14.5px;max-width:70ch}
+
+h2{
+  font-size:13px;text-transform:uppercase;letter-spacing:.11em;font-weight:750;
+  color:var(--accent);margin:46px 0 16px;padding-bottom:9px;border-bottom:2px solid var(--border);
+}
+h2:first-of-type{margin-top:30px}
+h3{font-size:19px;letter-spacing:-.01em;margin:0 0 4px;font-weight:700}
+h4{font-size:14.5px;margin:18px 0 6px;font-weight:700}
+p{margin:0 0 11px}
+.en{color:var(--text-dim);font-weight:500;font-size:.84em;font-style:normal}
+ul,ol{margin:0 0 11px;padding-left:22px}
+li{margin:3px 0}
+b,strong{font-weight:680}
+code{font-family:var(--mono);font-size:.88em;background:var(--surface-2);padding:1px 5px;border-radius:4px}
+a{color:var(--accent)}
+
+/* ============================================================
+   БЛОКИ
+   ============================================================ */
+.topic{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:20px 22px;margin-bottom:14px;box-shadow:var(--shadow);
+}
+.topic > h3 + .lead{color:var(--text-dim);margin:0 0 14px;font-size:14px}
+
+.grid{display:grid;gap:12px}
+.grid.c2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid.c3{grid-template-columns:repeat(3,minmax(0,1fr))}
+
+.card{background:var(--surface-2);border:1px solid var(--border);border-radius:9px;padding:13px 15px}
+.card h4{margin:0 0 5px;font-size:14px}
+.card p{margin:0;font-size:13.4px;color:var(--text-dim)}
+
+/* формульная плашка */
+.formula{
+  background:var(--accent-soft);border:1px solid var(--border);
+  border-left:3px solid var(--accent);
+  border-radius:8px;padding:6px 18px;margin:14px 0;overflow-x:auto;
+}
+.formula .cap{font-size:12px;color:var(--text-dim);margin:6px 0 -4px;font-weight:600}
+
+/* расшифровка обозначений под формулой */
+.legend{margin:-6px 0 18px;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--surface)}
+.legend > .lh{
+  padding:6px 14px;background:var(--surface-2);border-bottom:1px solid var(--border);
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--text-dim);
+}
+.legend dl{margin:0;padding:11px 14px;display:grid;grid-template-columns:max-content 1fr;gap:7px 18px;font-size:13.4px;align-items:baseline}
+.legend dt{font-weight:700;white-space:nowrap;text-align:right;color:var(--text)}
+.legend dd{margin:0;color:var(--text-dim)}
+.legend dd b{color:var(--text)}
+
+/* «почему формула такая» */
+.why{font-size:13.6px;color:var(--text-dim);margin:0 0 14px;padding-left:13px;border-left:2px solid var(--border-strong)}
+.why b{color:var(--text)}
+
+/* ссылка на источник формулы */
+.src{
+  display:block;margin:-8px 0 16px;font-size:11.6px;color:var(--text-dim);
+  font-family:var(--mono);line-height:1.5;
+}
+.src::before{content:"↳ ";opacity:.55}
+.src i{font-style:normal;opacity:.7}
+
+/* ============================================================
+   СПРАВОЧНИК ФОРМУЛ — формула + одно предложение + источник
+   ============================================================ */
+.sheet{margin-top:4px}
+.sheet-row{
+  display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);
+  gap:4px 24px;padding:14px 0;border-top:1px solid var(--border);align-items:center;
+}
+.sheet-row:first-child{border-top:0;padding-top:4px}
+.sheet-eq{overflow-x:auto;overflow-y:hidden;min-width:0}
+.sheet-name{font-weight:700;font-size:13.6px;display:block;margin-bottom:1px}
+.sheet-txt{font-size:13.3px;color:var(--text-dim);min-width:0}
+.sheet-txt .src{margin:3px 0 0}
+@media (max-width:760px){
+  .sheet-row{grid-template-columns:1fr;gap:6px}
+  .sheet-eq{order:2}
+}
+
+/* ============================================================
+   ПЕРЕКЛЮЧАТЕЛЬ РЕЖИМА
+   ============================================================ */
+.modebar{
+  display:flex;gap:4px;margin:0 0 24px;padding:4px;flex-wrap:wrap;
+  background:var(--surface-2);border:1px solid var(--border);border-radius:10px;width:fit-content;max-width:100%;
+}
+.modebar button{
+  padding:7px 15px;font:inherit;font-size:13.2px;font-weight:600;cursor:pointer;white-space:nowrap;
+  background:none;border:0;border-radius:7px;color:var(--text-dim);
+}
+.modebar button:hover{color:var(--text)}
+.modebar button.on{background:var(--surface);color:var(--accent);font-weight:700;box-shadow:var(--shadow)}
+
+/* режим «только формулы»: в математических разделах остаются лишь формулы и обозначения */
+body.mode-bare section[data-kind="math"] .topic > .lead,
+body.mode-bare section[data-kind="math"] .topic > p:not(.src),
+body.mode-bare section[data-kind="math"] .topic > .note,
+body.mode-bare section[data-kind="math"] .topic > .steps,
+body.mode-bare section[data-kind="math"] .topic > .grid,
+body.mode-bare section[data-kind="math"] .topic > .tablewrap,
+body.mode-bare section[data-kind="math"] .topic > .verdict,
+body.mode-bare section[data-kind="math"] .topic > .why,
+body.mode-bare section[data-kind="math"] .topic > details{display:none}
+body.mode-bare section[data-kind="math"] .topic{padding-bottom:8px}
+
+/* заметки */
+.note{border-radius:8px;padding:12px 15px;margin:14px 0;font-size:13.7px;border:1px solid var(--border);border-left-width:3px}
+.note p:last-child{margin-bottom:0}
+.note .lbl{font-weight:700;font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:4px}
+.note.tip{background:var(--green-soft);border-left-color:var(--green)}
+.note.tip .lbl{color:var(--green)}
+.note.warn{background:var(--amber-soft);border-left-color:var(--amber)}
+.note.warn .lbl{color:var(--amber)}
+.note.key{background:var(--red-soft);border-left-color:var(--red)}
+.note.key .lbl{color:var(--red)}
+
+/* таблицы */
+.tablewrap{overflow-x:auto;margin:14px 0;border:1px solid var(--border);border-radius:9px}
+table{border-collapse:collapse;width:100%;font-size:13.3px;background:var(--surface)}
+th,td{padding:7px 11px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
+thead th{background:var(--surface-2);font-weight:700;font-size:12.3px;position:sticky;top:0}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover{background:var(--surface-2)}
+td.num,th.num{text-align:right;font-family:var(--mono);font-size:12.5px}
+table.compact td,table.compact th{padding:4px 8px;font-size:12px}
+table.crit tbody th{background:var(--surface-2);font-family:var(--mono);font-weight:700;text-align:center}
+.hl{background:var(--accent-soft)!important;color:var(--accent);font-weight:700}
+
+/* пошаговый разбор */
+.steps{counter-reset:s;list-style:none;padding:0;margin:14px 0 0}
+.steps > li{
+  counter-increment:s;position:relative;padding:0 0 15px 38px;margin:0;
+  border-left:1px dashed var(--border-strong);
+}
+.steps > li:last-child{border-left-color:transparent;padding-bottom:0}
+.steps > li::before{
+  content:counter(s);position:absolute;left:-13px;top:-1px;
+  width:26px;height:26px;border-radius:50%;
+  background:var(--accent);color:#fff;font-size:12.5px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+.steps > li > .st{font-weight:680;display:block;margin-bottom:2px}
+
+/* вывод-итог */
+.verdict{
+  margin-top:14px;padding:12px 16px;border-radius:8px;font-size:14px;
+  background:var(--green-soft);border:1px solid var(--green);color:var(--green);font-weight:600;
+}
+.verdict.no{background:var(--red-soft);border-color:var(--red);color:var(--red)}
+
+/* бейджи */
+.badge{
+  display:inline-block;padding:1px 8px;border-radius:20px;font-size:11.5px;font-weight:700;
+  background:var(--surface-2);color:var(--text-dim);border:1px solid var(--border);vertical-align:2px;
+}
+.badge.p{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+
+/* details */
+details{border:1px solid var(--border);border-radius:8px;padding:0;margin:12px 0;background:var(--surface-2)}
+details > summary{
+  cursor:pointer;padding:10px 15px;font-weight:650;font-size:13.8px;list-style:none;
+  display:flex;align-items:center;gap:8px;
+}
+details > summary::-webkit-details-marker{display:none}
+details > summary::before{content:"▸";color:var(--accent);font-size:12px;transition:transform .15s}
+details[open] > summary::before{transform:rotate(90deg)}
+details > .dbody{padding:0 15px 13px;border-top:1px solid var(--border);padding-top:12px}
+
+/* ============================================================
+   КАЛЬКУЛЯТОРЫ
+   ============================================================ */
+.calc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;margin-bottom:14px;box-shadow:var(--shadow)}
+.calc h3{font-size:16.5px;margin-bottom:10px}
+.calc label{display:block;font-size:12.4px;font-weight:650;color:var(--text-dim);margin-bottom:4px}
+.calc input,.calc textarea,.calc select{
+  width:100%;padding:8px 10px;font-family:var(--mono);font-size:13px;
+  background:var(--surface-2);color:var(--text);border:1px solid var(--border);border-radius:7px;outline:none;
+}
+.calc textarea{resize:vertical;min-height:62px;line-height:1.5}
+.calc input:focus,.calc textarea:focus,.calc select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.calc .row{display:grid;gap:11px;margin-bottom:11px}
+.calc .row.c2{grid-template-columns:1fr 1fr}
+.calc .row.c3{grid-template-columns:repeat(3,1fr)}
+.calc .row.c4{grid-template-columns:repeat(4,1fr)}
+.btn{
+  padding:9px 18px;font:inherit;font-size:13.5px;font-weight:650;cursor:pointer;
+  background:var(--accent);color:#fff;border:0;border-radius:7px;
+}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:var(--surface-2);color:var(--text-dim);border:1px solid var(--border)}
+.out{
+  margin-top:13px;padding:13px 16px;border-radius:8px;background:var(--surface-2);
+  border:1px solid var(--border);font-size:13.5px;
+}
+.out:empty{display:none}
+.out .kv{display:flex;justify-content:space-between;gap:14px;padding:3px 0;border-bottom:1px dotted var(--border)}
+.out .kv:last-of-type{border-bottom:0}
+.out .kv span:first-child{color:var(--text-dim)}
+.out .kv span:last-child{font-family:var(--mono);font-weight:650}
+.out .concl{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-weight:650}
+.out .err{color:var(--red);font-weight:650}
+.ok{color:var(--green)}.bad{color:var(--red)}
+
+.hidden{display:none!important}
+[data-off="1"]{display:none!important}
+mark{background:#ffe68a;color:#000;border-radius:3px;padding:0 2px}
+:root[data-theme="dark"] mark{background:#6b5400;color:#fff}
+
+/* ============================================================
+   АДАПТИВ
+   ============================================================ */
+@media (max-width:980px){
+  #mobilebar{display:flex}
+  .layout{display:block}
+  #sidebar{
+    position:fixed;z-index:50;left:0;top:0;height:100vh;width:290px;
+    transform:translateX(-100%);transition:transform .2s ease;
+    box-shadow:0 0 40px rgba(0,0,0,.25);
+  }
+  #sidebar.open{transform:none}
+  main{padding:20px 16px 80px;max-width:none}
+  .grid.c2,.grid.c3{grid-template-columns:1fr}
+  .calc .row.c2,.calc .row.c3,.calc .row.c4{grid-template-columns:1fr 1fr}
+  .page-title{font-size:24px}
+  #scrim{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:45}
+}
+@media (max-width:460px){
+  .calc .row.c3,.calc .row.c4{grid-template-columns:1fr}
+}
+
+/* ============================================================
+   ПЕЧАТЬ / PDF
+   ============================================================ */
+@media print{
+  #sidebar,#mobilebar,#scrim,.side-actions,.calc .btn,.no-print{display:none!important}
+  main{padding:0;max-width:none}
+  body{background:#fff;font-size:11pt}
+  .topic,.calc{break-inside:avoid;box-shadow:none;border-color:#bbb;page-break-inside:avoid}
+  h2{break-after:avoid;page-break-after:avoid;color:#000;border-bottom-color:#000}
+  h3,h4{break-after:avoid}
+  details{border:0;background:none}
+  details > .dbody{display:block!important}
+  details:not([open]) > .dbody{display:block!important}
+  a{color:#000;text-decoration:none}
+  .tablewrap{overflow:visible}
+}
+</style>
+</head>
+<body>
+
+<div id="mobilebar">
+  <button id="menuBtn" aria-label="Меню">☰ Разделы</button>
+  <strong style="font-size:14px">Math for Data Science</strong>
+</div>
+
+<div class="layout">
+
+<!-- ============================================================
+     БОКОВАЯ ПАНЕЛЬ
+     ============================================================ -->
+<aside id="sidebar">
+  <div class="brand">
+    <span class="dot"></span>
+    <span>Math for Data Science<small>AITU · ADA-M · конспект</small></span>
+  </div>
+
+  <div class="searchbox">
+    <input id="q" type="search" placeholder="Поиск: Фишер, дисперсия, df…" autocomplete="off">
+    <button class="clear" id="qclear" title="Очистить (Esc)">×</button>
+  </div>
+  <div class="search-stat" id="qstat"></div>
+
+  <nav id="toc"></nav>
+
+  <div class="side-actions">
+    <button id="themeBtn" title="Светлая / тёмная тема">◐ Тема</button>
+    <button id="printBtn" title="Сохранить страницу как PDF">⎙ PDF</button>
+  </div>
+</aside>
+
+<!-- ============================================================
+     КОНТЕНТ
+     ============================================================ -->
+<main>
+
+<h1 class="page-title">Mathematics for Data Science</h1>
+<p class="page-sub">
+  Формулы курса с разбором каждого обозначения, разборы задач, критические таблицы
+  и калькуляторы. Обзорная часть лекций вынесена в отдельный раздел внизу.
+</p>
+
+<div class="modebar no-print" id="modebar">
+  <button data-mode="math" class="on">Формулы и объяснения</button>
+  <button data-mode="bare">Только формулы</button>
+  <button data-mode="lecture">Лекция</button>
+  <button data-mode="all">Всё</button>
+</div>
+
+<!-- ############################################################
+     СПРАВОЧНИК ФОРМУЛ
+     ############################################################ -->
+<section data-week="sheet" data-kind="math">
+<h2 id="sheet">Справочник формул <span class="en">/ всё в одном месте</span></h2>
+<p class="page-sub" style="margin-bottom:16px">Одна строка на формулу: запись, смысл в одном предложении и слайд, откуда она взята. Подробные разборы — ниже по странице.</p>
+
+<article class="topic">
+  <h3 id="s-var">Меры изменчивости</h3>
+  <div class="sheet">
+    <div class="sheet-row">
+      <div class="sheet-eq">\[ R = x_{\max} - x_{\min} \]</div>
+      <div class="sheet-txt"><span class="sheet-name">Размах</span>Расстояние между самым большим и самым малым значением.
+        <span class="src">Лекция 2 <i>(Lecture 2_Math_Data_Science.pptx)</i>, слайды 2–3 <i>(формулы вставлены изображениями)</i></span></div>
+    </div>
+    <div class="sheet-row">
+      <div class="sheet-eq">\[ \bar{d} = \frac{1}{n}\sum \left|x_i-\bar{x}\right| \]</div>
+      <div class="sheet-txt"><span class="sheet-name">Среднее линейное отклонение</span>Насколько в среднем значение отходит от среднего по модулю.
+        <span class="src">Лекция 2 <i>(Lecture 2_Math_Data_Science.pptx)</i>, слайд 1 <i>(заголовок «Average deviation»)</i></span></div>
+    </div>
+    <div class="sheet-row">
+      <div class="sheet-eq">\[ s^2=\frac{\sum (x_i-\bar{x})^2}{n-1} \]</div>
+      <div class="sheet-txt"><span class="sheet-name">Дисперсия выборочная</span>Средний квадрат отклонения от среднего — базовая мера разброса.
+        <span class="src">Лекция 2 <i>(Lecture 2_Math_Data_Science.pptx)</i>, слайд 1 <i>(в лекции с множителем 1/n — см. примечание)</i></span></div>
+    </div>
+    <div class="sheet-row">
+      <div class="sheet-eq">\[ s=\sqrt{s^2} \]</div>
+      <div class="sheet-txt"><span class="sheet-name">Стандартное отклонение</span>Тот же разброс, но в единицах самих данных, поэтому читается напрямую.
+        <span class="src">Лекция 2 <i>(Lecture 2_Math_Data_Science.pptx)</i>, слайд 1 <i>(«Standard deviation and variance»)</i></span></div>
+    </div>
+    <div class="sheet-row">
+      <div class="sheet-eq">\[ V=\frac{s}{\bar{x}}\cdot 100\% \]</div>
+      <div class="sheet-txt"><span class="sheet-name">Коэффициент вариации</span>Разброс в процентах от среднего; до 33 % совокупность считают однородной.
+        <span class="src">Лекция 2 <i>(Lecture 2_Math_Data_Science.pptx)</i>, слайды 2–3 <i>(формулы изображениями)</i></span></div>
+    </div>
+  </div>
+  <div class="note warn" style="margin-top:16px">
+    <span class="lbl">Примечание о записи</span>
+    <p>На слайде 1 Лекции 2 выборочные оценки заданы как \(S_1^2=\frac{1}{n}\sum(x_i-\bar{x})^2\) — с делением на \(n\). В общепринятой записи для <b>выборки</b> делят на \(n-1\) (несмещённая оценка), и калькуляторы на этой странице считают именно так. При равных объёмах групп на отношение \(F\) это не влияет, при разных — влияет, поэтому на экзамене пиши тот вариант, что в лекции.</p>
+  </div>
+</article>
+
+<article class="topic">
+  <h3 id="s-t">t-критерий Стьюдента</h3>
+  <div class="sheet">
+    <div class="sheet-row">
+      <div class="sheet-eq">\[ t=\frac{\bar{x}-\mu_0}{s/\sqrt{n}},\quad df=n-1 \]</div>
+      <div class="sheet-txt"><span class="sheet-name">Одновыборочный</span>Во сколько раз отличие среднего от эталона больше обычного случайного колебания.
+        <span class="src">Лекция 1 <i>(Lecture 1 Math for Data Science, ADA-M.pptx)</i>, слайд 14</span></div>
+    </div>
+    <div class="sheet-row">
+      <div class="sheet-eq">\[ t=\frac{\bar{d}}{S_d},\quad d_i=x_i-y_i,\quad df=n-1 \]</div>
+      <div class="sheet-txt"><span class="sheet-name">Зависимые (парные) выборки</span>Тот же тест по разностям «до минус после»; \(S_d\) в лекции — уже стандартная ошибка среднего.
+        <span class="src">Лекция 1 <i>(Lecture 1 Math for Data Science, ADA-M.pptx)</i>, слайды 13–14</span></div>
+    </div>
+    <div class="sheet-row">
+      <div class="sheet-eq">\[ S_d=\sqrt{\frac{\sum d_i^2-\frac{\left(\sum d_i\right)^2}{n}}{n\cdot(n-1)}} \]</div>
+      <div class="sheet-txt"><span class="sheet-name">Ошибка среднего разностей</span>Рабочая формула: считается по двум суммам \(\sum d_i\) и \(\sum d_i^2\), делить дополнительно на \(\sqrt{n}\) уже не нужно.
+        <span class="src">Practice 1 <i>(week1/Practice 1 ADA-M.pdf)</i>, с. 1 — формула (35); Лекция 1 <i>(…ADA-M.pptx)</i>, слайд 14</span></div>
+    </div>
+    <div class="sheet-row">
+      <div class="sheet-eq">\[ t=\frac{\bar{X}-\bar{Y}}{S_d},\quad S_d=\sqrt{\frac{S_X^2}{n_1}+\frac{S_Y^2}{n_2}},\quad df=n_1+n_2-2 \]</div>
+      <div class="sheet-txt"><span class="sheet-name">Независимые выборки</span>Разница средних двух разных групп, делённая на ожидаемый случайный разброс этой разницы.
+        <span class="src">Лекция 1 <i>(Lecture 1 Math for Data Science, ADA-M.pptx)</i>, слайд 14</span></div>
+    </div>
+  </div>
+</article>
+
+<article class="topic">
+  <h3 id="s-f">F-критерий Фишера</h3>
+  <div class="sheet">
+    <div class="sheet-row">
+      <div class="sheet-eq">\[ F=\frac{S_1^2}{S_2^2}\quad (S_1^2\ge S_2^2) \]</div>
+      <div class="sheet-txt"><span class="sheet-name">Статистика Фишера</span>Во сколько раз одна выборка разбросаннее другой; при равных дисперсиях ожидается около 1.
+        <span class="src">Лекция 2 <i>(Lecture 2_Math_Data_Science.pptx)</i>, слайд 1</span></div>
+    </div>
+    <div class="sheet-row">
+      <div class="sheet-eq">\[ df_1=n-1,\qquad df_2=m-1 \]</div>
+      <div class="sheet-txt"><span class="sheet-name">Степени свободы</span>Первое число — для выборки в числителе, второе — в знаменателе; порядок менять нельзя.
+        <span class="src">Лекция 2 <i>(Lecture 2_Math_Data_Science.pptx)</i>, слайд 1</span></div>
+    </div>
+    <div class="sheet-row">
+      <div class="sheet-eq">\[ H_0:\ \sigma_1^2=\sigma_2^2 \]</div>
+      <div class="sheet-txt"><span class="sheet-name">Проверяемая гипотеза</span>Проверяется равенство дисперсий двух нормальных совокупностей.
+        <span class="src">Лекция 2 <i>(Lecture 2_Math_Data_Science.pptx)</i>, слайд 1</span></div>
+    </div>
+  </div>
+</article>
+
+<article class="topic">
+  <h3 id="s-fisher">Точный тест Фишера</h3>
+  <div class="sheet">
+    <div class="sheet-row">
+      <div class="sheet-eq">\[ p=\frac{(a+b)!\,(c+d)!\,(a+c)!\,(b+d)!}{n!\,a!\,b!\,c!\,d!} \]</div>
+      <div class="sheet-txt"><span class="sheet-name">Вероятность таблицы 2×2</span>Вероятность получить ровно такую таблицу частот при закреплённых суммах по краям.
+        <span class="src">Лекция 2 <i>(Lecture 2_Math_Data_Science.pptx)</i>, слайд 11</span></div>
+    </div>
+    <div class="sheet-row">
+      <div class="sheet-eq">\[ p_{\text{двуст}}=\!\!\sum_{\text{не менее экстремальные}}\!\! p\ \ \lessgtr\ \alpha \]</div>
+      <div class="sheet-txt"><span class="sheet-name">Правило вывода</span>Складываем вероятности наблюдаемой и всех более крайних таблиц и сравниваем с уровнем значимости.
+        <span class="src">Лекция 2 <i>(Lecture 2_Math_Data_Science.pptx)</i>, слайды 7 и 11</span></div>
+    </div>
+  </div>
+</article>
+
+<article class="topic">
+  <h3 id="s-rule">Правило принятия решения</h3>
+  <div class="sheet">
+    <div class="sheet-row">
+      <div class="sheet-eq">\[ \left|t_{\text{выч}}\right|>t_{\text{кр}}(\alpha;df)\ \Rightarrow\ H_0\ \text{отвергается} \]</div>
+      <div class="sheet-txt"><span class="sheet-name">Сравнение с таблицей</span>Если вычисленное значение больше табличного, различия признаются статистически достоверными; при \(|t_{\text{эмп}}|<|t_{\text{крит}}|\) принимается \(H_0\).
+        <span class="src">Лекция 1 <i>(…ADA-M.pptx)</i>, слайд 13; Practice 1 <i>(week1/Practice 1 ADA-M.pdf)</i>, с. 1 — шаг 6</span></div>
+    </div>
+    <div class="sheet-row">
+      <div class="sheet-eq">\[ p<\alpha\ \Rightarrow\ H_0\ \text{отвергается} \]</div>
+      <div class="sheet-txt"><span class="sheet-name">То же через p-value</span>Современная запись того же правила; \(\alpha\) обычно 0,05.
+        <span class="src">Лекция 2 <i>(Lecture 2_Math_Data_Science.pptx)</i>, слайды 7 и 9</span></div>
+    </div>
+  </div>
+</article>
+
+</section>
+
+<!-- ############################################################
+     WEEK 1
+     ############################################################ -->
+<section data-week="1" data-kind="math">
+<h2 id="w1">Неделя 1 — t-критерий Стьюдента</h2>
+
+<article class="topic">
+  <h3 id="t-hyp">Статистические гипотезы <span class="en">/ Statistical hypotheses</span></h3>
+  <p class="src">Лекция 2 <i>(Lecture 2_Math_Data_Science.pptx)</i>, слайды 8–9 <i>(«Методы сравнения элементарных статистик», «Формулирование гипотезы»)</i>; одно- и двусторонний тест — слайд 7</p>
+  <p class="lead">Формулирование гипотезы — систематизация предположения исследователя в чётком и лаконичном виде.</p>
+
+  <div class="grid c2">
+    <div class="card">
+      <h4>Нулевая гипотеза \(H_0\) <span class="en">null</span></h4>
+      <p>Гипотеза об <b>отсутствии</b> различий: разница между генеральными параметрами равна нулю, а наблюдаемые различия между выборками — чисто случайны. Это то, что мы хотим <b>опровергнуть</b>.</p>
+    </div>
+    <div class="card">
+      <h4>Альтернативная гипотеза \(H_1\) <span class="en">alternative</span></h4>
+      <p>Гипотеза о <b>значимости</b> различий. Это экспериментальная гипотеза — то, что мы хотим доказать.</p>
+    </div>
+  </div>
+
+  <p style="margin-top:14px"><b>Статистический критерий</b> <span class="en">(statistical test)</span> — это правило, обеспечивающее принятие истинной и отклонение ложной гипотезы с высокой вероятностью; по сути метод расчёта числа, которое мы сравниваем с порогом.</p>
+
+  <h4>Уровень значимости \(\alpha\) <span class="en">/ significance level</span></h4>
+  <p>Вероятность допустимой ошибки — риск отвергнуть \(H_0\), когда она на самом деле верна. Стандартные значения: \(\alpha = 0{,}05\) (5 %) и \(\alpha = 0{,}01\) (1 %). В задачах курса по умолчанию \(\alpha = 0{,}05\).</p>
+
+  <div class="note key">
+    <span class="lbl">Правило принятия решения</span>
+    <p>Если <b>\(|{\text{вычисленное}}| &gt; {\text{табличное}}\)</b> → различия статистически значимы, \(H_0\) отвергается.<br>
+       Если <b>\(|{\text{вычисленное}}| \le {\text{табличное}}\)</b> → оснований отвергнуть \(H_0\) нет, различия случайны.</p>
+    <p style="margin-top:6px">То же через p-value: <b>\(p &lt; \alpha\)</b> → значимо; \(p \ge \alpha\) → не значимо.</p>
+  </div>
+
+  <h4>Односторонний и двусторонний тест <span class="en">/ one-tailed vs two-tailed</span></h4>
+  <div class="grid c2">
+    <div class="card">
+      <h4>Односторонний</h4>
+      <p>\(H_1:\ p_1 &gt; p_2\) или \(H_1:\ p_1 &lt; p_2\). Направление эффекта известно заранее (например, что новая терапия <i>лучше</i> стандартной). В расчёт идут только отклонения в заданную сторону. p-value меньше → тест чувствительнее.</p>
+    </div>
+    <div class="card">
+      <h4>Двусторонний</h4>
+      <p>\(H_1:\ p_1 \ne p_2\). Проверяем любое отличие — и увеличение, и уменьшение. p-value примерно в 2 раза больше, чем у одностороннего. Используется, когда направление заранее неизвестно.</p>
+    </div>
+  </div>
+</article>
+
+<article class="topic">
+  <h3 id="t-param">Параметрические и непараметрические критерии</h3>
+  <p class="src">Лекция 2 <i>(Lecture 2_Math_Data_Science.pptx)</i>, слайд 10</p>
+  <p class="lead">Возможности и ограничения двух семейств критериев.</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th style="width:26%">Свойство</th><th style="white-space:normal">Параметрические</th><th style="white-space:normal">Непараметрические</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><b>Что оценивают</b></td>
+          <td style="white-space:normal">Различия в <b>средних</b> двух выборок (t-критерий Стьюдента).</td>
+          <td style="white-space:normal">Лишь <b>средние тенденции</b>: чаще ли в выборке А встречаются более высокие значения, чем в Б (критерии Розенбаума \(Q\), Манна–Уитни \(U\), угловое преобразование Фишера \(\varphi^*\)).</td>
+        </tr>
+        <tr>
+          <td><b>Дисперсии</b></td>
+          <td style="white-space:normal">Позволяют <b>прямо</b> оценить различия в дисперсиях (критерий Фишера \(F\)).</td>
+          <td style="white-space:normal">Позволяют оценить лишь различия в <b>диапазонах вариативности</b> признака (\(\varphi^*\)).</td>
+        </tr>
+        <tr>
+          <td><b>Условия применения</b></td>
+          <td style="white-space:normal">Только при <b>нормальном распределении</b> признака <i>и</i> измерении по интервальной шкале.</td>
+          <td style="white-space:normal">При <b>любом</b> распределении; значения могут быть в любой шкале (в т. ч. порядковой, номинальной).</td>
+        </tr>
+        <tr>
+          <td><b>Расчёты</b></td>
+          <td style="white-space:normal">Довольно сложны.</td>
+          <td style="white-space:normal">Проще и занимают мало времени.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note warn">
+    <span class="lbl">Практический вывод</span>
+    <p>Параметрические критерии мощнее — при выполнении условий они «увидят» различие на меньшей выборке. Но если нормальность нарушена, их результат недостоверен, и нужно переходить к непараметрическим.</p>
+  </div>
+</article>
+
+<article class="topic">
+  <h3 id="t-ttest">t-критерий Стьюдента
+  <p class="src">Лекция 1 <i>(Lecture 1 Math for Data Science, ADA-M.pptx)</i>, слайды 12–14</p> <span class="en">/ Student's t-test</span></h3>
+  <p class="lead">Сравнительная оценка <b>средних величин</b>. Проверяет: отличаются ли средние двух выборок сильнее, чем можно объяснить случайностью.</p>
+
+  <div class="note key">
+    <span class="lbl">Идея критерия</span>
+    <p>\(t\) = (наблюдаемая разница средних) ÷ (ожидаемая случайная разница). Если \(t\) большой, разница слишком велика, чтобы быть случайной.</p>
+  </div>
+
+  <h4>1. Одновыборочный тест <span class="en">/ one-sample</span></h4>
+  <p>Сравниваем среднее выборки с известным эталонным значением \(\mu_0\).</p>
+  <div class="formula">
+    \[ t=\frac{\bar{x}-\mu_0}{s/\sqrt{n}}\,,\qquad
+       s=\sqrt{\frac{\sum_{i=1}^{n}(x_i-\bar{x})^2}{n-1}}\,,\qquad
+       df=n-1 \]
+  </div>
+  <p class="src">Лекция 1 <i>(Lecture 1 Math for Data Science, ADA-M.pptx)</i>, слайд 14</p>
+  <div class="legend">
+    <div class="lh">Что означает каждое обозначение</div>
+    <dl>
+      <dt>\(x_i\)</dt><dd>отдельное наблюдение в выборке (i-е измерение)</dd>
+      <dt>\(n\)</dt><dd>объём выборки — сколько всего наблюдений</dd>
+      <dt>\(\bar{x}\)</dt><dd>выборочное среднее: \(\bar{x}=\frac{1}{n}\sum x_i\)</dd>
+      <dt>\(\mu_0\)</dt><dd>эталонное («гипотетическое») значение, с которым сравниваем — <b>задано в условии</b>, а не посчитано по данным</dd>
+      <dt>\(s\)</dt><dd>стандартное отклонение выборки — типичный разброс значений вокруг среднего</dd>
+      <dt>\(s/\sqrt{n}\)</dt><dd><b>стандартная ошибка среднего</b>: насколько само \(\bar{x}\) «гуляет» от выборки к выборке</dd>
+      <dt>\(df\)</dt><dd>число степеней свободы — нужно, чтобы найти критическое значение в таблице</dd>
+    </dl>
+  </div>
+  <p class="why"><b>Почему формула такая.</b> В числителе — то, что мы увидели (отклонение среднего от эталона). В знаменателе — то, насколько такое отклонение ожидаемо от случайности. Их отношение показывает, во сколько раз наблюдаемый эффект больше обычного шума. Обрати внимание на \(\sqrt{n}\): чем больше выборка, тем меньше стандартная ошибка и тем меньшее отклонение уже считается значимым.</p>
+
+  <h4>2. Зависимые (парные) выборки <span class="en">/ paired / dependent samples</span></h4>
+  <p>Одни и те же объекты измерены <b>дважды</b>: «до» и «после». Работаем не с самими значениями, а с их разностями \(d_i\).</p>
+  <div class="formula">
+    <p class="cap">Разности и их среднее:</p>
+    \[ d_i = x_i - y_i\,,\qquad \bar{d}=\frac{\sum d_i}{n} \]
+    <p class="cap">Стандартное отклонение разностей и статистика:</p>
+    \[ s_d=\sqrt{\frac{\sum (d_i-\bar{d})^2}{n-1}}\,,\qquad
+       t=\frac{\bar{d}}{s_d/\sqrt{n}}\,,\qquad df=n-1 \]
+  </div>
+  <p class="src">Лекция 1 <i>(…ADA-M.pptx)</i>, слайды 13–14 <i>(там же \(t=M_d/(\delta/\sqrt{n})\) — та же величина в других обозначениях)</i>; Practice 1, с. 1 — формула (35) и <a href="#t-p1-alg">алгоритм из 6 шагов</a></p>
+  <div class="legend">
+    <div class="lh">Что означает каждое обозначение</div>
+    <dl>
+      <dt>\(x_i,\ y_i\)</dt><dd>два измерения <b>одного и того же</b> объекта: «до» и «после»</dd>
+      <dt>\(d_i\)</dt><dd>сдвиг у i-го объекта: \(d_i=x_i-y_i\). Знак важен — он показывает направление изменения</dd>
+      <dt>\(n\)</dt><dd>число <b>пар</b> (а не общее число измерений!)</dd>
+      <dt>\(\bar{d}\)</dt><dd>средний сдвиг по всем объектам — величина эффекта</dd>
+      <dt>\(s_d\)</dt><dd>разброс сдвигов: одинаково ли подействовало на всех или по-разному</dd>
+      <dt>\(s_d/\sqrt{n}\)</dt><dd>стандартная ошибка среднего сдвига</dd>
+    </dl>
+  </div>
+  <p class="why"><b>Почему формула такая.</b> Это тот же одновыборочный тест, только применённый к разностям и с \(\mu_0=0\): гипотеза «воздействие не работает» означает «средний сдвиг равен нулю». Всё, что нужно сделать в задаче — вычесть один столбец из другого и дальше работать с одним столбцом разностей.</p>
+  <div class="note tip">
+    <span class="lbl">Почему парный тест сильнее</span>
+    <p>Индивидуальные различия между людьми взаимно уничтожаются при вычитании, остаётся чистый эффект воздействия. Поэтому парный тест обнаруживает эффект там, где независимый его «не увидит».</p>
+  </div>
+
+  <h4>3. Независимые выборки <span class="en">/ independent samples</span></h4>
+  <p>Две <b>разные</b> группы объектов. Размеры \(n_1\) и \(n_2\) могут не совпадать.</p>
+  <div class="formula">
+    <p class="cap">Статистика и её знаменатель (запись лекции):</p>
+    \[ t=\frac{\bar{X}-\bar{Y}}{S_d}\,,\qquad
+       S_d=\sqrt{\frac{S_X^2}{n_1}+\frac{S_Y^2}{n_2}}\,,\qquad
+       df=n_1+n_2-2 \]
+  </div>
+  <p class="src">Лекция 1 <i>(…ADA-M.pptx)</i>, слайд 14 и Practice 1 <i>(week1/Practice 1 ADA-M.pdf)</i>, с. 2 — оба источника дают именно эту запись; в практике числитель взят по модулю: \(\left|\bar{X}-\bar{Y}\right|\)</p>
+  <div class="legend">
+    <div class="lh">Что означает каждое обозначение</div>
+    <dl>
+      <dt>\(n_1,\ n_2\)</dt><dd>объёмы первой и второй выборки — <b>могут быть разными</b></dd>
+      <dt>\(\bar{X},\ \bar{Y}\)</dt><dd>средние в каждой группе</dd>
+      <dt>\(S_X^2,\ S_Y^2\)</dt><dd>выборочные дисперсии групп</dd>
+      <dt>\(S_X^2/n_1\)</dt><dd>вклад первой группы в разброс разности средних: чем больше группа, тем меньше вклад</dd>
+      <dt>\(S_d\)</dt><dd><b>стандартная ошибка разности средних</b> — весь знаменатель целиком</dd>
+      <dt>\(df\)</dt><dd>\(n_1+n_2-2\): теряем по одной степени свободы на каждое вычисленное среднее</dd>
+    </dl>
+  </div>
+  <p class="why"><b>Почему формула такая.</b> Идея прежняя — «эффект ÷ шум». Разброс разности двух независимых величин складывается из их собственных разбросов, поэтому под корнем стоит сумма, а не разность. Деление каждой дисперсии на свой объём отражает то, что среднее по большой группе устойчивее.</p>
+
+  <details>
+    <summary>Второй вариант записи: через объединённую дисперсию \(s_p^2\)</summary>
+    <div class="dbody">
+      <p>В учебниках ту же задачу чаще записывают так:</p>
+      <div class="formula">
+        \[ s_p^2=\frac{(n_1-1)s_1^2+(n_2-1)s_2^2}{n_1+n_2-2}\,,\qquad
+           t=\frac{\bar{x}_1-\bar{x}_2}{\sqrt{s_p^2\left(\dfrac{1}{n_1}+\dfrac{1}{n_2}\right)}} \]
+      </div>
+      <p>Здесь дисперсии групп сначала усредняются с весами \(n_i-1\) в одну общую оценку \(s_p^2\). Число степеней свободы то же: \(n_1+n_2-2\).</p>
+      <p><b>Разница на практике невелика.</b> На данных Task 2 (см. <a href="#t-hw-p1">Assignment 1</a>) формула лекции даёт \(t=-4{,}168\), а вариант с \(s_p^2\) — \(t=-4{,}126\); вывод в обоих случаях одинаковый. Формулы совпадают ровно тогда, когда \(n_1=n_2\). <b>На экзамене пиши вариант из лекции.</b></p>
+    </div>
+  </details>
+
+  <div class="note key">
+    <span class="lbl">Как читается результат</span>
+    <p>После того как по формуле вычислен показатель \(t\), по таблице для заданного числа степеней свободы \(df\) и избранной вероятности допустимой ошибки находят табличное значение \(t_{\text{кр}}\).
+    <b>Если вычисленное \(|t|\) больше табличного</b>, делают вывод, что сравниваемые средние значения действительно статистически достоверно различаются, т. е. <b>нулевая гипотеза неверна</b>.</p>
+  </div>
+
+  <h4>Алгоритм решения задачи <span class="en">/ solution algorithm</span></h4>
+  <p class="src">Лекция 1 <i>(Lecture 1 Math for Data Science, ADA-M.pptx)</i>, слайд 15</p>
+  <ol class="steps">
+    <li><span class="st">Выбрать модель</span>Определить, какая модель кажется наиболее подходящей для доказательства научных предположений.</li>
+    <li><span class="st">Изучить метод</span>Ознакомиться с описанием метода, примерами и задачами.</li>
+    <li><span class="st">Проверить ограничения</span>Рассмотреть ограничения критерия и возможность сбора необходимых данных.</li>
+    <li><span class="st">Определить объём выборки</span>Сколько наблюдений нужно, чтобы эффект был обнаружим.</li>
+    <li><span class="st">Обеспечить доступ к выборке</span>Практическая возможность собрать данные.</li>
+    <li><span class="st">Провести исследование</span>Обработать полученные данные по заранее выбранному алгоритму.</li>
+    <li><span class="st">Вернуться назад при необходимости</span>Если ограничения выполнить не удалось, обратиться к предыдущим шагам, когда данные уже получены.</li>
+  </ol>
+</article>
+</section>
+
+<!-- ############################################################
+     WEEK 2
+     ############################################################ -->
+<section data-week="2" data-kind="math">
+<h2 id="w2">Неделя 2 — меры изменчивости, F-критерий Фишера</h2>
+
+<article class="topic">
+  <h3 id="t-var">Меры изменчивости <span class="en">/ Measures of variability</span></h3>
+  <p class="src">Лекция 2 <i>(Lecture 2_Math_Data_Science.pptx)</i>, слайд 1 <i>(заголовок темы)</i>, слайды 2–3 и 5–6 <i>(формулы и примеры — изображения)</i></p>
+  <p class="lead">Среднее говорит, <i>где</i> находятся данные. Меры изменчивости говорят, <i>насколько они разбросаны</i>.</p>
+
+  <p>Две группы могут иметь одинаковое среднее и совершенно разный характер: в одной все около среднего, в другой половина очень высоко, половина очень низко. Именно это различие ловят меры изменчивости.</p>
+
+  <h4>Размах <span class="en">/ range</span></h4>
+  <div class="formula">\[ R = x_{\max} - x_{\min} \]</div>
+  <p class="src">Лекция 2 <i>(Lecture 2_Math_Data_Science.pptx)</i>, слайды 2–3 <i>(формулы на слайдах вставлены изображениями)</i></p>
+  <p>Самая грубая мера: учитывает только два крайних значения и очень чувствительна к выбросам.</p>
+
+  <h4>Среднее линейное отклонение <span class="en">/ average (mean absolute) deviation</span></h4>
+  <div class="formula">\[ \bar{d} = \frac{1}{n}\sum_{i=1}^{n}\left|x_i-\bar{x}\right| \]</div>
+  <p class="src">Лекция 2 <i>(Lecture 2_Math_Data_Science.pptx)</i>, слайд 1 <i>(заголовок «Average deviation»)</i>, слайды 2–3</p>
+  <p>Средняя величина отклонения от среднего по модулю. Интуитивно понятна, но модуль неудобен в дальнейших выкладках — поэтому статистика перешла к квадратам.</p>
+
+  <h4>Дисперсия <span class="en">/ variance</span></h4>
+  <div class="formula">
+    <p class="cap">Генеральная (по всей совокупности):</p>
+    \[ \sigma^2=\frac{1}{N}\sum_{i=1}^{N}(x_i-\mu)^2 \]
+    <p class="cap">Выборочная оценка (несмещённая, с поправкой Бесселя):</p>
+    \[ s^2=\frac{1}{n-1}\sum_{i=1}^{n}(x_i-\bar{x})^2 \]
+  </div>
+  <p class="src">Лекция 2 <i>(Lecture 2_Math_Data_Science.pptx)</i>, слайд 1 <i>(в лекции \(S^2\) записана с множителем 1/n — см. примечание в справочнике)</i></p>
+  <div class="legend">
+    <div class="lh">Что означает каждое обозначение</div>
+    <dl>
+      <dt>\(N\) и \(n\)</dt><dd>\(N\) — объём <b>всей генеральной совокупности</b>, \(n\) — объём <b>выборки</b> из неё</dd>
+      <dt>\(\mu\) и \(\bar{x}\)</dt><dd>\(\mu\) — истинное среднее совокупности, \(\bar{x}\) — среднее выборки (наша оценка \(\mu\))</dd>
+      <dt>\(\sigma^2\) и \(s^2\)</dt><dd>\(\sigma^2\) — истинная дисперсия, \(s^2\) — её оценка по выборке</dd>
+      <dt>\((x_i-\bar{x})\)</dt><dd>отклонение наблюдения от среднего</dd>
+      <dt>\((x_i-\bar{x})^2\)</dt><dd>квадрат отклонения: убирает знак и сильнее штрафует далёкие значения</dd>
+      <dt>\(\sum(x_i-\bar{x})^2\)</dt><dd>сумма квадратов отклонений — «общий разброс» данных</dd>
+    </dl>
+  </div>
+  <p class="why"><b>Почему квадраты.</b> Если просто сложить отклонения, сумма всегда даст ноль: плюсы и минусы взаимно уничтожатся. Квадрат снимает знаки и при этом, в отличие от модуля, остаётся гладкой функцией — с ним работают все последующие формулы, включая t и F.</p>
+  <div class="note warn">
+    <span class="lbl">Почему \(n-1\), а не \(n\)</span>
+    <p>Выборочное среднее \(\bar{x}\) само подогнано под данные, поэтому отклонения от него систематически занижены. Деление на \(n-1\) компенсирует это смещение. В задачах курса для выборок всегда берём \(n-1\).</p>
+  </div>
+
+  <h4>Стандартное отклонение <span class="en">/ standard deviation</span></h4>
+  <div class="formula">\[ s=\sqrt{s^2}=\sqrt{\frac{\sum (x_i-\bar{x})^2}{n-1}} \]</div>
+  <p class="src">Лекция 2 <i>(Lecture 2_Math_Data_Science.pptx)</i>, слайд 1 <i>(«Standard deviation and variance»)</i></p>
+  <p>Корень из дисперсии. Главное достоинство: измеряется <b>в тех же единицах, что и сами данные</b> (если рост в см, то и \(s\) в см), поэтому его можно интерпретировать напрямую.</p>
+
+  <h4>Коэффициент вариации <span class="en">/ coefficient of variation</span></h4>
+  <div class="formula">\[ V=\frac{s}{\bar{x}}\cdot 100\,\% \]</div>
+  <p class="src">Лекция 2 <i>(Lecture 2_Math_Data_Science.pptx)</i>, слайды 2–3 <i>(формулы изображениями)</i></p>
+  <p>Безразмерная мера — позволяет сравнивать разброс величин в разных единицах. Ориентир: \(V &lt; 33\,\%\) — совокупность считается однородной.</p>
+
+  <div class="note tip">
+    <span class="lbl">Удобная формула для счёта вручную</span>
+    <p>\( \sum (x_i-\bar{x})^2 = \sum x_i^2 - \dfrac{(\sum x_i)^2}{n} \) — достаточно двух сумм: \(\sum x_i\) и \(\sum x_i^2\), не нужно вычитать среднее из каждого значения.</p>
+  </div>
+</article>
+
+<article class="topic">
+  <h3 id="t-ftest">F-критерий Фишера <span class="en">/ F — Fisher criterion</span></h3>
+  <p class="src">Лекция 2 <i>(Lecture 2_Math_Data_Science.pptx)</i>, слайд 1</p>
+  <p class="lead">Критерий Фишера применяется для проверки <b>равенства дисперсий</b> двух выборок.</p>
+
+  <p>Заданы две выборки \(X=(x_1,\dots,x_{n_1})\) и \(Y=(y_1,\dots,y_{n_2})\). Обозначим через \(\sigma_1^2\) и \(\sigma_2^2\) дисперсии генеральных совокупностей, а через \(s_1^2\) и \(s_2^2\) — <b>выборочные оценки дисперсий</b>. Предполагается, что выборки являются <b>нормальными</b>.</p>
+
+  <div class="formula">
+    <p class="cap">Гипотезы:</p>
+    \[ H_0:\ \sigma_1^2=\sigma_2^2 \qquad\text{против}\qquad H_1:\ \sigma_1^2\neq\sigma_2^2 \]
+    <p class="cap">Статистика Фишера:</p>
+    \[ F=\frac{s_1^2}{s_2^2}\ \ \text{, где в числитель ставится } \textbf{бо́льшая}\text{ дисперсия, так что } F\ge 1 \]
+    <p class="cap">Степени свободы:</p>
+    \[ df_1=n_{\text{больш. дисп.}}-1 \quad (\text{числитель}),\qquad
+       df_2=n_{\text{меньш. дисп.}}-1 \quad (\text{знаменатель}) \]
+  </div>
+  <p class="src">Лекция 2 <i>(Lecture 2_Math_Data_Science.pptx)</i>, слайд 1 <i>(там же заданы выборки \(X_n\), \(Y_m\), оценки \(S_1^2\), \(S_2^2\) и гипотеза \(H_0\))</i></p>
+  <div class="legend">
+    <div class="lh">Что означает каждое обозначение</div>
+    <dl>
+      <dt>\(\sigma_1^2,\ \sigma_2^2\)</dt><dd>истинные дисперсии двух генеральных совокупностей — их равенство и проверяем</dd>
+      <dt>\(s_1^2,\ s_2^2\)</dt><dd>выборочные оценки дисперсий — то, что реально считаем по данным</dd>
+      <dt>\(F\)</dt><dd>во сколько раз одна выборка разбросаннее другой. При \(H_0\) ожидается около 1</dd>
+      <dt>\(df_1\)</dt><dd>степени свободы <b>числителя</b> — от той выборки, чья дисперсия оказалась больше</dd>
+      <dt>\(df_2\)</dt><dd>степени свободы <b>знаменателя</b> — от выборки с меньшей дисперсией</dd>
+      <dt>\(F_{\text{кр}}\)</dt><dd>критическое значение из таблицы для \(\alpha\), \(df_1\) и \(df_2\)</dd>
+    </dl>
+  </div>
+  <p class="why"><b>Почему делим, а не вычитаем.</b> Дисперсии сравнивают отношением, а не разностью: разброс 100 против 50 и 4 против 2 — одно и то же двукратное различие, хотя разности совершенно разные. Бо́льшую дисперсию ставят в числитель специально, чтобы всегда было \(F\ge1\) — таблицы составлены только для правого хвоста распределения.</p>
+
+  <div class="note key">
+    <span class="lbl">Решение</span>
+    <p>Находим \(F_{\text{кр}}(\alpha;\,df_1,\,df_2)\) по таблице. Если <b>\(F_{\text{выч}} &gt; F_{\text{кр}}\)</b> → дисперсии различаются значимо, \(H_0\) отвергается. Иначе различие в разбросе случайно.</p>
+  </div>
+
+  <div class="note warn">
+    <span class="lbl">Зачем это нужно на практике</span>
+    <p>F-тест — обязательный шаг <i>перед</i> t-тестом для независимых выборок: формула с объединённой дисперсией \(s_p^2\) верна только при равенстве дисперсий. Если F-тест отверг равенство, применяют t-тест Уэлча.</p>
+    <p style="margin-top:6px">Кроме того, сама однородность может быть предметом исследования: две группы могут иметь одинаковый средний балл, но в одной результаты ровные, а в другой — полярные.</p>
+  </div>
+
+  <h4>Разбор: однородность умственного развития <span class="en">/ Example 1</span></h4>
+  <p class="src">Лекция 2 <i>(Lecture 2_Math_Data_Science.pptx)</i>, слайд 4 <i>(та же задача — в Lecture_additional.pptx, слайд 4, как Task 1)</i></p>
+  <p>В двух группах проводилось тестирование умственного развития по тесту десяти обучающихся. Полученные значения средних достоверно не различались, однако психолога интересует вопрос: <b>есть ли различия в степени однородности</b> показателей между группами?</p>
+  <ol class="steps">
+    <li><span class="st">Гипотезы</span>
+      \(H_0\): различия в степени однородности показателей умственного развития между группами статистически <b>незначимы</b>.<br>
+      \(H_1\): различия в степени однородности статистически <b>значимы</b>. Уровень значимости \(\alpha=0{,}05\).</li>
+    <li><span class="st">Считаем выборочные дисперсии</span>По формуле \(s^2=\frac{\sum(x_i-\bar{x})^2}{n-1}\) для каждой группы отдельно.</li>
+    <li><span class="st">Строим F</span>\(F=\dfrac{s^2_{\text{больш}}}{s^2_{\text{меньш}}}\). При \(n_1=n_2=10\): \(df_1=df_2=9\).</li>
+    <li><span class="st">Табличное значение</span>\(F_{\text{кр}}(0{,}05;\,9;\,9)=3{,}18\).</li>
+    <li><span class="st">Вывод</span>Если \(F_{\text{выч}} &gt; 3{,}18\) — однородность групп различается значимо; иначе принимаем \(H_0\): группы одинаково однородны, различие в разбросе случайно.</li>
+  </ol>
+
+  <h4>Разбор: изменчивость высоты пшеницы <span class="en">/ числовой пример</span></h4>
+  <p class="src">Assignment 1 <i>(Assignment_1_Math_Data_Science (1).pdf)</i>, с. 4 — Part II, Task 1</p>
+  <p>Высота растений: после кукурузы \(\bar{x}_1=108\) см (выборка из 15 растений), после гороха \(\bar{x}_2=111\) см (12 растений). Средние оценки дисперсий: \(s_1^2=25\ \text{см}^2\), \(s_2^2=16\ \text{см}^2\). Различаются ли растения по <b>изменчивости</b> высоты стебля? \(\alpha=0{,}05\).</p>
+  <ol class="steps">
+    <li><span class="st">Гипотезы</span>\(H_0:\sigma_1^2=\sigma_2^2\) (различие в дисперсиях случайно) против \(H_1:\sigma_1^2\ne\sigma_2^2\).</li>
+    <li><span class="st">Статистика</span>Бо́льшая дисперсия — первая: \(F=\dfrac{25}{16}=\mathbf{1{,}5625}\).</li>
+    <li><span class="st">Степени свободы</span>\(df_1=15-1=14\) (числитель), \(df_2=12-1=11\) (знаменатель).</li>
+    <li><span class="st">Критическое значение</span>\(F_{\text{кр}}(0{,}05;\,14;\,11)\approx 2{,}74\).</li>
+    <li><span class="st">Сравнение</span>\(1{,}5625 &lt; 2{,}74\) → в критическую область не попали.</li>
+  </ol>
+  <div class="verdict">\(H_0\) принимается: различие между оценками дисперсий <b>случайное, несущественное</b>. Растения на разных предшественниках по изменчивости высоты стебля значимо не различаются.</div>
+</article>
+
+<article class="topic">
+  <h3 id="t-fisher-exact">Точный тест Фишера
+  <p class="src">Лекция 2 <i>(Lecture 2_Math_Data_Science.pptx)</i>, слайд 11</p> <span class="en">/ Fisher's exact test</span></h3>
+  <p class="lead">Тест статистической значимости, используемый в анализе <b>таблиц сопряжённости</b> для выборок <b>маленьких размеров</b>.</p>
+
+  <p>Относится к <b>точным</b> тестам значимости, поскольку не использует приближения большой выборки (асимптотики при размере выборки, стремящемся к бесконечности). Именно поэтому он применим там, где \(\chi^2\) уже недостоверен — при ожидаемых частотах меньше 5.</p>
+
+  <p>Фишер показал, что вероятность получения любого такого набора величин даётся <b>гипергеометрическим распределением</b>:</p>
+  <div class="formula">
+    \[ p=\frac{\dbinom{a+b}{a}\dbinom{c+d}{c}}{\dbinom{n}{a+c}}
+        =\frac{(a+b)!\,(c+d)!\,(a+c)!\,(b+d)!}{n!\;a!\;b!\;c!\;d!} \]
+  </div>
+  <p class="src">Лекция 2 <i>(Lecture 2_Math_Data_Science.pptx)</i>, слайд 11</p>
+  <div class="legend">
+    <div class="lh">Что означает каждое обозначение</div>
+    <dl>
+      <dt>\(a,b,c,d\)</dt><dd>четыре частоты в ячейках таблицы — <b>количества объектов</b>, а не проценты</dd>
+      <dt>\(a+b,\ c+d\)</dt><dd>суммы по строкам: сколько всего объектов в каждой группе</dd>
+      <dt>\(a+c,\ b+d\)</dt><dd>суммы по столбцам: сколько всего объектов с каждым значением признака</dd>
+      <dt>\(n\)</dt><dd>общее число наблюдений: \(n=a+b+c+d\)</dd>
+      <dt>\(k!\)</dt><dd>факториал: \(k!=1\cdot2\cdots k\), причём \(0!=1\)</dd>
+      <dt>\(\dbinom{n}{k}\)</dt><dd>число сочетаний — сколькими способами выбрать \(k\) объектов из \(n\)</dd>
+    </dl>
+  </div>
+  <p class="why"><b>Откуда берётся формула.</b> Суммы по краям таблицы считаются закреплёнными, и вопрос сводится к простой задаче о случайной выборке: сколькими способами можно разложить объекты по ячейкам и какая доля этих способов даёт именно наблюдаемую картину. Это и есть гипергеометрическое распределение — то же самое, что вероятность вытащить нужное число нужных шаров из урны без возвращения.</p>
+  <p>где таблица \(2\times2\) имеет вид:</p>
+  <div class="tablewrap">
+    <table class="compact" style="max-width:420px">
+      <thead><tr><th></th><th class="num">Признак +</th><th class="num">Признак −</th><th class="num">Всего</th></tr></thead>
+      <tbody>
+        <tr><th>Группа 1</th><td class="num">a</td><td class="num">b</td><td class="num">a+b</td></tr>
+        <tr><th>Группа 2</th><td class="num">c</td><td class="num">d</td><td class="num">c+d</td></tr>
+        <tr><th>Всего</th><td class="num">a+c</td><td class="num">b+d</td><td class="num">n</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note key">
+    <span class="lbl">Как получается p-value</span>
+    <p>Формула даёт вероятность <b>одной конкретной</b> таблицы. p-value — это сумма вероятностей наблюдаемой таблицы и всех <b>ещё более экстремальных</b> при тех же суммах по краям (маргиналах).</p>
+  </div>
+
+  <h4>Разбор: диета среди юношей и девушек <span class="en">/ Example 2</span></h4>
+  <p class="src">Лекция 2 <i>(Lecture 2_Math_Data_Science.pptx)</i>, слайд 11 — таблица Example 2</p>
+  <div class="tablewrap">
+    <table class="compact" style="max-width:420px">
+      <thead><tr><th></th><th class="num">Юноши</th><th class="num">Девушки</th><th class="num">Всего</th></tr></thead>
+      <tbody>
+        <tr><th>На диете</th><td class="num">0</td><td class="num">10</td><td class="num">10</td></tr>
+        <tr><th>Не на диете</th><td class="num">12</td><td class="num">2</td><td class="num">14</td></tr>
+        <tr><th>Всего</th><td class="num">12</td><td class="num">12</td><td class="num">24</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <ol class="steps">
+    <li><span class="st">Гипотезы</span>\(H_0\): доля соблюдающих диету одинакова у юношей и девушек (\(p_1=p_2\)). \(H_1:\ p_1\ne p_2\) (двусторонний).</li>
+    <li><span class="st">Подставляем в формулу</span>
+      \[ p=\frac{10!\;14!\;12!\;12!}{24!\;0!\;10!\;12!\;2!} \]</li>
+    <li><span class="st">Вероятность наблюдаемой таблицы</span>\(p \approx 3{,}37\cdot 10^{-5}\) — крайне мала.</li>
+    <li><span class="st">Суммируем экстремальные исходы</span>Более экстремальной в другую сторону здесь оказывается только зеркальная таблица, поэтому двусторонний \(p \approx 6{,}73\cdot 10^{-5}\).</li>
+    <li><span class="st">Сравниваем с \(\alpha=0{,}05\)</span>\(0{,}0000673 \ll 0{,}05\).</li>
+  </ol>
+  <div class="verdict">\(H_0\) отвергается: связь между полом и соблюдением диеты <b>статистически значима</b>. Проверить свои числа можно <a href="#calc-fisher">калькулятором точного теста</a>.</div>
+
+  <div class="note tip">
+    <span class="lbl">Когда какой тест</span>
+    <p>Таблица \(2\times2\), малые частоты (есть ячейки &lt; 5) → <b>точный тест Фишера</b>. Большие выборки → \(\chi^2\) Пирсона (проще считать, результат практически тот же).</p>
+  </div>
+</article>
+</section>
+
+<!-- ############################################################
+     ШПАРГАЛКА
+     ############################################################ -->
+<section data-week="ref" data-kind="math">
+<h2 id="cheat">Шпаргалка: какой критерий выбрать</h2>
+
+<article class="topic">
+  <h3 id="t-choose">Дерево решения</h3>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th style="white-space:normal">Что сравниваем</th><th style="white-space:normal">Ситуация</th><th>Критерий</th><th>Формула \(df\)</th></tr></thead>
+      <tbody>
+        <tr><td style="white-space:normal">Среднее с эталоном</td><td style="white-space:normal">Одна выборка и известное \(\mu_0\)</td><td><b>t одновыборочный</b></td><td class="num">n − 1</td></tr>
+        <tr><td style="white-space:normal">Два средних</td><td style="white-space:normal">Одни и те же объекты «до/после»</td><td><b>t парный</b></td><td class="num">n − 1</td></tr>
+        <tr><td style="white-space:normal">Два средних</td><td style="white-space:normal">Две разные группы объектов</td><td><b>t независимый</b></td><td class="num">n₁ + n₂ − 2</td></tr>
+        <tr><td style="white-space:normal">Две дисперсии</td><td style="white-space:normal">Однородность / разброс</td><td><b>F Фишера</b></td><td class="num">n₁−1; n₂−1</td></tr>
+        <tr><td style="white-space:normal">Две доли (частоты)</td><td style="white-space:normal">Таблица 2×2, малые частоты</td><td><b>Точный тест Фишера</b></td><td class="num">—</td></tr>
+        <tr><td style="white-space:normal">Средние тенденции</td><td style="white-space:normal">Нормальности нет / порядковая шкала</td><td><b>U Манна–Уитни, Q Розенбаума, φ*</b></td><td class="num">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4>Универсальный порядок действий</h4>
+  <ol>
+    <li>Сформулировать \(H_0\) и \(H_1\) словами, затем символами.</li>
+    <li>Выбрать \(\alpha\) (обычно 0,05) и тип теста (одно-/двусторонний).</li>
+    <li>Проверить условия применимости критерия (нормальность, шкала, независимость).</li>
+    <li>Вычислить статистику по формуле.</li>
+    <li>Найти \(df\) и табличное критическое значение.</li>
+    <li>Сравнить и сформулировать вывод <b>содержательно</b>, а не только «\(H_0\) отвергнута».</li>
+  </ol>
+
+  <div class="note warn">
+    <span class="lbl">Частые ошибки на экзамене</span>
+    <ul style="margin:6px 0 0">
+      <li>Делить на \(n\) вместо \(n-1\) при выборочной дисперсии.</li>
+      <li>Ставить в числитель \(F\) меньшую дисперсию — тогда \(F&lt;1\) и таблица не работает.</li>
+      <li>Путать \(df\) числителя и знаменателя в F-таблице (порядок важен: \(F(14;11)\ne F(11;14)\)).</li>
+      <li>Применять независимый t-тест к парным данным — теряется вся мощность.</li>
+      <li>Забывать про модуль: сравнивается \(|t|\), знак говорит лишь о направлении.</li>
+      <li>Писать «\(H_0\) доказана». \(H_0\) можно только <i>не отвергнуть</i>.</li>
+    </ul>
+  </div>
+</article>
+</section>
+
+<!-- ############################################################
+     КАЛЬКУЛЯТОРЫ
+     ############################################################ -->
+<section data-week="calc" data-kind="calc" class="no-print">
+<h2 id="calc">Калькуляторы</h2>
+<p class="page-sub" style="margin-bottom:18px">Значения вводятся через пробел, запятую или с новой строки. Десятичный разделитель — точка или запятая. p-value считается точно, критические значения — по встроенным таблицам.</p>
+
+<div class="calc" id="calc-desc">
+  <h3>Описательная статистика <span class="en">/ descriptive statistics</span></h3>
+  <div class="row"><div>
+    <label for="d-data">Выборка</label>
+    <textarea id="d-data" placeholder="9.6 8.1 8.8 7.9 9.2 8.0 8.4 10.1 7.8 8.1">9.6 8.1 8.8 7.9 9.2 8.0 8.4 10.1 7.8 8.1</textarea>
+  </div></div>
+  <button class="btn" data-calc="desc">Посчитать</button>
+  <div class="out" id="out-desc"></div>
+</div>
+
+<div class="calc" id="calc-t1">
+  <h3>t-критерий: одновыборочный</h3>
+  <div class="row"><div>
+    <label for="t1-data">Выборка</label>
+    <textarea id="t1-data">5.7 4.2 6.4 5.5 5.3 4.2 5.1 5.9 7.5 5.0</textarea>
+  </div></div>
+  <div class="row c2">
+    <div><label for="t1-mu">Эталонное значение μ₀</label><input id="t1-mu" value="6"></div>
+    <div><label for="t1-a">Уровень значимости α</label>
+      <select id="t1-a"><option value="0.05">0,05</option><option value="0.01">0,01</option></select></div>
+  </div>
+  <button class="btn" data-calc="t1">Посчитать</button>
+  <div class="out" id="out-t1"></div>
+</div>
+
+<div class="calc" id="calc-tp">
+  <h3>t-критерий: зависимые (парные) выборки</h3>
+  <div class="row c2">
+    <div><label for="tp-a">Измерение 1 («до»)</label><textarea id="tp-a">9.6 8.1 8.8 7.9 9.2 8.0 8.4 10.1 7.8 8.1</textarea></div>
+    <div><label for="tp-b">Измерение 2 («после»)</label><textarea id="tp-b">5.7 4.2 6.4 5.5 5.3 4.2 5.1 5.9 7.5 5.0</textarea></div>
+  </div>
+  <div class="row"><div><label for="tp-al">Уровень значимости α</label>
+    <select id="tp-al"><option value="0.05">0,05</option><option value="0.01">0,01</option></select></div></div>
+  <button class="btn" data-calc="tp">Посчитать</button>
+  <div class="out" id="out-tp"></div>
+</div>
+
+<div class="calc" id="calc-ti">
+  <h3>t-критерий: независимые выборки</h3>
+  <div class="row c2">
+    <div><label for="ti-a">Выборка X</label><textarea id="ti-a">504 560 420 600 580 530 490 580 470</textarea></div>
+    <div><label for="ti-b">Выборка Y</label><textarea id="ti-b">580 692 700 621 640 561 680 630</textarea></div>
+  </div>
+  <div class="row"><div><label for="ti-al">Уровень значимости α</label>
+    <select id="ti-al"><option value="0.05">0,05</option><option value="0.01">0,01</option></select></div></div>
+  <button class="btn" data-calc="ti">Посчитать</button>
+  <div class="out" id="out-ti"></div>
+</div>
+
+<div class="calc" id="calc-f">
+  <h3>F-критерий Фишера (равенство дисперсий)</h3>
+  <p style="font-size:13px;color:var(--text-dim);margin-bottom:12px">Можно ввести сырые данные <b>или</b> сразу дисперсии с объёмами — заполните любой из двух блоков.</p>
+  <div class="row c2">
+    <div><label for="f-a">Выборка 1 (сырые данные)</label><textarea id="f-a"></textarea></div>
+    <div><label for="f-b">Выборка 2 (сырые данные)</label><textarea id="f-b"></textarea></div>
+  </div>
+  <div class="row c4">
+    <div><label for="f-s1">s²₁</label><input id="f-s1" value="25"></div>
+    <div><label for="f-n1">n₁</label><input id="f-n1" value="15"></div>
+    <div><label for="f-s2">s²₂</label><input id="f-s2" value="16"></div>
+    <div><label for="f-n2">n₂</label><input id="f-n2" value="12"></div>
+  </div>
+  <div class="row"><div><label for="f-al">Уровень значимости α</label>
+    <select id="f-al"><option value="0.05">0,05</option><option value="0.01">0,01</option></select></div></div>
+  <button class="btn" data-calc="f">Посчитать</button>
+  <div class="out" id="out-f"></div>
+</div>
+
+<div class="calc" id="calc-fisher">
+  <h3>Точный тест Фишера (таблица 2×2)</h3>
+  <div class="row c4">
+    <div><label for="fe-a">a (гр.1, признак +)</label><input id="fe-a" value="0"></div>
+    <div><label for="fe-b">b (гр.1, признак −)</label><input id="fe-b" value="10"></div>
+    <div><label for="fe-c">c (гр.2, признак +)</label><input id="fe-c" value="12"></div>
+    <div><label for="fe-d">d (гр.2, признак −)</label><input id="fe-d" value="2"></div>
+  </div>
+  <div class="row"><div><label for="fe-al">Уровень значимости α</label>
+    <select id="fe-al"><option value="0.05">0,05</option><option value="0.01">0,01</option></select></div></div>
+  <button class="btn" data-calc="fe">Посчитать</button>
+  <div class="out" id="out-fe"></div>
+</div>
+</section>
+
+<!-- ############################################################
+     ТАБЛИЦЫ
+     ############################################################ -->
+<section data-week="tbl" data-kind="calc">
+<h2 id="tables">Таблицы критических значений</h2>
+
+<article class="topic">
+  <h3 id="t-ttable">Таблица распределения Стьюдента <span class="en">/ t-distribution</span></h3>
+  <p class="lead">Значения \(t_{\text{кр}}\) для <b>двустороннего</b> теста: \(\mathbf{P}\{|t_n| &gt; t_{\text{кр}}\} = p\). Строка — число степеней свободы \(df\), столбец — уровень значимости \(p\).</p>
+  <p class="src">Assignment 1 <i>(Assignment_1_Math_Data_Science (1).pdf)</i>, с. 3 — «5. Таблица распределения Стьюдента»</p>
+  <div class="tablewrap" style="max-height:520px;overflow-y:auto">
+    <table class="crit compact">
+      <thead><tr><th>df \ p</th><th class="num">0,9</th><th class="num">0,8</th><th class="num">0,7</th><th class="num">0,6</th><th class="num">0,5</th><th class="num">0,4</th><th class="num">0,3</th><th class="num">0,2</th><th class="num">0,1</th><th class="num">0,05</th><th class="num">0,02</th><th class="num">0,01</th><th class="num">0,001</th></tr></thead>
+      <tbody id="ttable-body"></tbody>
+    </table>
+  </div>
+  <div class="note tip">
+    <span class="lbl">Как пользоваться</span>
+    <p>Для \(\alpha=0{,}05\) двусторонний берём колонку <b>0,05</b>. Пример: \(df=9\) → \(t_{\text{кр}}=2{,}26\). Если вычисленное \(|t|=8{,}38\), то \(8{,}38 &gt; 2{,}26\) → различия значимы.</p>
+  </div>
+</article>
+
+<article class="topic">
+  <h3 id="t-ftable">Таблица F-критерия Фишера, \(\alpha=0{,}05\)</h3>
+  <p class="lead">Столбец \(k_1\) — степени свободы <b>числителя</b> (бо́льшая дисперсия), строка \(k_2\) — <b>знаменателя</b>.</p>
+  <p class="src">Assignment 1 <i>(Assignment_1_Math_Data_Science (1).pdf)</i>, с. 4 — «1. Таблица значений F-критерия Фишера при \(\alpha=0{,}05\)»</p>
+  <div class="tablewrap" style="max-height:520px;overflow-y:auto">
+    <table class="crit compact">
+      <thead><tr><th>k₂ \ k₁</th><th class="num">1</th><th class="num">2</th><th class="num">3</th><th class="num">4</th><th class="num">5</th><th class="num">6</th><th class="num">8</th><th class="num">12</th><th class="num">24</th><th class="num">∞</th></tr></thead>
+      <tbody id="ftable-body"></tbody>
+    </table>
+  </div>
+  <div class="note warn">
+    <span class="lbl">Внимание к порядку</span>
+    <p>\(F(k_1;k_2)\) и \(F(k_2;k_1)\) — разные числа. Сначала всегда степени свободы той выборки, чья дисперсия оказалась в числителе.</p>
+  </div>
+</article>
+</section>
+
+<!-- ############################################################
+     ЗАДАНИЕ 1
+     ############################################################ -->
+<section data-week="hw" data-kind="hw">
+<h2 id="hw1">Assignment 1 — условия и ответы</h2>
+
+<article class="topic">
+  <h3 id="t-hw-p1">Part I — t-критерий</h3>
+  <p class="src">Assignment 1 <i>(Assignment_1_Math_Data_Science (1).pdf)</i>, с. 1–2 — Part I, Task 1–3</p>
+
+  <h4>Task 1. Гипогликемическое средство</h4>
+  <p>Для оценки эффективности нового гипогликемического средства измерен уровень глюкозы в крови пациентов с сахарным диабетом <b>до</b> и <b>после</b> приёма препарата (ммоль/л).</p>
+  <div class="tablewrap">
+    <table class="compact">
+      <thead><tr><th>№ пациента</th><th class="num">1</th><th class="num">2</th><th class="num">3</th><th class="num">4</th><th class="num">5</th><th class="num">6</th><th class="num">7</th><th class="num">8</th><th class="num">9</th><th class="num">10</th></tr></thead>
+      <tbody>
+        <tr><th>до приёма</th><td class="num">9,6</td><td class="num">8,1</td><td class="num">8,8</td><td class="num">7,9</td><td class="num">9,2</td><td class="num">8,0</td><td class="num">8,4</td><td class="num">10,1</td><td class="num">7,8</td><td class="num">8,1</td></tr>
+        <tr><th>после приёма</th><td class="num">5,7</td><td class="num">4,2</td><td class="num">6,4</td><td class="num">5,5</td><td class="num">5,3</td><td class="num">4,2</td><td class="num">5,1</td><td class="num">5,9</td><td class="num">7,5</td><td class="num">5,0</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <details>
+    <summary>Ход решения и ответ</summary>
+    <div class="dbody">
+      <p><b>Тип:</b> одни и те же пациенты измерены дважды → <b>парный t-критерий</b>.</p>
+      <p>\(H_0\): препарат не влияет на уровень глюкозы (\(\bar{d}=0\)). \(H_1\): уровень глюкозы значимо снижается. \(\alpha=0{,}05\).</p>
+      <p>Разности \(d_i\): 3,9 · 3,9 · 2,4 · 2,4 · 3,9 · 3,8 · 3,3 · 4,2 · 0,3 · 3,1</p>
+      <div class="formula">\[ \bar{d}=3{,}120\,,\quad s_d=1{,}177\,,\quad n=10\,,\quad df=9 \]
+      \[ t=\frac{3{,}120}{1{,}177/\sqrt{10}}=\mathbf{8{,}38} \]</div>
+      <p>\(t_{\text{кр}}(0{,}05;\,9)=2{,}26\).</p>
+      <div class="verdict">\(8{,}38 &gt; 2{,}26\) → \(H_0\) отвергается. Препарат <b>достоверно снижает</b> уровень глюкозы (p &lt; 0,001).</div>
+    </div>
+  </details>
+
+  <h4>Task 2. Сенсомоторная реакция у спортсменов</h4>
+  <p>Время сложной сенсомоторной реакции выбора (мс). Экспериментальная группа X — 9 спортсменов высокой квалификации, контрольная Y — 8 человек, не занимающихся спортом. Гипотеза: средняя <b>скорость</b> реакции у спортсменов выше (т. е. <b>время</b> меньше).</p>
+  <div class="tablewrap">
+    <table class="compact">
+      <thead><tr><th>№</th><th class="num">1</th><th class="num">2</th><th class="num">3</th><th class="num">4</th><th class="num">5</th><th class="num">6</th><th class="num">7</th><th class="num">8</th><th class="num">9</th></tr></thead>
+      <tbody>
+        <tr><th>группа X</th><td class="num">504</td><td class="num">560</td><td class="num">420</td><td class="num">600</td><td class="num">580</td><td class="num">530</td><td class="num">490</td><td class="num">580</td><td class="num">470</td></tr>
+        <tr><th>группа Y</th><td class="num">580</td><td class="num">692</td><td class="num">700</td><td class="num">621</td><td class="num">640</td><td class="num">561</td><td class="num">680</td><td class="num">630</td><td class="num">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <details>
+    <summary>Ход решения и ответ</summary>
+    <div class="dbody">
+      <p><b>Тип:</b> две разные группы людей → <b>t-критерий для независимых выборок</b>.</p>
+      <div class="formula">\[ n_1=9,\ \bar{X}=526{,}00,\ S_X^2=3579{,}00 \qquad n_2=8,\ \bar{Y}=638{,}00,\ S_Y^2=2596{,}29 \]
+      \[ S_d=\sqrt{\frac{3579{,}00}{9}+\frac{2596{,}29}{8}}=\sqrt{397{,}67+324{,}54}=26{,}874 \]
+      \[ t=\frac{526{,}00-638{,}00}{26{,}874}=\mathbf{-4{,}17}\,,\qquad df=9+8-2=15 \]</div>
+      <p>\(t_{\text{кр}}(0{,}05;\,15)=2{,}13\); сравниваем модуль: \(|-4{,}17|=4{,}17\).</p>
+      <div class="verdict">\(4{,}17 &gt; 2{,}13\) → \(H_0\) отвергается. Время реакции спортсменов значимо <b>меньше</b>, т. е. скорость реакции <b>выше</b> (p &lt; 0,001).</div>
+      <p style="margin-top:8px"><b>Если считать через объединённую дисперсию:</b> \(s_p^2=3120{,}40\), \(t=-4{,}13\) — вывод тот же. Формула лекции и вариант с \(s_p^2\) совпадают только при \(n_1=n_2\).</p>
+      <p><b>Проверка предпосылки:</b> \(F=3579{,}00/2596{,}29=1{,}38\) при \(df=8;7\); \(F_{\text{кр}}\approx3{,}73\) → дисперсии однородны.</p>
+    </div>
+  </details>
+
+  <h4>Task 3. Научение: «игра в 5»</h4>
+  <p>Психолог предположил, что в результате научения время решения эквивалентных задач «игры в 5» (один и тот же алгоритм решения) будет значимо уменьшаться. У восьми испытуемых сравнивалось время решения (мин) первой и третьей задач.</p>
+  <div class="tablewrap">
+    <table class="compact">
+      <thead><tr><th>№ испытуемого</th><th class="num">1</th><th class="num">2</th><th class="num">3</th><th class="num">4</th><th class="num">5</th><th class="num">6</th><th class="num">7</th><th class="num">8</th></tr></thead>
+      <tbody>
+        <tr><th>Задача 1</th><td class="num">4,0</td><td class="num">3,5</td><td class="num">4,1</td><td class="num">5,5</td><td class="num">4,6</td><td class="num">6,0</td><td class="num">5,1</td><td class="num">4,3</td></tr>
+        <tr><th>Задача 3</th><td class="num">3,0</td><td class="num">3,0</td><td class="num">3,8</td><td class="num">2,1</td><td class="num">4,9</td><td class="num">5,3</td><td class="num">3,1</td><td class="num">2,7</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <details>
+    <summary>Ход решения и ответ</summary>
+    <div class="dbody">
+      <p><b>Тип:</b> те же испытуемые, два измерения → <b>парный t-критерий</b>.</p>
+      <div class="formula">\[ \bar{d}=1{,}150\,,\quad s_d=1{,}1625\,,\quad n=8\,,\quad df=7 \]
+      \[ t=\frac{1{,}150}{1{,}1625/\sqrt{8}}=\mathbf{2{,}80} \]</div>
+      <p>\(t_{\text{кр}}(0{,}05;\,7)=2{,}36\).</p>
+      <div class="verdict">\(2{,}80 &gt; 2{,}36\) → \(H_0\) отвергается: время решения значимо уменьшилось, эффект научения подтверждён (p ≈ 0,027).</div>
+      <p style="margin-top:8px">При \(\alpha=0{,}01\) критическое значение 3,50 — эффект уже <b>не</b> был бы значим. Хороший пример того, как вывод зависит от выбранного \(\alpha\).</p>
+    </div>
+  </details>
+</article>
+
+<article class="topic">
+  <h3 id="t-hw-p2">Part II — F-критерий</h3>
+  <p class="src">Assignment 1 <i>(Assignment_1_Math_Data_Science (1).pdf)</i>, с. 4 — Part II, Task 1–2</p>
+
+  <h4>Task 1. Изменчивость высоты пшеницы</h4>
+  <p>Высота растений: после кукурузы \(\bar{x}_1=108\) см (15 растений), после гороха \(\bar{x}_2=111\) см (12 растений). Средние оценки дисперсий: \(s_1^2=25\ \text{см}^2\), \(s_2^2=16\ \text{см}^2\). Выяснить: растения на разных предшественниках действительно различаются по изменчивости высоты стебля или различие случайно? \(\alpha=0{,}05\).</p>
+  <details>
+    <summary>Ход решения и ответ</summary>
+    <div class="dbody">
+      <div class="formula">\[ F=\frac{25}{16}=1{,}5625\,,\qquad df_1=14,\ df_2=11\,,\qquad F_{\text{кр}}(0{,}05;14;11)\approx 2{,}74 \]</div>
+      <div class="verdict">\(1{,}5625 &lt; 2{,}74\) → \(H_0\) принимается: различие между оценками дисперсий <b>случайное, несущественное</b>.</div>
+    </div>
+  </details>
+
+  <h4>Task 2. Диеты A и B</h4>
+  <p>В группе на диете A (\(n=28\)) дисперсия веса оказалась 25, в группе на диете B (\(n=26\)) — 10. Проверить, отличаются ли результаты по разбросу. \(\alpha=0{,}05\).</p>
+  <details>
+    <summary>Ход решения и ответ</summary>
+    <div class="dbody">
+      <div class="formula">\[ F=\frac{25}{10}=2{,}50\,,\qquad df_1=28-1=27,\ df_2=26-1=25 \]</div>
+      <p>\(F_{\text{кр}}(0{,}05;\,27;\,25)\approx 1{,}94\).</p>
+      <div class="verdict">\(2{,}50 &gt; 1{,}94\) → \(H_0\) отвергается: <b>разброс веса на диете A значимо больше</b>. Диета A даёт менее предсказуемый результат, хотя средние могут и совпадать.</div>
+    </div>
+  </details>
+</article>
+</section>
+
+<!-- ############################################################
+     PRACTICE 1
+     ############################################################ -->
+<section data-week="p1" data-kind="hw">
+<h2 id="p1">Practice 1 — t-критерий: алгоритм и задачи</h2>
+
+<article class="topic">
+  <h3 id="t-p1-alg">Алгоритм из практики <span class="en">/ 6 шагов</span></h3>
+  <p class="src">Practice 1 <i>(week1/Practice 1 ADA-M.pdf)</i>, с. 1</p>
+  <p class="lead">Это рабочая последовательность, по которой оформляется решение любой задачи на t-критерий.</p>
+  <ol class="steps">
+    <li><span class="st">Сформулировать гипотезы</span>Записать \(H_0\) и \(H_1\) словами, выбрать уровень значимости \(\alpha\).</li>
+    <li><span class="st">Найти эмпирическое значение</span>Для связанных выборок с равным числом измерений — по формуле (35):
+      \[ t_{\text{эмп}}=\frac{\bar{d}}{S_d}\,,\qquad d_i=x_i-y_i \]
+      где \(d_i\) — разности между соответствующими значениями \(X\) и \(Y\), а \(\bar{d}\) — среднее этих разностей.</li>
+    <li><span class="st">Найти \(S_d\)</span>
+      \[ S_d=\sqrt{\frac{\sum d_i^2-\dfrac{\left(\sum d_i\right)^2}{n}}{n\cdot(n-1)}} \]</li>
+    <li><span class="st">Найти число степеней свободы</span>\(k=n-1\).</li>
+    <li><span class="st">Определить критическое значение</span>По статистической таблице Стьюдента (есть <a href="#t-ttable">на этой странице</a>).</li>
+    <li><span class="st">Сравнить и сделать вывод</span>Критерий двусторонний, поэтому сравниваются модули:
+      \[ \left|t_{\text{эмп}}\right|<\left|t_{\text{крит}}\right|\ \Rightarrow\ \text{принимается } H_0,\qquad
+         \text{иначе} \Rightarrow\ \text{принимается } H_1 \]</li>
+  </ol>
+  <div class="note tip">
+    <span class="lbl">Важная деталь про \(S_d\)</span>
+    <p>В знаменателе стоит \(n\cdot(n-1)\), а не \((n-1)\). Это значит, что \(S_d\) в практике — <b>сразу стандартная ошибка</b> среднего разностей, и делить ещё раз на \(\sqrt{n}\) не нужно: \(t=\bar{d}/S_d\). Если же считать \(S_d\) как обычное стандартное отклонение (через \(n-1\)), то формула принимает вид \(t=\bar{d}/(S_d/\sqrt{n})\) — на с. 2 практики приведены оба варианта, a) и b), и они дают одно и то же число.</p>
+  </div>
+</article>
+
+<article class="topic">
+  <h3 id="t-p1-example">Разбор Example: курение и агрегация эритроцитов</h3>
+  <p class="src">Practice 1 <i>(week1/Practice 1 ADA-M.pdf)</i>, с. 1 — Example</p>
+  <p>Изучалось влияние курения на агрегацию эритроцитов: у 10 мужчин-добровольцев агрегация (мм/ч) измерялась до и после выкуривания одной сигареты. Уровень значимости \(\alpha=0{,}01\).</p>
+  <div class="tablewrap">
+    <table class="compact">
+      <thead><tr><th class="num">До</th><th class="num">После</th><th class="num">d</th><th class="num">d²</th></tr></thead>
+      <tbody>
+        <tr><td class="num">2</td><td class="num">2</td><td class="num">0</td><td class="num">0</td></tr>
+        <tr><td class="num">2</td><td class="num">9</td><td class="num">7</td><td class="num">49</td></tr>
+        <tr><td class="num">5</td><td class="num">11</td><td class="num">6</td><td class="num">36</td></tr>
+        <tr><td class="num">7</td><td class="num">11</td><td class="num">4</td><td class="num">16</td></tr>
+        <tr><td class="num">8</td><td class="num">14</td><td class="num">6</td><td class="num">36</td></tr>
+        <tr><td class="num">9</td><td class="num">9</td><td class="num">0</td><td class="num">0</td></tr>
+        <tr><td class="num">10</td><td class="num">9</td><td class="num">−1</td><td class="num">1</td></tr>
+        <tr><td class="num">10</td><td class="num">10</td><td class="num">0</td><td class="num">0</td></tr>
+        <tr><td class="num">10</td><td class="num">13</td><td class="num">3</td><td class="num">9</td></tr>
+        <tr><td class="num">10</td><td class="num">15</td><td class="num">5</td><td class="num">25</td></tr>
+        <tr><th>Сумма</th><td class="num">—</td><td class="num"><b>30</b></td><td class="num"><b>172</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <ol class="steps">
+    <li><span class="st">Гипотезы</span>\(H_0\): выкуривание одной сигареты на агрегацию эритроцитов влияет <b>несущественно</b>.<br>
+      \(H_1\): влияет <b>существенно</b>. \(\alpha=0{,}01\).</li>
+    <li><span class="st">Среднее разностей</span>\(\bar{d}=\dfrac{\sum d_i}{n}=\dfrac{30}{10}=3{,}0\)</li>
+    <li><span class="st">Стандартная ошибка</span>
+      \[ S_d=\sqrt{\frac{172-\dfrac{30^2}{10}}{10\cdot 9}}=\sqrt{\frac{172-90}{90}}=\sqrt{0{,}9111}=0{,}9545 \]</li>
+    <li><span class="st">Эмпирическое значение</span>\(t_{\text{эмп}}=\dfrac{3{,}0}{0{,}9545}=\mathbf{3{,}14}\) — совпадает с ответом в файле.</li>
+    <li><span class="st">Степени свободы и критическое значение</span>\(k=10-1=9\); по таблице при \(\alpha=0{,}01\): \(t_{\text{крит}}=3{,}25\).</li>
+    <li><span class="st">Сравнение</span>\(3{,}14<3{,}25\) — эмпирическое значение <b>меньше</b> критического.</li>
+  </ol>
+  <div class="verdict">При \(\alpha=0{,}01\) принимается \(H_0\): влияние курения на агрегацию эритроцитов статистически <b>несущественно</b>.</div>
+  <div class="note warn">
+    <span class="lbl">Обрати внимание на роль \(\alpha\)</span>
+    <p>При \(\alpha=0{,}05\) критическое значение равно уже 2,26, и тогда \(3{,}14>2{,}26\) — вывод был бы <b>противоположным</b>. Это ровно тот случай, когда результат целиком зависит от выбранного уровня значимости, поэтому \(\alpha\) всегда указывают в условии и в ответе.</p>
+  </div>
+</article>
+
+<article class="topic">
+  <h3 id="t-p1-tasks">Задачи 1–10: ответы</h3>
+  <p class="src">Practice 1 <i>(week1/Practice 1 ADA-M.pdf)</i>, с. 2–3 — Task 1–10</p>
+  <p class="lead">Во всех задачах \(\alpha=0{,}05\) (кроме оговорённых в условии), критерий двусторонний.</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>№</th><th style="white-space:normal">Условие</th><th>Тип теста</th><th>Подстановка</th><th class="num">t</th><th class="num">df</th><th class="num">t крит</th><th style="white-space:normal">Вывод</th></tr></thead>
+      <tbody>
+        <tr><th>1</th><td style="white-space:normal">Средний рост \(\bar{x}=174\), \(s=8\), \(n=25\). Проверить \(\mu_0=170\) см.</td><td>одновыборочный</td><td style="white-space:normal">\(t=\frac{174-170}{8/\sqrt{25}}\)</td><td class="num">2,500</td><td class="num">24</td><td class="num">2,06</td><td style="white-space:normal"><b class="bad">значимо</b> — Рост значимо отличается от 170 см.</td></tr>
+        <tr><th>2</th><td style="white-space:normal">Два университета: \(\bar{x}_1=72,\ s_1=10,\ n_1=20\); \(\bar{x}_2=68,\ s_2=12,\ n_2=22\).</td><td>независимый</td><td style="white-space:normal">\(t=\frac{72-68}{\sqrt{\frac{100}{20}+\frac{144}{22}}}\)</td><td class="num">1,177</td><td class="num">40</td><td class="num">2,02</td><td style="white-space:normal"><b class="ok">не значимо</b> — Уровень знаний различается незначимо.</td></tr>
+        <tr><th>3</th><td style="white-space:normal">Гемоглобин: \(n=15\), \(\bar{x}=132\), \(s=9\). Норма \(\mu_0=130\) г/л.</td><td>одновыборочный</td><td style="white-space:normal">\(t=\frac{132-130}{9/\sqrt{15}}\)</td><td class="num">0,861</td><td class="num">14</td><td class="num">2,14</td><td style="white-space:normal"><b class="ok">не значимо</b> — От нормы значимо не отличается.</td></tr>
+        <tr><th>4</th><td style="white-space:normal">Удовлетворённость: \(\bar{x}=3{,}8\), \(s=0{,}6\), \(n=25\). Проверить \(\mu_0=4{,}0\).</td><td>одновыборочный</td><td style="white-space:normal">\(t=\frac{3{,}8-4{,}0}{0{,}6/\sqrt{25}}\)</td><td class="num">−1,667</td><td class="num">24</td><td class="num">2,06</td><td style="white-space:normal"><b class="ok">не значимо</b> — Отличие от 4,0 балла незначимо.</td></tr>
+        <tr><th>5</th><td style="white-space:normal">Сахар: \(n=12\), \(\bar{x}=5{,}9\), \(s=0{,}4\). Норма \(\mu_0=5{,}5\) ммоль/л.</td><td>одновыборочный</td><td style="white-space:normal">\(t=\frac{5{,}9-5{,}5}{0{,}4/\sqrt{12}}\)</td><td class="num">3,464</td><td class="num">11</td><td class="num">2,20</td><td style="white-space:normal"><b class="bad">значимо</b> — Уровень значимо выше нормы.</td></tr>
+        <tr><th>6</th><td style="white-space:normal">Стресс: мужчины \(18,\ \sigma=4,\ n=20\); женщины \(20,\ \sigma=5,\ n=22\).</td><td>независимый</td><td style="white-space:normal">\(t=\frac{18-20}{\sqrt{\frac{16}{20}+\frac{25}{22}}}\)</td><td class="num">−1,437</td><td class="num">40</td><td class="num">2,02</td><td style="white-space:normal"><b class="ok">не значимо</b> — Различий в уровне стресса нет.</td></tr>
+        <tr><th>7</th><td style="white-space:normal">Холестерин: гр. 1 \(6{,}2,\ \sigma=0{,}5,\ n=12\); гр. 2 \(5{,}8,\ \sigma=0{,}6,\ n=14\).</td><td>независимый</td><td style="white-space:normal">\(t=\frac{6{,}2-5{,}8}{\sqrt{\frac{0{,}25}{12}+\frac{0{,}36}{14}}}\)</td><td class="num">1,854</td><td class="num">24</td><td class="num">2,06</td><td style="white-space:normal"><b class="ok">не значимо</b> — Различие незначимо, хотя и близко к границе.</td></tr>
+        <tr><th>8</th><td style="white-space:normal">Давление до и после терапии у 10 пациентов (массивы значений).</td><td>парный</td><td style="white-space:normal">\(t=\frac{10{,}0}{0{,}2582}\)</td><td class="num">38,730</td><td class="num">9</td><td class="num">2,26</td><td style="white-space:normal"><b class="bad">значимо</b> — Терапия значимо снижает давление.</td></tr>
+        <tr><th>9</th><td style="white-space:normal">Успеваемость: до \(65,\ \sigma=5\); после \(70,\ \sigma=6\); \(n=12\).</td><td>см. сноску</td><td style="white-space:normal">\(t=\frac{70-65}{\sqrt{\frac{25}{12}+\frac{36}{12}}}\)</td><td class="num">2,218</td><td class="num">22</td><td class="num">2,07</td><td style="white-space:normal"><b class="bad">значимо</b> — Улучшение значимо.</td></tr>
+        <tr><th>10</th><td style="white-space:normal">Сахар до и после препарата у 8 пациентов (массивы значений).</td><td>парный</td><td style="white-space:normal">\(t=\frac{0{,}3375}{0{,}0565}\)</td><td class="num">5,974</td><td class="num">7</td><td class="num">2,36</td><td style="white-space:normal"><b class="bad">значимо</b> — Препарат значимо снижает сахар.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <details>
+    <summary>Task 8 и Task 10 — полный расчёт по массивам</summary>
+    <div class="dbody">
+      <h4>Task 8. Давление до и после терапии</h4>
+      <p>До: 150, 148, 152, 149, 151, 153, 150, 147, 152, 150<br>
+         После: 140, 138, 141, 139, 142, 144, 140, 138, 141, 139</p>
+      <p>Разности \(d_i\): 10, 10, 11, 10, 9, 9, 10, 9, 11, 11 → \(\sum d_i=100\), \(\sum d_i^2=1006\), \(n=10\).</p>
+      <div class="formula">
+        \[ \bar{d}=\frac{100}{10}=10{,}0\,,\qquad
+           S_d=\sqrt{\frac{1006-\frac{100^2}{10}}{10\cdot 9}}=\sqrt{\frac{6}{90}}=0{,}2582 \]
+        \[ t=\frac{10{,}0}{0{,}2582}=\mathbf{38{,}73}\,,\qquad k=9\,,\qquad t_{\text{крит}}=2{,}26 \]
+      </div>
+      <div class="verdict">\(38{,}73\gg2{,}26\) → \(H_0\) отвергается: терапия снижает давление, причём эффект исключительно стабильный — у всех пациентов сдвиг от 9 до 11 единиц, поэтому \(S_d\) крошечная, а \(t\) огромное.</div>
+
+      <h4>Task 10. Сахар до и после препарата</h4>
+      <p>До: 6,0 · 5,9 · 6,2 · 6,1 · 6,3 · 6,0 · 6,1 · 6,2<br>
+         После: 5,6 · 5,7 · 5,8 · 5,9 · 5,7 · 5,8 · 5,9 · 5,7</p>
+      <p>Разности \(d_i\): 0,4 · 0,2 · 0,4 · 0,2 · 0,6 · 0,2 · 0,2 · 0,5 → \(\sum d_i=2{,}7\), \(\sum d_i^2=1{,}09\), \(n=8\).</p>
+      <div class="formula">
+        \[ \bar{d}=\frac{2{,}7}{8}=0{,}3375\,,\qquad
+           S_d=\sqrt{\frac{1{,}09-\frac{2{,}7^2}{8}}{8\cdot 7}}=\sqrt{\frac{0{,}17875}{56}}=0{,}0565 \]
+        \[ t=\frac{0{,}3375}{0{,}0565}=\mathbf{5{,}97}\,,\qquad k=7\,,\qquad t_{\text{крит}}=2{,}36 \]
+      </div>
+      <div class="verdict">\(5{,}97>2{,}36\) → \(H_0\) отвергается: препарат значимо снижает уровень сахара.</div>
+    </div>
+  </details>
+
+  <div class="note warn">
+    <span class="lbl">Сноска к Task 9</span>
+    <p>В условии даны только средние и \(\sigma\) «до» и «после», но <b>не сами пары значений</b>. Посчитать парный тест по формуле (35) невозможно — для него нужны разности \(d_i\) по каждому студенту. Поэтому в таблице задача решена по формуле для независимых выборок: \(t=2{,}218\) при \(df=22\), что даёт значимое улучшение. Если преподаватель имел в виду связанные выборки, нужно запросить исходные пары значений — с одними только средними парный критерий не считается.</p>
+  </div>
+
+  <div class="note tip">
+    <span class="lbl">Как проверить себя</span>
+    <p>Все числа в таблице можно перепроверить <a href="#calc">калькуляторами</a>: задачи 1, 3, 4, 5 — «t-критерий: одновыборочный»; задачи 2, 6, 7, 9 — «независимые выборки» (там же выводится \(S_d\) по формуле практики); задачи 8 и 10 — «зависимые (парные) выборки».</p>
+  </div>
+</article>
+</section>
+
+<!-- ############################################################
+     ЛЕКЦИОННЫЙ МАТЕРИАЛ (без формул)
+     ############################################################ -->
+<section data-week="lecture" data-kind="lecture">
+<h2 id="lecture">Лекционный материал <span class="en">/ обзорная часть</span></h2>
+<p class="page-sub" style="margin-bottom:18px">Теоретическая часть лекций без формул: о чём курс, чем обрабатывают данные и какими должны быть сами данные.</p>
+
+<article class="topic">
+  <h3 id="t-about">О чём курс <span class="en">/ Course overview</span></h3>
+  <p class="src">Лекция 1 <i>(Lecture 1 Math for Data Science, ADA-M.pptx)</i>, слайды 1–2</p>
+  <p class="lead">Математическая статистика как инструмент принятия решений по данным.</p>
+  <p>Курс отвечает на один практический вопрос: <b>когда различие, которое мы видим в данных, реально, а когда это случайность выборки?</b> Две группы студентов показали средние 74 и 78 баллов — это разные группы или просто шум? Ответ даёт статистический критерий.</p>
+  <p>Основные темы первой недели:</p>
+  <ul>
+    <li>Обзор программных средств статистической обработки данных <span class="en">(statistical software)</span></li>
+    <li>Стандарты качества данных <span class="en">(data quality standards)</span></li>
+    <li>Статистические гипотезы <span class="en">(statistical hypotheses)</span> — нулевая и альтернативная</li>
+    <li>Параметрические и непараметрические критерии</li>
+    <li><b>t-критерий Стьюдента</b> <span class="en">(Student's t-test)</span> — сравнение средних</li>
+  </ul>
+</article>
+
+<article class="topic">
+  <h3 id="t-soft">Программные средства статистической обработки <span class="en">/ Statistical software</span></h3>
+  <p class="src">Лекция 1 <i>(Lecture 1 Math for Data Science, ADA-M.pptx)</i>, слайды 3–7</p>
+  <p class="lead">Само слово «статистика» происходит от лат. <i>status</i> — «состояние».</p>
+
+  <h4>Коммерческие пакеты <span class="badge">платные</span></h4>
+  <div class="grid c3">
+    <div class="card"><h4>SPSS Statistics</h4><p>Классика для обработки данных в социальных науках. Мощный статистический аппарат, ориентирован на исследователей без программирования.</p></div>
+    <div class="card"><h4>Statistica (StatSoft)</h4><p>Управление данными, разведочный анализ, анализ данных, визуализация и настраиваемые процедуры.</p></div>
+    <div class="card"><h4>SAS</h4><p>Индустриальный стандарт в фарме и банках. Огромный набор процедур, собственный язык.</p></div>
+    <div class="card"><h4>MATLAB</h4><p>Матричные вычисления и инженерный анализ, Statistics Toolbox.</p></div>
+    <div class="card"><h4>Minitab</h4><p>Заточен под качество производства: Lean Six Sigma, контрольные карты.</p></div>
+    <div class="card"><h4>STATA</h4><p>Эконометрика, панельные данные, медицинская статистика.</p></div>
+    <div class="card"><h4>Maple</h4><p>Система символьных вычислений: аналитика формул, а не только числа.</p></div>
+    <div class="card"><h4>EViews</h4><p>Эконометрический пакет для Windows, ориентирован на временные ряды <span class="en">(time series)</span>.</p></div>
+    <div class="card"><h4>COMSOL</h4><p>Мультифизическое моделирование с численным анализом.</p></div>
+    <div class="card"><h4>RapidMiner</h4><p>Data mining без кода: подготовка, анализ и визуализация; часть функций бесплатна.</p></div>
+    <div class="card"><h4>Neural Designer</h4><p>Нейросети для прогнозирования, классификации, кластеризации.</p></div>
+    <div class="card"><h4>Microsoft Excel</h4><p>Пакет «Анализ данных» закрывает базовые t-, F- и корреляционные тесты.</p></div>
+  </div>
+
+  <h4>Свободные пакеты <span class="badge">бесплатные</span></h4>
+  <div class="grid c3">
+    <div class="card"><h4>R + RStudio</h4><p>Самый мощный бесплатный вариант. Это язык программирования: порог входа выше, зато возможностей больше любого коммерческого пакета.</p></div>
+    <div class="card"><h4>jamovi</h4><p>Программа «третьего поколения»: простая альтернатива SPSS и SAS, построена на R.</p></div>
+    <div class="card"><h4>PSPP</h4><p>Свободный клон SPSS по внешнему виду и функциональности (кроме продвинутых модулей).</p></div>
+    <div class="card"><h4>SOFA</h4><p>Базовые тесты + акцент на красивую презентацию результатов, поддерживает скрипты на Python.</p></div>
+    <div class="card"><h4>Deducer</h4><p>Меню + Excel-подобная таблица данных; альтернатива SPSS, JMP, Minitab.</p></div>
+    <div class="card"><h4>EpiInfo</h4><p>Эпидемиология: ввод данных через формы, интеграция с БД Microsoft Access, картография.</p></div>
+    <div class="card"><h4>OpenEpi</h4><p>Онлайн-калькуляторы: доверительные интервалы, размер выборки, таблицы сопряжённости.</p></div>
+    <div class="card"><h4>SEER-Stat</h4><p>Онкология: заболеваемость, выживаемость, летальность, стандартизация по возрасту.</p></div>
+    <div class="card"><h4>SAGE</h4><p>Statistical Analysis for Genetic Epidemiology — наследуемость признаков, анализ аллелей.</p></div>
+  </div>
+
+  <div class="note tip">
+    <span class="lbl">Что учить</span>
+    <p>Для этого курса достаточно Excel или Python (<code>scipy.stats</code>). Все критерии ниже сводятся к одной формуле и сравнению с табличным значением — калькуляторы на этой странице делают ровно это.</p>
+  </div>
+</article>
+
+<article class="topic">
+  <h3 id="t-quality">Стандарты качества данных <span class="en">/ Data quality standards</span></h3>
+  <p class="src">Лекция 1 <i>(Lecture 1 Math for Data Science, ADA-M.pptx)</i>, слайд 8</p>
+  <p class="lead">Шесть измерений качества. Любой анализ на плохих данных даёт уверенно неправильный ответ.</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Стандарт</th><th style="white-space:normal">Что означает</th><th style="white-space:normal">Как проверить</th></tr></thead>
+      <tbody>
+        <tr><td><b>Полнота</b><br><span class="en">Completeness</span></td><td style="white-space:normal">Все необходимые данные доступны для анализа.</td><td style="white-space:normal">Искать пропуски и неполные записи.</td></tr>
+        <tr><td><b>Точность</b><br><span class="en">Accuracy</span></td><td style="white-space:normal">Данные правильны и отражают реальность.</td><td style="white-space:normal">Проверка на аномалии и ошибки ввода.</td></tr>
+        <tr><td><b>Согласованность</b><br><span class="en">Consistency</span></td><td style="white-space:normal">Единые форматы и единицы измерения.</td><td style="white-space:normal">Единообразие форматов дат, единиц, кодировок.</td></tr>
+        <tr><td><b>Актуальность</b><br><span class="en">Timeliness</span></td><td style="white-space:normal">Данные отражают текущее состояние объекта.</td><td style="white-space:normal">Даты обновления и свежесть источников.</td></tr>
+        <tr><td><b>Уникальность</b><br><span class="en">Uniqueness</span></td><td style="white-space:normal">Каждая запись представлена ровно один раз.</td><td style="white-space:normal">Поиск и удаление дубликатов.</td></tr>
+        <tr><td><b>Достоверность</b><br><span class="en">Validity</span></td><td style="white-space:normal">Данные получены из авторитетных источников.</td><td style="white-space:normal">Проверка источника и его репутации.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</article>
+</section>
+
+<section data-week="sources" data-kind="sources">
+<h2 id="sources">Источники</h2>
+<article class="topic">
+  <h3 id="t-sources">Откуда взяты формулы и задачи</h3>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Обозначение на странице</th><th style="white-space:normal">Файл</th><th style="white-space:normal">Что оттуда взято</th></tr></thead>
+      <tbody>
+        <tr><td><b>Лекция 1</b></td><td style="white-space:normal"><code>week1/Lecture 1 Math for Data Science, ADA-M .pptx</code></td>
+            <td style="white-space:normal">Слайды 1–2 — обзор курса; 3–7 — статистические пакеты; 8 — стандарты качества данных; 12–14 — t-критерий Стьюдента; 15 — алгоритм решения.</td></tr>
+        <tr><td><b>Лекция 2</b></td><td style="white-space:normal"><code>week2/Lecture 2_Math_Data_Science.pptx</code></td>
+            <td style="white-space:normal">Слайд 1 — F-критерий и меры изменчивости; 4 — Example 1; 7 — одно- и двусторонний тест; 8–9 — гипотезы; 10 — пара- и непараметрические критерии; 11 — точный тест Фишера.</td></tr>
+        <tr><td><b>Lecture_additional</b></td><td style="white-space:normal"><code>week2/Lecture_additional.pptx</code></td>
+            <td style="white-space:normal">Повторяет слайды 1–5 Лекции 2; Example 1 там оформлен как Task 1.</td></tr>
+        <tr><td><b>Practice 1</b></td><td style="white-space:normal"><code>week1/Practice 1 ADA-M.pdf</code></td>
+            <td style="white-space:normal">С. 1 — алгоритм из 6 шагов, формула (35) и разобранный Example (курение); с. 2 — обе записи формул для зависимых и независимых выборок; с. 2–3 — Task 1–10.</td></tr>
+        <tr><td><b>Assignment 1</b></td><td style="white-space:normal"><code>assignmnet1/Assignment_1_Math_Data_Science (1).pdf</code></td>
+            <td style="white-space:normal">С. 1–2 — Part I, Task 1–3; с. 3 — таблица распределения Стьюдента; с. 4 — таблица F-критерия и Part II, Task 1–2.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note warn">
+    <span class="lbl">Честная оговорка</span>
+    <p>На слайдах 9–11 Лекции 1 и 2–3, 5–6 Лекции 2 формулы вставлены <b>картинками</b>, а не текстом, поэтому извлечь их дословно из файла нельзя. Там, где это так, в ссылке стоит пометка «формулы изображениями», а сама формула записана в стандартном виде — сверь её со слайдом перед экзаменом. Все формулы, отмеченные конкретным слайдом без такой пометки (слайды 13–14 Лекции 1, слайды 1 и 11 Лекции 2), взяты из файла дословно.</p>
+  </div>
+</article>
+</section>
+
+<p style="text-align:center;color:var(--text-dim);font-size:12.5px;margin-top:50px">
+  Конспект собран по материалам лекций курса Mathematics for Data Science, AITU.<br>
+  Новые недели добавляются как <code>&lt;section data-week="N" data-kind="math"&gt;</code>, обзорный материал — с <code>data-kind="lecture"</code>.<br>
+  Оглавление, поиск и режимы просмотра подхватят новый раздел сами.
+</p>
+
+</main>
+</div>
+
+<script>
+/* ============================================================================
+   1. МАТЕМАТИЧЕСКОЕ ЯДРО — точные p-value без внешних библиотек
+   ============================================================================ */
+
+// Логарифм гамма-функции (аппроксимация Ланцоша)
+function lgamma(x){
+  const g=[676.5203681218851,-1259.1392167224028,771.32342877765313,
+           -176.61502916214059,12.507343278686905,-0.13857109526572012,
+           9.9843695780195716e-6,1.5056327351493116e-7];
+  if(x<0.5) return Math.log(Math.PI/Math.sin(Math.PI*x))-lgamma(1-x);
+  x-=1;
+  let a=0.99999999999980993, t=x+7.5;
+  for(let i=0;i<8;i++) a+=g[i]/(x+i+1);
+  return 0.5*Math.log(2*Math.PI)+(x+0.5)*Math.log(t)-t+Math.log(a);
+}
+function lnFact(n){ return lgamma(n+1); }
+function lnChoose(n,k){ return lnFact(n)-lnFact(k)-lnFact(n-k); }
+
+// Непрерывная дробь для неполной бета-функции (Numerical Recipes)
+function betacf(a,b,x){
+  const TINY=1e-300, EPS=3e-14;
+  let qab=a+b, qap=a+1, qam=a-1;
+  let c=1, d=1-qab*x/qap;
+  if(Math.abs(d)<TINY) d=TINY;
+  d=1/d; let h=d;
+  for(let m=1;m<=300;m++){
+    const m2=2*m;
+    let aa=m*(b-m)*x/((qam+m2)*(a+m2));
+    d=1+aa*d; if(Math.abs(d)<TINY) d=TINY;
+    c=1+aa/c; if(Math.abs(c)<TINY) c=TINY;
+    d=1/d; h*=d*c;
+    aa=-(a+m)*(qab+m)*x/((a+m2)*(qap+m2));
+    d=1+aa*d; if(Math.abs(d)<TINY) d=TINY;
+    c=1+aa/c; if(Math.abs(c)<TINY) c=TINY;
+    d=1/d;
+    const del=d*c; h*=del;
+    if(Math.abs(del-1)<EPS) break;
+  }
+  return h;
+}
+// Регуляризованная неполная бета-функция I_x(a,b)
+function betai(a,b,x){
+  if(x<=0) return 0;
+  if(x>=1) return 1;
+  const bt=Math.exp(lgamma(a+b)-lgamma(a)-lgamma(b)+a*Math.log(x)+b*Math.log(1-x));
+  return (x < (a+1)/(a+b+2)) ? bt*betacf(a,b,x)/a : 1-bt*betacf(b,a,1-x)/b;
+}
+// Двусторонний p-value для распределения Стьюдента
+function tPvalue(t,df){ return betai(df/2, 0.5, df/(df+t*t)); }
+// Правый хвост F-распределения: P(F > f)
+function fTail(f,d1,d2){ return betai(d2/2, d1/2, d2/(d2+d1*f)); }
+
+/* ============================================================================
+   2. ТАБЛИЦЫ КРИТИЧЕСКИХ ЗНАЧЕНИЙ
+   ============================================================================ */
+
+// Таблица Стьюдента: df -> [p=0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0.05, 0.02, 0.01, 0.001]
+const T_P = [0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.2,0.1,0.05,0.02,0.01,0.001];
+const T_TABLE = {
+  1:[.158,.325,.510,.727,1.00,1.38,1.96,3.08,6.31,12.7,31.8,63.7,637],
+  2:[.142,.289,.445,.617,.816,1.06,1.39,1.89,2.92,4.30,6.96,9.92,31.6],
+  3:[.137,.277,.424,.584,.765,.978,1.25,1.64,2.35,3.18,4.54,5.84,12.9],
+  4:[.134,.271,.414,.569,.741,.941,1.19,1.53,2.13,2.78,3.75,4.60,8.61],
+  5:[.132,.267,.408,.559,.727,.920,1.16,1.48,2.02,2.57,3.36,4.03,6.87],
+  6:[.131,.265,.404,.553,.718,.906,1.13,1.44,1.94,2.45,3.14,3.71,5.96],
+  7:[.130,.263,.402,.549,.711,.896,1.12,1.41,1.89,2.36,3.00,3.50,5.41],
+  8:[.130,.262,.399,.546,.706,.889,1.11,1.40,1.86,2.31,2.90,3.36,5.04],
+  9:[.129,.261,.398,.543,.703,.883,1.10,1.38,1.83,2.26,2.82,3.25,4.78],
+  10:[.129,.260,.397,.542,.700,.879,1.09,1.37,1.81,2.23,2.76,3.17,4.59],
+  11:[.129,.260,.396,.540,.697,.876,1.09,1.36,1.80,2.20,2.72,3.11,4.44],
+  12:[.128,.259,.395,.539,.695,.873,1.08,1.36,1.78,2.18,2.68,3.05,4.32],
+  13:[.128,.259,.394,.538,.694,.870,1.08,1.35,1.77,2.16,2.65,3.01,4.22],
+  14:[.128,.258,.393,.537,.692,.868,1.08,1.35,1.76,2.14,2.62,2.98,4.14],
+  15:[.128,.258,.393,.536,.691,.866,1.07,1.34,1.75,2.13,2.60,2.95,4.07],
+  16:[.128,.258,.392,.535,.690,.865,1.07,1.34,1.75,2.12,2.58,2.92,4.02],
+  17:[.128,.257,.392,.534,.689,.863,1.07,1.33,1.74,2.11,2.57,2.90,3.97],
+  18:[.127,.257,.392,.534,.688,.862,1.07,1.33,1.73,2.10,2.55,2.88,3.92],
+  19:[.127,.257,.391,.533,.688,.861,1.07,1.33,1.73,2.09,2.54,2.86,3.88],
+  20:[.127,.257,.391,.533,.687,.860,1.06,1.33,1.72,2.09,2.53,2.85,3.85],
+  21:[.127,.257,.391,.532,.686,.859,1.06,1.32,1.72,2.08,2.52,2.83,3.82],
+  22:[.127,.256,.390,.532,.686,.858,1.06,1.32,1.72,2.07,2.51,2.82,3.79],
+  23:[.127,.256,.390,.532,.685,.858,1.06,1.32,1.71,2.07,2.50,2.81,3.77],
+  24:[.127,.256,.390,.531,.685,.857,1.06,1.32,1.71,2.06,2.49,2.80,3.75],
+  25:[.127,.256,.390,.531,.684,.856,1.06,1.32,1.71,2.06,2.49,2.79,3.73],
+  26:[.127,.256,.390,.531,.684,.856,1.06,1.32,1.71,2.06,2.48,2.78,3.71],
+  27:[.127,.256,.389,.531,.684,.855,1.06,1.31,1.70,2.05,2.47,2.77,3.69],
+  28:[.127,.256,.389,.530,.683,.855,1.06,1.31,1.70,2.05,2.47,2.76,3.67],
+  29:[.127,.256,.389,.530,.683,.854,1.06,1.31,1.70,2.05,2.46,2.76,3.66],
+  30:[.127,.256,.389,.530,.683,.854,1.06,1.31,1.70,2.04,2.46,2.75,3.65],
+  40:[.126,.255,.388,.529,.681,.851,1.05,1.30,1.68,2.02,2.42,2.70,3.55],
+  60:[.126,.254,.387,.527,.679,.848,1.05,1.30,1.67,2.00,2.39,2.66,3.46],
+  120:[.126,.254,.386,.526,.677,.845,1.04,1.29,1.66,1.98,2.36,2.62,3.37],
+  Infinity:[.126,.253,.385,.524,.674,.842,1.04,1.28,1.65,1.96,2.33,2.58,3.29]
+};
+
+// Таблица F-критерия, alpha = 0.05. Ключ — k2 (знаменатель), массив по k1 = [1,2,3,4,5,6,8,12,24,inf]
+const F_K1 = [1,2,3,4,5,6,8,12,24,Infinity];
+const F_TABLE = {
+  1:[161.45,199.50,215.72,224.57,230.17,233.97,238.89,243.91,249.04,254.32],
+  2:[18.51,19.00,19.16,19.25,19.30,19.33,19.37,19.41,19.45,19.50],
+  3:[10.13,9.55,9.28,9.12,9.01,8.94,8.84,8.74,8.64,8.53],
+  4:[7.71,6.94,6.59,6.39,6.26,6.16,6.04,5.91,5.77,5.63],
+  5:[6.61,5.79,5.41,5.19,5.05,4.95,4.82,4.68,4.53,4.36],
+  6:[5.99,5.14,4.76,4.53,4.39,4.28,4.15,4.00,3.84,3.67],
+  7:[5.59,4.74,4.35,4.12,3.97,3.87,3.73,3.57,3.41,3.23],
+  8:[5.32,4.46,4.07,3.84,3.69,3.58,3.44,3.28,3.12,2.93],
+  9:[5.12,4.26,3.86,3.63,3.48,3.37,3.23,3.07,2.90,2.71],
+  10:[4.96,4.10,3.71,3.48,3.33,3.22,3.07,2.91,2.74,2.54],
+  11:[4.84,3.98,3.59,3.36,3.20,3.09,2.95,2.79,2.61,2.40],
+  12:[4.75,3.88,3.49,3.26,3.11,3.00,2.85,2.69,2.50,2.30],
+  13:[4.67,3.80,3.41,3.18,3.02,2.92,2.77,2.60,2.42,2.21],
+  14:[4.60,3.74,3.34,3.11,2.96,2.85,2.70,2.53,2.35,2.13],
+  15:[4.54,3.68,3.29,3.06,2.90,2.79,2.64,2.48,2.29,2.07],
+  16:[4.49,3.63,3.24,3.01,2.85,2.74,2.59,2.42,2.24,2.01],
+  17:[4.45,3.59,3.20,2.96,2.81,2.70,2.55,2.38,2.19,1.96],
+  18:[4.41,3.55,3.16,2.93,2.77,2.66,2.51,2.34,2.15,1.92],
+  19:[4.38,3.52,3.13,2.90,2.74,2.63,2.48,2.31,2.11,1.88],
+  20:[4.35,3.49,3.10,2.87,2.71,2.60,2.45,2.28,2.08,1.84],
+  21:[4.32,3.47,3.07,2.84,2.68,2.57,2.42,2.25,2.05,1.81],
+  22:[4.30,3.44,3.05,2.82,2.66,2.55,2.40,2.23,2.03,1.78],
+  23:[4.28,3.42,3.03,2.80,2.64,2.53,2.38,2.20,2.00,1.76],
+  24:[4.26,3.40,3.01,2.78,2.62,2.51,2.36,2.18,1.98,1.73],
+  25:[4.24,3.38,2.99,2.76,2.60,2.49,2.34,2.16,1.96,1.71],
+  26:[4.22,3.37,2.98,2.74,2.59,2.47,2.32,2.15,1.95,1.69],
+  27:[4.21,3.35,2.96,2.73,2.57,2.46,2.30,2.13,1.93,1.67]
+};
+
+// Табличное t: ближайшее df не больше заданного (консервативно)
+function tCrit(df,alpha){
+  const col=T_P.indexOf(alpha);
+  if(col<0) return null;
+  const keys=Object.keys(T_TABLE).map(Number).sort((a,b)=>a-b);
+  if(T_TABLE[df]) return {v:T_TABLE[df][col],df:df,exact:true};
+  let use=keys[0];
+  for(const k of keys){ if(k<=df) use=k; }
+  return {v:T_TABLE[use][col],df:use,exact:false};
+}
+
+/* ============================================================================
+   3. РЕНДЕР ТАБЛИЦ НА СТРАНИЦЕ
+   ============================================================================ */
+(function renderTables(){
+  const tb=document.getElementById('ttable-body');
+  const keys=Object.keys(T_TABLE).map(Number).sort((a,b)=>a-b);
+  tb.innerHTML=keys.map(df=>{
+    const label = df===Infinity ? '∞' : df;
+    return '<tr><th>'+label+'</th>'+T_TABLE[df].map((v,i)=>
+      '<td class="num'+(T_P[i]===0.05?' hl':'')+'">'+String(v).replace('.',',')+'</td>').join('')+'</tr>';
+  }).join('');
+
+  const fb=document.getElementById('ftable-body');
+  fb.innerHTML=Object.keys(F_TABLE).map(Number).sort((a,b)=>a-b).map(k2=>
+    '<tr><th>'+k2+'</th>'+F_TABLE[k2].map(v=>
+      '<td class="num">'+v.toFixed(2).replace('.',',')+'</td>').join('')+'</tr>'
+  ).join('');
+})();
+
+/* ============================================================================
+   4. КАЛЬКУЛЯТОРЫ
+   ============================================================================ */
+const $=id=>document.getElementById(id);
+const fmt=(x,d=4)=>{
+  if(!isFinite(x)) return '—';
+  if(Math.abs(x)!==0 && Math.abs(x)<1e-4) return x.toExponential(2);
+  return x.toFixed(d).replace(/\.?0+$/,'') || '0';
+};
+const pFmt=p=> p<1e-4 ? p.toExponential(2) : p.toFixed(4);
+
+// Разбор текста в массив чисел
+function parseNums(str){
+  return (str||'').replace(/,(?=\d)/g,'.').split(/[\s,;\n\t]+/)
+    .filter(s=>s.length && s!=='-' && s!=='—')
+    .map(Number).filter(n=>isFinite(n));
+}
+function stats(a){
+  const n=a.length, mean=a.reduce((s,x)=>s+x,0)/n;
+  const ss=a.reduce((s,x)=>s+(x-mean)**2,0);
+  const v=n>1?ss/(n-1):NaN;
+  return {n,mean,ss,v,sd:Math.sqrt(v)};
+}
+const kv=(k,v)=>'<div class="kv"><span>'+k+'</span><span>'+v+'</span></div>';
+const err=m=>'<div class="err">⚠ '+m+'</div>';
+function concl(reject,text){
+  return '<div class="concl '+(reject?'bad':'ok')+'">'+(reject?'✕ H₀ отвергается. ':'✓ H₀ не отвергается. ')+text+'</div>';
+}
+// Общий блок вывода по t-статистике
+function tVerdict(t,df,alpha,what){
+  const p=tPvalue(t,df), tc=tCrit(df,alpha);
+  let html=kv('t вычисленное',fmt(t,3))+kv('df',df);
+  if(tc) html+=kv('t критическое (α='+String(alpha).replace('.',',')+(tc.exact?'':', df='+tc.df+' по таблице')+')',fmt(tc.v,3));
+  html+=kv('p-value (двусторонний)',pFmt(p));
+  const reject=p<alpha;
+  return html+concl(reject, reject
+    ? what+' статистически значимы (p &lt; '+String(alpha).replace('.',',')+').'
+    : what+' статистически не значимы — различие можно объяснить случайностью выборки.');
+}
+
+const CALCS={
+  desc(){
+    const a=parseNums($('d-data').value);
+    if(a.length<2) return err('Нужно минимум 2 числа.');
+    const s=stats(a);
+    const sorted=[...a].sort((x,y)=>x-y);
+    const mad=a.reduce((t,x)=>t+Math.abs(x-s.mean),0)/s.n;
+    const med=s.n%2 ? sorted[(s.n-1)/2] : (sorted[s.n/2-1]+sorted[s.n/2])/2;
+    return kv('n',s.n)
+      +kv('Среднее x̄',fmt(s.mean))
+      +kv('Медиана',fmt(med))
+      +kv('Размах R',fmt(sorted[s.n-1]-sorted[0]))
+      +kv('Сумма квадратов отклонений Σ(x−x̄)²',fmt(s.ss))
+      +kv('Среднее линейное отклонение d̄',fmt(mad))
+      +kv('Дисперсия выборочная s² (÷ n−1)',fmt(s.v))
+      +kv('Дисперсия генеральная σ² (÷ n)',fmt(s.ss/s.n))
+      +kv('Стандартное отклонение s',fmt(s.sd))
+      +kv('Коэффициент вариации V',fmt(s.sd/s.mean*100,2)+' %')
+      +'<div class="concl '+(s.sd/Math.abs(s.mean)*100<33?'ok':'bad')+'">'
+      +(s.sd/Math.abs(s.mean)*100<33
+        ? 'V &lt; 33 % — совокупность однородна.'
+        : 'V ≥ 33 % — совокупность неоднородна, среднее плохо описывает данные.')+'</div>';
+  },
+
+  t1(){
+    const a=parseNums($('t1-data').value), mu=Number(String($('t1-mu').value).replace(',','.'));
+    const alpha=Number($('t1-a').value);
+    if(a.length<2) return err('Нужно минимум 2 значения.');
+    if(!isFinite(mu)) return err('Укажите эталонное значение μ₀.');
+    const s=stats(a), t=(s.mean-mu)/(s.sd/Math.sqrt(s.n));
+    return kv('n',s.n)+kv('x̄',fmt(s.mean))+kv('μ₀',fmt(mu))+kv('s',fmt(s.sd))
+      +tVerdict(t,s.n-1,alpha,'Отличие среднего от эталонного значения');
+  },
+
+  tp(){
+    const a=parseNums($('tp-a').value), b=parseNums($('tp-b').value);
+    const alpha=Number($('tp-al').value);
+    if(a.length!==b.length) return err('Выборки должны быть одинаковой длины: сейчас '+a.length+' и '+b.length+'.');
+    if(a.length<2) return err('Нужно минимум 2 пары.');
+    const d=a.map((x,i)=>x-b[i]), s=stats(d), t=s.mean/(s.sd/Math.sqrt(s.n));
+    return kv('n пар',s.n)
+      +kv('Разности dᵢ',d.map(x=>fmt(x,2)).join('; '))
+      +kv('Среднее разностей d̄',fmt(s.mean))
+      +kv('s_d',fmt(s.sd))
+      +tVerdict(t,s.n-1,alpha,'Различия между измерениями «до» и «после»');
+  },
+
+  ti(){
+    const a=parseNums($('ti-a').value), b=parseNums($('ti-b').value);
+    const alpha=Number($('ti-al').value);
+    if(a.length<2||b.length<2) return err('В каждой выборке нужно минимум 2 значения.');
+    const s1=stats(a), s2=stats(b);
+    const df=s1.n+s2.n-2;
+    // основная формула — из лекции (слайд 14): Sd = sqrt(Sx²/n₁ + Sy²/n₂)
+    const Sd=Math.sqrt(s1.v/s1.n+s2.v/s2.n);
+    const t=(s1.mean-s2.mean)/Sd;
+    // справочно — классический вариант с объединённой дисперсией
+    const sp=((s1.n-1)*s1.v+(s2.n-1)*s2.v)/(s1.n+s2.n-2);
+    const tPooled=(s1.mean-s2.mean)/Math.sqrt(sp*(1/s1.n+1/s2.n));
+    // сопутствующая проверка равенства дисперсий
+    const big=Math.max(s1.v,s2.v), small=Math.min(s1.v,s2.v);
+    const F=big/small;
+    const d1=(s1.v>=s2.v?s1.n:s2.n)-1, d2=(s1.v>=s2.v?s2.n:s1.n)-1;
+    const fp=fTail(F,d1,d2)*2;
+    return kv('n₁ / x̄₁ / s²₁',s1.n+' / '+fmt(s1.mean)+' / '+fmt(s1.v))
+      +kv('n₂ / x̄₂ / s²₂',s2.n+' / '+fmt(s2.mean)+' / '+fmt(s2.v))
+      +kv('Sd = √(s²₁/n₁ + s²₂/n₂) — формула лекции',fmt(Sd,4))
+      +tVerdict(t,df,alpha,'Различия средних двух групп')
+      +'<div class="kv" style="margin-top:8px"><span>Вариант с объединённой дисперсией (s²ₚ = '
+      +fmt(sp,2)+')</span><span>t = '+fmt(tPooled,3)+'</span></div>'
+      +'<div class="concl" style="font-weight:500;color:var(--text-dim)">Проверка предпосылки: F = '+fmt(F,3)
+      +' (df '+d1+'; '+d2+'), p = '+pFmt(Math.min(fp,1))+' → дисперсии '
+      +(Math.min(fp,1)<0.05?'<b class="bad">различаются значимо</b> — корректнее t-тест Уэлча.':'<b class="ok">однородны</b>, объединённая дисперсия применима.')
+      +'</div>';
+  },
+
+  f(){
+    const alpha=Number($('f-al').value);
+    const ra=parseNums($('f-a').value), rb=parseNums($('f-b').value);
+    let v1,n1,v2,n2;
+    if(ra.length>1 && rb.length>1){
+      const s1=stats(ra), s2=stats(rb);
+      v1=s1.v; n1=s1.n; v2=s2.v; n2=s2.n;
+    } else {
+      v1=Number(String($('f-s1').value).replace(',','.')); n1=Number($('f-n1').value);
+      v2=Number(String($('f-s2').value).replace(',','.')); n2=Number($('f-n2').value);
+      if(![v1,n1,v2,n2].every(x=>isFinite(x)&&x>0))
+        return err('Заполните либо обе выборки сырыми данными, либо все четыре поля s² и n.');
+      if(n1<2||n2<2) return err('Объём каждой выборки должен быть не меньше 2.');
+    }
+    const swap=v2>v1;
+    const big=swap?v2:v1, small=swap?v1:v2;
+    const d1=(swap?n2:n1)-1, d2=(swap?n1:n2)-1;
+    const F=big/small;
+    const p=Math.min(fTail(F,d1,d2)*2,1);   // двусторонний
+    const fc=F_TABLE[d2] ? F_TABLE[d2][F_K1.indexOf(d1)] : undefined;
+    let html=kv('s² в числителе (бо́льшая)',fmt(big)+(swap?'  ← выборка 2':'  ← выборка 1'))
+      +kv('s² в знаменателе',fmt(small))
+      +kv('F вычисленное',fmt(F,4))
+      +kv('df₁ (числитель) / df₂ (знаменатель)',d1+' / '+d2);
+    if(fc!==undefined) html+=kv('F критическое (α=0,05) по таблице',fmt(fc,2));
+    html+=kv('p-value (двусторонний)',pFmt(p));
+    const reject=p<alpha;
+    return html+concl(reject, reject
+      ? 'Дисперсии различаются <b>значимо</b> — группы имеют разную степень однородности.'
+      : 'Различие между оценками дисперсий <b>случайное, несущественное</b> — дисперсии можно считать равными.');
+  },
+
+  fe(){
+    const a=+$('fe-a').value, b=+$('fe-b').value, c=+$('fe-c').value, d=+$('fe-d').value;
+    const alpha=Number($('fe-al').value);
+    if(![a,b,c,d].every(x=>Number.isInteger(x)&&x>=0)) return err('Все четыре ячейки — целые неотрицательные числа.');
+    const n=a+b+c+d;
+    if(n===0) return err('Таблица пуста.');
+    const r1=a+b, r2=c+d, c1=a+c, c2=b+d;
+    // вероятность конкретной таблицы через гипергеометрическое распределение
+    const pT=x=>Math.exp(lnChoose(r1,x)+lnChoose(r2,c1-x)-lnChoose(n,c1));
+    const obs=pT(a);
+    const lo=Math.max(0,c1-r2), hi=Math.min(r1,c1);
+    let two=0, left=0, right=0;
+    for(let x=lo;x<=hi;x++){
+      const p=pT(x);
+      if(p<=obs*(1+1e-9)) two+=p;
+      if(x<=a) left+=p;
+      if(x>=a) right+=p;
+    }
+    two=Math.min(two,1);
+    const oddsStr=(b*c===0||a*d===0)?'∞ или 0 (есть нулевая ячейка)':fmt(a*d/(b*c),3);
+    const reject=two<alpha;
+    return kv('Таблица',`[${a} ${b} | ${c} ${d}]`)
+      +kv('Суммы по строкам / столбцам',r1+', '+r2+' / '+c1+', '+c2+'   (n = '+n+')')
+      +kv('Доля в группе 1',(r1? fmt(a/r1*100,1):'—')+' %')
+      +kv('Доля в группе 2',(r2? fmt(c/r2*100,1):'—')+' %')
+      +kv('Отношение шансов (OR)',oddsStr)
+      +kv('p наблюдаемой таблицы',pFmt(obs))
+      +kv('p односторонний (левый хвост)',pFmt(Math.min(left,1)))
+      +kv('p односторонний (правый хвост)',pFmt(Math.min(right,1)))
+      +kv('p двусторонний',pFmt(two))
+      +concl(reject, reject
+        ? 'Связь между признаком и группой <b>статистически значима</b>.'
+        : 'Оснований считать связь значимой нет — распределение частот объяснимо случайностью.');
+  }
+};
+
+document.addEventListener('click',e=>{
+  const btn=e.target.closest('[data-calc]');
+  if(!btn) return;
+  const key=btn.dataset.calc;
+  const out=$('out-'+key);
+  try{ out.innerHTML=CALCS[key](); }
+  catch(ex){ out.innerHTML=err('Ошибка в данных: '+ex.message); }
+});
+
+/* ============================================================================
+   5. ОГЛАВЛЕНИЕ — строится автоматически из h2/h3
+   ============================================================================ */
+const toc=$('toc');
+document.querySelectorAll('main section').forEach(sec=>{
+  const h2=sec.querySelector('h2');
+  if(!h2) return;
+  const a=document.createElement('a');
+  a.href='#'+h2.id; a.className='lvl2'; a.textContent=h2.textContent;
+  toc.appendChild(a);
+  sec.querySelectorAll('h3[id]').forEach(h3=>{
+    const s=document.createElement('a');
+    s.href='#'+h3.id; s.className='lvl3';
+    s.textContent=h3.textContent.replace(/\s*\/.*$/,'').trim();
+    toc.appendChild(s);
+  });
+});
+
+// подсветка активного пункта при прокрутке
+const heads=[...document.querySelectorAll('main h2[id], main h3[id]')];
+const links=new Map([...toc.querySelectorAll('a')].map(a=>[a.getAttribute('href').slice(1),a]));
+const spy=new IntersectionObserver(entries=>{
+  entries.forEach(en=>{
+    if(!en.isIntersecting) return;
+    links.forEach(a=>a.classList.remove('active'));
+    const a=links.get(en.target.id);
+    if(a){ a.classList.add('active'); a.scrollIntoView({block:'nearest'}); }
+  });
+},{rootMargin:'0px 0px -75% 0px',threshold:0});
+heads.forEach(h=>spy.observe(h));
+
+/* ============================================================================
+   6. ПОИСК ПО СТРАНИЦЕ
+   ============================================================================ */
+const sections=[...document.querySelectorAll('main section')];
+const blocks=[...document.querySelectorAll('main .topic, main .calc')];
+blocks.forEach(b=>{
+  b._text=b.textContent.toLowerCase();
+  b._hasFormula=!!b.querySelector('.formula');
+});
+const qInput=$('q'), qStat=$('qstat');
+
+/* Режим показа. Скрытие режимом — через data-off, поиском — через класс hidden;
+   два механизма независимы и не затирают друг друга. */
+let MODE='math';
+const inMode=sec=>{
+  const kind=sec.dataset.kind;
+  if(MODE==='all' || kind==='sources') return true;   // источники нужны в любом режиме
+  if(MODE==='lecture') return kind==='lecture';
+  if(MODE==='bare') return kind==='math' || kind==='calc';  // формулы + таблицы и калькуляторы
+  return kind!=='lecture';                                   // режим math: всё, кроме лекции
+};
+
+function refresh(){
+  const q=qInput.value.trim().toLowerCase();
+  document.body.classList.toggle('mode-bare', MODE==='bare');
+
+  // 1. режим: секции целиком
+  sections.forEach(sec=>sec.dataset.off = inMode(sec) ? '' : '1');
+  // 2. режим «только формулы»: блоки без формул в математических разделах не нужны
+  blocks.forEach(b=>{
+    const mathSec=b.closest('section')?.dataset.kind==='math';
+    b.dataset.off = (MODE==='bare' && mathSec && !b._hasFormula) ? '1' : '';
+  });
+  // секция, у которой не осталось ни одного видимого блока, не должна висеть пустым заголовком
+  sections.forEach(sec=>{
+    if(sec.dataset.off==='1') return;
+    const kids=[...sec.querySelectorAll('.topic,.calc')];
+    if(kids.length && kids.every(b=>b.dataset.off==='1')) sec.dataset.off='1';
+  });
+
+  // 3. поиск внутри того, что показывает режим
+  let found=0;
+  blocks.forEach(b=>{
+    const hit=!q || b._text.includes(q);
+    b.classList.toggle('hidden',!hit);
+    if(hit && b.dataset.off!=='1' && b.closest('section').dataset.off!=='1') found++;
+  });
+  if(q){
+    sections.forEach(sec=>{
+      const any=[...sec.querySelectorAll('.topic,.calc')]
+        .some(b=>!b.classList.contains('hidden') && b.dataset.off!=='1');
+      sec.classList.toggle('hidden',!any);
+    });
+    qStat.textContent = found ? 'Найдено блоков: '+found : 'Ничего не найдено';
+  } else {
+    sections.forEach(sec=>sec.classList.remove('hidden'));
+    qStat.textContent='';
+  }
+
+  // 4. оглавление повторяет то, что реально видно
+  toc.querySelectorAll('a').forEach(a=>{
+    const el=document.getElementById(a.getAttribute('href').slice(1));
+    const sec=el && el.closest('section');
+    const host=el && el.closest('.topic,.calc');
+    const hide = !el || !sec || sec.dataset.off==='1' || sec.classList.contains('hidden')
+      || (host && (host.dataset.off==='1' || host.classList.contains('hidden')));
+    a.classList.toggle('hidden',!!hide);
+  });
+}
+const runSearch=refresh;   // поиск и режим пересчитывают одно и то же состояние
+
+$('modebar').addEventListener('click',e=>{
+  const btn=e.target.closest('button[data-mode]');
+  if(!btn) return;
+  MODE=btn.dataset.mode;
+  [...e.currentTarget.children].forEach(b=>b.classList.toggle('on',b===btn));
+  try{ localStorage.setItem('mathsite-mode',MODE); }catch(err){}
+  refresh();
+});
+
+// восстанавливаем выбранный ранее режим
+try{
+  const saved=localStorage.getItem('mathsite-mode');
+  const btn=saved && $('modebar').querySelector('[data-mode="'+saved+'"]');
+  if(btn){
+    MODE=saved;
+    [...$('modebar').children].forEach(b=>b.classList.toggle('on',b===btn));
+  }
+}catch(e){}
+refresh();
+
+qInput.addEventListener('input',refresh);
+qInput.addEventListener('keydown',e=>{ if(e.key==='Escape'){ qInput.value=''; refresh(); }});
+$('qclear').addEventListener('click',()=>{ qInput.value=''; refresh(); qInput.focus(); });
+// Ctrl+K / "/" — фокус в поиск
+document.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){ e.preventDefault(); qInput.focus(); qInput.select(); }
+  if(e.key==='/' && document.activeElement.tagName!=='INPUT' && document.activeElement.tagName!=='TEXTAREA'){
+    e.preventDefault(); qInput.focus();
+  }
+});
+
+/* ============================================================================
+   7. ТЕМА, ПЕЧАТЬ, МОБИЛЬНОЕ МЕНЮ
+   ============================================================================ */
+(function theme(){
+  let saved=null;
+  try{ saved=localStorage.getItem('mathsite-theme'); }catch(e){}
+  if(saved) document.documentElement.dataset.theme=saved;
+  else if(window.matchMedia('(prefers-color-scheme: dark)').matches)
+    document.documentElement.dataset.theme='dark';
+
+  $('themeBtn').addEventListener('click',()=>{
+    const next=document.documentElement.dataset.theme==='dark'?'light':'dark';
+    document.documentElement.dataset.theme=next;
+    try{ localStorage.setItem('mathsite-theme',next); }catch(e){}
+  });
+})();
+
+$('printBtn').addEventListener('click',()=>{
+  // перед печатью раскрываем все свёрнутые решения
+  document.querySelectorAll('details').forEach(d=>d.open=true);
+  window.print();
+});
+
+(function mobileMenu(){
+  const sb=$('sidebar'), btn=$('menuBtn');
+  let scrim=null;
+  function close(){ sb.classList.remove('open'); scrim?.remove(); scrim=null; }
+  btn.addEventListener('click',()=>{
+    if(sb.classList.contains('open')) return close();
+    sb.classList.add('open');
+    scrim=document.createElement('div'); scrim.id='scrim';
+    scrim.addEventListener('click',close);
+    document.body.appendChild(scrim);
+  });
+  toc.addEventListener('click',e=>{ if(e.target.tagName==='A' && window.innerWidth<=980) close(); });
+})();
+</script>
+</body>
+</html>

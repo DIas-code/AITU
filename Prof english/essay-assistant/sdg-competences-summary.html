@@ -1,0 +1,476 @@
+<title>Компетенции инженеров для ЦУР</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --paper:#F5F7F3;
+    --surface:#FFFFFF;
+    --ink:#17201C;
+    --muted:#5C6862;
+    --rule:#DCE2DA;
+    --accent:#0C6B58;
+    --accent-soft:#E2EFE9;
+    --all:#2E7D5B;
+    --two:#A97612;
+    --one:#3D6FA6;
+    --quote-bg:#EFF2EC;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#101512;
+      --surface:#171E1A;
+      --ink:#E7EDE6;
+      --muted:#9AA79F;
+      --rule:#28312C;
+      --accent:#54C3A3;
+      --accent-soft:#16302A;
+      --all:#5CB98B;
+      --two:#D9A73F;
+      --one:#7FA9DE;
+      --quote-bg:#1B231E;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#101512;
+    --surface:#171E1A;
+    --ink:#E7EDE6;
+    --muted:#9AA79F;
+    --rule:#28312C;
+    --accent:#54C3A3;
+    --accent-soft:#16302A;
+    --all:#5CB98B;
+    --two:#D9A73F;
+    --one:#7FA9DE;
+    --quote-bg:#1B231E;
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+    font-size:17px;
+    line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+  }
+  .page{
+    max-width:920px;
+    margin:0 auto;
+    padding-inline:20px;
+    padding-block:0 72px;
+  }
+  h1,h2,h3{font-family:"Zilla Slab",Georgia,serif;text-wrap:balance;margin:0}
+  p{margin:0}
+  a{color:var(--accent)}
+
+  /* ── шапка ───────────────────────────────── */
+  .masthead{
+    border-bottom:2px solid var(--ink);
+    padding-block:40px 20px;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+  }
+  .eyebrow{
+    font-family:"IBM Plex Mono",ui-monospace,monospace;
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+  h1{font-size:clamp(30px,5.4vw,46px);line-height:1.08;font-weight:600;letter-spacing:-.01em}
+  .subtitle{font-size:19px;color:var(--muted);max-width:60ch}
+  .byline{
+    font-size:14.5px;color:var(--muted);
+    border-left:3px solid var(--accent);
+    padding-left:12px;
+    max-width:64ch;
+  }
+  .byline em{font-style:italic}
+
+  .facts{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+    gap:1px;
+    background:var(--rule);
+    border-block:1px solid var(--rule);
+    margin-block:28px 0;
+  }
+  .fact{background:var(--paper);padding:14px 16px;display:flex;flex-direction:column;gap:2px}
+  .fact b{
+    font-family:"Zilla Slab",Georgia,serif;font-size:26px;font-weight:600;
+    font-variant-numeric:tabular-nums;line-height:1.1;
+  }
+  .fact span{font-size:13px;color:var(--muted);line-height:1.35}
+
+  /* ── секции ──────────────────────────────── */
+  section{margin-top:52px}
+  h2{
+    font-size:25px;font-weight:600;
+    display:flex;align-items:baseline;gap:12px;
+    padding-bottom:8px;border-bottom:1px solid var(--rule);
+    margin-bottom:20px;
+  }
+  h2 .num{
+    font-family:"IBM Plex Mono",monospace;font-size:13px;font-weight:400;
+    color:var(--accent);letter-spacing:.06em;
+  }
+  h3{font-size:18px;font-weight:600;margin-bottom:6px}
+  .prose{max-width:66ch;display:flex;flex-direction:column;gap:14px}
+  .prose ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:7px}
+
+  .lead{
+    background:var(--accent-soft);
+    border-left:4px solid var(--accent);
+    padding:18px 22px;
+    display:flex;flex-direction:column;gap:12px;
+    max-width:70ch;
+  }
+  .lead p{font-size:18px}
+
+  /* исследовательские вопросы */
+  .rq{display:flex;flex-direction:column;gap:12px;max-width:70ch}
+  .rq li{list-style:none}
+  .rq ol{margin:0;padding:0;display:flex;flex-direction:column;gap:12px;counter-reset:rq}
+  .rq ol li{
+    counter-increment:rq;
+    display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;
+  }
+  .rq ol li::before{
+    content:"RQ" counter(rq);
+    font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:500;
+    color:var(--accent);border:1px solid var(--accent);
+    padding:2px 6px;margin-top:3px;white-space:nowrap;
+  }
+
+  /* фазы метода */
+  .phases{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;
+    counter-reset:ph;
+  }
+  .phase{counter-increment:ph;border-top:2px solid var(--accent);padding-top:10px;display:flex;flex-direction:column;gap:5px}
+  .phase::before{
+    content:"Фаза " counter(ph);
+    font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--accent);
+  }
+  .phase b{font-family:"Zilla Slab",serif;font-size:17px;font-weight:500}
+  .phase span{font-size:14.5px;color:var(--muted);line-height:1.5}
+
+  /* 6 категорий (Table 4) */
+  .cats{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+  .cat{background:var(--surface);border:1px solid var(--rule);padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+  .cat .kind{
+    font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--muted);
+  }
+  .cat b{font-family:"Zilla Slab",serif;font-size:17px;font-weight:500}
+  .cat p{font-size:14.5px;color:var(--muted);line-height:1.5}
+
+  /* матрица согласия */
+  .legend{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:22px;font-size:14.5px}
+  .legend div{display:flex;align-items:center;gap:8px}
+  .dot{width:11px;height:11px;border-radius:50%;flex:none}
+  .d-all{background:var(--all)} .d-two{background:var(--two)} .d-one{background:var(--one)}
+  .matrix{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule)}
+  .comp{background:var(--surface);padding:15px 17px;display:flex;flex-direction:column;gap:9px}
+  .comp h3{font-size:16px;display:flex;flex-direction:column;gap:2px}
+  .comp h3 small{
+    font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:400;
+    letter-spacing:.06em;color:var(--muted);text-transform:uppercase;
+  }
+  .comp ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px}
+  .comp li{display:grid;grid-template-columns:auto 1fr auto;gap:9px;align-items:baseline;font-size:14.5px}
+  .comp li .who{
+    font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.06em;
+    color:var(--muted);white-space:nowrap;
+  }
+  .comp .empty{font-size:14.5px;color:var(--two);font-style:italic}
+
+  /* выводы */
+  .findings{display:flex;flex-direction:column;gap:20px;counter-reset:f}
+  .finding{
+    counter-increment:f;display:grid;grid-template-columns:auto 1fr;gap:16px;
+    padding-bottom:20px;border-bottom:1px dashed var(--rule);
+  }
+  .finding:last-child{border-bottom:none;padding-bottom:0}
+  .finding::before{
+    content:counter(f);
+    font-family:"Zilla Slab",serif;font-size:30px;font-weight:600;color:var(--accent);
+    line-height:1;font-variant-numeric:tabular-nums;
+  }
+  .finding div{display:flex;flex-direction:column;gap:5px;max-width:64ch}
+  .finding b{font-family:"Zilla Slab",serif;font-size:18px;font-weight:500}
+  .finding p{font-size:16px;color:var(--ink)}
+
+  /* различия групп */
+  .groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+  .group{padding:16px 18px;border:1px solid var(--rule);background:var(--surface);display:flex;flex-direction:column;gap:7px}
+  .group .tag{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+  .group ul{margin:0;padding-left:18px;font-size:14.5px;display:flex;flex-direction:column;gap:4px}
+
+  /* цитаты */
+  .quotes{display:flex;flex-direction:column;gap:14px}
+  blockquote{
+    margin:0;background:var(--quote-bg);padding:16px 20px;
+    border-left:3px solid var(--accent);
+    display:flex;flex-direction:column;gap:8px;max-width:72ch;
+  }
+  blockquote p{font-size:16.5px;font-style:italic}
+  blockquote cite{
+    font-style:normal;font-family:"IBM Plex Mono",monospace;font-size:11.5px;
+    letter-spacing:.06em;color:var(--muted);
+  }
+  .codes{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--muted);margin-top:14px;line-height:1.7}
+
+  /* глоссарий */
+  .gloss{width:100%;border-collapse:collapse;font-size:15px}
+  .gloss th,.gloss td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--rule);vertical-align:top}
+  .gloss th{
+    font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--muted);font-weight:400;
+  }
+  .gloss td:first-child{font-weight:600;white-space:nowrap}
+  .gloss td:last-child{color:var(--muted)}
+  .scroll-x{overflow-x:auto}
+
+  footer{
+    margin-top:56px;padding-top:18px;border-top:2px solid var(--ink);
+    font-size:14px;color:var(--muted);display:flex;flex-direction:column;gap:6px;
+  }
+  @media (max-width:520px){
+    body{font-size:16px}
+    .finding{grid-template-columns:1fr}
+  }
+</style>
+
+<div class="page">
+
+  <header class="masthead">
+    <div class="eyebrow">Конспект · European Journal of Engineering Education · 2023, 48(1), 1–23</div>
+    <h1>Каких компетенций требуют ЦУР от будущих инженеров?</h1>
+    <p class="subtitle">Beagon et al. сравнили, что говорят студенты, преподаватели и работодатели инженерного образования о компетенциях для Целей устойчивого развития — и где между ними расходятся взгляды.</p>
+    <p class="byline">Una Beagon, Klara Kövesi, Brad Tabas, Bente Nørgaard, Riitta Lehtinen, Brian Bowe, Christiane Gillet &amp; Claus Monrad Spliid. <em>Preparing engineering students for the challenges of the SDGs: what competences are required?</em> Open Access, DOI 10.1080/03043797.2022.2033955</p>
+  </header>
+
+  <div class="facts">
+    <div class="fact"><b>12</b><span>фокус-групп</span></div>
+    <div class="fact"><b>86</b><span>участников</span></div>
+    <div class="fact"><b>4</b><span>страны: IE, FR, DK, FI</span></div>
+    <div class="fact"><b>54</b><span>компетенции выявлено</span></div>
+    <div class="fact"><b>7/8</b><span>компетенций UNESCO подтверждены</span></div>
+  </div>
+
+  <section>
+    <h2><span class="num">TL;DR</span>Главное в пяти строках</h2>
+    <div class="lead">
+      <p>Участники назвали <b>54 компетенции</b>, которые сложились в шесть категорий: от фундаментальных технических навыков до мировоззрения и этических установок.</p>
+      <p>Мнения трёх групп совпадают сильнее, чем ожидалось: нормативные, стратегические, системные, межличностные компетенции и решение проблем признаны всеми.</p>
+      <p>Самая громкая находка — <b>ни одна группа не назвала anticipatory competence</b> (способность мыслить будущими сценариями), хотя UNESCO считает её ключевой для устойчивого развития. Это прямо противоречит будущ­ориентированной сути ЦУР.</p>
+      <p>Расхождения: <b>continuous learning</b> ценят преподаватели и работодатели, но не студенты; <b>intrapersonal</b> компетенции (тайм-менеджмент, стрессоустойчивость) назвали в основном студенты.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">01</span>Зачем исследование</h2>
+    <div class="prose">
+      <p>Инженерные проблемы становятся «wicked» — запутанными, междисциплинарными, социотехническими. 17 ЦУР и 169 задач ООН задают формальную рамку того, что инженеру придётся решать. Но единого мнения, какие именно компетенции для этого нужны, в литературе нет: авторы спорят о терминах и приоритетах.</p>
+      <p>Взяли трёх ключевых стейкхолдеров: <b>работодателей</b> (что реально нужно в компаниях), <b>преподавателей</b> (кто управляет учебным планом) и <b>студентов</b> (насколько они осознают требования). Сравнение выявляет разрывы, которые можно закрыть в учебной программе.</p>
+      <div class="rq">
+        <ol>
+          <li>Какие компетенции, по мнению стейкхолдеров, нужны инженерам для поддержки ЦУР?</li>
+          <li>Как эти компетенции соотносятся с рамкой «Key competencies for sustainability» UNESCO (2017) и более поздней литературой?</li>
+          <li>В чём различаются восприятия преподавателей, студентов и работодателей?</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">02</span>Как собирали данные</h2>
+    <div class="prose" style="margin-bottom:22px">
+      <p>Качественный дизайн: 12 фокус-групп (по три в каждой стране — отдельно студенты, преподаватели, работодатели), март–июль 2019, по ~2 часа, на родном языке участников. Единый Focus Group Handbook обеспечил сопоставимость. Подгруппы по 2–4 человека выписывали компетенции на флипчарт и объясняли свой выбор.</p>
+    </div>
+    <div class="phases">
+      <div class="phase"><b>Сбор терминов</b><span>Все термины из всех фокус-групп в один список, очистка дубликатов («interpret» и «interpreters», «critical thinking» и «think critically»).</span></div>
+      <div class="phase"><b>Открытое кодирование</b><span>Два исследователя независимо кодировали термины в подкатегории, спорили до консенсуса → 54 компетенции в 6 категориях.</span></div>
+      <div class="phase"><b>Сопоставление с литературой</b><span>Маппинг 54 компетенций на рамку UNESCO (2017) и на дополнительные компетенции из обзора литературы 2011–2021.</span></div>
+      <div class="phase"><b>Сравнение групп</b><span>Отметили, какая группа стейкхолдеров назвала каждую компетенцию → таблицы уровней согласия.</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">03</span>Шесть категорий из 54 компетенций</h2>
+    <div class="cats">
+      <div class="cat"><span class="kind">Technical</span><b>Fundamental Technical Skills</b><p>Математика, цифровые, экономические, исследовательские и собственно технические навыки — ядро инженерной программы.</p></div>
+      <div class="cat"><span class="kind">Technical</span><b>Application Skills</b><p>Мультидисциплинарность, решение проблем, проектирование, инновации, предпринимательство, проектный менеджмент, умение учиться.</p></div>
+      <div class="cat"><span class="kind">Non-technical</span><b>Outward Facing — People</b><p>Коммуникация (включая языки и слушание), коллаборация, командная работа, лидерство, переговоры, межкультурность, уважение разнообразия.</p></div>
+      <div class="cat"><span class="kind">Non-technical</span><b>Inward Facing — Ways of Thinking</b><p>Критическое, холистическое, системное, аналитическое, многоперспективное мышление, креативность, саморефлексия, тайм- и стресс-менеджмент.</p></div>
+      <div class="cat"><span class="kind">Attitudes</span><b>World View</b><p>Глобальная осведомлённость, социальная ответственность, осведомлённость об устойчивости и экологии, готовность оспаривать статус-кво, lifelong learning.</p></div>
+      <div class="cat"><span class="kind">Attitudes</span><b>Character &amp; Ethical Orientation</b><p>Уважение к другим, открытость, адаптивность, любознательность, эмпатия, эмоциональный интеллект, упорство, этическая совесть, личная вовлечённость.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">04</span>Кто что назвал: карта согласия</h2>
+    <div class="prose" style="margin-bottom:20px">
+      <p>Компетенции легли на рамку UNESCO (2017). Цвет показывает, сколько групп стейкхолдеров независимо упомянули компетенцию — это и есть главный результат сравнения.</p>
+    </div>
+    <div class="legend">
+      <div><span class="dot d-all"></span> все три группы</div>
+      <div><span class="dot d-two"></span> две группы</div>
+      <div><span class="dot d-one"></span> одна группа</div>
+      <div style="color:var(--muted)">С — студенты · П — преподаватели · Р — работодатели</div>
+    </div>
+    <div class="matrix" id="matrix"></div>
+  </section>
+
+  <section>
+    <h2><span class="num">05</span>Четыре вывода обсуждения</h2>
+    <div class="findings">
+      <div class="finding"><div>
+        <b>Anticipatory competence отсутствует</b>
+        <p>Самое неожиданное: способность предвидеть последствия, работать с неопределённостью и представлять будущие сценарии не назвал никто. Косвенно она проступает в life-cycle thinking и lifelong learning, но осознанно её не требуют — при том что вся повестка ЦУР обращена в будущее. Значит, нужно и объяснять эту компетенцию, и учить ей.</p>
+      </div></div>
+      <div class="finding"><div>
+        <b>Нормативная компетенция — полный консенсус</b>
+        <p>Социальная ответственность, этическая совесть и осведомлённость об устойчивости признаны всеми тремя группами. Но преподаватели указывают на барьеры: нехватка собственной подготовки и перегруженный учебный план. Вывод авторов — учить надо самих преподавателей и встраивать ценности в технические модули, а не добавлять новые курсы.</p>
+      </div></div>
+      <div class="finding"><div>
+        <b>Межличностные компетенции — самый сильный сигнал</b>
+        <p>Коммуникация, командная работа, проектный менеджмент и личная вовлечённость названы всеми. При этом работодатели видят разрыв между ожиданиями и реальными навыками выпускников. Авторы: эти компетенции нужно явно оценивать, а не надеяться, что они «сами возникнут» в проектной работе.</p>
+      </div></div>
+      <div class="finding"><div>
+        <b>Непрерывное обучение ценят не студенты</b>
+        <p>Learning to learn и lifelong learning отметили преподаватели и работодатели, но ни одна студенческая группа. Решение — не очередной модуль, а личное планирование развития и регулярная рефлексия прогресса, например e-portfolio.</p>
+      </div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">06</span>Где группы расходятся</h2>
+    <div class="groups">
+      <div class="group">
+        <span class="tag" style="color:var(--one)">Только работодатели</span>
+        <ul><li>Mathematics skills</li><li>Interpretation skills</li><li>Challenging the status quo — «сметь спорить со старшими коллегами»</li></ul>
+      </div>
+      <div class="group">
+        <span class="tag" style="color:var(--one)">Только преподаватели</span>
+        <ul><li>Conceptual understanding</li><li>Resources optimisation, entrepreneurship</li><li>Conflict management, negotiation, empathy</li><li>Self-reflection</li></ul>
+      </div>
+      <div class="group">
+        <span class="tag" style="color:var(--one)">Только студенты</span>
+        <ul><li>Organisation skills, leadership</li><li>Life cycle thinking</li><li>Time management, stress management</li></ul>
+      </div>
+    </div>
+    <div class="prose" style="margin-top:18px">
+      <p>Характерная деталь: студенты назвали заметно больше <b>intrapersonal</b> компетенций, чем взрослые группы — фокус на самочувствии и благополучии на работе. Авторы прямо пишут, что здесь университетам и работодателям стоит поучиться у студентов (перекличка с ЦУР 3 «Хорошее здоровье и благополучие»).</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">07</span>Цитаты для эссе</h2>
+    <div class="quotes">
+      <blockquote><p>«When I went to college, it didn't teach me to be the engineer I became, but it did teach me how to think, how to think logically.»</p><cite>IRL-E · работодатель, Ирландия</cite></blockquote>
+      <blockquote><p>«If we leave out the technical things, we are just trying to make good citizens. That's the role of the Universities.»</p><cite>IRL-A · преподаватель, Ирландия</cite></blockquote>
+      <blockquote><p>«Engineers must have an equal understanding of the focus on the economic, social and ecological conditions. The engineer must be able to see all.»</p><cite>DK-E · работодатель, Дания</cite></blockquote>
+      <blockquote><p>«It's easy to make a choice when there is no cost. But when the choice becomes more difficult is when it costs more to do the right thing — and that's when we run into difficulty.»</p><cite>IRL-E · работодатель, Ирландия</cite></blockquote>
+      <blockquote><p>«Multidisciplinary teamwork is needed, it's the way we work, but this is lacking in Universities.»</p><cite>IRL-E · работодатель, Ирландия</cite></blockquote>
+      <blockquote><p>«Critical thinking should be integrated into all of our courses … it is not a separate subject in itself.»</p><cite>FR-S · студент, Франция</cite></blockquote>
+      <blockquote><p>«Graduates need updated technical skills to keep up with new technologies. Academic and training institutions are falling behind.»</p><cite>IRL-E · работодатель, Ирландия</cite></blockquote>
+    </div>
+    <p class="codes">Коды участников: FR — Франция, DK — Дания, FL — Финляндия, IRL — Ирландия; -A академики, -E работодатели, -S студенты.</p>
+  </section>
+
+  <section>
+    <h2><span class="num">08</span>Ограничения и что дальше</h2>
+    <div class="prose">
+      <ul>
+        <li>Только три группы стейкхолдеров — вне поля остались аккредитационные органы, НКО, профессиональные ассоциации.</li>
+        <li>Не сравнивали взгляды по дисциплине, возрасту, полу, опыту; не учитывали отраслевую специфику работодателей.</li>
+        <li>Четыре страны Северной и Западной Европы — не репрезентативно для Европы в целом.</li>
+        <li>Четыре языка фокус-групп → риск расхождений в трактовке терминов при переводе.</li>
+        <li>Дальше: проверить список на большей выборке, в других странах (США, Австралия, развивающиеся страны) и сравнить дисциплины внутри инженерии.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">09</span>Термины</h2>
+    <div class="scroll-x">
+      <table class="gloss">
+        <thead><tr><th>Термин</th><th>Значение в статье</th></tr></thead>
+        <tbody>
+          <tr><td>Competence</td><td>Знания, навыки, способности, установки и другие характеристики, позволяющие действовать эффективно в сложных и неопределённых ситуациях (Passow 2012).</td></tr>
+          <tr><td>ESD / EESD</td><td>Education for Sustainable Development — образование, меняющее знания, ценности и установки ради более устойчивого общества; EESD — его инженерная версия.</td></tr>
+          <tr><td>Wicked problems</td><td>Плохо определённые, открытые, междисциплинарные социотехнические проблемы без единственного верного решения.</td></tr>
+          <tr><td>Anticipatory competence</td><td>Способность оценивать и создавать образы будущего: последствия, риски, альтернативные сценарии.</td></tr>
+          <tr><td>Normative competence</td><td>Умение осмыслять ценности, принципы и цели устойчивости, договариваться о них.</td></tr>
+          <tr><td>Multi- / inter- / transdisciplinary</td><td>Сопоставление дисциплин → их взаимодействие → их интеграция в новое целое.</td></tr>
+          <tr><td>Add-on / integration / re-building</td><td>Три стратегии внедрения устойчивости в программу (Kolmos et al. 2016): добавить курс, встроить в существующие, перестроить парадигму.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    <div>Конспект статьи для курса Professional English · AITU</div>
+    <div>Источник: European Journal of Engineering Education, 2023, Vol. 48, No. 1, 1–23 · Open Access (CC BY-NC-ND 4.0) · DOI: 10.1080/03043797.2022.2033955</div>
+  </footer>
+</div>
+
+<script>
+  // Таблицы 5 и 6 статьи: компетенция → кто её назвал (С студенты, П преподаватели, Р работодатели)
+  const UNESCO = [
+    ["Systems thinking", "системное мышление", [
+      ["Analytical thinking", "СПР"], ["Holistic thinking", "СПР"], ["Global awareness", "СП"],
+      ["General knowledge", "СР"], ["Systems thinking", "ПР"], ["Life cycle thinking", "С"]
+    ]],
+    ["Anticipatory", "предвидение будущего", []],
+    ["Normative", "ценности и нормы", [
+      ["Ethical conscience", "СПР"], ["Social responsibility", "СПР"],
+      ["Sustainability awareness", "СПР"], ["Environmental awareness", "СР"]
+    ]],
+    ["Strategic", "стратегическая", [
+      ["Innovation", "СПР"], ["Creativity", "СПР"], ["Project management", "СПР"],
+      ["Decision making", "СП"], ["Design skills", "СР"], ["Organisation skills", "С"],
+      ["Entrepreneurship", "П"], ["Resources optimisation", "П"], ["Conceptual understanding", "П"]
+    ]],
+    ["Collaboration", "сотрудничество", [
+      ["Communication", "СПР"], ["Collaboration", "СПР"], ["Teamwork", "СПР"],
+      ["Personal engagement & agency", "СПР"], ["Listening skills", "СП"], ["Emotional intelligence", "СП"],
+      ["Respect for others", "СР"], ["Inter-cultural skills", "ПР"], ["Foreign languages", "ПР"],
+      ["Respecting diversity", "ПР"], ["Leadership", "С"], ["Conflict management", "П"],
+      ["Negotiation", "П"], ["Empathy", "П"]
+    ]],
+    ["Critical thinking", "критическое мышление", [
+      ["Critical thinking", "СПР"], ["Open mindedness", "СПР"], ["Curiosity", "СР"],
+      ["Self-reflection", "П"], ["Challenging the status quo", "Р"]
+    ]],
+    ["Self-awareness", "самосознание", [
+      ["Perseverance / grit", "СП"], ["Adaptability", "СР"], ["Agility", "СР"],
+      ["Time management", "С"], ["Stress management", "С"]
+    ]],
+    ["Integrated problem solving", "комплексное решение проблем", [
+      ["Problem solving", "СПР"], ["Research skills", "СП"],
+      ["Problematisation", "П"], ["Interpretation skills", "Р"]
+    ]],
+    ["Сверх рамки UNESCO", "из обзора литературы", [
+      ["Multidisciplinary skills", "СПР"], ["Technical skills", "СПР"], ["Economic skills", "СПР"],
+      ["Digital skills", "СР"], ["Learning to learn", "ПР"], ["Lifelong learning", "ПР"],
+      ["Mathematics skills", "Р"]
+    ]]
+  ];
+
+  const level = who => who.length === 3 ? "d-all" : who.length === 2 ? "d-two" : "d-one";
+  document.getElementById("matrix").innerHTML = UNESCO.map(([name, ru, items]) => `
+    <div class="comp">
+      <h3>${name}<small>${ru}</small></h3>
+      ${items.length ? `<ul>${items.map(([c, who]) => `
+        <li><span class="dot ${level(who)}"></span><span>${c}</span><span class="who">${who.split("").join(" ")}</span></li>`).join("")}</ul>`
+        : `<p class="empty">Не названа ни одной группой</p>`}
+    </div>`).join("");
+</script>

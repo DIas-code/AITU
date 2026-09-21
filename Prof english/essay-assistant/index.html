@@ -1,0 +1,1829 @@
+<title>Essay Writing Assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&display=swap">
+<style>
+:root{
+  --ground:#E6EAF0; --paper:#FBFCFD; --sunk:#F1F4F8; --ink:#17202E; --ink-2:#4A5568; --ink-3:#6E7A8C;
+  --rule:#D3DAE4; --rule-2:#E3E8EF; --accent:#2A4BB0; --accent-ink:#FFFFFF; --accent-soft:#E4EAFA;
+  --ok:#2E7650; --ok-soft:#E2F1E8; --warn:#9A5F0C; --warn-soft:#FBF0DC; --fix:#B3261E; --fix-soft:#FBE6E4;
+  --band:#DCE4F6; --shadow:0 1px 2px rgba(23,32,46,.06),0 4px 14px rgba(23,32,46,.05);
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0E1218; --paper:#171C25; --sunk:#12161E; --ink:#E3E8F0; --ink-2:#B3BCCA; --ink-3:#8793A5;
+    --rule:#2B3342; --rule-2:#232A36; --accent:#9AAFF3; --accent-ink:#0E1218; --accent-soft:#222C47;
+    --ok:#7CC79C; --ok-soft:#1A2E24; --warn:#E3B465; --warn-soft:#33291A; --fix:#F0928A; --fix-soft:#3A1F1E;
+    --band:#243052; --shadow:0 1px 2px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0E1218; --paper:#171C25; --sunk:#12161E; --ink:#E3E8F0; --ink-2:#B3BCCA; --ink-3:#8793A5;
+  --rule:#2B3342; --rule-2:#232A36; --accent:#9AAFF3; --accent-ink:#0E1218; --accent-soft:#222C47;
+  --ok:#7CC79C; --ok-soft:#1A2E24; --warn:#E3B465; --warn-soft:#33291A; --fix:#F0928A; --fix-soft:#3A1F1E;
+  --band:#243052; --shadow:0 1px 2px rgba(0,0,0,.3);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--ground);color:var(--ink);font:14px/1.5 var(--sans);-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+h1,h2,h3{margin:0;text-wrap:balance}
+.eyebrow{font:500 11px/1.2 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* top bar */
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;padding:10px 20px;background:var(--paper);border-bottom:1px solid var(--rule)}
+.brand{display:flex;align-items:baseline;gap:10px;margin-right:auto}
+.brand h1{font:500 22px/1 var(--serif);letter-spacing:-.01em}
+.brand h1 i{color:var(--accent)}
+.brand span{color:var(--ink-3);font-size:12px}
+.modes{display:flex;background:var(--sunk);border:1px solid var(--rule);border-radius:8px;padding:3px;gap:2px}
+.modes button{border:0;background:transparent;padding:6px 12px;border-radius:6px;cursor:pointer;color:var(--ink-2);font-weight:500;white-space:nowrap}
+.modes button[aria-selected="true"]{background:var(--paper);color:var(--ink);box-shadow:var(--shadow)}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--rule);background:var(--paper);padding:6px 11px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:500;white-space:nowrap}
+.btn:hover{border-color:var(--ink-3)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--ink-2)}
+.btn.ghost:hover{background:var(--sunk)}
+.btn[disabled]{opacity:.5;cursor:default}
+.btn.ai::before{content:"✦";color:var(--accent);font-size:11px}
+.btn.primary.ai::before{color:inherit}
+
+/* shell */
+.shell{display:grid;grid-template-columns:minmax(260px,300px) minmax(0,1fr) minmax(280px,340px);gap:0;min-height:calc(100% - 56px)}
+.brief,.margin{background:var(--paper);padding:18px 18px 40px;overflow:auto}
+.brief{border-right:1px solid var(--rule)}
+.margin{border-left:1px solid var(--rule)}
+.desk{padding:22px clamp(16px,3vw,40px) 60px;min-width:0}
+@media (min-width:1101px){
+  .brief,.margin{position:sticky;top:calc(56px + env(safe-area-inset-top,0px));height:calc(100vh - 56px)}
+}
+@media (max-width:1100px){
+  .shell{grid-template-columns:minmax(0,1fr)}
+  .brief{border-right:0;border-bottom:1px solid var(--rule)}
+  .margin{border-left:0;border-top:1px solid var(--rule)}
+}
+
+/* brief panel */
+.group{display:grid;gap:10px;padding-block:14px;border-top:1px solid var(--rule-2)}
+.group:first-child{border-top:0;padding-top:0}
+.group h2{font:600 13px/1.3 var(--sans)}
+.field{display:grid;gap:4px}
+.field label,.lbl{font-size:12px;font-weight:500;color:var(--ink-2)}
+.field small{color:var(--ink-3);font-size:11.5px}
+input[type=text],select,textarea{width:100%;background:var(--sunk);border:1px solid var(--rule);border-radius:6px;padding:7px 9px}
+input[type=text]:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);background:var(--paper)}
+textarea{resize:vertical;line-height:1.45}
+.row2{display:grid;grid-template-columns:1fr 80px;gap:8px}
+.seg{display:flex;border:1px solid var(--rule);border-radius:6px;overflow:hidden}
+.seg label{flex:1;position:relative;text-align:center;cursor:pointer}
+.seg input{position:absolute;opacity:0;inset:0;cursor:pointer}
+.seg span{display:block;padding:6px 4px;font-size:12.5px;font-weight:500;color:var(--ink-2);border-left:1px solid var(--rule)}
+.seg label:first-child span{border-left:0}
+.seg input:checked+span{background:var(--accent-soft);color:var(--accent)}
+.seg input:focus-visible+span{outline:2px solid var(--accent);outline-offset:-2px}
+.file{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.file input{font-size:12px;max-width:100%}
+.status{display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border-radius:6px;font-size:12.5px;line-height:1.4}
+.status.warn{background:var(--warn-soft);color:var(--warn)}
+.status.ok{background:var(--ok-soft);color:var(--ok)}
+
+/* desk */
+.structure{display:grid;gap:10px;margin-bottom:18px}
+.structure-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+.structure-head h2{font:500 26px/1.15 var(--serif);letter-spacing:-.01em}
+.structure-head p{margin:0;color:var(--ink-2);max-width:62ch}
+.example-note{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:8px 12px;border:1px dashed var(--rule);border-radius:8px;color:var(--ink-2);font-size:12.5px}
+.example-note[hidden]{display:none}
+.stages{display:flex;flex-wrap:wrap;gap:6px}
+.stage{display:flex;align-items:center;gap:6px;padding:4px 10px 4px 5px;border-radius:999px;background:var(--paper);border:1px solid var(--rule);font-size:12.5px;color:var(--ink-2);cursor:pointer}
+.stage b{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--sunk);font:500 11px var(--mono);color:var(--ink-3)}
+.stage.done b{background:var(--ok-soft);color:var(--ok)}
+.stage.active{border-color:var(--accent);color:var(--ink)}
+.stage.active b{background:var(--accent);color:var(--accent-ink)}
+
+.cards{display:grid;gap:16px}
+.card{background:var(--paper);border:1px solid var(--rule);border-radius:10px;box-shadow:var(--shadow)}
+.card-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:12px 16px;border-bottom:1px solid var(--rule-2)}
+.card-head h3{font:500 19px/1.2 var(--serif)}
+.card-head .role{color:var(--ink-3);font-size:12.5px;flex:1 1 200px}
+.card-body{padding:4px 16px 14px}
+.card-foot{display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px;border-top:1px solid var(--rule-2);background:var(--sunk);border-radius:0 0 10px 10px}
+.card.plan{background:transparent;box-shadow:none;border-style:dashed}
+.card.plan .card-foot{background:transparent}
+.planner{padding:18px;display:grid;gap:14px;border-color:var(--accent)}
+.planner-intro{display:grid;grid-template-columns:minmax(180px,.65fr) minmax(260px,1.35fr);gap:10px 24px;align-items:start}
+.planner-intro h3{font:500 24px/1.2 var(--serif);margin-top:3px}.planner-intro p{margin:0;color:var(--ink-2)}
+.competence-help{display:grid;gap:4px;padding:10px 12px;border-radius:8px;background:var(--accent-soft);color:var(--ink-2)}.competence-help b{color:var(--accent)}
+.idea-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.idea{display:grid;gap:5px;text-align:left;padding:12px;border:1px solid var(--rule);border-radius:8px;background:var(--sunk);cursor:pointer}
+.idea b{font-size:13px}.idea span{font:15px/1.35 var(--serif)}.idea small{color:var(--ink-3);line-height:1.35}
+.idea:hover{border-color:var(--accent)}.idea.selected{border-color:var(--accent);background:var(--accent-soft);box-shadow:inset 0 0 0 1px var(--accent)}
+.choice-work{display:grid;gap:10px}.choice{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;padding:12px;border-top:1px solid var(--rule)}
+.choice h4,.choice .hint{grid-column:1/-1;margin:0}.choice label{font-size:12px;font-weight:600;color:var(--ink-2)}.choice textarea{min-height:64px}
+.planner-foot{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--ok-soft);color:var(--ok);border-radius:8px}.planner-foot span{color:var(--ink-2)}
+@media(max-width:760px){.planner-intro,.choice{grid-template-columns:1fr}.idea-grid{grid-template-columns:1fr 1fr}.choice h4,.choice .hint{grid-column:auto}}
+@media(max-width:480px){.idea-grid{grid-template-columns:1fr}}
+
+.part{display:grid;grid-template-columns:34px minmax(0,1fr);gap:4px 10px;padding-top:12px}
+.mark{grid-row:span 2;display:grid;place-items:center;width:28px;height:28px;border-radius:6px;border:1px solid var(--rule);font:600 13px var(--serif);color:var(--ink-3);background:var(--paper)}
+.part.filled .mark{border-color:var(--ok);color:var(--ok)}
+.part.active .mark{border-color:var(--accent);background:var(--accent);color:var(--accent-ink)}
+.part-top{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px}
+.part-top label{font-weight:600;font-size:13px}
+.part-top .q{color:var(--ink-2);font-size:12.5px}
+.part textarea{grid-column:2;font:17px/1.55 var(--serif);background:transparent;border:0;border-bottom:1px solid var(--rule);border-radius:0;padding:4px 2px 6px;min-height:36px;resize:none;overflow:hidden}
+.part textarea:focus{background:transparent;border-bottom-color:var(--accent)}
+.part textarea::placeholder{color:var(--ink-3);font-style:italic}
+.part .tools{grid-column:2;display:none;flex-wrap:wrap;gap:6px;align-items:center}
+.part.active .tools{display:flex}
+.best-start{grid-column:2;display:none;grid-template-columns:minmax(0,1fr);gap:7px;margin:5px 0 3px;padding:10px 11px;border-left:3px solid var(--accent);border-radius:0 6px 6px 0;background:var(--accent-soft)}
+.part.active .best-start{display:grid}
+.guide-use{margin:0;color:var(--ink-2);font-size:12.5px}.start-options{display:grid;gap:7px}
+.completion-help{display:grid;gap:3px;padding:8px 9px;border:1px solid var(--rule);border-radius:6px;background:var(--paper)}
+.completion-help b{font-size:12px;color:var(--accent)}.completion-help span{font-size:12px;color:var(--ink-2)}
+.completion-help code{white-space:normal;font:italic 14px/1.4 var(--serif);color:var(--ink)}
+.start-option{display:grid;gap:2px;padding-top:7px;border-top:1px solid color-mix(in srgb,var(--accent) 20%,transparent)}
+.start-option:first-child{padding-top:0;border-top:0}.option-rank{font-size:10.5px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.05em}
+.recommended{width:fit-content;max-width:100%;border:0;background:transparent;padding:0;color:var(--ink);font:italic 15px/1.4 var(--serif);text-align:left;cursor:pointer}
+.recommended:hover{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+.translation{font-size:12px;color:var(--ink-2)}.best-start small{color:var(--ink-3);font-size:11.5px}
+.hint{font-size:12px;color:var(--ink-3)}
+.starter{border:1px solid var(--rule);background:var(--sunk);border-radius:999px;padding:2px 9px;font:italic 13px var(--serif);cursor:pointer;color:var(--ink-2)}
+.starter:hover{border-color:var(--accent);color:var(--accent)}
+.mode-template .part .q,.mode-template .part .hint,.mode-template .starter,.mode-template .best-start{display:none}
+.mode-template .part{padding-top:8px}
+
+.review-box{display:grid;gap:10px}
+.review-box textarea{min-height:420px;font:17px/1.65 var(--serif);background:var(--paper);padding:18px 20px;border-radius:10px;background-image:linear-gradient(var(--paper),var(--paper))}
+
+.ai-out{margin:10px 16px 14px;padding:10px 12px;border-radius:8px;background:var(--accent-soft);font-size:13.5px;white-space:pre-wrap}
+.ai-out[hidden]{display:none}
+
+/* word meter: ruler with target band */
+.meter{--pct:0;--lo:0;--hi:0;position:relative;height:8px;border-radius:4px;background:var(--rule-2);min-width:90px;flex:0 1 150px}
+.meter::before{content:"";position:absolute;top:0;bottom:0;left:calc(var(--lo)*1%);width:calc((var(--hi) - var(--lo))*1%);background:var(--band);border-radius:2px}
+.meter i{position:absolute;top:-3px;width:3px;height:14px;border-radius:2px;left:calc(min(var(--pct),100)*1% - 1px);background:var(--ink-3)}
+.meter.in i{background:var(--ok)} .meter.over i{background:var(--fix)} .meter.under i{background:var(--warn)}
+.count{font:500 12px var(--mono);color:var(--ink-2);white-space:nowrap}
+.count.in{color:var(--ok)} .count.over{color:var(--fix)}
+
+/* margin panel */
+.side{display:grid;gap:18px}
+.side h2{font:600 13px/1.3 var(--sans);display:flex;align-items:center;gap:8px}
+.total{display:grid;gap:8px;padding:14px;border-radius:10px;background:var(--sunk);border:1px solid var(--rule)}
+.total .big{font:500 34px/1 var(--serif);font-variant-numeric:tabular-nums}
+.total .big small{font:400 13px var(--sans);color:var(--ink-3);margin-left:6px}
+.total .meter{flex:none;height:10px}
+.outline{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.outline li{display:grid;grid-template-columns:minmax(0,1fr) 70px 56px;align-items:center;gap:8px;padding:6px 4px;border-bottom:1px solid var(--rule-2);font-size:12.5px}
+.outline li .meter{min-width:0}
+.outline li span:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--rule)}
+.tabs button{border:0;background:transparent;padding:7px 10px;cursor:pointer;color:var(--ink-3);font-weight:500;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.pill{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:18px;padding:0 6px;border-radius:999px;font:500 11px var(--mono)}
+.pill.fix{background:var(--fix-soft);color:var(--fix)} .pill.warn{background:var(--warn-soft);color:var(--warn)} .pill.ok{background:var(--ok-soft);color:var(--ok)}
+.notes{display:grid;gap:8px}
+.note{display:grid;grid-template-columns:4px minmax(0,1fr);gap:0 10px;padding:9px 10px 9px 0;border-radius:6px;background:var(--paper);border:1px solid var(--rule-2)}
+.note::before{content:"";border-radius:0 2px 2px 0;background:var(--ink-3)}
+.note.fix::before{background:var(--fix)} .note.warn::before{background:var(--warn)} .note.ok::before{background:var(--ok)}
+.note .where{font-size:11px;color:var(--ink-3);letter-spacing:.04em;text-transform:uppercase}
+.note p{margin:2px 0 0;font-size:13px;line-height:1.45}
+.note q{display:block;margin-top:4px;font:italic 13.5px/1.4 var(--serif);color:var(--ink-2)}
+.note .act{margin-top:6px}
+.filters{display:flex;flex-wrap:wrap;gap:4px}
+.filters button{border:1px solid var(--rule);background:var(--paper);border-radius:999px;padding:2px 9px;font-size:12px;cursor:pointer;color:var(--ink-2)}
+.filters button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.vocab{display:grid;gap:12px}
+.vocab h3{font:600 12px var(--sans);color:var(--ink-2)}
+.vocab ul{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:5px}
+.vocab li button{border:1px solid var(--rule);background:var(--paper);border-radius:6px;padding:3px 8px;font:14px var(--serif);cursor:pointer;text-align:left}
+.vocab li button:hover{border-color:var(--accent);color:var(--accent)}
+.proposal{display:grid;gap:10px;padding:12px;border:1px solid var(--accent);border-radius:10px;background:var(--paper)}
+.proposal .txt{font:15.5px/1.55 var(--serif)}
+.proposal del{color:var(--fix);text-decoration-thickness:1px}
+.proposal ins{color:var(--ok);text-decoration:none;background:var(--ok-soft);border-radius:3px;padding:0 2px}
+.proposal ol{margin:0;padding-left:18px;display:grid;gap:4px;font-size:12.5px}
+.proposal .acts{display:flex;flex-wrap:wrap;gap:6px}
+.empty{color:var(--ink-3);font-size:13px;margin:0}
+.src-hits{display:grid;gap:6px}
+.src-hits blockquote{margin:0;padding:8px 10px;border-left:2px solid var(--accent);background:var(--sunk);font:14px/1.45 var(--serif)}
+body:not(.has-ai) .ai-only{display:none!important}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:8px 14px;border-radius:8px;font-size:13px;z-index:50}
+.toast[hidden]{display:none}
+@media (prefers-reduced-motion:no-preference){.btn,.stage,.starter{transition:border-color .15s,background-color .15s}}
+@media (max-width:560px){.topbar{padding:10px 16px}.modes{width:100%}.modes button{flex:1;padding:6px 4px}.brand span{display:none}}
+</style>
+<header class="topbar">
+  <div class="brand"><h1>Essay <i>Writing</i> Assistant</h1><span>Academic English · 200–350 words</span></div>
+  <div class="modes" role="tablist" aria-label="Working mode">
+    <button role="tab" id="mode-guided" data-mode="guided" aria-selected="true">Guided Writing</button>
+    <button role="tab" id="mode-template" data-mode="template" aria-selected="false">Essay Template</button>
+    <button role="tab" id="mode-review" data-mode="review" aria-selected="false">Review My Essay</button>
+  </div>
+  <button class="btn primary" id="reviewAll" type="button">Review full essay</button>
+</header>
+
+<main class="shell">
+  <aside class="brief" aria-label="Assignment and settings">
+    <section class="group">
+      <h2>Assignment</h2>
+      <div class="field"><label for="topic">Essay topic</label><input type="text" id="topic"></div>
+      <div class="field"><label for="prompt">Full task instructions</label><textarea id="prompt" rows="5"></textarea></div>
+    </section>
+    <section class="group">
+      <h2>Settings</h2>
+      <div class="field"><span class="lbl">Length</span>
+        <div class="seg" id="length">
+          <label><input type="radio" name="length" id="len-200" value="200-250"><span>200–250</span></label>
+          <label><input type="radio" name="length" id="len-250" value="250-300"><span>250–300</span></label>
+          <label><input type="radio" name="length" id="len-300" value="300-350"><span>300–350</span></label>
+        </div></div>
+      <div class="field"><span class="lbl">English level</span>
+        <div class="seg" id="level">
+          <label><input type="radio" name="level" id="lvl-b1" value="B1"><span>B1</span></label>
+          <label><input type="radio" name="level" id="lvl-b2" value="B2"><span>B2</span></label>
+          <label><input type="radio" name="level" id="lvl-c1" value="C1"><span>C1</span></label>
+        </div></div>
+      <div class="field"><label for="etype">Essay type</label><select id="etype"></select></div>
+      <div class="field"><span class="lbl">Citation style</span>
+        <div class="seg" id="citation">
+          <label><input type="radio" name="citation" id="cit-apa" value="APA"><span>APA</span></label>
+          <label><input type="radio" name="citation" id="cit-mla" value="MLA"><span>MLA</span></label>
+          <label><input type="radio" name="citation" id="cit-none" value="none"><span>Informal</span></label>
+        </div></div>
+    </section>
+    <section class="group">
+      <h2>Source article</h2>
+      <div class="file"><input type="file" id="srcFile" accept=".txt,.md,.pdf,.html,.htm,text/plain,application/pdf"></div>
+      <div class="field"><label for="srcText">Or paste the article text</label><textarea id="srcText" rows="6" placeholder="Paste the abstract or the parts of the article you use."></textarea></div>
+      <div class="row2">
+        <div class="field"><label for="srcAuthor">Author(s)</label><input type="text" id="srcAuthor" placeholder="Beagon et al."></div>
+        <div class="field"><label for="srcYear">Year</label><input type="text" id="srcYear" placeholder="2023"></div>
+      </div>
+      <div class="field"><label for="srcTitle">Title</label><input type="text" id="srcTitle"></div>
+      <div id="srcStatus"></div>
+    </section>
+    <section class="group">
+      <h2>Required content</h2>
+      <div class="field"><label for="required">Ideas, arguments and examples you must include</label><textarea id="required" rows="4"></textarea><small>One per line. The checker looks for each one in your essay.</small></div>
+    </section>
+  </aside>
+
+  <section class="desk" id="desk" aria-label="Essay editor">
+    <div class="structure">
+      <div class="structure-head"><h2 id="typeName"></h2><p id="typeDesc"></p></div>
+      <div class="example-note" id="exampleNote"><span><b>Practice example.</b> Clear it before writing your own assignment.</span><button class="btn" type="button" id="clearExample">Clear and start my own</button></div>
+      <div class="stages" id="stages"></div>
+    </div>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <aside class="margin" aria-label="Structure, word count and feedback">
+    <div class="side">
+      <div class="total" id="total"></div>
+      <div><h2>Structure</h2><ul class="outline" id="outline"></ul></div>
+      <div>
+        <div class="tabs" role="tablist" aria-label="Assistant panels">
+          <button role="tab" id="tab-feedback" data-tab="feedback" aria-selected="true">Feedback</button>
+          <button role="tab" id="tab-vocab" data-tab="vocab" aria-selected="false">Vocabulary</button>
+          <button role="tab" id="tab-source" data-tab="source" aria-selected="false">Source</button>
+        </div>
+        <div id="panel" style="padding-top:12px"></div>
+      </div>
+    </div>
+  </aside>
+</main>
+<div class="toast" id="toast" role="status" hidden></div>
+<script>
+/* Essay Writing Assistant — static data: essay types, section parts, vocabulary, rewrite rules, example draft */
+"use strict";
+
+const LENGTHS = {
+  "200-250": { min: 200, max: 250, bodies: 2, extra: false },
+  "250-300": { min: 250, max: 300, bodies: 2, extra: false },
+  "300-350": { min: 300, max: 350, bodies: 2, extra: true }
+};
+
+const RANGES = { intro: [40, 60], body: [70, 100], conclusion: [35, 50] };
+
+/* Each type: how the four (or five) cards are framed, what the thesis should do,
+   and which signals prove the essay fits the type. */
+const TYPES = {
+  opinion: {
+    name: "Opinion Essay",
+    desc: "State a clear personal position and defend it with reasoned arguments.",
+    intro: "Introduce the issue and state your opinion clearly.",
+    bodies: ["First reason for your opinion", "Second reason for your opinion", "Third reason, or a counter-argument you answer"],
+    conclusion: "Restate your opinion and the main reasons.",
+    position: "What is your opinion on the question? Answer in one sentence: do you agree, disagree or partly agree?",
+    fit: [{ re: /\b(this essay argues|i believe|in my (view|opinion)|i would argue|it can be argued|i (strongly )?(agree|disagree)|should|must)\b/i, msg: "An opinion essay needs a visible position. Add a sentence such as “This essay argues that…”." }]
+  },
+  advdis: {
+    name: "Advantages and Disadvantages Essay",
+    desc: "Weigh the benefits against the drawbacks, then give a balanced judgement.",
+    intro: "Introduce the topic and say that it has both benefits and drawbacks.",
+    bodies: ["Main advantages", "Main disadvantages", "Further advantage or disadvantage"],
+    conclusion: "Weigh both sides and say which outweighs the other.",
+    position: "Overall, do the advantages outweigh the disadvantages, or the other way round?",
+    fit: [
+      { re: /\b(advantage|benefit|positive|strength|merit)/i, msg: "No advantages are named. Use words such as “benefit” or “advantage” in one body paragraph." },
+      { re: /\b(disadvantage|drawback|downside|negative|limitation|risk)/i, msg: "No disadvantages are named. Use words such as “drawback” or “limitation” in one body paragraph." }
+    ]
+  },
+  discussion: {
+    name: "Discussion Essay",
+    desc: "Present two opposing views fairly, then give your own reasoned view.",
+    intro: "Introduce the debate and name the two opposing views.",
+    bodies: ["The first view and its supporting reasons", "The opposing view and its supporting reasons", "Your evaluation of both views"],
+    conclusion: "Summarise both views and state which is more convincing.",
+    position: "Which two views are being debated, and which one do you find more convincing?",
+    fit: [
+      { re: /\b(some (people|argue|believe)|supporters|proponents|on the one hand|advocates)\b/i, msg: "Present the first view explicitly, e.g. “Proponents argue that…”." },
+      { re: /\b(others|opponents|critics|on the other hand|by contrast|however)\b/i, msg: "Present the opposing view explicitly, e.g. “Critics, however, maintain that…”." }
+    ]
+  },
+  problem: {
+    name: "Problem–Solution Essay",
+    desc: "Describe a problem and its causes, then propose realistic solutions.",
+    intro: "Introduce the problem and why it matters.",
+    bodies: ["The problem and its main causes", "Solutions and how they would work", "A further solution or its limitations"],
+    conclusion: "Restate the problem and recommend the most effective solution.",
+    position: "What is the problem, and which solution do you think is most effective?",
+    fit: [
+      { re: /\b(problem|issue|challenge|difficult)/i, msg: "Name the problem directly, e.g. “A major challenge is…”." },
+      { re: /\b(solution|solve|address|tackle|could be (reduced|improved)|measure|approach)/i, msg: "No solution is signalled. Use phrases such as “One way to address this is…”." }
+    ]
+  },
+  cause: {
+    name: "Cause and Effect Essay",
+    desc: "Explain why something happens and what consequences follow.",
+    intro: "Introduce the phenomenon and say you will examine causes and effects.",
+    bodies: ["Main causes", "Main effects or consequences", "Further cause or long-term effect"],
+    conclusion: "Summarise the causal chain and its significance.",
+    position: "What is the most important cause, and what is the most important effect?",
+    fit: [
+      { re: /\b(cause|because|due to|result(s|ed)? from|attributed to|owing to|lead(s)? to)\b/i, msg: "Causes are not signalled. Use “is caused by”, “can be attributed to” or “due to”." },
+      { re: /\b(effect|consequen|result(s|ed)? in|impact|therefore|as a result)/i, msg: "Effects are not signalled. Use “as a result”, “consequently” or “leads to”." }
+    ]
+  },
+  compare: {
+    name: "Compare and Contrast Essay",
+    desc: "Examine similarities and differences between two things.",
+    intro: "Introduce both items and the basis of comparison.",
+    bodies: ["Similarities", "Differences", "The most significant difference"],
+    conclusion: "Summarise the key similarities and differences and what they show.",
+    position: "Which two things are you comparing, and what is the main difference that matters?",
+    fit: [
+      { re: /\b(similar|both|likewise|in the same way|share|common)/i, msg: "No similarities are signalled. Use “similarly”, “both” or “likewise”." },
+      { re: /\b(whereas|while|by contrast|in contrast|unlike|differ|however)\b/i, msg: "No differences are signalled. Use “whereas”, “unlike” or “by contrast”." }
+    ]
+  },
+  descriptive: {
+    name: "Descriptive / Explanatory Essay",
+    desc: "Describe or explain a topic clearly and logically, without arguing a side.",
+    intro: "Introduce the topic and say what aspects you will explain.",
+    bodies: ["First key aspect", "Second key aspect", "Third key aspect"],
+    conclusion: "Summarise what the reader now understands about the topic.",
+    position: "What are the two or three key aspects the reader must understand?",
+    fit: [{ re: /\b(consists of|refers to|involves|is defined as|process|stage|aspect|feature|function|means)\b/i, msg: "Explanatory essays define and describe. Add phrases such as “refers to” or “involves”." }]
+  },
+  source: {
+    name: "Source-Based Academic Essay",
+    desc: "Build an argument supported by evidence from a scholarly article.",
+    intro: "Introduce the topic, name the source and state your thesis.",
+    bodies: ["First argument supported by the source", "Second argument supported by the source", "Third argument or a limitation of the source"],
+    conclusion: "Restate the thesis and what the evidence shows. No new citations.",
+    position: "What claim will you make, and which findings of the article support it?",
+    fit: [{ cite: true, msg: "A source-based essay must cite the article in the body paragraphs, e.g. “According to Beagon et al. (2023)…”." }]
+  },
+  competence: {
+    name: "Competence-Based Essay",
+    desc: "Select the two or three most important competences and explain why they matter.",
+    intro: "Introduce the context, name your chosen competences in the thesis.",
+    bodies: ["First competence and why it matters", "Second competence and why it matters", "Third competence and why it matters"],
+    conclusion: "Restate why these competences matter most.",
+    position: "Which two or three competences do you consider most important, and for what goal?",
+    fit: [{ re: /\bcompeten(ce|ces|cy|cies)\b/i, msg: "The word “competence” never appears. Name each competence explicitly." },
+          { count: /\b(systems?[- ]thinking|strategic|normative|anticipatory|interpersonal|collaborat\w*|critical[- ]thinking|self[- ]awareness|integrated problem[- ]solving|communication|teamwork|ethic\w*|leadership|creativ\w*|adaptab\w*)\b/gi, min: 2, msg: "Name at least two specific competences (e.g. systems thinking, strategic, interpersonal)." }]
+  }
+};
+
+/* Section parts. `q` is the guided question, `hint` a short tip, `vocab` the vocabulary groups offered. */
+const PARTS = {
+  intro: [
+    { key: "hook", mark: "G", label: "General introduction", q: "What is the broad topic? Write one sentence any reader would accept.", hint: "Start broad, not with your opinion.", vocab: ["intro"] },
+    { key: "context", mark: "C", label: "Context / importance", q: "Why does this issue matter now, or for whom?", hint: "Narrow the topic towards the task.", vocab: ["intro", "hedging"] },
+    { key: "thesis", mark: "T", label: "Thesis statement", q: "What is your main position? Say it in one clear sentence.", hint: "A thesis takes a position that someone could disagree with.", vocab: ["intro"] },
+    { key: "preview", mark: "O", label: "Outline of ideas", q: "Which ideas will your body paragraphs discuss, in order?", hint: "Name the ideas only; do not explain them yet.", vocab: ["intro"] }
+  ],
+  body: [
+    { key: "point", mark: "P", label: "Point", q: "What is the one main idea of this paragraph?", hint: "A topic sentence that supports your thesis.", vocab: ["adding"] },
+    { key: "evidence", mark: "E", label: "Evidence", q: "What information from your source supports this point?", hint: "Report only what the source actually says, and cite it.", vocab: ["sources"] },
+    { key: "explanation", mark: "E", label: "Explanation", q: "Why does this evidence support your point? What does it show?", hint: "This is where your own thinking appears.", vocab: ["explaining", "hedging"] },
+    { key: "example", mark: "X", label: "Example", q: "What concrete situation, case or project illustrates the point?", hint: "Specific beats general: a place, a project, a profession.", vocab: ["sources"] },
+    { key: "link", mark: "L", label: "Link", q: "How does this paragraph connect back to your thesis?", hint: "One sentence; avoid simply repeating the point.", vocab: ["explaining", "conclusion"] }
+  ],
+  conclusion: [
+    { key: "restate", mark: "R", label: "Restated thesis", q: "How can you say your thesis again in different words?", hint: "Paraphrase, don't copy the introduction.", vocab: ["conclusion"] },
+    { key: "summary", mark: "S", label: "Summary of arguments", q: "What did each body paragraph show, in brief?", hint: "No new arguments, examples or sources.", vocab: ["conclusion", "hedging"] },
+    { key: "final", mark: "F", label: "Final conclusion", q: "What is the overall takeaway for the reader?", hint: "A broader implication, still no new argument.", vocab: ["conclusion"] }
+  ]
+};
+
+/* The five thinking stages of Guided Writing, and which parts they unlock. */
+const STAGES = [
+  { id: "position", label: "Position", parts: [["intro", "thesis"]] },
+  { id: "arguments", label: "Arguments", parts: [["body1", "point"], ["body2", "point"], ["body3", "point"]] },
+  { id: "evidence", label: "Evidence", parts: [["body1", "evidence"], ["body1", "explanation"], ["body2", "evidence"], ["body2", "explanation"], ["body3", "evidence"], ["body3", "explanation"]] },
+  { id: "examples", label: "Examples", parts: [["body1", "example"], ["body2", "example"], ["body3", "example"]] },
+  { id: "conclusion", label: "Conclusion", parts: [["intro", "hook"], ["intro", "context"], ["intro", "preview"], ["body1", "link"], ["body2", "link"], ["body3", "link"], ["conclusion", "restate"], ["conclusion", "summary"], ["conclusion", "final"]] }
+];
+
+const VOCAB = {
+  intro: { title: "Introduction", items: ["It is widely acknowledged that", "The issue of … has received considerable attention.", "This essay argues that", "Among the various factors involved, … appears particularly significant."] },
+  adding: { title: "Adding an argument", items: ["Furthermore,", "Moreover,", "In addition to this,", "Another significant consideration is"] },
+  explaining: { title: "Explaining", items: ["This is particularly important because", "This can be attributed to", "The significance of this competence lies in", "This suggests that"] },
+  sources: { title: "Examples and sources", items: ["According to [Author] ([Year]),", "[Author] ([Year]) emphasises that", "This argument is supported by", "A relevant example can be observed in", "This is illustrated by"] },
+  contrast: { title: "Contrast", items: ["However,", "Nevertheless,", "By contrast,", "Although this argument is valid,", "While some may argue that …,"] },
+  hedging: { title: "Cautious academic language", items: ["may contribute to", "appears to be", "can potentially improve", "is likely to", "could be regarded as", "to a certain extent"] },
+  conclusion: { title: "Conclusion", items: ["In conclusion,", "Taken together, these arguments suggest that", "It can therefore be concluded that", "Ultimately, the achievement of … depends largely on"] }
+};
+
+/* Idea bank: explanations help the student choose; they are not essay sentences. */
+const COMPETENCE_IDEAS = [
+  { id: "systems thinking", name: "Systems thinking", plain: "seeing how environmental, social, economic and technical parts of a problem affect one another", ask: "Would this help avoid solving one problem while creating another?" },
+  { id: "anticipatory competence", name: "Anticipatory competence", plain: "thinking about possible futures, risks and long-term consequences", ask: "Would this help prepare for effects that are uncertain or far in the future?" },
+  { id: "normative competence", name: "Normative competence", plain: "examining values, fairness and what a desirable sustainable future should look like", ask: "Would this help decide whose needs and values must be considered?" },
+  { id: "strategic competence", name: "Strategic competence", plain: "turning a sustainability goal into innovative and realistic collective action", ask: "Would this help move from ideas to practical action?" },
+  { id: "collaboration competence", name: "Collaboration competence", plain: "learning from others, respecting different perspectives and resolving conflicts together", ask: "Would this help engineers work with communities and other professions?" },
+  { id: "critical thinking", name: "Critical thinking", plain: "questioning norms, practices, opinions and one's own assumptions before accepting a solution", ask: "Would this help compare claims and recognise weak evidence?" },
+  { id: "self-awareness competence", name: "Self-awareness competence", plain: "reflecting on one's own role, values, motivation and responsibility in society", ask: "Would this help a professional recognise how their own decisions affect others?" },
+  { id: "integrated problem-solving", name: "Integrated problem-solving", plain: "combining different competences to develop viable, inclusive and equitable solutions", ask: "Would this help turn several kinds of analysis into one workable solution?" }
+];
+
+/* Linking expressions the checker counts. */
+const LINKERS = ["furthermore", "moreover", "in addition", "another significant", "however", "nevertheless", "by contrast", "in contrast", "although", "while", "whereas", "therefore", "thus", "consequently", "as a result", "hence", "for example", "for instance", "such as", "this suggests", "this is illustrated", "according to", "in conclusion", "taken together", "ultimately", "firstly", "secondly", "finally", "similarly", "likewise", "this means", "this indicates", "in particular", "on the one hand", "on the other hand", "overall", "to conclude", "because", "since"];
+
+/* Informal → academic replacements. `why` is shown to the student. */
+const UPGRADE = [
+  [/\bvery important\b/gi, "particularly significant", "“Very + adjective” is informal; a precise adjective is more academic."],
+  [/\breally important\b/gi, "crucial", "“Really” is conversational."],
+  [/\bvery big\b/gi, "substantial", "More precise and formal than “very big”."],
+  [/\bbig problem\b/gi, "major challenge", "“Big problem” is informal."],
+  [/\ba lot of\b/gi, "a considerable number of", "“A lot of” is informal in academic writing."],
+  [/\blots of\b/gi, "numerous", "“Lots of” is informal."],
+  [/\bI think\b/g, "It could be argued", "Academic writing avoids “I think”; a hedged impersonal phrase sounds more objective."],
+  [/\bin my opinion,?\s*/gi, "arguably, ", "An impersonal hedge keeps the position but sounds more academic."],
+  [/\bcan't\b/gi, "cannot", "Contractions are avoided in academic writing."],
+  [/\bdon't\b/gi, "do not", "Contractions are avoided in academic writing."],
+  [/\bdoesn't\b/gi, "does not", "Contractions are avoided in academic writing."],
+  [/\bisn't\b/gi, "is not", "Contractions are avoided in academic writing."],
+  [/\baren't\b/gi, "are not", "Contractions are avoided in academic writing."],
+  [/\bwon't\b/gi, "will not", "Contractions are avoided in academic writing."],
+  [/\bit's\b/gi, "it is", "Contractions are avoided in academic writing."],
+  [/\bthey're\b/gi, "they are", "Contractions are avoided in academic writing."],
+  [/\bthings\b/gi, "aspects", "“Things” is vague; name the kind of thing."],
+  [/\bnowadays\b/gi, "at present", "“Nowadays” sounds conversational."],
+  [/\bkids\b/gi, "children", "“Kids” is informal."],
+  [/\bget better\b/gi, "improve", "Phrasal verbs with “get” are informal."],
+  [/\bmake better\b/gi, "improve", "One precise verb is more academic."],
+  [/\bmake (\w+) better\b/gi, "improve $1", "One precise verb is more academic."],
+  [/\bgets\b/gi, "obtains", "“Get” is informal; choose a precise verb."],
+  [/\bget\b/gi, "obtain", "“Get” is informal; choose a precise verb."],
+  [/\blook at\b/gi, "examine", "A single Latinate verb is more formal than a phrasal verb."],
+  [/\bfind out\b/gi, "determine", "A single verb is more formal than a phrasal verb."],
+  [/\bdeal with\b/gi, "address", "A single verb is more formal than a phrasal verb."],
+  [/\bset up\b/gi, "establish", "A single verb is more formal than a phrasal verb."],
+  [/\bcut down on\b/gi, "reduce", "A single verb is more formal than a phrasal verb."],
+  [/\btry to\b/gi, "attempt to", "More formal register."],
+  [/\bshows that\b/gi, "indicates that", "“Indicates” is a common academic reporting verb."],
+  [/\bhelps (\w+) to\b/gi, "enables $1 to", "“Enables” is more precise than “helps … to”."],
+  [/\bbad\b/gi, "detrimental", "“Bad” is too general for academic writing."],
+  [/\bgood for\b/gi, "beneficial for", "“Good for” is informal."],
+  [/^So,\s*/gm, "Therefore, ", "Sentence-initial “So” is spoken English."],
+  [/^But\s+/gm, "However, ", "Avoid starting sentences with “But” in formal writing."],
+  [/^Also,?\s+/gm, "Furthermore, ", "“Also” at the start of a sentence is informal."],
+  [/^And\s+/gm, "In addition, ", "Avoid starting sentences with “And”."],
+  [/\breally\s+/gi, "", "“Really” adds no meaning in academic writing."],
+  [/, like\b/gi, ", such as", "“Like” for examples is informal; use “such as”."],
+  [/\bbecause of\b/gi, "owing to", "A more formal causal phrase."],
+  [/\bimportant\b/gi, "significant", "“Significant” is a frequent C1 academic adjective."]
+];
+
+/* Academic → plainer B1/B2 replacements for Simplify. */
+const SIMPLIFY = [
+  [/\butili[sz]e(s|d)?\b/gi, "use$1", "“Use” is simpler and means the same."],
+  [/\bfacilitates?\b/gi, "helps", "“Helps” is easier to read."],
+  [/\bconsequently\b/gi, "as a result", "A more familiar linking phrase."],
+  [/\bnevertheless\b/gi, "however", "A more familiar contrast word."],
+  [/\bnotwithstanding\b/gi, "despite", "A more common preposition."],
+  [/\bdemonstrates?\b/gi, m => m.endsWith("s") ? "shows" : "show", "“Show” is simpler."],
+  [/\bsubstantial\b/gi, "large", "A simpler adjective."],
+  [/\bdetrimental\b/gi, "harmful", "A simpler adjective."],
+  [/\bsubsequently\b/gi, "later", "A simpler adverb."],
+  [/\bin order to\b/gi, "to", "Shorter with the same meaning."],
+  [/\bprior to\b/gi, "before", "Simpler preposition."],
+  [/\bcommence(s|d)?\b/gi, "start$1", "Simpler verb."],
+  [/\bnumerous\b/gi, "many", "Simpler quantifier."],
+  [/\bapproximately\b/gi, "about", "Simpler word."],
+  [/\bencompass(es)?\b/gi, "include$1", "Simpler verb."],
+  [/\bascertain\b/gi, "find out", "Simpler verb."],
+  [/\bmultifaceted\b/gi, "complex", "Simpler adjective."],
+  [/\bparamount\b/gi, "most important", "Clearer for most readers."],
+  [/\ba plethora of\b/gi, "many", "Simpler quantifier."],
+  [/\baforementioned\b/gi, "this", "Simpler reference word."],
+  [/\bwith regard to\b/gi, "about", "Shorter with the same meaning."],
+  [/\bin light of the fact that\b/gi, "because", "Shorter with the same meaning."],
+  [/\bdue to the fact that\b/gi, "because", "Shorter with the same meaning."],
+  [/\bit is widely acknowledged that\b/gi, "many people agree that", "Plainer phrasing."]
+];
+
+/* A small academic word list used to estimate vocabulary level. */
+const ACADEMIC = new Set(("analyse analysis approach area assess assume authority available benefit concept consist constitute context contract create data define derive distribute economy environment establish estimate evident export factor finance formula function identify income indicate individual interpret involve issue labour legal legislate major method occur percent period policy principle proceed process require research respond role section sector significant similar source specific structure theory vary achieve acquire administer affect appropriate aspect assist category chapter commission community complex compute conclude conduct consequence construct consume credit culture design distinct element equate evaluate feature final focus impact injure institute invest item journal maintain normal obtain participate perceive positive potential previous primary purchase range region regulate relevant resource restrict secure seek select site strategy survey text tradition transfer alternative circumstance comment compensate component consent considerable constant constrain contribute convene coordinate core corporate correspond criteria deduce demonstrate document dominate emphasis ensure exclude framework fund illustrate immigrate imply initial instance interact justify layer link locate maximise minor negate outcome partner philosophy physical proportion publish react register rely remove scheme sequence sex shift specify sufficient task technical technique technology valid volume access adequate annual apparent approximate attitude attribute civil code commit communicate concentrate confer contrast cycle debate despite dimension domestic emerge error ethnic goal grant hence hypothesis implement implicate impose integrate internal investigate job label mechanism obvious occupy option output overall parallel parameter phase predict principal prior professional project promote regime resolve retain series statistic status stress subsequent sum summary undertake competence competences collaborate collective sustainable sustainability prioritise perspective stakeholder curriculum crucial fundamental particularly considerable enhance facilitate foster address essential moreover furthermore nevertheless consequently therefore thus arguably").split(" "));
+
+const STOP = new Set("a an the and or but if of to in on at by for with from as is are was were be been being it its this that these those there their they them he she his her we our you your i me my not no so such than then too very can could may might must should would will shall do does did have has had into about over under more most less least also which who whom whose what when where why how all any each both few other some same own only just because while through between during before after above below up down out off again further once here both either neither nor per via one two three first second".split(" "));
+
+const EXAMPLE = {
+  settings: {
+    topic: "Which competences are most important for achieving the Sustainable Development Goals?",
+    prompt: "Identify 2–3 competences you consider most important for achieving the SDGs. Explain why, support your arguments with ideas or findings from Beagon et al. (2022), and provide relevant examples or explanations.",
+    length: "300-350", level: "C1", type: "competence", citation: "APA",
+    srcAuthor: "Beagon et al.", srcYear: "2022",
+    srcTitle: "Preparing engineering students for the challenges of the SDGs: what competences are required?",
+    srcText: "Despite the emerging discussions about the growing role of engineers in achieving the Sustainable Development Goals (SDGs), there is a lack of agreement on which competences should be prioritised to prepare engineering students to resolve future sustainability challenges. This study examined and compared the views of key stakeholders of engineering education (Academics, Employers and Students) using twelve focus groups in Denmark, Finland, France and Ireland. The findings were mapped against competences identified in previous studies to highlight gaps and opportunities for development. The results confirm the strong emphasis on normative, strategic and systems thinking competences in engineering. However, the outcomes also lack acknowledgement of anticipatory competence, contradicting the future oriented perspective required to achieve sustainable development. The findings can be used by educators to inform programme development and to implement opportunities for students to develop the competences necessary to support sustainable development and the SDGs.",
+    required: "2–3 competences\nideas or findings from Beagon et al. (2022)\nrelevant examples or explanations"
+  },
+  essay: {
+    intro: {
+      hook: "It is widely acknowledged that engineers will play a key role in achieving the Sustainable Development Goals (SDGs).",
+      context: "However, there is a lack of agreement on which competences should be prioritised in engineering education.",
+      thesis: "I think systems thinking and strategic competence are the most important things for future engineers.",
+      preview: "This essay will first discuss systems thinking and then consider strategic competence."
+    },
+    body1: {
+      point: "Firstly, systems-thinking competence is very important because sustainability problems are complex.",
+      evidence: "According to Beagon et al. (2023), stakeholders in four European countries placed a strong emphasis on normative, strategic and systems thinking competences.",
+      explanation: "This suggests that engineers need to understand how technical, social and environmental factors are connected.",
+      example: "For example, a new water system in a city can affect public health, energy use and a lot of local businesses.",
+      link: "Therefore, systems thinking helps engineers to make better decisions about sustainable development."
+    },
+    body2: {
+      point: "Moreover, strategic competence is very important for turning ideas into collective action.",
+      evidence: "Beagon et al. (2023) state that \"strategic competence was ranked highest by employers\".",
+      explanation: "This is important because engineers can't achieve the SDGs alone and they must plan projects together with other people and organisations who have different goals and priorities and different levels of knowledge about sustainability.",
+      example: "",
+      link: "Thus strategic competence is important for sustainable development."
+    },
+    body3: { point: "", evidence: "", explanation: "", example: "", link: "" },
+    conclusion: {
+      restate: "In conclusion, systems-thinking and strategic competences appear to be particularly significant for engineers working towards the SDGs.",
+      summary: "Systems thinking helps engineers understand complex problems, while strategic competence helps them act together.",
+      final: "Furthermore, universities should also teach anticipatory competence."
+    }
+  }
+};
+
+</script>
+<script>
+/* Essay Writing Assistant — rule-based checks and transparent rewrites (runs entirely in the browser) */
+"use strict";
+
+const AREAS = ["Word count", "Structure", "Thesis", "Essay type", "PEEL", "Examples & explanation", "Linking", "Academic style", "Vocabulary level", "Repetition", "Sentence length", "Grammar", "Relevance", "Citations"];
+
+const countWords = t => (t || "").trim().split(/\s+/).filter(w => /[A-Za-z0-9]/.test(w)).length;
+const sentencesOf = t => (t || "").replace(/\s+/g, " ").trim().split(/(?<=[.!?]["”’]?)\s+(?=["“‘]?[A-Z0-9])/).filter(s => s.trim());
+const tokens = t => ((t || "").toLowerCase().match(/[a-z][a-z'’-]*/g) || []);
+const stem = w => w.replace(/['’]s$/, "").replace(/(ies)$/, "y").replace(/(es|s)$/, "").slice(0, 7);
+const content = t => tokens(t).filter(w => w.length > 3 && !STOP.has(w));
+const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const clip = (s, n = 110) => s.length > n ? s.slice(0, n - 1).trimEnd() + "…" : s;
+const cap = (src, rep) => /^[A-Z]/.test(src) && rep ? rep[0].toUpperCase() + rep.slice(1) : rep;
+const norm = t => (t || "").toLowerCase().replace(/[“”"‘’']/g, "").replace(/[^a-z0-9 ]+/g, " ").replace(/\s+/g, " ").trim();
+
+const LEVEL_SENTENCE = { B1: 25, B2: 30, C1: 35 };
+const SYNONYMS = { important: "significant, crucial, essential", competence: "skill, capability, ability", engineers: "professionals, practitioners", help: "support, enable, contribute to", problem: "challenge, issue, difficulty", students: "learners, graduates", sustainable: "long-term, environmentally responsible", development: "progress, growth", people: "individuals, citizens", show: "indicate, demonstrate, reveal", need: "require, depend on", good: "beneficial, effective", think: "consider, argue, suggest" };
+
+const EXPLAIN_RE = /\b(because|this (suggests|means|shows|indicates|demonstrates|implies)|therefore|as a result|which means|the significance|is (particularly )?(important|significant|crucial) (because|since)|so that|enables?|allows?|since|consequently|in other words)\b/i;
+const EXAMPLE_RE = /\b(for example|for instance|such as|e\.g\.|illustrated|a relevant example|in the case of|a case in point|consider the|this can be seen in)\b/i;
+const LINK_RE = /\b(therefore|thus|hence|consequently|this shows|this demonstrates|overall|as a result|clearly|for this reason|it follows)\b/i;
+const EVIDENCE_RE = /\b(according to|research|study|studies|survey|found|findings|report(s|ed)?|data|evidence|results|emphasi[sz]es|argues|states)\b|\(\s*[A-Z][^()]*\d{4}\s*\)|\(\d{4}\)/;
+const POSITION_RE = /\b(argues?|should|must|essential|important|significant|crucial|key|most|outweigh|better|more effective|believe|view|necessary|vital|particularly|primarily|largely|beneficial|harmful|agree|disagree)\b/i;
+const NEWARG_RE = /\b(furthermore|moreover|another|in addition|for example|for instance|should also|a further)\b/i;
+
+const APA_PAREN = /\(([A-Z][^()]*?),\s*(\d{4}[a-z]?|n\.d\.)(?:,\s*pp?\.\s*[\d–-]+)?\)/g;
+const APA_NARR = /\b([A-Z][A-Za-zÀ-ÿ'’-]+(?:\s+(?:et al\.|and|&)(?:\s+[A-Z][A-Za-zÀ-ÿ'’-]+)?)?)\s+\((\d{4}[a-z]?)(?:,\s*pp?\.\s*[\d–-]+)?\)/g;
+const MLA_PAREN = /\(([A-Z][A-Za-zÀ-ÿ'’-]+(?:\s+et al\.)?)\s+(\d+(?:[–-]\d+)?)\)/g;
+
+function issue(sev, area, where, msg, extra) { return Object.assign({ sev, area, where, msg }, extra || {}); }
+
+/* Assemble paragraphs from the structured editor or from pasted text. */
+function buildParagraphs(model) {
+  const { settings, mode, essay, reviewText } = model;
+  const L = LENGTHS[settings.length];
+  if (mode === "review") {
+    let blocks = (reviewText || "").split(/\n\s*\n/).map(s => s.trim()).filter(Boolean);
+    if (blocks.length < 3) blocks = (reviewText || "").split(/\n/).map(s => s.trim()).filter(Boolean);
+    return blocks.map((text, i) => {
+      const kind = i === 0 ? "intro" : (i === blocks.length - 1 && blocks.length > 1 ? "conclusion" : "body");
+      const label = kind === "intro" ? "Introduction" : kind === "conclusion" ? "Conclusion" : "Body Paragraph " + i;
+      return { id: kind === "body" ? "body" + i : kind, kind, label, text, parts: null };
+    });
+  }
+  const ids = ["intro", "body1", "body2"];
+  if (L.extra && Object.values(essay.body3 || {}).some(v => v.trim())) ids.push("body3");
+  ids.push("conclusion");
+  return ids.map(id => {
+    const kind = id.startsWith("body") ? "body" : id;
+    const partsDef = PARTS[kind];
+    const parts = essay[id] || {};
+    const text = partsDef.map(p => (parts[p.key] || "").trim()).filter(Boolean).join(" ");
+    const label = kind === "intro" ? "Introduction" : kind === "conclusion" ? "Conclusion" : "Body Paragraph " + id.slice(4);
+    return { id, kind, label, text, parts };
+  });
+}
+
+function rangeFor(kind) { return RANGES[kind]; }
+
+function analyse(model) {
+  const { settings } = model;
+  const L = LENGTHS[settings.length];
+  const type = TYPES[settings.type];
+  const paras = buildParagraphs(model);
+  const full = paras.map(p => p.text).join("\n\n");
+  const total = countWords(full);
+  const out = [];
+  const bodies = paras.filter(p => p.kind === "body");
+  const filledBodies = bodies.filter(p => p.text);
+  const intro = paras.find(p => p.kind === "intro");
+  const concl = paras.find(p => p.kind === "conclusion");
+  const structured = model.mode !== "review";
+  const hasSource = (settings.srcText || "").trim().length > 80;
+
+  paras.forEach(p => { p.words = countWords(p.text); p.range = rangeFor(p.kind); });
+
+  if (!total) {
+    out.push(issue("warn", "Structure", "Whole essay", structured ? "Start with the planning cards: choose your ideas and explain why they matter. Then build one body paragraph for each idea before writing the introduction." : "Paste your essay into the box. Leave a blank line between paragraphs."));
+    return { paras, issues: out, total, full };
+  }
+
+  /* 1 — word count */
+  if (total < L.min) out.push(issue(total < L.min * 0.85 ? "fix" : "warn", "Word count", "Whole essay", `Your essay has ${total} words. The task asks for ${L.min}–${L.max}, so add about ${L.min - total} more.` + (L.extra && filledBodies.length < 3 ? " At this length you may add a third body paragraph." : "")));
+  else if (total > L.max) out.push(issue(total > L.max * 1.1 ? "fix" : "warn", "Word count", "Whole essay", `Your essay has ${total} words, ${total - L.max} over the ${L.max}-word limit. Cut repeated ideas or shorten long sentences.`));
+  else out.push(issue("ok", "Word count", "Whole essay", `${total} words: within the ${L.min}–${L.max} target.`));
+  paras.forEach(p => {
+    if (!p.text) return;
+    const [lo, hi] = p.range;
+    if (p.words < lo) out.push(issue("warn", "Word count", p.label, `${p.label} has ${p.words} words; aim for ${lo}–${hi}.`, { para: p.id }));
+    if (p.words > hi) out.push(issue("warn", "Word count", p.label, `${p.label} has ${p.words} words; aim for ${lo}–${hi}. Shorten or split an idea.`, { para: p.id }));
+  });
+
+  /* 2 — structure */
+  if (!structured && paras.length < 4) out.push(issue("fix", "Structure", "Whole essay", `The checker found ${paras.length} paragraph${paras.length === 1 ? "" : "s"}. An essay needs an introduction, at least two body paragraphs and a conclusion, separated by blank lines.`));
+  if (!intro || !intro.text) out.push(issue("fix", "Structure", "Introduction", "The introduction is missing.", { para: "intro" }));
+  if (!concl || !concl.text) out.push(issue("fix", "Structure", "Conclusion", "The conclusion is missing. Restate your thesis and summarise your arguments in 35–50 words.", { para: "conclusion" }));
+  if (filledBodies.length < 2) out.push(issue("fix", "Structure", "Body", `Only ${filledBodies.length} body paragraph${filledBodies.length === 1 ? " has" : "s have"} text. Develop at least two arguments.`));
+  if (concl && concl.text) {
+    const m = concl.text.match(NEWARG_RE);
+    if (m) out.push(issue("fix", "Structure", "Conclusion", "The conclusion introduces a new argument. Move it to a body paragraph.", { quote: sentencesOf(concl.text).find(s => NEWARG_RE.test(s)), para: "conclusion", key: "final" }));
+    if (citationsIn(concl.text).length) out.push(issue("fix", "Citations", "Conclusion", "The conclusion cites a source. Sources belong in the body paragraphs; the conclusion only summarises.", { para: "conclusion" }));
+    const lastIntro = norm(intro && intro.text ? sentencesOf(intro.text).slice(-1)[0] : "");
+    if (lastIntro.length > 25 && norm(concl.text).includes(lastIntro.slice(0, 60))) out.push(issue("warn", "Structure", "Conclusion", "The conclusion copies a sentence from the introduction. Paraphrase your thesis instead.", { para: "conclusion" }));
+  }
+
+  /* 3 — thesis */
+  if (intro && intro.text) {
+    let thesis = structured ? (intro.parts.thesis || "").trim() : "";
+    if (!structured) thesis = sentencesOf(intro.text).find(s => /\b(this essay|argue|i believe|in my view|will (argue|discuss|examine))\b/i.test(s)) || sentencesOf(intro.text).slice(-1)[0] || "";
+    const where = { para: "intro", key: "thesis" };
+    if (!thesis) out.push(issue("fix", "Thesis", "Introduction", "Your introduction has no thesis statement. Add one sentence that states your position.", where));
+    else {
+      if (/\?\s*$/.test(thesis)) out.push(issue("fix", "Thesis", "Introduction", "Your thesis is a question. Turn it into a statement of your position.", Object.assign({ quote: thesis }, where)));
+      else if (/\b(will|going to) (discuss|talk about|look at|describe|consider)\b/i.test(thesis) && !POSITION_RE.test(thesis)) out.push(issue("fix", "Thesis", "Introduction", "Your thesis statement announces the topic but does not clearly express your position.", Object.assign({ quote: thesis }, where)));
+      else if (!POSITION_RE.test(thesis) || countWords(thesis) < 8) out.push(issue("fix", "Thesis", "Introduction", "Your thesis statement does not clearly express your position.", Object.assign({ quote: thesis }, where)));
+      else out.push(issue("ok", "Thesis", "Introduction", "Your thesis states a clear position.", Object.assign({ quote: thesis }, where)));
+      if (/\bI think\b/.test(thesis)) out.push(issue("warn", "Thesis", "Introduction", "Replace “I think” with “This essay argues that” to sound more academic.", Object.assign({ quote: thesis }, where)));
+      if (settings.type === "competence") {
+        const named = new Set((thesis.match(TYPES.competence.fit[1].count) || []).map(s => s.toLowerCase()));
+        if (named.size < 2) out.push(issue("warn", "Thesis", "Introduction", "Name the two or three competences you will discuss in the thesis itself.", where));
+      }
+    }
+  }
+
+  /* 4 — essay type fit */
+  const bodyText = bodies.map(p => p.text).join(" ");
+  let fitOk = true;
+  type.fit.forEach(f => {
+    let pass = true;
+    if (f.re) pass = f.re.test(full);
+    if (f.cite) pass = citationsIn(bodyText).length > 0 || /\baccording to\b/i.test(bodyText);
+    if (f.count) pass = new Set((full.match(f.count) || []).map(s => s.toLowerCase().replace(/[- ]/g, ""))).size >= f.min;
+    if (!pass) { fitOk = false; out.push(issue("fix", "Essay type", "Whole essay", f.msg)); }
+  });
+  if (fitOk) out.push(issue("ok", "Essay type", "Whole essay", `The essay shows the signals of a ${type.name}.`));
+
+  /* 5 — PEEL and examples/explanations */
+  bodies.forEach(p => {
+    if (!p.text) return;
+    const w = p.label;
+    if (structured) {
+      const s = k => (p.parts[k] || "").trim();
+      const at = k => ({ para: p.id, key: k });
+      if (!s("point")) out.push(issue("fix", "PEEL", w, "There is no Point. Start the paragraph with one sentence that states its main idea.", at("point")));
+      if (!s("evidence")) out.push(issue(["source", "competence"].includes(settings.type) ? "fix" : "warn", "PEEL", w, "There is no Evidence. Add information from your source that supports the point.", at("evidence")));
+      if (!s("explanation")) out.push(issue("fix", "Examples & explanation", w, s("evidence") ? "This paragraph contains evidence, but you need to explain why it supports your argument." : "Add an Explanation: say why your point matters.", at("explanation")));
+      else if (!EXPLAIN_RE.test(s("explanation"))) out.push(issue("warn", "Examples & explanation", w, "Your explanation restates information but does not say why it matters. Try “This suggests that…” or “This is particularly important because…”.", Object.assign({ quote: s("explanation") }, at("explanation"))));
+      if (!s("example")) out.push(issue("warn", "Examples & explanation", w, "There is no concrete example. Add a real situation, project or profession that illustrates the point.", at("example")));
+      if (!s("link")) out.push(issue("warn", "PEEL", w, "There is no Link sentence. Connect the paragraph back to your thesis.", at("link")));
+      else if (intro && intro.parts && overlap(s("link"), intro.parts.thesis || "") === 0) out.push(issue("warn", "PEEL", w, "The Link does not echo any key words from your thesis, so the connection is weak.", Object.assign({ quote: s("link") }, at("link"))));
+      if (s("point") && s("link") && norm(s("point")) === norm(s("link"))) out.push(issue("warn", "PEEL", w, "The Link repeats the Point word for word. Show what the paragraph has proved instead.", at("link")));
+      if (s("evidence") && s("explanation") && s("example") && s("link") && s("point")) out.push(issue("ok", "PEEL", w, "All five PEEL parts are present.", { para: p.id }));
+    } else {
+      const ss = sentencesOf(p.text);
+      const at = { para: p.id };
+      const missing = [];
+      if (!ss.slice(1).some(x => EVIDENCE_RE.test(x)) && !EVIDENCE_RE.test(ss[0] || "")) missing.push("Evidence");
+      if (!EXPLAIN_RE.test(p.text)) missing.push("Explanation");
+      if (!EXAMPLE_RE.test(p.text)) out.push(issue("warn", "Examples & explanation", w, "No concrete example was found. Signal one with “For instance,” or “This is illustrated by…”.", at));
+      if (!LINK_RE.test(ss.slice(-1)[0] || "")) missing.push("Link");
+      if (ss.length < 4) out.push(issue("warn", "PEEL", w, `This paragraph has ${ss.length} sentence${ss.length === 1 ? "" : "s"}. A PEEL paragraph usually needs 4–6.`, at));
+      if (missing.includes("Explanation") && !missing.includes("Evidence")) out.push(issue("fix", "Examples & explanation", w, "This paragraph contains evidence, but you need to explain why it supports your argument.", at));
+      else if (missing.includes("Explanation")) out.push(issue("warn", "Examples & explanation", w, "No explanation signal was found. Add a sentence such as “This suggests that…”.", at));
+      if (missing.includes("Evidence")) out.push(issue("warn", "PEEL", w, "No evidence was found. Refer to your source or to data that supports the point.", at));
+      if (missing.includes("Link")) out.push(issue("warn", "PEEL", w, "The last sentence does not link back to the thesis. Try “Therefore, … is essential for …”.", Object.assign({ quote: ss.slice(-1)[0] }, at)));
+      if (!missing.length) out.push(issue("ok", "PEEL", w, "Point, evidence, explanation and link signals are all present.", at));
+    }
+  });
+
+  /* 6 — linking expressions */
+  const lowFull = full.toLowerCase();
+  const used = LINKERS.filter(l => new RegExp("\\b" + esc(l) + "\\b").test(lowFull));
+  bodies.forEach(p => {
+    if (!p.text) return;
+    const n = LINKERS.filter(l => new RegExp("\\b" + esc(l) + "\\b", "i").test(p.text)).length;
+    if (n === 0) out.push(issue("warn", "Linking", p.label, "This paragraph uses no linking expressions. Guide the reader with “Moreover,” “This suggests that…” or “Therefore,”.", { para: p.id }));
+  });
+  LINKERS.forEach(l => { const c = (lowFull.match(new RegExp("\\b" + esc(l) + "\\b", "g")) || []).length; if (c >= 3 && !["because", "while", "such as"].includes(l)) out.push(issue("warn", "Linking", "Whole essay", `“${l}” appears ${c} times. Vary your linking expressions.`)); });
+  if (used.length >= 5) out.push(issue("ok", "Linking", "Whole essay", `Good range of linking expressions (${used.length}): ${used.slice(0, 5).join(", ")}…`));
+
+  /* 7 — academic style */
+  paras.forEach(p => {
+    if (!p.text) return;
+    const seen = new Set();
+    UPGRADE.forEach(([re, rep, why]) => {
+      if (/important\\b/.test(re.source) && !/very|really/.test(re.source)) return;
+      re.lastIndex = 0;
+      const m = p.text.match(new RegExp(re.source, re.flags.replace("g", "")));
+      if (m && !seen.has(m[0].toLowerCase())) {
+        seen.add(m[0].toLowerCase());
+        const to = m[0].replace(new RegExp(re.source, re.flags.replace("g", "")), rep).trim();
+        out.push(issue("warn", "Academic style", p.label, to ? `Replace “${m[0].trim()}” with “${to}”. ${why}` : `Remove “${m[0].trim()}”. ${why}`, { para: p.id, quote: sentencesOf(p.text).find(s => s.includes(m[0])) }));
+      }
+    });
+    if (/!/.test(p.text)) out.push(issue("warn", "Academic style", p.label, "Avoid exclamation marks in academic writing.", { para: p.id }));
+    if (p.kind === "body" && /\?/.test(p.text)) out.push(issue("warn", "Academic style", p.label, "Rhetorical questions weaken a body paragraph. State the idea directly.", { para: p.id }));
+    if (/\byou(r)?\b/i.test(p.text)) out.push(issue("warn", "Academic style", p.label, "Avoid addressing the reader as “you”. Use “students”, “engineers” or “people” instead.", { para: p.id, quote: sentencesOf(p.text).find(s => /\byou(r)?\b/i.test(s)) }));
+  });
+
+  /* 8 — vocabulary level */
+  const cw = content(full);
+  const acad = cw.filter(w => ACADEMIC.has(w) || ACADEMIC.has(w.replace(/(s|es|ed|ing|ly)$/, ""))).length;
+  const ratio = cw.length ? acad / cw.length : 0;
+  const ttr = cw.length ? new Set(cw.map(stem)).size / cw.length : 0;
+  const est = ratio >= 0.14 && ttr >= 0.55 ? "C1" : ratio >= 0.08 ? "B2" : "B1";
+  const order = { B1: 1, B2: 2, C1: 3 };
+  const lvlMsg = `Estimated vocabulary level: ${est} (${Math.round(ratio * 100)}% academic words, ${Math.round(ttr * 100)}% word variety).`;
+  if (order[est] < order[settings.level]) out.push(issue("warn", "Vocabulary level", "Whole essay", `${lvlMsg} Your target is ${settings.level}. Use “Upgrade to C1” on a paragraph to see precise replacements.`));
+  else out.push(issue("ok", "Vocabulary level", "Whole essay", `${lvlMsg} This matches your ${settings.level} target.`));
+  if (settings.level === "B1" && est === "C1") out.push(issue("warn", "Vocabulary level", "Whole essay", "Your vocabulary is more advanced than B1. Make sure every word is one you can use accurately."));
+
+  /* 9 — repetition */
+  const topicStems = new Set(content(settings.topic + " " + settings.required).map(stem));
+  const freq = {};
+  cw.forEach(w => { const s = stem(w); (freq[s] = freq[s] || { n: 0, word: w }).n++; });
+  Object.entries(freq).filter(([s, v]) => v.n >= (topicStems.has(s) ? 7 : 4)).sort((a, b) => b[1].n - a[1].n).slice(0, 5)
+    .forEach(([s, v]) => out.push(issue("warn", "Repetition", "Whole essay", `“${v.word}” appears ${v.n} times.` + (SYNONYMS[v.word] || SYNONYMS[s] ? ` Try: ${SYNONYMS[v.word] || SYNONYMS[s]}.` : " Use a synonym or a pronoun in some places.")))) ;
+
+  /* 10 — sentence length */
+  const limit = LEVEL_SENTENCE[settings.level];
+  paras.forEach(p => sentencesOf(p.text).forEach(s => {
+    const n = countWords(s);
+    if (n > limit) out.push(issue(n > limit + 10 ? "fix" : "warn", "Sentence length", p.label, `This sentence has ${n} words (limit for ${settings.level}: about ${limit}). Split it into two, or use “Simplify”.`, { para: p.id, quote: clip(s) }));
+  }));
+
+  /* 11 — grammar patterns */
+  paras.forEach(p => grammarIn(p.text).forEach(g => out.push(issue(g.sev || "fix", "Grammar", p.label, g.msg, { para: p.id, quote: g.quote }))));
+
+  /* 13 — relevance */
+  const topicWords = new Set(content(settings.topic).map(stem));
+  if (topicWords.size) bodies.forEach(p => {
+    if (!p.text) return;
+    if (!content(p.text).some(w => topicWords.has(stem(w)))) out.push(issue("warn", "Relevance", p.label, `This paragraph never mentions the key terms of your topic (${[...new Set(content(settings.topic))].slice(0, 4).join(", ")}). Check that the argument answers the task.`, { para: p.id }));
+  });
+  (settings.required || "").split("\n").map(s => s.trim()).filter(Boolean).forEach(req => {
+    const keys = content(req).map(stem);
+    const words = new Set(cw.map(stem));
+    const found = keys.length ? keys.every(k => words.has(k)) : lowFull.includes(req.toLowerCase());
+    out.push(found ? issue("ok", "Relevance", "Required content", `Required idea included: “${req}”.`) : issue("fix", "Relevance", "Required content", `Required idea not found: “${req}”. Add it to a body paragraph.`));
+  });
+
+  /* 14 — citations */
+  citationChecks(paras, settings, hasSource, structured).forEach(i => out.push(i));
+
+  return { paras, issues: out, total, full, level: est };
+}
+
+function overlap(a, b) { const B = new Set(content(b).map(stem)); return content(a).filter(w => B.has(stem(w))).length; }
+
+function citationsIn(text) {
+  const found = [];
+  let m;
+  for (const re of [APA_PAREN, APA_NARR, MLA_PAREN]) {
+    re.lastIndex = 0;
+    while ((m = re.exec(text))) found.push({ raw: m[0], name: m[1], yearOrPage: m[2], kind: re === MLA_PAREN ? "MLA" : "APA", index: m.index });
+  }
+  return found;
+}
+
+function grammarIn(text) {
+  const res = [];
+  const add = (re, msg, sev) => { const m = text.match(re); if (m) res.push({ msg: typeof msg === "function" ? msg(m) : msg, quote: sentencesOf(text).find(s => s.includes(m[0])) || m[0], sev }); };
+  add(/\b(\w+)\s+\1\b/i, m => `The word “${m[1]}” is repeated by mistake.`);
+  add(/\ba\s+(?!uni|use|usu|eu|one|once|u\.)[aeiouAEIOU]\w*/, m => `Use “an” before a vowel sound: “${m[0].replace(/^a/, "an")}”.`);
+  add(/\ban\s+(?!hour|honest|honou?r|heir|SDG|MBA|NGO|FAQ|LLM)[b-df-hj-np-tv-zB-DF-HJ-NP-TV-Z]\w*/, m => `Use “a” before a consonant sound: “${m[0].replace(/^an/, "a")}”.`);
+  add(/\b(informations|advices|knowledges|equipments|evidences|feedbacks|researches show)\b/i, m => `“${m[1].split(" ")[0]}” is uncountable in English. Remove the “-s”.`);
+  add(/\bpeoples\b/i, "Use “people” (plural already), not “peoples”, unless you mean nations.");
+  add(/\b(more|most) (better|easier|bigger|best|worse|harder|faster)\b/i, m => `“${m[0]}” is a double comparative. Use “${m[2]}” alone.`);
+  add(/\b(people|students|engineers|children|they|we) (is|was|has)\b/i, m => `Subject–verb agreement: “${m[1]}” needs a plural verb (${({ is: "are", was: "were", has: "have" })[m[2].toLowerCase()]}).`);
+  add(/\b(he|she|it|everyone|everybody|this competence|the student) (have|are|were|do)\b/i, m => `Subject–verb agreement: “${m[1]}” needs a singular verb.`);
+  add(/\bthere (is|was) (many|several|a lot of|numerous)\b/i, m => `Use “there ${m[1] === "is" ? "are" : "were"}” before a plural noun.`);
+  add(/\b(depend|depends|depended) of\b/i, "The correct preposition is “depend on”.");
+  add(/\b(discuss|discusses|discussed) about\b/i, "“Discuss” takes no preposition: “discuss the issue”.");
+  add(/\b(emphasi[sz]e|emphasi[sz]es) on\b/i, "“Emphasise” takes no preposition. Use “emphasise X” or “place emphasis on X”.");
+  add(/\bin the other hand\b/i, "The fixed phrase is “on the other hand”.");
+  add(/\baccording to me\b/i, "“According to me” is not used in English. Write “In my view,” or use an impersonal phrase.");
+  add(/\b(can|must|should|could|might|will|would) to \w+/i, m => `Modal verbs take the bare infinitive: “${m[0].replace(" to ", " ")}”.`);
+  add(/\b(consist|consists) from\b/i, "The correct preposition is “consist of”.");
+  add(/(^|(?!al|etc|vs)[A-Za-z]{2,}[.!?]\s+)[a-z]\w*/, "A sentence starts with a lowercase letter.", "warn");
+  add(/\bi\b(?!\.e\.)/, "Write the pronoun “I” with a capital letter.");
+  add(/[,;:](?=[A-Za-z])/, "Add a space after the punctuation mark.", "warn");
+  add(/\s[,.;:](?!\d)/, "Remove the space before the punctuation mark.", "warn");
+  add(/ {2,}/, "There is a double space.", "warn");
+  return res;
+}
+
+function citationChecks(paras, settings, hasSource, structured) {
+  const out = [];
+  const style = settings.citation;
+  const author = (settings.srcAuthor || "").trim();
+  const year = (settings.srcYear || "").trim();
+  const firstSurname = (author.match(/[A-ZÀ-Ý][A-Za-zÀ-ÿ'’-]+/) || [""])[0];
+  const srcNorm = norm(settings.srcText);
+  const srcStems = new Set(content(settings.srcText).map(stem));
+  let any = 0;
+
+  paras.filter(p => p.kind === "body" && p.text).forEach(p => {
+    const cites = citationsIn(p.text);
+    any += cites.length;
+    cites.forEach(c => {
+      if (style === "APA" && c.kind === "MLA") out.push(issue("fix", "Citations", p.label, `“${c.raw}” is MLA format. APA uses author and year: (${firstSurname || "Author"}${/et al/.test(author) ? " et al." : ""}, ${year || "Year"}).`, { para: p.id }));
+      if (style === "MLA" && c.kind === "APA") out.push(issue("fix", "Citations", p.label, `“${c.raw}” is APA format. MLA uses author and page: (${firstSurname || "Author"}${/et al/.test(author) ? " et al." : ""} 4).`, { para: p.id }));
+      if (firstSurname && !c.name.includes(firstSurname)) out.push(issue("warn", "Citations", p.label, `You cite “${c.raw}”, but your source is ${author} (${year}). Check the author's name.`, { para: p.id }));
+      if (c.kind === "APA" && year && /^\d{4}/.test(c.yearOrPage) && c.yearOrPage.slice(0, 4) !== year) out.push(issue("fix", "Citations", p.label, `The year in “${c.raw}” does not match your source (${year}).`, { para: p.id }));
+      if (/et al/.test(author) && firstSurname && c.name.includes(firstSurname) && !/et al\./.test(c.name)) out.push(issue("warn", "Citations", p.label, `This source has three or more authors, so write “${firstSurname} et al.”.`, { para: p.id }));
+      if (/et al(?!\.)/.test(c.raw)) out.push(issue("warn", "Citations", p.label, "“et al.” always has a full stop.", { para: p.id }));
+    });
+
+    /* quotations */
+    const quotes = [...p.text.matchAll(/["“]([^"”]{12,})["”]/g)].map(m => m[1]);
+    quotes.forEach(q => {
+      if (!hasSource) out.push(issue("warn", "Citations", p.label, "No article is loaded, so this quotation cannot be checked. Add the article text to verify it.", { para: p.id, quote: q }));
+      else if (!srcNorm.includes(norm(q))) out.push(issue("fix", "Citations", p.label, "This quotation was not found in the source text you added. Quote the article word for word, or paraphrase it without quotation marks.", { para: p.id, quote: q }));
+      if (style === "APA" && !/pp?\.\s*\d/.test(p.text)) out.push(issue("warn", "Citations", p.label, `APA direct quotations need a page number, e.g. (${firstSurname || "Author"}${/et al/.test(author) ? " et al." : ""}, ${year || "Year"}, p. 4).`, { para: p.id }));
+    });
+
+    /* cited sentences whose content is not in the source */
+    if (hasSource) sentencesOf(p.text).filter(s => citationsIn(s).length || /\baccording to\b/i.test(s)).forEach(s => {
+      if (/["“]/.test(s)) return;
+      const cws = content(s.replace(APA_PAREN, "").replace(APA_NARR, "")).filter(w => !/^(according|state|states|stated|emphasi|argue|report)/.test(w));
+      if (cws.length < 4) return;
+      const hit = cws.filter(w => srcStems.has(stem(w))).length / cws.length;
+      if (hit < 0.35) out.push(issue("warn", "Citations", p.label, "This sentence cites the article, but most of its content does not appear in the source text you added. Check that the article really says this.", { para: p.id, quote: clip(s) }));
+      else out.push(issue("ok", "Citations", p.label, "This cited claim matches words in your source text.", { para: p.id, quote: clip(s, 80) }));
+    });
+
+    if (structured && style !== "none") {
+      const ev = (p.parts.evidence || "").trim();
+      if (ev && !citationsIn(ev).length) out.push(issue("warn", "Citations", p.label, `The Evidence sentence has no citation. Add ${style === "APA" ? `“${firstSurname || "Author"}${/et al/.test(author) ? " et al." : ""} (${year || "Year"})”` : "the author and page"}.`, { para: p.id, key: "evidence" }));
+    }
+  });
+
+  if (!hasSource) out.unshift(issue("warn", "Citations", "Source", "No article is loaded. The assistant cannot check whether your references or claims match the source. Upload the article or paste its text on the left."));
+  if (hasSource && !any && style !== "none" && ["source", "competence"].includes(settings.type)) out.push(issue("fix", "Citations", "Whole essay", `You loaded a source but never cite it. Refer to it in a body paragraph, e.g. “According to ${author || "Author"} (${year || "Year"}), …”.`));
+  return out;
+}
+
+/* ---------- transparent rewrites ---------- */
+function applyRules(text, rules) {
+  const changes = [];
+  let t = text;
+  rules.forEach(([re, rep, why]) => {
+    re.lastIndex = 0;
+    t = t.replace(re, (...args) => {
+      const m = args[0];
+      let to = typeof rep === "function" ? rep(m) : m.replace(new RegExp(re.source, re.flags.replace("g", "")), rep);
+      to = cap(m, to);
+      if (to !== m) changes.push({ from: m.trim(), to: to.trim(), why });
+      return to;
+    });
+  });
+  return { text: t.replace(/ {2,}/g, " "), changes };
+}
+
+function splitLong(text, limit) {
+  const changes = [];
+  const parts = sentencesOf(text).map(s => {
+    if (countWords(s) <= limit) return s;
+    const cuts = [/;\s+/, /,\s+which\s+/, /,\s+and\s+(?=\w+\s+\w+)/, /,\s+but\s+/, /\s+and they\s+/, /\s+because\s+/];
+    for (const c of cuts) {
+      const m = s.match(c);
+      if (!m) continue;
+      const i = m.index;
+      const left = s.slice(0, i).replace(/[,;]$/, "") + ".";
+      let joiner = { ";": "", which: "This ", and: "", but: "However, ", they: "They ", because: "This is because " };
+      const key = /which/.test(m[0]) ? "which" : /but/.test(m[0]) ? "but" : /they/.test(m[0]) ? "they" : /because/.test(m[0]) ? "because" : /;/.test(m[0]) ? ";" : "and";
+      let right = s.slice(i + m[0].length);
+      right = joiner[key] ? joiner[key] + right : right.charAt(0).toUpperCase() + right.slice(1);
+      if (countWords(left) < 6 || countWords(right) < 6) continue;
+      changes.push({ from: clip(s, 70), to: clip(left, 40) + " / " + clip(right, 40), why: `Split a ${countWords(s)}-word sentence into two shorter ones so each carries one idea.` });
+      return left + " " + right;
+    }
+    return s;
+  });
+  return { text: parts.join(" "), changes };
+}
+
+function simplifyText(text, level) {
+  const a = applyRules(text, SIMPLIFY);
+  const b = splitLong(a.text, Math.min(LEVEL_SENTENCE[level], 25));
+  return { text: b.text, changes: a.changes.concat(b.changes) };
+}
+function upgradeText(text) {
+  const a = applyRules(text, UPGRADE);
+  const b = splitLong(a.text, LEVEL_SENTENCE.C1);
+  return { text: b.text, changes: a.changes.concat(b.changes) };
+}
+
+/* Find sentences in the source that share key words with a point — real extracts, never invented. */
+function sourceMatches(srcText, query, n = 3) {
+  const q = new Set(content(query).map(stem));
+  if (!q.size) return [];
+  return sentencesOf(srcText).map(s => ({ s, score: content(s).filter(w => q.has(stem(w))).length }))
+    .filter(x => x.score > 0).sort((a, b) => b.score - a.score).slice(0, n).map(x => x.s);
+}
+
+</script>
+<script>
+/* Essay Writing Assistant — state, assignment panel and essay editor */
+"use strict";
+
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const h = (tag, attrs, ...kids) => {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (v == null || (v === false && !k.startsWith("aria-"))) continue;
+    if (k === "class") el.className = v;
+    else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+    else if (k === "text") el.textContent = v;
+    else el.setAttribute(k, v === true && !k.startsWith("aria-") ? "" : String(v));
+  }
+  kids.flat().forEach(c => c != null && el.append(c.nodeType ? c : document.createTextNode(c)));
+  return el;
+};
+const clone = o => JSON.parse(JSON.stringify(o));
+const blankEssay = () => ({
+  intro: { hook: "", context: "", thesis: "", preview: "" },
+  body1: { point: "", evidence: "", explanation: "", example: "", link: "" },
+  body2: { point: "", evidence: "", explanation: "", example: "", link: "" },
+  body3: { point: "", evidence: "", explanation: "", example: "", link: "" },
+  conclusion: { restate: "", summary: "", final: "" }
+});
+const SECTION_IDS = ["intro", "body1", "body2", "body3", "conclusion"];
+const kindOf = id => id.startsWith("body") ? "body" : id;
+
+function essayToText(essay, withBody3) {
+  return SECTION_IDS.filter(id => id !== "body3" || withBody3)
+    .map(id => PARTS[kindOf(id)].map(p => (essay[id][p.key] || "").trim()).filter(Boolean).join(" "))
+    .filter(Boolean).join("\n\n");
+}
+
+const STORE = "essay-writing-assistant-v2";
+function load() { try { const s = JSON.parse(localStorage.getItem(STORE)); return s && s.settings && s.essay ? s : null; } catch (e) { return null; } }
+let saveTimer;
+function save() { clearTimeout(saveTimer); saveTimer = setTimeout(() => { try { localStorage.setItem(STORE, JSON.stringify({ settings: S.settings, essay: S.essay, mode: S.mode, reviewText: S.reviewText, isExample: S.isExample, plan: S.plan })); } catch (e) {} }, 400); }
+
+const saved = load();
+const S = Object.assign({
+  settings: clone(EXAMPLE.settings),
+  essay: blankEssay(),
+  mode: "guided",
+  reviewText: "",
+  isExample: false,
+  plan: { chosen: [], reasons: {}, examples: {} }
+}, saved || {}, {
+  active: { sec: "intro", key: "thesis" },
+  tab: "feedback", filter: "all", scope: null, vocabFor: null, proposal: null, tutor: null, result: null
+});
+
+/* ---------- toast ---------- */
+let toastTimer;
+function toast(msg) { const t = $("#toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.hidden = true; }, 2600); }
+
+/* ---------- assignment panel ---------- */
+function bindBrief() {
+  const sel = $("#etype");
+  Object.entries(TYPES).forEach(([k, t]) => sel.append(h("option", { value: k, text: t.name })));
+  const textIds = ["topic", "prompt", "srcText", "srcAuthor", "srcYear", "srcTitle", "required"];
+  textIds.forEach(id => {
+    const el = $("#" + id);
+    el.value = S.settings[id] || "";
+    el.addEventListener("input", () => { S.settings[id] = el.value; if (id === "srcText") renderSourceStatus(); changed(); });
+  });
+  sel.value = S.settings.type;
+  sel.addEventListener("change", () => { S.settings.type = sel.value; renderDesk(); changed(); });
+  ["length", "level", "citation"].forEach(name => {
+    $$(`input[name=${name}]`).forEach(r => {
+      r.checked = r.value === S.settings[name];
+      r.addEventListener("change", () => { S.settings[name] = r.value; if (name === "length") renderDesk(); changed(); });
+    });
+  });
+  $("#srcFile").addEventListener("change", e => e.target.files[0] && readSource(e.target.files[0]));
+  renderSourceStatus();
+}
+
+function renderSourceStatus() {
+  const box = $("#srcStatus");
+  const n = countWords(S.settings.srcText);
+  box.replaceChildren(n > 15
+    ? h("div", { class: "status ok" }, `Article text loaded (${n} words). Quotations and cited claims are checked against it.`)
+    : h("div", { class: "status warn" }, "No article loaded. The assistant cannot verify quotations, references or claims from the source."));
+}
+
+async function readSource(file) {
+  const name = file.name.toLowerCase();
+  try {
+    let text;
+    if (name.endsWith(".pdf")) {
+      toast("Reading PDF…");
+      text = await readPdf(file);
+    } else {
+      text = await file.text();
+      if (/\.html?$/.test(name)) { const d = new DOMParser().parseFromString(text, "text/html"); text = d.body.textContent; }
+    }
+    text = text.replace(/[ \t]+/g, " ").replace(/\n{3,}/g, "\n\n").trim();
+    if (!text) throw new Error("empty");
+    S.settings.srcText = text;
+    $("#srcText").value = text;
+    if (!S.settings.srcTitle) { S.settings.srcTitle = file.name.replace(/\.[^.]+$/, ""); $("#srcTitle").value = S.settings.srcTitle; }
+    renderSourceStatus(); changed();
+    toast(`Loaded ${countWords(text)} words from ${file.name}. Add the author and year.`);
+  } catch (e) {
+    toast(name.endsWith(".pdf") ? "This PDF has no readable text. Copy the text from the article and paste it instead." : "The file could not be read. Paste the article text instead.");
+  }
+}
+
+function loadScript(src) {
+  return new Promise((res, rej) => { const s = document.createElement("script"); s.src = src; s.onload = res; s.onerror = rej; document.head.append(s); });
+}
+async function readPdf(file) {
+  const base = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/";
+  if (!window.pdfjsLib) await loadScript(base + "pdf.min.js");
+  window.pdfjsLib.GlobalWorkerOptions.workerSrc = base + "pdf.worker.min.js";
+  const doc = await window.pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
+  const pages = [];
+  for (let i = 1; i <= Math.min(doc.numPages, 40); i++) {
+    const c = await (await doc.getPage(i)).getTextContent();
+    pages.push(c.items.map(it => it.str + (it.hasEOL ? "\n" : " ")).join(""));
+  }
+  return pages.join("\n\n").replace(/-\n(?=[a-z])/g, "");
+}
+
+/* ---------- essay editor ---------- */
+const L = () => LENGTHS[S.settings.length];
+const sectionLabel = id => id === "intro" ? "Introduction" : id === "conclusion" ? "Conclusion" : "Body Paragraph " + id.slice(4);
+function sectionRole(id) {
+  const t = TYPES[S.settings.type];
+  if (id === "intro") return t.intro;
+  if (id === "conclusion") return t.conclusion;
+  return t.bodies[+id.slice(4) - 1];
+}
+function visibleSections() { return SECTION_IDS.filter(id => id !== "body3" || L().extra); }
+
+function renderDesk() {
+  const t = TYPES[S.settings.type];
+  $("#typeName").textContent = t.name;
+  $("#typeDesc").textContent = t.desc;
+  $("#exampleNote").hidden = !S.isExample;
+  $$(".modes button").forEach(b => b.setAttribute("aria-selected", b.dataset.mode === S.mode));
+  const desk = $("#desk");
+  desk.classList.toggle("mode-template", S.mode === "template");
+  renderStages();
+  const cards = $("#cards");
+  cards.replaceChildren();
+  if (S.mode === "review") { cards.append(reviewBox()); return; }
+  if (S.mode === "guided" && S.settings.type === "competence") cards.append(competencePlanner());
+  visibleSections().forEach(id => cards.append(sectionCard(id)));
+  $$("#cards textarea").forEach(autosize);
+  markActive();
+}
+
+function competencePlanner() {
+  S.plan = S.plan || { chosen: [], reasons: {}, examples: {} };
+  const intro = h("div", { class: "planner-intro" },
+    h("div", {}, h("span", { class: "eyebrow" }, "Before you write"), h("h3", {}, "Choose your argument")),
+    h("p", {}, "Do not start with the introduction. First choose 2–3 competences you genuinely consider most important. Read the meanings, compare them, and select only those you can explain and support."));
+  const meaning = h("div", { class: "competence-help" },
+    h("b", {}, "Что такое competence?"),
+    h("span", {}, "В этом задании competence — это способность человека правильно действовать в сложной ситуации. Это не просто знание, а умение использовать знания на практике."),
+    h("span", {}, "Например: systems thinking — видеть связи внутри сложной проблемы; strategic competence — превращать цель в план действий; anticipatory competence — думать о будущих последствиях."));
+  const grid = h("div", { class: "idea-grid" });
+  COMPETENCE_IDEAS.forEach(c => {
+    const selected = S.plan.chosen.includes(c.id);
+    const btn = h("button", { type: "button", class: "idea" + (selected ? " selected" : ""), "aria-pressed": selected, onclick: () => toggleCompetence(c.id) },
+      h("b", {}, c.name), h("span", {}, c.plain), h("small", {}, c.ask));
+    grid.append(btn);
+  });
+  const chosen = h("div", { class: "choice-work" });
+  if (!S.plan.chosen.length) chosen.append(h("div", { class: "status warn" }, "Choose 2 or 3 cards. A strong choice is one you can justify, connect to the article and illustrate with an example."));
+  S.plan.chosen.forEach((id, i) => {
+    const c = COMPETENCE_IDEAS.find(x => x.id === id);
+    const reason = h("textarea", { rows: 2, placeholder: "In your own simple words: why is this especially important for achieving the SDGs?" });
+    reason.value = S.plan.reasons[id] || "";
+    reason.addEventListener("input", () => { S.plan.reasons[id] = reason.value; save(); });
+    const example = h("textarea", { rows: 2, placeholder: "Think of one situation, project or profession where this competence would matter." });
+    example.value = S.plan.examples[id] || "";
+    example.addEventListener("input", () => { S.plan.examples[id] = example.value; save(); });
+    chosen.append(h("section", { class: "choice" },
+      h("h4", {}, `${i + 1}. ${c.name}`),
+      h("label", {}, "Your reason — answer: Why does it matter more than other competences?"), reason,
+      h("label", {}, "Your example — answer: Where would we see it in practice?"), example,
+      h("p", { class: "hint" }, "Next, find one relevant idea in Beagon et al. (2022). The Source panel can help you locate sentences, but you must explain the connection yourself.")));
+  });
+  return h("article", { class: "card planner" }, intro, meaning, grid, chosen,
+    h("div", { class: "planner-foot" },
+      h("b", {}, "Ready to write?"),
+      h("span", {}, "Use one chosen competence per body paragraph. Your reason becomes the explanation; your situation becomes the example. Write the thesis last, naming the same 2–3 competences.")));
+}
+
+function completionHelp(sec, key) {
+  const chosen = (S.plan && S.plan.chosen) || [];
+  const idea = chosen[Math.max(0, Number(sec.replace("body", "")) - 1)] || "[chosen competence]";
+  const all = joinedIdeas(chosen);
+  const map = {
+    intro: {
+      hook: ["После ‘but also’ напиши, какие способности нужны людям в целом. Пока не доказывай, какая компетенция самая важная.", "Achieving the Sustainable Development Goals requires not only technical solutions but also professionals who can understand complex problems, plan effective action and consider long-term consequences."],
+      context: ["Теперь объясни проблему: почему одних технических знаний недостаточно?", "These goals involve interconnected social, environmental and economic challenges, so technical knowledge alone may not be sufficient."],
+      thesis: ["Здесь уже дай свой точный ответ: назови выбранные 2–3 компетенции и скажи, почему именно они важны.", `This essay argues that ${all} are particularly important because they help professionals understand complex challenges, develop practical solutions and prepare for future consequences.`],
+      preview: ["Только перечисли порядок следующих абзацев; новые объяснения здесь не нужны.", `The discussion first examines ${chosen[0] || "[competence 1]"}, before considering ${chosen[1] || "[competence 2]"}${chosen[2] ? ` and ${chosen[2]}` : ""}.`]
+    },
+    body: {
+      point: ["Закончи предложение одной причиной: что именно эта компетенция позволяет делать?", `${idea[0].toUpperCase() + idea.slice(1)} is particularly important because it enables professionals to …`],
+      evidence: ["Вместо многоточия перескажи только ту идею из статьи, которая подтверждает твою причину.", `According to ${S.settings.srcAuthor || "Beagon et al."} (${S.settings.srcYear || "2022"}), …`],
+      explanation: ["Объясни своими словами связь: почему этот вывод из статьи важен для достижения SDGs?", "This finding is significant because it shows that …"],
+      example: ["Назови конкретный проект или ситуацию, затем объясни действие человека в этой ситуации.", "For example, when designing an urban transport system, this competence would enable engineers to …"],
+      link: ["Одним предложением скажи, что весь абзац доказал о выбранной компетенции.", `Therefore, ${idea} can contribute to the achievement of the SDGs by …`]
+    },
+    conclusion: {
+      restate: ["Снова ответь на вопрос эссе, но другими словами.", `In conclusion, ${all} appear to be among the most important competences for achieving the SDGs.`],
+      summary: ["Кратко напомни функцию каждой компетенции — примерно по одной части предложения.", "Together, these competences support the understanding of complex problems, the development of practical action and the consideration of future effects."],
+      final: ["Напиши общий итог: чего смогут добиться специалисты благодаря этим компетенциям?", "Developing these competences could therefore enable professionals to make more responsible and sustainable decisions."]
+    }
+  };
+  return map[kindOf(sec)][key];
+}
+
+function toggleCompetence(id) {
+  S.plan = S.plan || { chosen: [], reasons: {}, examples: {} };
+  const i = S.plan.chosen.indexOf(id);
+  if (i >= 0) S.plan.chosen.splice(i, 1);
+  else if (S.plan.chosen.length < 3) S.plan.chosen.push(id);
+  else { toast("Choose no more than three competences."); return; }
+  S.isExample = false; save(); renderDesk();
+}
+
+function renderStages() {
+  const box = $("#stages");
+  box.replaceChildren();
+  if (S.mode !== "guided") return;
+  const cur = stageOf(S.active);
+  STAGES.forEach((st, i) => {
+    const parts = st.parts.filter(([sec]) => sec !== "body3" || L().extra);
+    const done = parts.every(([sec, key]) => (S.essay[sec][key] || "").trim());
+    box.append(h("button", { type: "button", class: "stage" + (done ? " done" : "") + (cur === st.id ? " active" : ""), onclick: () => gotoStage(st) },
+      h("b", {}, done ? "✓" : String(i + 1)), st.label));
+  });
+  const part = partDef(S.active);
+  const q = S.active.key === "thesis" ? TYPES[S.settings.type].position : part.q;
+  box.append(h("div", { class: "status", style: "flex-basis:100%;background:var(--paper);border:1px solid var(--rule);color:var(--ink);padding:10px 12px;display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center" },
+    h("span", { style: "flex:1 1 260px" }, h("span", { class: "eyebrow" }, `Tutor asks · ${sectionLabel(S.active.sec)} · ${part.label}`), h("br"), h("span", { style: "font:italic 17px/1.4 var(--serif)" }, q)),
+    h("button", { type: "button", class: "btn", onclick: nextQuestion }, "Next question →")));
+}
+
+const stageOf = a => (STAGES.find(st => st.parts.some(([s, k]) => s === a.sec && k === a.key)) || STAGES[0]).id;
+const partDef = a => PARTS[kindOf(a.sec)].find(p => p.key === a.key);
+function stageOrder() { return STAGES.flatMap(st => st.parts).filter(([sec]) => sec !== "body3" || L().extra); }
+function gotoStage(st) {
+  const parts = st.parts.filter(([sec]) => sec !== "body3" || L().extra);
+  const target = parts.find(([s, k]) => !(S.essay[s][k] || "").trim()) || parts[0];
+  focusPart(target[0], target[1]);
+}
+function nextQuestion() {
+  const order = stageOrder();
+  const i = order.findIndex(([s, k]) => s === S.active.sec && k === S.active.key);
+  const rest = order.slice(i + 1).concat(order.slice(0, i + 1));
+  const target = rest.find(([s, k]) => !(S.essay[s][k] || "").trim());
+  if (!target) { toast("Every part has text. Press “Review full essay” to check it."); return; }
+  focusPart(target[0], target[1]);
+}
+function focusPart(sec, key) {
+  if (S.mode === "review") return;
+  const el = document.getElementById(`f-${sec}-${key}`);
+  if (!el) return;
+  el.focus({ preventScroll: true });
+  el.scrollIntoView({ block: "center", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+}
+
+function sectionCard(id) {
+  const kind = kindOf(id);
+  const meter = h("div", { class: "meter", id: `m-${id}` }, h("i"));
+  const count = h("span", { class: "count", id: `c-${id}` });
+  const ai = h("div", { class: "ai-out", id: `ai-${id}`, hidden: true, "aria-live": "polite" });
+  const head = h("div", { class: "card-head" },
+    h("h3", {}, sectionLabel(id) + (id === "body3" ? " (optional)" : "")),
+    h("span", { class: "role" }, sectionRole(id)), meter, count);
+  const body = h("div", { class: "card-body" }, PARTS[kind].map(p => partRow(id, p)));
+  const foot = h("div", { class: "card-foot" },
+    h("button", { type: "button", class: "btn", onclick: () => suggestVocab(id) }, "Suggest vocabulary"),
+    h("button", { type: "button", class: "btn", onclick: () => checkParagraph(id) }, "Check paragraph"),
+    h("button", { type: "button", class: "btn", onclick: () => propose(id, "simplify") }, "Simplify"),
+    h("button", { type: "button", class: "btn", onclick: () => propose(id, "upgrade") }, "Upgrade to C1"),
+    h("button", { type: "button", class: "btn ghost ai ai-only", onclick: () => askTutor(id) }, "Ask the tutor"));
+  return h("article", { class: "card", id: `card-${id}` }, head, body, ai, foot);
+}
+
+function joinedIdeas(items) {
+  if (!items.length) return "[competence 1] and [competence 2]";
+  if (items.length === 1) return items[0];
+  return items.slice(0, -1).join(", ") + " and " + items.at(-1);
+}
+
+function fieldGuide(sec, key) {
+  const chosen = (S.plan && S.plan.chosen) || [];
+  const n = Math.max(0, Number(sec.replace("body", "")) - 1);
+  const idea = chosen[n] || "[this competence]";
+  const all = joinedIdeas(chosen);
+  const author = S.settings.srcAuthor || "[Author]";
+  const year = S.settings.srcYear || "[Year]";
+  const guides = {
+    intro: {
+      hook: { use: "Общее первое предложение: вводит тему, но ещё не выражает твою позицию.", options: [
+        ["Achieving the Sustainable Development Goals requires not only technical solutions but also …", "Достижение Целей устойчивого развития требует не только технических решений, но и …", "Лучший вариант, если хочешь сразу связать SDGs с компетенциями."],
+        ["The achievement of the Sustainable Development Goals depends largely on …", "Достижение Целей устойчивого развития в значительной степени зависит от …", "Используй для прямого и нейтрального начала."],
+        ["As global challenges become increasingly complex, the ability to … is becoming more important.", "По мере усложнения глобальных проблем способность … становится всё более важной.", "Подходит, если хочешь начать с актуальности проблемы."]
+      ]},
+      context: { use: "Второе предложение: сужает тему и объясняет, почему вопрос компетенций важен.", options: [
+        ["Because the SDGs involve interconnected social, environmental and economic challenges, …", "Поскольку SDGs включают взаимосвязанные социальные, экологические и экономические проблемы, …", "Используй, когда хочешь подчеркнуть сложность SDGs."],
+        ["In this context, professionals need competences that enable them to …", "В этом контексте специалистам необходимы компетенции, позволяющие им …", "Удобный переход от общей темы к компетенциям."],
+        ["Consequently, technical knowledge alone may not be sufficient to …", "Следовательно, одних технических знаний может быть недостаточно, чтобы …", "Подходит, если дальше объясняешь необходимость дополнительных навыков."]
+      ]},
+      thesis: { use: "Главное предложение введения: прямо отвечает на вопрос и называет твою позицию.", options: [
+        [`This essay argues that ${all} are particularly important for achieving the SDGs because …`, `В этом эссе утверждается, что ${all} особенно важны для достижения SDGs, потому что …`, "Самый прямой академический вариант."],
+        [`Among the various competences required, ${all} appear to be the most significant because …`, `Среди различных необходимых компетенций ${all}, по-видимому, являются наиболее значимыми, потому что …`, "Более осторожная позиция благодаря appear to be."],
+        [`It can be argued that ${all} make the greatest contribution to …`, `Можно утверждать, что ${all} вносят наибольший вклад в …`, "Используй, если нужен безличный академический стиль."]
+      ]},
+      preview: { use: "Последнее предложение введения: показывает порядок абзацев, но не доказывает аргументы.", options: [
+        [`The discussion first examines ${chosen[0] || "[competence 1]"}, before considering ${chosen[1] || "[competence 2]"}${chosen[2] ? ` and ${chosen[2]}` : ""}.`, `Сначала рассматривается ${chosen[0] || "[компетенция 1]"}, после чего анализируется ${chosen[1] || "[компетенция 2]"}${chosen[2] ? ` и ${chosen[2]}` : ""}.`, "Подходит для чёткого указания порядка."],
+        [`The importance of ${all} will be considered in turn.`, `Важность таких компетенций, как ${all}, будет рассмотрена последовательно.`, "Более короткий вариант без повторного объяснения причин."]
+      ]}
+    },
+    body: {
+      point: { use: "Первое предложение основного абзаца: называет одну компетенцию и одну главную причину.", options: [
+        [`${idea[0].toUpperCase() + idea.slice(1)} is particularly important because …`, `${idea} особенно важна, потому что …`, "Самый ясный вариант для начала абзаца."],
+        [`One of the most significant competences is ${idea}, as it enables …`, `Одной из наиболее значимых компетенций является ${idea}, поскольку она позволяет …`, "Используй, если хочешь сразу показать результат этой компетенции."],
+        [`A key reason why ${idea} matters is that …`, `Ключевая причина важности ${idea} заключается в том, что …`, "Подходит, когда главное — объяснить причину."]
+      ]},
+      evidence: { use: "После своей мысли: вводит только реальную идею или результат из источника.", options: [
+        [`According to ${author} (${year}), …`, `Согласно ${author} (${year}), …`, "Для пересказа идеи автора своими словами."],
+        [`${author} (${year}) emphasise that …`, `${author} (${year}) подчёркивают, что …`, "Когда авторы особенно выделяют эту идею."],
+        ["This argument is supported by the finding that …", "Этот аргумент подтверждается выводом о том, что …", "Когда источник уже был назван в предыдущем предложении."]
+      ]},
+      explanation: { use: "Твоя собственная логика: объясняет, почему приведённый факт поддерживает аргумент.", options: [
+        ["This finding is significant because …", "Этот вывод важен, потому что …", "Универсальное начало объяснения."],
+        ["This suggests that …", "Это позволяет предположить, что …", "Для осторожного вывода из источника."],
+        ["In practical terms, this means that …", "На практике это означает, что …", "Когда хочешь объяснить практическое значение."]
+      ]},
+      example: { use: "Конкретная ситуация: показывает, как твоя мысль работает на практике.", options: [
+        ["For example, in a project involving …, this competence would enable …", "Например, в проекте, связанном с …, эта компетенция позволила бы …", "Лучший вариант для придуманной практической ситуации."],
+        ["A relevant example can be observed when …", "Подходящий пример можно увидеть, когда …", "Подходит для реального или общеизвестного случая."],
+        ["This can be illustrated by …", "Это можно проиллюстрировать с помощью …", "Короткий переход к примеру."]
+      ]},
+      link: { use: "Последнее предложение абзаца: возвращает результат к вопросу эссе.", options: [
+        [`Therefore, ${idea} can make an important contribution to achieving the SDGs by …`, `Таким образом, ${idea} может внести важный вклад в достижение SDGs посредством …`, "Лучший вариант, если ты можешь назвать конкретный вклад."],
+        [`For this reason, ${idea} should be regarded as an essential competence for …`, `По этой причине ${idea} следует считать важнейшей компетенцией для …`, "Более сильный итог абзаца."],
+        ["Overall, this competence is essential because it enables …", "В целом эта компетенция необходима, поскольку она позволяет …", "Используй, чтобы кратко обобщить доказанную причину."]
+      ]}
+    },
+    conclusion: {
+      restate: { use: "Первое предложение заключения: повторяет ответ другими словами, без копирования тезиса.", options: [
+        [`In conclusion, ${all} appear particularly important for achieving the SDGs because …`, `В заключение, ${all}, по-видимому, особенно важны для достижения SDGs, потому что …`, "Нейтральный академический вариант."],
+        [`Overall, the arguments presented suggest that ${all} are essential to …`, `В целом представленные аргументы показывают, что ${all} необходимы для …`, "Подходит, чтобы сослаться на всю проведённую аргументацию."]
+      ]},
+      summary: { use: "Кратко объединяет результаты основных абзацев; без новых примеров и источников.", options: [
+        [`While ${chosen[0] || "[the first competence]"} enables …, ${chosen[1] || "[the second competence]"} helps …`, `В то время как ${chosen[0] || "[первая компетенция]"} позволяет …, ${chosen[1] || "[вторая компетенция]"} помогает …`, "Удобно для сравнения функций двух компетенций."],
+        [`Together, these competences support both … and …`, `Вместе эти компетенции поддерживают как …, так и …`, "Используй, чтобы объединить аргументы в один общий результат."]
+      ]},
+      final: { use: "Финальная мысль: показывает общий результат, но не добавляет новый аргумент.", options: [
+        ["Taken together, these competences may enable professionals to …", "В совокупности эти компетенции могут позволить специалистам …", "Осторожный вывод с may."],
+        ["Ultimately, progress towards the SDGs is likely to depend on …", "В конечном счёте прогресс в достижении SDGs, вероятно, будет зависеть от …", "Подходит для более широкого заключительного вывода."],
+        ["Developing these competences could therefore contribute to …", "Таким образом, развитие этих компетенций могло бы способствовать …", "Используй, чтобы завершить эссе практическим следствием."]
+      ]}
+    }
+  };
+  return guides[kindOf(sec)][key];
+}
+
+function partRow(sec, p) {
+  const id = `f-${sec}-${p.key}`;
+  let q = p.key === "thesis" ? TYPES[S.settings.type].position : p.q;
+  if (S.settings.type === "competence" && sec.startsWith("body")) {
+    const picked = S.plan && S.plan.chosen[Number(sec.slice(4)) - 1];
+    if (picked && p.key === "point") q = `State that ${picked} is important and give your main reason. Do not explain everything yet.`;
+    if (picked && p.key === "explanation") q = `In your own reasoning, why does ${picked} help achieve the SDGs?`;
+  }
+  const ta = h("textarea", { id, rows: 1, placeholder: S.mode === "template" ? p.label + "…" : p.hint });
+  ta.value = S.essay[sec][p.key] || "";
+  ta.addEventListener("input", () => { S.essay[sec][p.key] = ta.value; autosize(ta); row.classList.toggle("filled", !!ta.value.trim()); if (S.isExample) { S.isExample = false; $("#exampleNote").hidden = true; } changed(); });
+  ta.addEventListener("focus", () => { S.active = { sec, key: p.key }; markActive(); if (S.mode === "guided") renderStages(); if (S.tab !== "feedback") renderPanel(); });
+  const guide = fieldGuide(sec, p.key);
+  const completion = completionHelp(sec, p.key);
+  const row = h("div", { class: "part" + (ta.value.trim() ? " filled" : "") },
+    h("span", { class: "mark", title: p.label, "aria-hidden": "true" }, p.mark),
+    h("div", { class: "part-top" }, h("label", { for: id }, p.label), h("span", { class: "q" }, q)),
+    ta,
+    h("div", { class: "best-start" },
+      h("span", { class: "eyebrow" }, "How to start this part"),
+      h("p", { class: "guide-use" }, guide.use),
+      h("div", { class: "completion-help" }, h("b", {}, "Что написать вместо …"), h("span", {}, completion[0]), h("code", {}, completion[1])),
+      h("div", { class: "start-options" }, guide.options.map((o, i) => h("div", { class: "start-option" },
+        h("span", { class: "option-rank" }, i === 0 ? "Лучший вариант" : `Вариант ${i + 1}`),
+        h("button", { type: "button", class: "recommended", onclick: () => insertPhrase(o[0], ta) }, o[0]),
+        h("span", { class: "translation" }, o[1]),
+        h("small", {}, o[2]))))),
+    h("div", { class: "tools" }, h("span", { class: "hint" }, "Need alternatives? Open Suggest vocabulary below.")));
+  return row;
+}
+
+function markActive() {
+  $$(".part").forEach(r => r.classList.remove("active"));
+  const el = document.getElementById(`f-${S.active.sec}-${S.active.key}`);
+  if (el && S.mode === "guided") el.closest(".part").classList.add("active");
+}
+
+function autosize(ta) { ta.style.height = "auto"; ta.style.height = ta.scrollHeight + "px"; }
+
+function fillCitation(s) {
+  const a = S.settings.srcAuthor || "[Author]", y = S.settings.srcYear || "[Year]";
+  return s.replace(/\[Author\]/g, a).replace(/\[Year\]/g, y);
+}
+function insertPhrase(phrase, ta) {
+  ta = ta || document.getElementById(`f-${S.active.sec}-${S.active.key}`) || $("#reviewText");
+  if (!ta) return;
+  let p = fillCitation(phrase).replace(/\s*…\s*/g, " … ").trim();
+  const start = ta.selectionStart ?? ta.value.length, end = ta.selectionEnd ?? ta.value.length;
+  const before = ta.value.slice(0, start), after = ta.value.slice(end);
+  const pad = before && !/\s$/.test(before) ? " " : "";
+  const tail = /[,.]$/.test(p) || /that$|because$|by$|to$|in$|of$|is$|as$/.test(p) ? " " : " ";
+  ta.value = before + pad + p + tail + after.replace(/^\s+/, "");
+  const caret = (before + pad + p + tail).length;
+  ta.focus(); ta.setSelectionRange(caret, caret);
+  ta.dispatchEvent(new Event("input"));
+  if (!/\bSDG|\[/.test(p) && /…/.test(p)) toast("Replace “…” with your own words.");
+}
+
+function reviewBox() {
+  const ta = h("textarea", { id: "reviewText", "aria-label": "Your full essay", placeholder: "Paste your essay here. Leave a blank line between paragraphs: introduction, body paragraphs, conclusion." });
+  ta.value = S.reviewText;
+  ta.addEventListener("input", () => { S.reviewText = ta.value; changed(); });
+  return h("div", { class: "review-box" },
+    h("div", { style: "display:flex;flex-wrap:wrap;gap:8px;align-items:center" },
+      h("span", { class: "hint", style: "flex:1 1 240px" }, "The checker treats the first paragraph as the introduction and the last as the conclusion."),
+      h("button", { type: "button", class: "btn", onclick: () => { ta.value = S.reviewText = essayToText(S.essay, L().extra); changed(); } }, "Copy from template"),
+      h("button", { type: "button", class: "btn primary", onclick: reviewAll }, "Review full essay")),
+    ta,
+    h("div", { class: "card-foot", style: "border:1px solid var(--rule);border-radius:10px" },
+      h("span", { class: "hint", style: "flex:1 1 100%" }, "Paragraph tools work on one paragraph. Choose it:"),
+      ...paragraphPicker()));
+}
+function paragraphPicker() {
+  const sel = h("select", { id: "reviewPara", style: "width:auto;flex:1 1 160px" });
+  const r = analyse(model());
+  r.paras.forEach(p => sel.append(h("option", { value: p.id, text: p.label })));
+  const cur = () => sel.value || "intro";
+  return [sel,
+    h("button", { type: "button", class: "btn", onclick: () => suggestVocab(cur()) }, "Suggest vocabulary"),
+    h("button", { type: "button", class: "btn", onclick: () => checkParagraph(cur()) }, "Check paragraph"),
+    h("button", { type: "button", class: "btn", onclick: () => propose(cur(), "simplify") }, "Simplify"),
+    h("button", { type: "button", class: "btn", onclick: () => propose(cur(), "upgrade") }, "Upgrade to C1")];
+}
+
+/* ---------- shared refresh ---------- */
+const model = () => ({ settings: S.settings, mode: S.mode, essay: S.essay, reviewText: S.reviewText });
+let refreshTimer;
+function changed() {
+  save();
+  S.result = analyse(model());
+  renderMeters();
+  clearTimeout(refreshTimer);
+  refreshTimer = setTimeout(() => { if (S.mode === "guided") { const f = document.activeElement; renderStages(); if (f && f.tagName === "TEXTAREA") f.focus({ preventScroll: true }); } renderPanel(); }, 450);
+}
+
+function setMeter(el, words, lo, hi, scaleMax) {
+  if (!el) return;
+  el.style.setProperty("--pct", Math.min(100, words / scaleMax * 100));
+  el.style.setProperty("--lo", lo / scaleMax * 100);
+  el.style.setProperty("--hi", hi / scaleMax * 100);
+  const state = words === 0 ? "" : words < lo ? "under" : words > hi ? "over" : "in";
+  el.className = "meter " + state;
+  return state;
+}
+
+function init() {
+  bindBrief();
+  $$(".modes button").forEach(b => b.addEventListener("click", () => {
+    if (b.dataset.mode === "review" && S.mode !== "review" && !S.reviewText.trim()) S.reviewText = essayToText(S.essay, L().extra);
+    S.mode = b.dataset.mode; S.scope = null; S.proposal = null; renderDesk(); changed();
+  }));
+  $$(".tabs button").forEach(b => b.addEventListener("click", () => { S.tab = b.dataset.tab; renderPanel(); }));
+  $("#reviewAll").addEventListener("click", reviewAll);
+  $("#clearExample").addEventListener("click", () => {
+    Object.assign(S.settings, { topic: "", prompt: "", srcText: "", srcAuthor: "", srcYear: "", srcTitle: "", required: "" });
+    ["topic", "prompt", "srcText", "srcAuthor", "srcYear", "srcTitle", "required"].forEach(id => { $("#" + id).value = ""; });
+    S.essay = blankEssay(); S.reviewText = ""; S.isExample = false; S.plan = { chosen: [], reasons: {}, examples: {} }; S.proposal = null; S.tutor = null; S.scope = null;
+    S.active = { sec: "intro", key: "thesis" };
+    renderSourceStatus(); renderDesk(); changed();
+    $("#topic").focus();
+    toast("Example cleared. Start with your topic on the left.");
+  });
+  renderDesk();
+  changed();
+  renderPanel();
+}
+
+</script>
+<script>
+/* Essay Writing Assistant — right-hand panel: word meters, feedback, vocabulary, source, rewrites, Claude tutor */
+"use strict";
+
+/* ---------- meters and outline ---------- */
+function renderMeters() {
+  const r = S.result;
+  const len = L();
+  const scale = len.max * 1.2;
+  const total = $("#total");
+  total.replaceChildren(
+    h("span", { class: "eyebrow" }, "Total length"),
+    h("div", { class: "big" }, String(r.total), h("small", {}, `of ${len.min}–${len.max} words`)),
+    h("div", { class: "meter", id: "m-total" }, h("i")));
+  const st = setMeter($("#m-total"), r.total, len.min, len.max, scale);
+  total.append(h("span", { class: "hint" }, r.total === 0 ? "Nothing written yet." : st === "in" ? "Within the target range." : st === "under" ? `${len.min - r.total} words below the minimum.` : `${r.total - len.max} words over the limit.`));
+
+  const ol = $("#outline");
+  ol.replaceChildren();
+  const paras = S.mode === "review" ? r.paras : visibleSections().map(id => r.paras.find(p => p.id === id) || { id, label: sectionLabel(id), kind: kindOf(id), words: 0, range: RANGES[kindOf(id)] });
+  paras.forEach(p => {
+    const [lo, hi] = p.range;
+    const m = h("div", { class: "meter" }, h("i"));
+    const state = setMeter(m, p.words, lo, hi, hi * 1.3);
+    ol.append(h("li", {},
+      h("span", {}, p.label + (p.id === "body3" ? " (opt.)" : "")),
+      m,
+      h("span", { class: "count num " + (state || ""), style: "text-align:right" }, `${p.words}/${lo}–${hi}`)));
+    const cm = document.getElementById(`m-${p.id}`), cc = document.getElementById(`c-${p.id}`);
+    if (cm) { const s2 = setMeter(cm, p.words, lo, hi, hi * 1.3); cc.textContent = `${p.words} / ${lo}–${hi}`; cc.className = "count " + (s2 || ""); }
+  });
+  const pick = $("#reviewPara");
+  if (pick) { const v = pick.value; pick.replaceChildren(...r.paras.map(p => h("option", { value: p.id, text: p.label }))); if (r.paras.some(p => p.id === v)) pick.value = v; }
+}
+
+/* ---------- panel tabs ---------- */
+function renderPanel() {
+  $$(".tabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.tab === S.tab));
+  const panel = $("#panel");
+  panel.replaceChildren();
+  if (S.tab === "feedback") panel.append(...feedbackView());
+  if (S.tab === "vocab") panel.append(vocabView());
+  if (S.tab === "source") panel.append(sourceView());
+}
+
+const SEV_ORDER = { fix: 0, warn: 1, ok: 2 };
+function feedbackView() {
+  const nodes = [];
+  if (S.proposal) nodes.push(proposalView());
+  const r = S.result;
+  let list = r.issues.slice();
+  if (S.scope) list = list.filter(i => i.para === S.scope);
+  const counts = { all: list.length, fix: list.filter(i => i.sev === "fix").length, warn: list.filter(i => i.sev === "warn").length, ok: list.filter(i => i.sev === "ok").length };
+  const labels = { all: "All", fix: "To fix", warn: "Suggestions", ok: "Done well" };
+  nodes.push(h("div", { class: "filters", role: "group", "aria-label": "Filter feedback" },
+    Object.keys(labels).map(k => h("button", { type: "button", "aria-pressed": S.filter === k, onclick: () => { S.filter = k; renderPanel(); } }, `${labels[k]} `, h("span", { class: "num" }, String(counts[k]))))));
+  if (S.scope) nodes.push(h("div", { class: "status", style: "background:var(--accent-soft);color:var(--ink);margin-top:8px;align-items:center" },
+    h("span", { style: "flex:1" }, "Showing checks for ", h("b", {}, labelFor(S.scope))),
+    h("button", { type: "button", class: "btn ghost", onclick: () => { S.scope = null; renderPanel(); } }, "Show all")));
+  if (S.filter !== "all") list = list.filter(i => i.sev === S.filter);
+  list.sort((a, b) => SEV_ORDER[a.sev] - SEV_ORDER[b.sev] || AREAS.indexOf(a.area) - AREAS.indexOf(b.area));
+
+  const notes = h("div", { class: "notes", style: "margin-top:10px" });
+  if (!list.length) notes.append(h("p", { class: "empty" }, S.filter === "fix" ? "Nothing to fix in this view." : "No feedback in this view."));
+  list.forEach(i => notes.append(noteView(i)));
+  nodes.push(notes);
+
+  nodes.push(h("div", { class: "ai-only", style: "margin-top:14px;display:grid;gap:8px" },
+    h("button", { type: "button", class: "btn ai", onclick: tutorReview, id: "tutorBtn" }, "Get tutor comments on the full essay"),
+    h("span", { class: "hint" }, "Claude comments on meaning, logic and grammar the pattern checks miss. It will not rewrite your essay.")));
+  if (S.tutor) nodes.push(tutorView());
+  nodes.push(h("p", { class: "hint", style: "margin-top:14px" }, "Checks run in your browser and are pattern-based: they catch common problems, not every error. Your teacher's feedback always takes priority."));
+  return nodes;
+}
+
+function labelFor(id) { const p = S.result.paras.find(x => x.id === id); return p ? p.label : sectionLabel(id); }
+
+function noteView(i) {
+  const go = i.para && S.mode !== "review" ? () => focusPart(i.para, i.key || firstKey(i.para)) : null;
+  return h("div", { class: "note " + i.sev },
+    h("div", {},
+      h("div", { class: "where" }, `${i.area} · ${i.where}`),
+      h("p", {}, i.msg),
+      i.quote ? h("q", {}, i.quote) : null,
+      go ? h("div", { class: "act" }, h("button", { type: "button", class: "btn ghost", style: "padding:2px 6px;font-size:12px", onclick: go }, "Go to text →")) : null));
+}
+function firstKey(sec) { const k = PARTS[kindOf(sec)].find(p => !(S.essay[sec][p.key] || "").trim()); return (k || PARTS[kindOf(sec)][0]).key; }
+
+function reviewAll() {
+  S.scope = null; S.filter = "all"; S.tab = "feedback";
+  S.result = analyse(model());
+  renderPanel();
+  const f = S.result.issues.filter(i => i.sev === "fix").length, w = S.result.issues.filter(i => i.sev === "warn").length;
+  toast(`Essay reviewed: ${f} to fix, ${w} suggestions.`);
+  if (matchMedia("(max-width:1100px)").matches) $(".margin").scrollIntoView({ behavior: "smooth" });
+}
+
+function checkParagraph(id) {
+  S.result = analyse(model());
+  const p = S.result.paras.find(x => x.id === id);
+  if (!p || !p.text) { toast(`${sectionLabel(id)} is empty. Write something first.`); return; }
+  S.scope = id; S.filter = "all"; S.tab = "feedback";
+  renderPanel();
+  const n = S.result.issues.filter(i => i.para === id && i.sev !== "ok").length;
+  toast(n ? `${p.label}: ${n} point${n === 1 ? "" : "s"} to look at.` : `${p.label}: no problems found.`);
+  if (matchMedia("(max-width:1100px)").matches) $(".margin").scrollIntoView({ behavior: "smooth" });
+}
+
+/* ---------- vocabulary ---------- */
+function suggestVocab(id) {
+  S.vocabFor = id; S.tab = "vocab";
+  if (S.mode !== "review" && S.active.sec !== id) S.active = { sec: id, key: firstKey(id) };
+  renderPanel();
+  if (matchMedia("(max-width:1100px)").matches) $(".margin").scrollIntoView({ behavior: "smooth" });
+}
+
+function vocabView() {
+  const wrap = h("div", { class: "vocab" });
+  let order = Object.keys(VOCAB);
+  let lead = "Click a phrase to insert it at the cursor. Replace “…” with your own words.";
+  if (S.mode !== "review") {
+    const part = partDef(S.active);
+    const preferred = part.vocab;
+    order = preferred.concat(order.filter(k => !preferred.includes(k)));
+    lead = `Inserting into ${sectionLabel(S.active.sec)} → ${part.label}. Phrases for this part come first.`;
+  }
+  wrap.append(h("p", { class: "hint", style: "margin:0" }, lead));
+  order.forEach(k => {
+    const g = VOCAB[k];
+    wrap.append(h("div", {}, h("h3", {}, g.title),
+      h("ul", {}, g.items.map(s => h("li", {}, h("button", { type: "button", onclick: () => insertPhrase(s) }, fillCitation(s)))))));
+  });
+  const flagged = S.result.issues.filter(i => i.area === "Academic style" && /^Replace/.test(i.msg) && (!S.vocabFor || i.para === S.vocabFor));
+  if (flagged.length) wrap.append(h("div", {}, h("h3", {}, "Words to upgrade in " + (S.vocabFor ? labelFor(S.vocabFor) : "your essay")),
+    h("div", { class: "notes", style: "margin-top:6px" }, flagged.map(noteView))));
+  return wrap;
+}
+
+/* ---------- source ---------- */
+function sourceView() {
+  const wrap = h("div", { style: "display:grid;gap:10px" });
+  const src = S.settings.srcText || "";
+  if (countWords(src) < 15) {
+    wrap.append(h("div", { class: "status warn" }, "No article is loaded, so the assistant cannot check that your references are accurate or that the article really says what you report. It will never invent content from a source. Upload the article or paste its text on the left."));
+    return wrap;
+  }
+  const cite = [S.settings.srcAuthor, S.settings.srcYear && `(${S.settings.srcYear})`].filter(Boolean).join(" ");
+  wrap.append(h("div", {}, h("span", { class: "eyebrow" }, "Loaded source"), h("p", { style: "margin:4px 0 0;font:15px/1.4 var(--serif)" }, cite ? `${cite}. ` : "", h("i", {}, S.settings.srcTitle || "Untitled article"))));
+  if (S.mode === "review" || !S.active.sec.startsWith("body")) {
+    wrap.append(h("p", { class: "hint", style: "margin:0" }, "Click into a body paragraph's Point to see sentences from the article related to it."));
+    return wrap;
+  }
+  const sec = S.active.sec;
+  const query = [S.essay[sec].point, S.essay[sec].evidence].join(" ");
+  const hits = sourceMatches(src, query, 3);
+  wrap.append(h("h2", {}, `Article sentences related to ${labelFor(sec)}`));
+  if (!query.trim()) wrap.append(h("p", { class: "empty" }, "Write the Point first; matching sentences will appear here."));
+  else if (!hits.length) wrap.append(h("p", { class: "empty" }, "No sentence in the article shares key words with this point. Check whether the article supports it."));
+  else wrap.append(h("div", { class: "src-hits" }, hits.map(s => h("div", { style: "display:grid;gap:4px" },
+    h("blockquote", {}, s),
+    h("div", { style: "display:flex;gap:6px;flex-wrap:wrap" },
+      h("button", { type: "button", class: "btn", onclick: () => useEvidence(sec, s, true) }, "Quote it"),
+      h("button", { type: "button", class: "btn ghost", onclick: () => useEvidence(sec, s, false) }, "Start a paraphrase"))))));
+  wrap.append(h("p", { class: "hint", style: "margin:0" }, "These sentences are copied from your article, not generated. A paraphrase in your own words usually scores better than a long quotation."));
+  return wrap;
+}
+function useEvidence(sec, sentence, quote) {
+  const a = S.settings.srcAuthor || "[Author]", y = S.settings.srcYear || "[Year]";
+  const style = S.settings.citation;
+  const text = quote
+    ? (style === "MLA" ? `${a} states that “${sentence.replace(/\.$/, "")}” (page).` : `${a} (${y}) state that “${sentence.replace(/\.$/, "")}” (p. page).`)
+    : (style === "MLA" ? `According to ${a}, …` : `According to ${a} (${y}), …`);
+  S.essay[sec].evidence = text;
+  renderDesk(); changed();
+  focusPart(sec, "evidence");
+  toast(quote ? "Quotation added. Replace “page” with the page number." : "Now explain the finding in your own words.");
+}
+
+/* ---------- Simplify / Upgrade proposals ---------- */
+function propose(id, kind) {
+  const fn = kind === "simplify" ? t => simplifyText(t, S.settings.level) : upgradeText;
+  let before, after, changes, parts = null;
+  if (S.mode === "review") {
+    const p = analyse(model()).paras.find(x => x.id === id);
+    if (!p || !p.text) { toast("That paragraph is empty."); return; }
+    const r = fn(p.text);
+    before = p.text; after = r.text; changes = r.changes;
+  } else {
+    parts = {}; changes = [];
+    PARTS[kindOf(id)].forEach(pd => {
+      const t = S.essay[id][pd.key] || "";
+      const r = fn(t);
+      parts[pd.key] = r.text; changes.push(...r.changes);
+    });
+    before = PARTS[kindOf(id)].map(pd => S.essay[id][pd.key]).filter(Boolean).join(" ");
+    after = PARTS[kindOf(id)].map(pd => parts[pd.key]).filter(Boolean).join(" ");
+    if (!before.trim()) { toast(`${sectionLabel(id)} is empty. Write something first.`); return; }
+  }
+  S.proposal = { id, kind, before, after, changes, parts, source: "rules" };
+  S.tab = "feedback"; renderPanel();
+  if (matchMedia("(max-width:1100px)").matches) $(".margin").scrollIntoView({ behavior: "smooth" });
+}
+
+function proposalView() {
+  const P = S.proposal;
+  const title = (P.kind === "simplify" ? "Simplify" : "Upgrade to C1") + " · " + labelFor(P.id);
+  const box = h("section", { class: "proposal", "aria-label": title }, h("span", { class: "eyebrow" }, title + (P.source === "claude" ? " · by Claude" : "")));
+  if (!P.changes.length) {
+    box.append(h("p", { class: "empty" }, P.kind === "simplify" ? "The built-in rules found nothing to simplify." : "The built-in rules found no informal words to replace."));
+  } else {
+    box.append(h("div", { class: "txt" }, markChanges(P.after, P.changes)));
+    box.append(h("div", {}, h("span", { class: "lbl" }, "What changed and why"),
+      h("ol", {}, P.changes.map(c => h("li", {}, h("del", {}, c.from), " → ", h("ins", {}, c.to), ". ", c.why)))));
+  }
+  box.append(h("div", { class: "acts" },
+    P.changes.length ? h("button", { type: "button", class: "btn primary", onclick: acceptProposal }, "Apply changes") : null,
+    h("button", { type: "button", class: "btn ai ai-only", onclick: () => claudeRewrite(P.id, P.kind) }, "Ask Claude for a better version"),
+    h("button", { type: "button", class: "btn ghost", onclick: () => { S.proposal = null; renderPanel(); } }, "Dismiss")));
+  box.append(h("span", { class: "hint" }, "Only wording changes. Your ideas and evidence stay yours."));
+  return box;
+}
+function markChanges(text, changes) {
+  const frag = document.createDocumentFragment();
+  const targets = [...new Set(changes.map(c => c.to).filter(t => t && !t.includes(" / ")))].sort((a, b) => b.length - a.length);
+  if (!targets.length) { frag.append(text); return frag; }
+  const re = new RegExp("(" + targets.map(esc).join("|") + ")", "gi");
+  text.split(re).forEach((seg, i) => frag.append(i % 2 ? h("ins", {}, seg) : seg));
+  return frag;
+}
+function acceptProposal() {
+  const P = S.proposal;
+  if (P.parts) Object.assign(S.essay[P.id], P.parts);
+  else S.reviewText = S.reviewText.replace(P.before, P.after);
+  S.proposal = null;
+  renderDesk(); changed(); renderPanel();
+  toast("Changes applied. Read the paragraph again to make sure it still says what you mean.");
+}
+
+/* ---------- Claude tutor (only when the page runs inside a Claude viewer) ---------- */
+let sampleFn = null;
+if (window.claude && typeof window.claude.use === "function") {
+  window.claude.use("sample").then(fn => { if (fn) { sampleFn = fn; document.body.classList.add("has-ai"); } }).catch(() => {});
+}
+function aiFail(e, out) {
+  const code = e && e.code;
+  if (code === "cancelled") return;
+  if (["not_granted", "sampling_disabled", "not_declared", "capability_disabled", "capability_removed"].includes(code)) {
+    document.body.classList.remove("has-ai"); sampleFn = null;
+    toast("The Claude tutor is not available here. The built-in checks still work.");
+  } else if (code === "rate_limited") toast("Too many tutor requests. Wait a minute and try again.");
+  else toast("The tutor could not answer. Try again.");
+  if (out) out.hidden = true;
+}
+function contextBlock() {
+  const s = S.settings;
+  const src = (s.srcText || "").trim();
+  return `ASSIGNMENT
+Topic: ${s.topic || "(not given)"}
+Task: ${s.prompt || "(not given)"}
+Essay type: ${TYPES[s.type].name}. Target: ${s.length} words, CEFR level ${s.level}, citation style ${s.citation}.
+Required content: ${s.required || "(none)"}
+SOURCE: ${src ? `${s.srcAuthor || "Unknown author"} (${s.srcYear || "n.d."}) "${s.srcTitle || ""}". Text supplied by the student (may be partial):\n"""${src.slice(0, 7000)}"""` : "NO SOURCE TEXT WAS PROVIDED. You cannot verify any citation or claim attributed to a source, and you must not state what any source says."}`;
+}
+
+async function askTutor(id) {
+  if (!sampleFn) return;
+  const out = document.getElementById(`ai-${id}`);
+  const part = partDef(S.active.sec === id ? S.active : { sec: id, key: firstKey(id) });
+  const current = PARTS[kindOf(id)].map(p => `${p.label}: ${S.essay[id][p.key] || "(empty)"}`).join("\n");
+  out.hidden = false; out.textContent = "Thinking…";
+  try {
+    await sampleFn(`You are a writing tutor helping a university student write an academic English essay THEMSELVES. Never write sentences, arguments or evidence for the student. Ask 2 or 3 short Socratic questions (plain English at ${S.settings.level} level) that help them develop the part "${part.label}" of their ${sectionLabel(id)}, then give one practical tip. Refer to what they have already written. Do not quote or describe a source unless the text is given below. Plain text, no headings, under 110 words.
+
+${contextBlock()}
+
+THESIS SO FAR: ${S.essay.intro.thesis || "(empty)"}
+${sectionLabel(id).toUpperCase()} SO FAR:
+${current}`, { modelTier: "quick", onText: ({ text }) => { out.textContent = text; } });
+  } catch (e) { aiFail(e, out); }
+}
+
+async function claudeRewrite(id, kind) {
+  if (!sampleFn) return;
+  const btn = $(".proposal .btn.ai");
+  if (btn) { btn.disabled = true; btn.textContent = "Thinking…"; }
+  const goal = kind === "simplify" ? `Make the wording clearer and simpler for a ${S.settings.level === "C1" ? "B2" : S.settings.level} reader: shorter sentences, common words.` : "Raise the wording to C1 academic register: precise vocabulary, cautious academic phrasing, varied linking, no contractions.";
+  const structured = S.mode !== "review";
+  const input = structured ? JSON.stringify(Object.fromEntries(PARTS[kindOf(id)].map(p => [p.key, S.essay[id][p.key] || ""]))) : JSON.stringify({ paragraph: S.proposal.before });
+  try {
+    const r = await sampleFn.json(`Improve the WORDING ONLY of one paragraph from a student's academic essay. ${goal}
+Rules: keep every idea, claim, example and citation the student wrote; add no new arguments, facts, examples or statistics; never add or change what a source says; keep empty fields empty; keep roughly the same length.
+Reply with only JSON: {"revised": <object with exactly the same keys as the input, each a string>, "changes": [{"from": "original words", "to": "new words", "why": "one short reason a student understands"}]} — at most 8 changes.
+
+${contextBlock()}
+
+INPUT (${sectionLabel(id)}): ${input}`);
+    if (!r || typeof r.revised !== "object" || !Array.isArray(r.changes)) throw { code: "upstream_error" };
+    const parts = structured ? Object.fromEntries(PARTS[kindOf(id)].map(p => [p.key, String(r.revised[p.key] ?? S.essay[id][p.key] ?? "")])) : null;
+    const after = structured ? Object.values(parts).filter(Boolean).join(" ") : String(r.revised.paragraph || S.proposal.before);
+    S.proposal = { id, kind, before: S.proposal.before, after, parts, source: "claude",
+      changes: r.changes.slice(0, 8).map(c => ({ from: String(c.from || ""), to: String(c.to || ""), why: String(c.why || "") })) };
+    renderPanel();
+  } catch (e) { aiFail(e); if (btn) { btn.disabled = false; btn.textContent = "Ask Claude for a better version"; } }
+}
+
+async function tutorReview() {
+  if (!sampleFn) return;
+  const btn = $("#tutorBtn");
+  const text = S.mode === "review" ? S.reviewText : essayToText(S.essay, L().extra);
+  if (!text.trim()) { toast("Write or paste your essay first."); return; }
+  btn.disabled = true; btn.textContent = "Reading your essay…";
+  try {
+    const r = await sampleFn.json(`You are an academic English tutor reviewing a student's essay. Give feedback only; do NOT rewrite the essay. You may suggest a better version of at most two individual sentences, and must explain what changed.
+Check: clarity of thesis, fit to the essay type, PEEL structure of body paragraphs, whether explanations really support the points, relevance to the task, grammar errors, academic register, and whether claims attributed to the source are supported by the source text. If no source text is provided, include one comment saying the references cannot be verified. Never state what the source says beyond the supplied text.
+Reply with only a JSON array of at most 8 objects: {"severity": "fix"|"warn"|"ok", "area": short label, "where": "Introduction"|"Body Paragraph 1"|...|"Conclusion"|"Whole essay", "quote": exact words from the essay or "", "comment": plain ${S.settings.level}-level English, max 40 words, "suggestion": optional improved sentence or ""}.
+
+${contextBlock()}
+
+ESSAY:
+"""${text.slice(0, 9000)}"""`, { modelTier: "default" });
+    if (!Array.isArray(r)) throw { code: "upstream_error" };
+    S.tutor = r.slice(0, 8);
+    renderPanel();
+  } catch (e) { aiFail(e); btn.disabled = false; btn.textContent = "Get tutor comments on the full essay"; }
+}
+
+function tutorView() {
+  return h("div", { class: "notes ai-only", style: "margin-top:12px;display:grid" },
+    h("h2", {}, "Tutor comments ", h("span", { class: "hint" }, "by Claude")),
+    S.tutor.map(c => h("div", { class: "note " + (["fix", "warn", "ok"].includes(c.severity) ? c.severity : "warn") },
+      h("div", {},
+        h("div", { class: "where" }, `${c.area || "Tutor"} · ${c.where || "Whole essay"}`),
+        h("p", {}, String(c.comment || "")),
+        c.quote ? h("q", {}, String(c.quote)) : null,
+        c.suggestion ? h("p", { style: "font:italic 14px/1.45 var(--serif);color:var(--ok)" }, "Possible version: " + c.suggestion) : null))));
+}
+
+init();
+
+</script>

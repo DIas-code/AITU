@@ -1,0 +1,39 @@
+{
+    "course": "Programming for AI",
+    "semester": 1,
+    "students": [
+        {
+            "id": 1,
+            "name": "Amina",
+            "scores": [
+                85,
+                90,
+                88
+            ],
+            "average": 87.67,
+            "result": "Pass"
+        },
+        {
+            "id": 2,
+            "name": "Arman",
+            "scores": [
+                70,
+                82,
+                80
+            ],
+            "average": 77.33,
+            "result": "Pass"
+        },
+        {
+            "id": 3,
+            "name": "Dias",
+            "scores": [
+                95,
+                92,
+                96
+            ],
+            "average": 94.33,
+            "result": "Pass"
+        }
+    ]
+}
