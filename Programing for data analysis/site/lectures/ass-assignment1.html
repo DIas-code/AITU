@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1. Создание структуры проекта · Programming for Data Analysis</title>
+<link rel="stylesheet" href="../assets/style.css">
+
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="../index.html"><b>PDA</b><span>Programming for Data Analysis</span></a>
+  <nav><a href="../index.html">Главная</a>
+<a href="../week1.html">Неделя 1</a>
+<a href="../week2.html">Неделя 2</a>
+<a href="../week3.html">Неделя 3</a>
+<a href="../assignments.html" class="on">Задания</a>
+<a href="../commands.html">Команды</a></nav>
+</header>
+<main>
+
+<div class="lechead">
+  <a class="back" href="../assignments.html">← Задания</a>
+  <h1>1. Создание структуры проекта</h1>
+  <div class="meta">5 текстовых ячеек · 6 ячеек кода ·
+    <a href="../ass1/assignment1.ipynb" download>скачать .ipynb</a></div>
+</div>
+<div class="leclayout">
+  <aside class="toc"><div class="toc-t">Содержание</div><a class="lv3" href="#1.-%D0%A1%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D1%8B-%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D0%B0">1. Создание структуры проекта</a><a class="lv3" href="#2.-%D0%A0%D0%B0%D0%B1%D0%BE%D1%82%D0%B0-%D1%81-CSV">2. Работа с CSV</a><a class="lv3" href="#3.-%D0%A1%D0%BE%D1%85%D1%80%D0%B0%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%80%D0%B5%D0%B7%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%82%D0%BE%D0%B2">3. Сохранение результатов</a><a class="lv3" href="#4.-%D0%90%D1%80%D1%85%D0%B8%D0%B2%D0%B0%D1%86%D0%B8%D1%8F">4. Архивация</a><a class="lv3" href="#5.-%D0%A0%D0%B0%D0%B1%D0%BE%D1%82%D0%B0-%D1%81-pathlib">5. Работа с pathlib</a></aside>
+  <article class="nbdoc"><div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="1.-%D0%A1%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D1%8B-%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D0%B0">1. Создание структуры проекта<a class="anchor-link" href="#1.-%D0%A1%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D1%8B-%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D0%B0">¶</a></h3><ul>
+<li>Написать скрипт, который создаёт директорию <code>project</code> с подпапками:<ul>
+<li><code>data</code></li>
+<li><code>results</code></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [1]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [2]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="s1">'project'</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'File already exists'</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [3]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">folders</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"data"</span><span class="p">,</span> <span class="s2">"results"</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">folder</span> <span class="ow">in</span> <span class="n">folders</span><span class="p">:</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">'project'</span><span class="p">,</span> <span class="n">folder</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'File already exists'</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="2.-%D0%A0%D0%B0%D0%B1%D0%BE%D1%82%D0%B0-%D1%81-CSV">2. Работа с CSV<a class="anchor-link" href="#2.-%D0%A0%D0%B0%D0%B1%D0%BE%D1%82%D0%B0-%D1%81-CSV">¶</a></h3><ul>
+<li>В папку <code>data</code> сохранить файл <code>students.csv</code> с данными о студентах (ФИО, группа, оценки).</li>
+<li>Считать данные из <code>students.csv</code> и вычислить средний балл по каждому студенту.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [5]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">csv</span>
+<span class="n">path_to_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">'project/data/'</span><span class="p">,</span> <span class="s1">'students.csv'</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path_to_file</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+    <span class="n">reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictReader</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">student</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
+        <span class="n">average</span> <span class="o">=</span> <span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="n">student</span><span class="p">[</span><span class="s1">'math'</span><span class="p">])</span><span class="o">+</span><span class="nb">int</span><span class="p">(</span><span class="n">student</span><span class="p">[</span><span class="s1">'physics'</span><span class="p">])</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">student</span><span class="p">[</span><span class="s1">'cs'</span><span class="p">])</span> <span class="o">+</span> 
+                   <span class="nb">int</span><span class="p">(</span><span class="n">student</span><span class="p">[</span><span class="s1">'history'</span><span class="p">])</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">student</span><span class="p">[</span><span class="s1">'english'</span><span class="p">]))</span><span class="o">/</span><span class="mi">5</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="n">student</span><span class="p">[</span><span class="s1">'full_name'</span><span class="p">],</span> <span class="nb">round</span><span class="p">(</span><span class="n">average</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+        
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Shomanov Ayaulym 73.0
+Sadykova Moldir 68.8
+Sadykova Aliya 76.4
+Imanbekov Yerlan 72.8
+Nurmaganbet Temirlan 71.6
+Kydyr Dana 73.4
+Mukan Ayaulym 75.6
+Turganbek Temirlan 85.4
+Zhaksylykov Karina 78.6
+Mukan Rustem 76.4
+Ilyasov Sanzhar 74.2
+Mansurova Karina 79.0
+Nurmaganbet Madi 77.2
+Kapanova Aigerim 82.0
+Kapanova Bibigul 83.4
+Ilyasov Aigerim 77.8
+Tleubayeva Yerkebulan 78.4
+Sadykova Moldir 76.8
+Kydyr Aliya 79.6
+Ilyasov Altynai 77.8
+Abdullayev Damir 81.6
+Yessimov Bibigul 80.8
+Rakhimzhanov Rustem 82.4
+Omarov Anel 83.0
+Sadykova Sanzhar 83.0
+Yeszhanov Bibigul 71.0
+Kapanova Damir 68.0
+Imanbekov Dana 76.8
+Batyrbek Serik 79.0
+Shomanov Samat 76.2
+Ilyasov Ayaulym 74.4
+Sadykova Aidos 77.8
+Myrzakhmet Yerkebulan 83.2
+Batyrbek Rustem 80.0
+Mansurova Moldir 74.4
+Smailova Adil 83.8
+Turganbek Aidos 69.4
+Zhussupov Dana 77.6
+Beketov Altynai 75.6
+Kapanova Ardak 72.8
+Batyrbek Arman 72.8
+Turganbek Ayaulym 79.8
+Shomanov Ardak 76.6
+Kapanova Moldir 79.2
+Ilyasov Yerlan 80.0
+Kenzhebay Moldir 77.0
+Zhaksilik Aidos 79.2
+Imanbekov Sanzhar 72.4
+Ilyasov Aigerim 81.0
+Rakhimzhanov Samat 75.0
+Kenzhebay Damir 79.4
+Yessimov Dana 79.6
+Smailova Altynai 81.8
+Myrzakhmet Yerlan 77.8
+Myrzakhmet Zarina 78.0
+Imanbekov Gulnaz 74.0
+Myrzakhmet Karina 78.0
+Abdullayev Rustem 81.4
+Shomanov Aliya 79.2
+Smailova Aknur 79.6
+Zhussupov Moldir 74.0
+Kydyr Anel 83.2
+Nurmaganbet Sanzhar 80.2
+Smailova Anel 78.0
+Seitov Gulnaz 79.6
+Turganbek Adil 77.6
+Sarsembayev Anel 85.6
+Tleubayeva Adil 78.2
+Kapanova Adil 77.8
+Rakhimzhanov Temirlan 81.8
+Kapanova Gulnaz 84.0
+Smailova Temirlan 79.8
+Imanbekov Sanzhar 73.6
+Abdullayev Arman 84.8
+Yeszhanov Damir 79.2
+Kaldybek Ayaulym 76.2
+Kapanova Adil 71.8
+Kenzhebay Madi 75.4
+Kaliyev Aidos 84.4
+Zhussupov Temirlan 75.4
+Smailova Karina 84.4
+Smailova Aruzhan 82.2
+Yeszhanov Karina 88.2
+Nugumanova Anel 73.4
+Sarsembayev Arman 81.4
+Kaldybek Zarina 80.8
+Ilyasov Miras 67.8
+Nugumanova Karina 77.4
+Zhaksilik Yerkebulan 81.4
+Kaliyev Temirlan 78.6
+Akhmetova Sanzhar 77.8
+Zhaksilik Samat 83.4
+Mansurova Yerlan 75.8
+Smailova Altynai 83.2
+Kenzhebay Madi 83.0
+Abdullayev Damir 80.2
+Batyrbek Karina 76.4
+Nurmaganbet Gulnaz 73.8
+Kaldybek Arman 78.6
+Kapanova Rustem 83.4
+Yeszhanov Nuray 75.0
+Zhaksylykov Ardak 79.0
+Yeszhanov Madi 67.4
+Abdullayev Damir 78.0
+Tleubayeva Temirlan 82.6
+Nugumanova Adil 67.6
+Ilyasov Aigerim 83.6
+Nurmaganbet Yerkebulan 77.0
+Omarov Gulnaz 70.0
+Rakhimzhanov Adil 83.2
+Abdullayev Miras 84.2
+Zhussupov Adil 82.4
+Kaldybek Aidos 65.8
+Zhaksilik Yerkebulan 78.8
+Rakhimzhanov Yerkebulan 86.0
+Sarsembayev Sanzhar 83.8
+Mansurova Rustem 75.8
+Yeszhanov Samat 83.8
+Mukan Rustem 68.0
+Kaliyev Anel 80.2
+Mansurova Ardak 76.4
+Smailova Ardak 74.4
+Shomanov Anel 82.4
+Abdullayev Karina 80.0
+Imanbekov Gulnaz 83.2
+Tleubayeva Aidos 79.6
+Kenzhebay Damir 82.4
+Myrzakhmet Aknur 72.0
+Batyrbek Karina 79.6
+Tleubayeva Adil 79.2
+Akhmetova Aigerim 72.4
+Myrzakhmet Temirlan 74.6
+Turganbek Serik 83.6
+Zhaksylykov Nuray 83.4
+Kapanova Madi 76.4
+Batyrbek Madi 86.2
+Mansurova Nuray 76.8
+Tleubayeva Samat 79.2
+Omarov Rustem 75.6
+Imanbekov Arman 86.2
+Imanbekov Nuray 77.6
+Kydyr Miras 78.2
+Zhaksilik Almas 67.2
+Kenzhebay Zarina 72.8
+Imanbekov Aknur 77.8
+Kaldybek Ayaulym 80.6
+Beketov Damir 83.2
+Kaldybek Madi 80.2
+Zhussupov Gulnaz 75.0
+Kaldybek Gulnaz 83.0
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="3.-%D0%A1%D0%BE%D1%85%D1%80%D0%B0%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%80%D0%B5%D0%B7%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%82%D0%BE%D0%B2">3. Сохранение результатов<a class="anchor-link" href="#3.-%D0%A1%D0%BE%D1%85%D1%80%D0%B0%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%80%D0%B5%D0%B7%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%82%D0%BE%D0%B2">¶</a></h3><ul>
+<li>Сохранить агрегированные результаты в формате JSON (<code>results/report.json</code>).</li>
+<li>Проверить: если файл уже существует — вывести предупреждение и спросить подтверждение на перезапись.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="4.-%D0%90%D1%80%D1%85%D0%B8%D0%B2%D0%B0%D1%86%D0%B8%D1%8F">4. Архивация<a class="anchor-link" href="#4.-%D0%90%D1%80%D1%85%D0%B8%D0%B2%D0%B0%D1%86%D0%B8%D1%8F">¶</a></h3><ul>
+<li>Автоматически создать архив <code>results.zip</code>, в котором сохраняется папка <code>results</code>.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [8]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">csv</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+
+<span class="n">path_to_students</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">'project/data/'</span><span class="p">,</span> <span class="s1">'students.csv'</span><span class="p">)</span>
+<span class="n">path_to_report</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">'project/results/'</span><span class="p">,</span> <span class="s1">'report.json'</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path_to_report</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span> <span class="k">as</span> <span class="n">report</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path_to_students</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span> <span class="k">as</span> <span class="n">students_file</span><span class="p">:</span>
+        <span class="n">reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictReader</span><span class="p">(</span><span class="n">students_file</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">student</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
+            <span class="n">average</span> <span class="o">=</span> <span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="n">student</span><span class="p">[</span><span class="s1">'math'</span><span class="p">])</span><span class="o">+</span><span class="nb">int</span><span class="p">(</span><span class="n">student</span><span class="p">[</span><span class="s1">'physics'</span><span class="p">])</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">student</span><span class="p">[</span><span class="s1">'cs'</span><span class="p">])</span> <span class="o">+</span> 
+                    <span class="nb">int</span><span class="p">(</span><span class="n">student</span><span class="p">[</span><span class="s1">'history'</span><span class="p">])</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">student</span><span class="p">[</span><span class="s1">'english'</span><span class="p">]))</span><span class="o">/</span><span class="mi">5</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s1">'full_name'</span><span class="p">:</span> <span class="n">student</span><span class="p">[</span><span class="s1">'full_name'</span><span class="p">],</span>
+                        <span class="s1">'average'</span><span class="p">:</span> <span class="n">average</span>
+                    <span class="p">}</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">report</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">zipfile</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="5.-%D0%A0%D0%B0%D0%B1%D0%BE%D1%82%D0%B0-%D1%81-pathlib">5. Работа с pathlib<a class="anchor-link" href="#5.-%D0%A0%D0%B0%D0%B1%D0%BE%D1%82%D0%B0-%D1%81-pathlib">¶</a></h3><ul>
+<li>Реализовать проверку: существует ли <code>report.json</code>. Если да, вывести его размер и дату последней модификации.</li>
+</ul>
+</div>
+</div>
+</div>
+</article>
+</div>
+<div class="pager"><a class="pg prev" href="../lectures/week3-lecture-3-3-numpy-example-2026.html">← Example “Online Courses and Ratings”</a></div>
+
+</main>
+<footer>
+  Сгенерировано <code>build.py</code> из ноутбуков курса · AITU
+</footer>
+</body>
+</html>

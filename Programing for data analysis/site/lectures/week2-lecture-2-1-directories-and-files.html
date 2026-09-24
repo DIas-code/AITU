@@ -1,0 +1,869 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lecture 2. Working with Directories and Files in Python · Programming for Data Analysis</title>
+<link rel="stylesheet" href="../assets/style.css">
+
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="../index.html"><b>PDA</b><span>Programming for Data Analysis</span></a>
+  <nav><a href="../index.html">Главная</a>
+<a href="../week1.html">Неделя 1</a>
+<a href="../week2.html" class="on">Неделя 2</a>
+<a href="../week3.html">Неделя 3</a>
+<a href="../assignments.html">Задания</a>
+<a href="../commands.html">Команды</a></nav>
+</header>
+<main>
+
+<div class="lechead">
+  <a class="back" href="../week2.html">← Неделя 2</a>
+  <h1>Lecture 2. Working with Directories and Files in Python</h1>
+  <div class="meta">36 текстовых ячеек · 26 ячеек кода ·
+    <a href="../week2/Lecture_2_1_Directories%20and%20Files.ipynb" download>скачать .ipynb</a></div>
+</div>
+<div class="leclayout">
+  <aside class="toc"><div class="toc-t">Содержание</div><a class="lv1" href="#Lecture-2.-Working-with-Directories-and-Files-in-Python">Lecture 2. Working with Directories and Files in Python</a><a class="lv1" href="#Part-2.-Working-with-Text-Files-%E2%86%92-application-log">Part 2. Working with Text Files → application log</a><a class="lv1" href="#Part-3.-Working-with-CSV-%E2%86%92-student-dataset">Part 3. Working with CSV → student dataset</a><a class="lv1" href="#Part-4.-Working-with-JSON-%E2%86%92-AI-model-configuration">Part 4. Working with JSON → AI model configuration</a><a class="lv1" href="#Part-5.-Working-with-Excel-%E2%86%92-student-performance-report">Part 5. Working with Excel → student performance report</a><a class="lv1" href="#Part-7.-Archiving-Project-Files-%E2%86%92-ZIP-backup">Part 7. Archiving Project Files → ZIP backup</a><a class="lv1" href="#Part-1.-Creating-a-Project-Structure">Part 1. Creating a Project Structure</a><a class="lv1" href="#ai_course_project/">ai_course_project/</a><a class="lv1" href="#Step-1.-Current-working-directory">Step 1. Current working directory</a><a class="lv1" href="#Step-2.-View-directory-contents">Step 2. View directory contents</a><a class="lv1" href="#Step-3.-Create-the-project-directory">Step 3. Create the project directory</a><a class="lv1" href="#Step-4.-Create-several-directories">Step 4. Create several directories</a><a class="lv1" href="#Step-5.-Check-whether-a-directory-exists">Step 5. Check whether a directory exists</a><a class="lv1" href="#Step-6.-Create-nested-directories-safely">Step 6. Create nested directories safely</a><a class="lv1" href="#Working-with-pathlib">Working with pathlib</a><a class="lv1" href="#Creating-and-manipulating-file-and-directory-paths">Creating and manipulating file and directory paths</a><a class="lv1" href="#Navigating-the-file-system">Navigating the file system</a><a class="lv1" href="#Checking-file-and-directory-properties">Checking file and directory properties</a><a class="lv1" href="#Reading-from-and-writing-to-files">Reading from and writing to files</a><a class="lv1" href="#Working-with-absolute-and-relative-paths">Working with absolute and relative paths</a><a class="lv1" href="#Ensuring-cross-platform-compatibility-(Windows,-Linux,-macOS)">Ensuring cross-platform compatibility (Windows, Linux, macOS)</a><a class="lv1" href="#Step-7.-Create-a-path-with-Path">Step 7. Create a path with Path</a><a class="lv1" href="#Step-8.-Useful-Path-properties">Step 8. Useful Path properties</a><a class="lv1" href="#Part-2.-Working-with-Text-Files">Part 2. Working with Text Files</a><a class="lv1" href="#Task:-Create-and-Manage-an-Application-Log">Task: Create and Manage an Application Log</a><a class="lv1" href="#Step-1.-Create-and-write-a-text-file">Step 1. Create and write a text file</a><a class="lv1" href="#Step-2.-Read-the-entire-file">Step 2. Read the entire file</a><a class="lv1" href="#Step-3.-Read-one-line">Step 3. Read one line</a><a class="lv1" href="#Step-4.-Read-all-lines-into-a-list">Step 4. Read all lines into a list</a><a class="lv1" href="#Step-5.-Process-the-file-line-by-line">Step 5. Process the file line by line</a><a class="lv1" href="#Step-6.-Append-new-information">Step 6. Append new information</a><a class="lv1" href="#Step-7.-Search-information-in-a-text-file">Step 7. Search information in a text file</a><a class="lv1" href="#Step-8.-Count-lines">Step 8. Count lines</a></aside>
+  <article class="nbdoc"><div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Lecture-2.-Working-with-Directories-and-Files-in-Python"><strong>Lecture 2. Working with Directories and Files in Python</strong><a class="anchor-link" href="#Lecture-2.-Working-with-Directories-and-Files-in-Python">¶</a></h1><hr/>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Part-1.-Creating-a-Project-Structure-%E2%86%92-directories,-paths,-os,-pathlib">Part 1. Creating a Project Structure → directories, paths, os, pathlib<a class="anchor-link" href="#Part-1.-Creating-a-Project-Structure-%E2%86%92-directories,-paths,-os,-pathlib">¶</a></h1><h1 id="Part-2.-Working-with-Text-Files-%E2%86%92-application-log">Part 2. Working with Text Files → application log<a class="anchor-link" href="#Part-2.-Working-with-Text-Files-%E2%86%92-application-log">¶</a></h1><h1 id="Part-3.-Working-with-CSV-%E2%86%92-student-dataset">Part 3. Working with CSV → student dataset<a class="anchor-link" href="#Part-3.-Working-with-CSV-%E2%86%92-student-dataset">¶</a></h1><h1 id="Part-4.-Working-with-JSON-%E2%86%92-AI-model-configuration">Part 4. Working with JSON → AI model configuration<a class="anchor-link" href="#Part-4.-Working-with-JSON-%E2%86%92-AI-model-configuration">¶</a></h1><h1 id="Part-5.-Working-with-Excel-%E2%86%92-student-performance-report">Part 5. Working with Excel → student performance report<a class="anchor-link" href="#Part-5.-Working-with-Excel-%E2%86%92-student-performance-report">¶</a></h1><h1 id="Part-6.-Pandas-and-Excel-%E2%86%92-analysis-of-the-generated-report">Part 6. Pandas and Excel → analysis of the generated report<a class="anchor-link" href="#Part-6.-Pandas-and-Excel-%E2%86%92-analysis-of-the-generated-report">¶</a></h1><h1 id="Part-7.-Archiving-Project-Files-%E2%86%92-ZIP-backup">Part 7. Archiving Project Files → ZIP backup<a class="anchor-link" href="#Part-7.-Archiving-Project-Files-%E2%86%92-ZIP-backup">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Part-1.-Creating-a-Project-Structure"><strong>Part 1. Creating a Project Structure</strong><a class="anchor-link" href="#Part-1.-Creating-a-Project-Structure">¶</a></h1><h1 id="Task:-Create-a-File-Structure-for-an-AI-Course-Project"><strong>Task: Create a File Structure for an AI Course Project</strong><a class="anchor-link" href="#Task:-Create-a-File-Structure-for-an-AI-Course-Project">¶</a></h1><h1 id="ai_course_project/">ai_course_project/<a class="anchor-link" href="#ai_course_project/">¶</a></h1><h1 id="%E2%94%82">│<a class="anchor-link" href="#%E2%94%82">¶</a></h1><h1 id="%E2%94%9C%E2%94%80%E2%94%80-data/">├── data/<a class="anchor-link" href="#%E2%94%9C%E2%94%80%E2%94%80-data/">¶</a></h1><h1 id="%E2%94%9C%E2%94%80%E2%94%80-reports/">├── reports/<a class="anchor-link" href="#%E2%94%9C%E2%94%80%E2%94%80-reports/">¶</a></h1><h1 id="%E2%94%9C%E2%94%80%E2%94%80-logs/">├── logs/<a class="anchor-link" href="#%E2%94%9C%E2%94%80%E2%94%80-logs/">¶</a></h1><h1 id="%E2%94%94%E2%94%80%E2%94%80-backup/">└── backup/<a class="anchor-link" href="#%E2%94%94%E2%94%80%E2%94%80-backup/">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Step-1.-Current-working-directory"><strong>Step 1. Current working directory</strong><a class="anchor-link" href="#Step-1.-Current-working-directory">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [1]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-python"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>/content
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="os.getcwd()-returns-the-current-working-directory-%E2%80%94-the-directory-where-Python-is-currently-running.">os.getcwd() returns the current working directory — the directory where Python is currently running.<a class="anchor-link" href="#os.getcwd()-returns-the-current-working-directory-%E2%80%94-the-directory-where-Python-is-currently-running.">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="The-os-module-provides-functions-for-interacting-with-the-operating-system,-including-working-with-files-and-directories.">The <strong>os</strong> module provides functions for interacting with the operating system, including working with files and directories.<a class="anchor-link" href="#The-os-module-provides-functions-for-interacting-with-the-operating-system,-including-working-with-files-and-directories.">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="The-os-module-in-Python-provides-a-standard-interface-for-interacting-with-the-operating-system.-It-allows-programs-to-work-with-the-file-system,-environment-variables,-processes,-and-system-level-functionality-in-a-platform-independent-way-(Windows,-Linux,-macOS).">The <strong>os</strong> module in Python provides a standard interface for interacting with the operating system. It allows programs to work with the file system, environment variables, processes, and system-level functionality in a platform-independent way (Windows, Linux, macOS).<a class="anchor-link" href="#The-os-module-in-Python-provides-a-standard-interface-for-interacting-with-the-operating-system.-It-allows-programs-to-work-with-the-file-system,-environment-variables,-processes,-and-system-level-functionality-in-a-platform-independent-way-(Windows,-Linux,-macOS).">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Step-2.-View-directory-contents"><strong>Step 2. View directory contents</strong><a class="anchor-link" href="#Step-2.-View-directory-contents">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [2]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-python"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>['.config', 'sample_data']
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [3]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-python"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s2">"/content"</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>['.config', 'sample_data']
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="os.listdir()-returns-the-names-of-files-and-directories-inside-a-directory.">os.listdir() returns the names of files and directories inside a directory.<a class="anchor-link" href="#os.listdir()-returns-the-names-of-files-and-directories-inside-a-directory.">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Step-3.-Create-the-project-directory"><strong>Step 3. Create the project directory</strong><a class="anchor-link" href="#Step-3.-Create-the-project-directory">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [4]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-python"><pre><span></span><span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="s2">"ai_course_project"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [5]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-python"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>['.config', 'ai_course_project', 'sample_data']
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Step-4.-Create-several-directories"><strong>Step 4. Create several directories</strong><a class="anchor-link" href="#Step-4.-Create-several-directories">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [6]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-python"><pre><span></span><span class="n">folders</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"data"</span><span class="p">,</span> <span class="s2">"reports"</span><span class="p">,</span> <span class="s2">"logs"</span><span class="p">,</span> <span class="s2">"backup"</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">folder</span> <span class="ow">in</span> <span class="n">folders</span><span class="p">:</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">"ai_course_project"</span><span class="p">,</span> <span class="n">folder</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [7]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-python"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+    <span class="s2">"ai_course_project"</span><span class="p">,</span>
+    <span class="s2">"data"</span><span class="p">,</span>
+    <span class="s2">"students.txt"</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>ai_course_project/data/students.txt
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Step-5.-Check-whether-a-directory-exists"><strong>Step 5. Check whether a directory exists</strong><a class="anchor-link" href="#Step-5.-Check-whether-a-directory-exists">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [8]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-python"><pre><span></span><span class="n">project_path</span> <span class="o">=</span> <span class="s2">"ai_course_project"</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">project_path</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>True
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [9]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-python"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">project_path</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>True
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [10]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-python"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">project_path</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>False
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Step-6.-Create-nested-directories-safely"><strong>Step 6. Create nested directories safely</strong><a class="anchor-link" href="#Step-6.-Create-nested-directories-safely">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [11]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-python"><pre><span></span><span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span>
+    <span class="s2">"ai_course_project/data/raw"</span><span class="p">,</span>
+    <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="makedirs()-can-create-multiple-levels-of-directories-at-once.">makedirs() can create multiple levels of directories at once.<a class="anchor-link" href="#makedirs()-can-create-multiple-levels-of-directories-at-once.">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="exist_ok=True-means:-if-the-directory-already-exists,-do-not-raise-an-error.">exist_ok=True means: if the directory already exists, do not raise an error.<a class="anchor-link" href="#exist_ok=True-means:-if-the-directory-already-exists,-do-not-raise-an-error.">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Working-with-pathlib"><strong>Working with pathlib</strong><a class="anchor-link" href="#Working-with-pathlib">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="pathlib-is-a-built-in-Python-module-for-working-with-file-and-directory-paths.-It-provides-a-modern,-object-oriented,-and-cross-platform-alternative-to-many-functions-from-os.path."><strong>pathlib</strong> is a built-in Python module for working with file and directory paths. It provides a modern, object-oriented, and cross-platform alternative to many functions from os.path.<a class="anchor-link" href="#pathlib-is-a-built-in-Python-module-for-working-with-file-and-directory-paths.-It-provides-a-modern,-object-oriented,-and-cross-platform-alternative-to-many-functions-from-os.path.">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="What-pathlib-is-used-for:"><strong>What pathlib is used for:</strong><a class="anchor-link" href="#What-pathlib-is-used-for:">¶</a></h1><h1 id="Creating-and-manipulating-file-and-directory-paths">Creating and manipulating file and directory paths<a class="anchor-link" href="#Creating-and-manipulating-file-and-directory-paths">¶</a></h1><h1 id="Navigating-the-file-system">Navigating the file system<a class="anchor-link" href="#Navigating-the-file-system">¶</a></h1><h1 id="Checking-file-and-directory-properties">Checking file and directory properties<a class="anchor-link" href="#Checking-file-and-directory-properties">¶</a></h1><h1 id="Reading-from-and-writing-to-files">Reading from and writing to files<a class="anchor-link" href="#Reading-from-and-writing-to-files">¶</a></h1><h1 id="Working-with-absolute-and-relative-paths">Working with absolute and relative paths<a class="anchor-link" href="#Working-with-absolute-and-relative-paths">¶</a></h1><h1 id="Ensuring-cross-platform-compatibility-(Windows,-Linux,-macOS)">Ensuring cross-platform compatibility (Windows, Linux, macOS)<a class="anchor-link" href="#Ensuring-cross-platform-compatibility-(Windows,-Linux,-macOS)">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Step-7.-Create-a-path-with-Path"><strong>Step 7. Create a path with Path</strong><a class="anchor-link" href="#Step-7.-Create-a-path-with-Path">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [14]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-python"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="n">project</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"ai_course_project1"</span><span class="p">)</span>
+
+<span class="n">data_path</span> <span class="o">=</span> <span class="n">project</span> <span class="o">/</span> <span class="s2">"data1"</span>
+<span class="n">reports_path</span> <span class="o">=</span> <span class="n">project</span> <span class="o">/</span> <span class="s2">"reports1"</span>
+<span class="n">logs_path</span> <span class="o">=</span> <span class="n">project</span> <span class="o">/</span> <span class="s2">"logs1"</span>
+<span class="n">backup_path</span> <span class="o">=</span> <span class="n">project</span> <span class="o">/</span> <span class="s2">"backup1"</span>
+
+<span class="n">data_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">reports_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">logs_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">backup_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="parents=True-means:-if-the-parent-folder-ai_course_project1-does-not-yet-exist,-create-it-as-well.">parents=True means: if the parent folder ai_course_project1 does not yet exist, create it as well.<a class="anchor-link" href="#parents=True-means:-if-the-parent-folder-ai_course_project1-does-not-yet-exist,-create-it-as-well.">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="exist_ok=True-means:-if-the-folder-already-exists,-do-not-raise-an-error.">exist_ok=True means: if the folder already exists, do not raise an error.<a class="anchor-link" href="#exist_ok=True-means:-if-the-folder-already-exists,-do-not-raise-an-error.">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Step-8.-Useful-Path-properties"><strong>Step 8. Useful Path properties</strong><a class="anchor-link" href="#Step-8.-Useful-Path-properties">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [15]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-python"><pre><span></span><span class="n">file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span>
+    <span class="s2">"ai_course_project/data/students.txt"</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">file_path</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">file_path</span><span class="o">.</span><span class="n">stem</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">file_path</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>students.txt
+students
+.txt
+ai_course_project/data
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [16]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-python"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">file_path</span><span class="o">.</span><span class="n">resolve</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>/content/ai_course_project/data/students.txt
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [17]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-python"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">file_path</span><span class="o">.</span><span class="n">exists</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>False
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Part-2.-Working-with-Text-Files"><strong>Part 2. Working with Text Files</strong><a class="anchor-link" href="#Part-2.-Working-with-Text-Files">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Task:-Create-and-Manage-an-Application-Log">Task: Create and Manage an Application Log<a class="anchor-link" href="#Task:-Create-and-Manage-an-Application-Log">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Step-1.-Create-and-write-a-text-file"><strong>Step 1. Create and write a text file</strong><a class="anchor-link" href="#Step-1.-Create-and-write-a-text-file">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [18]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-python"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="n">log_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span>
+    <span class="s2">"ai_course_project/logs/application.log"</span>
+<span class="p">)</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"Application started</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"Student dataset loaded</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"Processing completed</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="with-open(...)-automatically-closes-the-file-after-the-block-finishes.">with open(...) automatically closes the file after the block finishes.<a class="anchor-link" href="#with-open(...)-automatically-closes-the-file-after-the-block-finishes.">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Step-2.-Read-the-entire-file"><strong>Step 2. Read the entire file</strong><a class="anchor-link" href="#Step-2.-Read-the-entire-file">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [19]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-python"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Application started
+Student dataset loaded
+Processing completed
+
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="read()-reads-the-entire-file-as-one-string.">read() reads the entire file as one string.<a class="anchor-link" href="#read()-reads-the-entire-file-as-one-string.">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [20]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-python"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">content</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>&lt;class 'str'&gt;
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Step-3.-Read-one-line"><strong>Step 3. Read one line</strong><a class="anchor-link" href="#Step-3.-Read-one-line">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [21]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-python"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+    <span class="n">first_line</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">first_line</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Application started
+
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>readline() reads one line.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Step-4.-Read-all-lines-into-a-list"><strong>Step 4. Read all lines into a list</strong><a class="anchor-link" href="#Step-4.-Read-all-lines-into-a-list">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [22]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-python"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>['Application started\n', 'Student dataset loaded\n', 'Processing completed\n']
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Step-5.-Process-the-file-line-by-line"><strong>Step 5. Process the file line by line</strong><a class="anchor-link" href="#Step-5.-Process-the-file-line-by-line">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [23]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-python"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Application started
+Student dataset loaded
+Processing completed
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Step-6.-Append-new-information"><strong>Step 6. Append new information</strong><a class="anchor-link" href="#Step-6.-Append-new-information">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [24]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-python"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s2">"a"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"Report generated</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Step-7.-Search-information-in-a-text-file"><strong>Step 7. Search information in a text file</strong><a class="anchor-link" href="#Step-7.-Search-information-in-a-text-file">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [25]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-python"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">"completed"</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Processing completed
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Step-8.-Count-lines"><strong>Step 8. Count lines</strong><a class="anchor-link" href="#Step-8.-Count-lines">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [26]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-python"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+    <span class="n">line_count</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">line_count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Number of log entries:"</span><span class="p">,</span> <span class="n">line_count</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Number of log entries: 4
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [28]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-python"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+    <span class="n">line_count</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">line_count</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>4
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Working-with-files-in-Python-is-based-on-the-built-in-open()-function.">Working with files in Python is based on the built-in open() function.<a class="anchor-link" href="#Working-with-files-in-Python-is-based-on-the-built-in-open()-function.">¶</a></h1><h1 id="File-modes:">File modes:<a class="anchor-link" href="#File-modes:">¶</a></h1><h1 id="%22r%22-%E2%80%94-read-mode-(default)">"r" — read mode (default)<a class="anchor-link" href="#%22r%22-%E2%80%94-read-mode-(default)">¶</a></h1><h1 id="%22w%22-%E2%80%94-write-mode-(creates-a-new-file-or-overwrites-an-existing-one)">"w" — write mode (creates a new file or overwrites an existing one)<a class="anchor-link" href="#%22w%22-%E2%80%94-write-mode-(creates-a-new-file-or-overwrites-an-existing-one)">¶</a></h1><h1 id="%22a%22-%E2%80%94-append-mode-(adds-data-to-the-end-of-the-file)">"a" — append mode (adds data to the end of the file)<a class="anchor-link" href="#%22a%22-%E2%80%94-append-mode-(adds-data-to-the-end-of-the-file)">¶</a></h1><h1 id="%22b%22-%E2%80%94-binary-mode">"b" — binary mode<a class="anchor-link" href="#%22b%22-%E2%80%94-binary-mode">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-python"><pre><span></span><span class="c1"># Reading a file in binary mode</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"street.jpg"</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">[:</span><span class="mi">5</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>  <span class="c1"># &lt;class 'bytes'&gt;</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</article>
+</div>
+<div class="pager"><a class="pg prev" href="../lectures/week1-practice.html">← Practical Lesson 1 — All Tasks with Reasoning</a><a class="pg next" href="../lectures/week2-lecture-2-3-working-with-csv-files.html">§1.Working with CSV Files →</a></div>
+
+</main>
+<footer>
+  Сгенерировано <code>build.py</code> из ноутбуков курса · AITU
+</footer>
+</body>
+</html>

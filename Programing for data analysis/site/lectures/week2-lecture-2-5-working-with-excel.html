@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lecture 2 5 Working with Excel · Programming for Data Analysis</title>
+<link rel="stylesheet" href="../assets/style.css">
+
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="../index.html"><b>PDA</b><span>Programming for Data Analysis</span></a>
+  <nav><a href="../index.html">Главная</a>
+<a href="../week1.html">Неделя 1</a>
+<a href="../week2.html" class="on">Неделя 2</a>
+<a href="../week3.html">Неделя 3</a>
+<a href="../assignments.html">Задания</a>
+<a href="../commands.html">Команды</a></nav>
+</header>
+<main>
+
+<div class="lechead">
+  <a class="back" href="../week2.html">← Неделя 2</a>
+  <h1>Lecture 2 5 Working with Excel</h1>
+  <div class="meta">18 текстовых ячеек · 12 ячеек кода ·
+    <a href="../week2/Lecture_2_5_Working%20with%20Excel%20.ipynb" download>скачать .ipynb</a></div>
+</div>
+<div class="leclayout">
+  <aside class="toc"><div class="toc-t">Содержание</div><a class="lv1" href="#Task:-Create-a-Student-Performance-Report">Task: Create a Student Performance Report</a><a class="lv1" href="#Problem">Problem</a><a class="lv1" href="#Step-1.-Create-the-workbook">Step 1. Create the workbook</a><a class="lv1" href="#Step-2.-Create-the-table">Step 2. Create the table</a><a class="lv1" href="#Step-3.-Open-and-read-the-Excel-file">Step 3. Open and read the Excel file</a><a class="lv1" href="#Step-4.-Read-specific-cells">Step 4. Read specific cells</a><a class="lv1" href="#Step-5.-Modify-existing-data">Step 5. Modify existing data</a><a class="lv1" href="#Step-6.-Add-calculated-columns:-Average,-Result">Step 6. Add calculated columns: Average, Result</a><a class="lv1" href="#Step-7.-Add-a-new-student">Step 7. Add a new student</a><a class="lv1" href="#Step-8.-Create-a-Summary-worksheet">Step 8. Create a Summary worksheet</a><a class="lv1" href="#Step-9.-Format-the-Excel-report">Step 9. Format the Excel report</a></aside>
+  <article class="nbdoc"><div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>§5. Working with Excel files</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Working-with-.xlsx-(Microsoft-Excel)-files-in-Python-is-typically-done-using-libraries-such-as-openpyxl,-xlrd,-pandas,-or-xlwt,-depending-on-your-needs.-Here-are-examples-of-how-to-work-with-.xlsx-files-using-the-openpyxl-library.">Working with .xlsx (Microsoft Excel) files in Python is typically done using libraries such as openpyxl, xlrd, pandas, or xlwt, depending on your needs. Here are examples of how to work with .xlsx files using the openpyxl library.<a class="anchor-link" href="#Working-with-.xlsx-(Microsoft-Excel)-files-in-Python-is-typically-done-using-libraries-such-as-openpyxl,-xlrd,-pandas,-or-xlwt,-depending-on-your-needs.-Here-are-examples-of-how-to-work-with-.xlsx-files-using-the-openpyxl-library.">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Task:-Create-a-Student-Performance-Report"><strong>Task: Create a Student Performance Report</strong><a class="anchor-link" href="#Task:-Create-a-Student-Performance-Report">¶</a></h1><h1 id="Problem">Problem<a class="anchor-link" href="#Problem">¶</a></h1><h1 id="The-Programming-for-AI-course-has-the-following-student-results:">The Programming for AI course has the following student results:<a class="anchor-link" href="#The-Programming-for-AI-course-has-the-following-student-results:">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img alt="image.png" src="data:image/png;base64,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3D/88EM4OTmha9euGDNmDDp16oTY2FisXbv2Tz0ngoj+fU2bNsXXX3+N0NBQODo6YvDgwXB0dMSVK1ewceNG8cGWX331FZo2bYpevXqhT58+cHV1ha+vL/r3748PP/xQvtlX0tFoNNKbupdMewgKCsK7775b5n7upbKzs7F+/Xq4urrC1dUVgYGBsLOzg4eHh1hz8+ZNhIeH44MPPpBMs5DXHjhwAHl5eRg5ciRQ8pyYX375BdOmTYOhoaG43tGjR/Hw4UPxeQzFxcXYu3cv7t69i/r168PHxwf79u2Dqamp5JZuRESv0507d/DTTz8hPz8fTZs2xYABAyT7qqdPnyIsLAxPnjyBvr4+unXrhk6dOjHAUJV269YtHD58WBwX7777brm3TS0uLkZkZCQSExNhY2OD4cOHo1q1avIyIlKYtLQ07Nu3D5mZmahTpw58fHzKnAzRarU4ceIEEhISoKuri169eqF9+/aSmsoqN8QQERERERG9qcqdTkZERERERPSmYoghIiIiIiJFYYghIiIiIiJFYYghIiIiIiJFYYghIiIiIiJFYYghIiIiIiJFYYghIiIiIiJFYYghIiIiIiJFYYghIiIiIiJFYYghIiIiIiJFYYghIiIiIiJFYYghIiIiIiJFYYghIiIiIiJFYYghIiIiIiJFYYghIiIiIiJFYYghIiIiIiJFYYghIiIiIiJFYYghIiIiIiJFYYghIiIiIiJF0dFoNIK8saCgAIWFhfJmIiIiIiKi187Q0BBGRkby5gqVG2KIiIiIiIjeVJxORkREREREisIQQ0REREREisIQQ0REREREisIQQ0REREREisIQQ0REREREisIQQ0REREREisIQQ0REREREisIQQ0REREREisIQQ0REREREisIQQ0REREREisIQQ0REREREisIQQ0REREREisIQQ0REREREisIQQ0REREREisIQQ0REREREisIQQ0REREREisIQQ0REREREisIQQ0REREREisIQQ0REREREisIQQ0REREREisIQQ0REREREilKpEKPVauHp6QlbW1ukpaXJu4mI3gqTJk2CSqWqcLl7965YGx8fDw8PD6hUKtjb22PhwoUoKCiQbI+oqlixYkWZ8fDiEhkZCQDIycmBg4NDmf5JkybJN0lEClJYWIiVK1eiSZMmUKlUaNu2LYKDgyEIgqTu0aNH8PPzg7W1NaytreHn54fffvtNUlNZOhqNRrr1cly9ehVubm4wMDBAQEAApkyZIi8hIqryLl26hMePH8uboVarUatWLezZswe6urpITExE3759MWbMGPj5+SExMRHz58/HqFGjsGzZMvnqRIp3+/Zt3L59W96M4OBg3LhxAzExMTA1NUVaWhpat26NefPmwdHRUayrU6cOnJycJOsSkXJ89tln2L59O7788kt06NABBw4cwMqVK7Fq1Sr4+fkBJQcxevbsCVtbW8ybNw/Pnz/H/PnzYWJigoiICBgZGck3+1KVCjGLFi3CyZMn0bx5c1y7dg1Hjx6Fnp6evIyI6K2TmJgIDw8PREREwMXFBQAwevRoFBUVISQkBDo6OgCAzZs3IyAgAOfPn0ft2rVlWyGqep4+fYqOHTti2bJlGD58OADgwYMHcHFxQUxMDFq0aCFfhYgUKD8/H87OznjvvfcwZ84csX3ixIl49OgRjhw5AgBYv349vv32W5w5cwY1atQAACQlJcHNzQ3BwcHo16+fuG5lvHI62fPnz7Fv3z54e3tj5MiRuHjxIq5duyYvQ2BgII4ePYq8vDysX78eoaGhAIADBw5g9+7dKC4uRlhYGNRqNaKiosTTS5cuXcLXX3+NNWvWICUlRbZVIDk5GRs2bIBarcbGjRuRlZUl6S/dvlarRWRkJNRqNYKCgpCfny+pIyL6O6xcuRLu7u5wdnYGAGRlZeHUqVMYNmyYGGAAYODAgdBqtTh16tQLaxNVXf/9739hbW0Nb29vsa30s7l69eovVBKRkuno6EBXVxcmJiaSdmNjY8lJj8jISPTt21cMMADQokULtGrVClFRUWJbZb0yxJw8eRKpqanw8fFBx44d4eDggJ07d8rLsHXrVhw8eBBeXl6YP38+duzYAZSEjG3btmHYsGEIDg7GL7/8ghEjRkCtVmPDhg0YPnw4EhMTsXbtWnTt2hX37t0Tt3n8+HG4uLggPDwc169fx6pVq9C5c2fJ3LkDBw5gx44dmDRpElauXImLFy/C398fnp6eyMvLE+uIiF63pKQkREREYPr06WJgSU5ORlZWFlq1aiWptbCwQN26dXH16lVJO1FV9Pvvv2Pz5s2YNm2aZIpIRkYG9PT0/vC0ESJ6cxkbG2PKlCn4/vvvce7cOWi1Whw4cADh4eGYOnUqUHIA4/r162U+G3V1ddGsWTPcuHFD0l4Zrwwxu3btQufOnVGvXj0YGRnB29sbYWFhyM3NlZciKioKvXv3RlpaGr777jux/fTp0xg7diz27duHI0eO4KOPPsI333yD7du34+zZswgODkZcXBxQckanVJMmTXDnzh1ERERg27ZtiImJQUFBAYKDg8UaAIiNjUX79u1x7Ngx7N69GyEhIUhMTMRPP/0kqSMiep02btyItm3bon379mJbamoq9PX1UatWLUmtvr4+qlWrVuZsMlFVtHv3bhgZGWHw4MGS9vT0dBQVFcHR0REqlQrt2rXDmjVroNFoJHVEpCwff/wx2rRpg969e8PCwgLjxo3DhAkT4OXlBQDIzc3Fs2fPULduXfmqMDMzQ3Z2trz5lV4aYtLS0hAVFYURI0aIRxmHDRuGlJQU/PLLL/JyWFlZYebMmTAwMICDg4PY3qhRIwwcOFB8PXToUBQVFWHq1KkwNzcHAFhbW6Nz5864efOmWGdvbw+VSiW+tra2RsuWLctcPNigQQPJnU1cXV3RqFEjXLhwQVJHRPS6pKenIywsDBMnToSu7v/tSnkHMnrbFRYWIjg4GCNHjkS1atUkfR06dEBERATi4+Oxb98+vPPOO1i8eDH8/f0ldUSkHIIgYObMmUhKSkJgYCASEhKwevVq/PDDD+JJDY1G89oPVrw0xBw8eBD5+flISkqCWq2GWq1GeHg4zM3Ny51S5uLiAgMDA3kz6tWrB319ffG1qakpAKBx48YvVP3/9he/ABQXFyM0NBRz5syBl5cXGjVqhNjYWMk6KAk7hoaG4ms9PT0YGxu/9n8sIqJSoaGhMDIyKnMhoomJCbRabbn7H0EQxP0fUVUVFxeHO3fuYMyYMfIu2NjYoHPnznB0dISbmxtWrFiBr776Ctu3by/3zn9E9OaLjo5GUFAQNmzYgMGDB6NRo0aYMGECvvrqK6jVaiQnJ8PAwAAGBgYoLCyUrw6UfHb+URWGGK1Wi927d8PCwgKnTp1CZGQkIiMjERUVhZo1a+LEiRNl7uv8Oue4arVaTJo0CQEBATA3N8fo0aOxf/9+uLq6ykuJiP5RWq0We/fuRZ8+fWBmZibps7W1hVarRXp6uqQ9Ly8PaWlpZQ7eEFU1ISEhcHFxQcOGDeVd5erduzcKCwuRnJws7yIiBYiOjoaZmZl4g5tSvXr1QmFhIc6ePYvq1aujVq1aePTokaQGJc+OqV+/vrz5lSoMMdeuXcO5c+ewZs0anDhxQrIcPHhQvNvY3+XevXsIDw9HUFAQFixYgJEjR6J169acqkFE/7qHDx/i0qVLGDBggLwL9vb2sLGxQXR0tKT92rVryMjIQNeuXSXtRFVJXl4efvnlF/Tr108yzfJlUlJSoKOjAysrK3kXESlAjRo1UFhYWOZ6+ZSUFGi1Wpibm8PIyAht2rRBTEyMpCYnJwcJCQlwc3OTtFdGhXuY0rMw3bp1k3fBzs4O3bp1Q0hISLlTJl6HoqIiCIKAjIwMsS0iIgLnz5+X1BER/dNiYmKgr68vuaC/lKmpKYYMGYKNGzciNTUVKLlGYPny5XB3d6/00WkiJbpy5QpSU1PRq1cveRdQ8vDsoqIi8XVaWhrmzZsn3v2UiJSnf//+EAQBS5cuRXFxMVByIf/ixYthZWWFTp06AQD8/Pxw4sQJSZDZsGED9PT00L9/f7GtssoNMfn5+di/f3+5UyVKjRo1CpcvX0ZiYqK867Vo1KgR3NzcMHbsWIwYMQIDBgzA2rVr0bZtW3kpEdE/Ki4uDo0aNYKFhYW8CwAwd+5c1K5dG+3bt8fYsWPRrl073LlzBytXrpQ8O4aoqjl16hTMzc0rDOtbt25Fw4YNMWrUKAwfPhxOTk4QBAGbN2+WXDtLRMrRtGlTfP311wgNDYWjoyMGDx4MR0dHXLlyBRs3bhSfC9O3b1+MGzcOgwYNwpAhQ+Du7o7vvvsO69atkzw7prL0AgICFskb09PTIQgCRo8eDRsbG3k3UHI2xtjYGHXq1IG9vT0AoG3btmjUqJG8FM2aNStzX2gTExN069ZNvDtZqdJaPT09DB06FA0aNICxsTF69OiBL774AiYmJmjVqhWaNWtWZh25it4PEdFfkZ2dDVdXV7Rs2VLeBZRcHzh69Gg0aNAAenp6GDhwIL7++usKQw9RVfHs2TO0adMGXbp0KTewd+7cGba2tqhWrRrq1auHTz75BAsXLkTNmjXlpUSkIE5OTvDz84NKpYKlpSW8vb2xZs0ayfd1HR0deHh4oFu3btBqtXBycsKaNWvK/Q5fGToajUaQNxIREREREb2pyp1ORkRERERE9KZiiCEiIiIiIkVhiCEiIiIiIkVhiCEiIiIiIkVhiCEiIiIiIkVhiCEiIiIiIkVhiCEiIiIiIkVhiCEiIiIiIkVhiCEiIiIiIkVhiCEiIiIiIkVhiCEiIiIiIkVhiCEiIiIiIkVhiCEiIiIiIkVhiCEiIiIiIkVhiCEiIiIiIkVhiCEiIiIiIkVhiCEiIiIiIkVhiCEiIiIiIkVhiCEiIiIiIkXR0Wg0gryxoKAAhYWF8mYiIiIiIqLXztDQEEZGRvLmCpUbYoiIiIiIiN5UnE5GRERERESKwhBDRERERESKwhBDRERERESKwhBDRERERESKwhBDRERERESKwhBDRERERESKwhBDRERERESKwhBDRERERESKwhBDRERERESKwhBDRERERESKwhBDRERERESKwhBDRERERESKwhBDRERERESKwhBDRERERESKwhBDRERERESKwhBDRERERESKwhBDRERERESKwhBDRERERESKwhBDRERERESKwhBDRERERESK8lpDzJ49e3D27Fl5MxERERER0WtTYYgpLCxEmzZtoFKpxMXKygpdunRBQEAAfv31V0l9bm4uZs+ejSVLlkjaiYiqkt9//x3Tp09HvXr1UKtWLfTr1w8XLlyQ1KSkpMDKykqy/1SpVJg9e7akjqgqef78OZYsWYLGjRtDpVKhS5cuiIyMlNT8/vvvmDVrFhwcHKBSqdC8eXOsWbMGxcXFkjoiUpbKjP9SSUlJ8PX1hY2NDVQqFdq0aYPffvtNXvZKOhqNRpA3oiTEtG/fHh07dsTQoUMBAOnp6bh27Rp2796N/Px8bNiwAV5eXuI6e/bsgYODAzp06PDCloiIqoa8vDx4enpCV1cXCxYsgLm5Ob799lvEx8cjJiYG9erVAwDcvXsX7dq1w6pVq1C3bl1xfXt7e7Ro0eKFLRJVDVqtFhMnTsSFCxfw+eefo2nTpggKCkJwcDAOHDiALl26AADmzp2L5ORk+Pn5oX79+jhy5AjUajVmzZqFWbNmyTdLRApQ2fEPAGfOnMGQIUPg5eWFsWPHokaNGrh69Src3d2hUqkk232VV4YYX19fzJkzR9KXmZmJUaNG4dKlSzhx4gSaNm0q6SciqoqCg4OxYMECnD59GnXq1AFKjj6988476NmzJ5YuXQoAuHz5Mtzc3HDp0iUx2BBVZWfOnEG/fv0QERGBjh07AgAEQYCfnx/y8vKwd+9eAMCDBw9gb28vWdff3x9HjhzBmTNnYGhoKOkjojdfZcd/fn4+evbsCS8vLyxYsEC2lT+uwulkL1OzZk0EBgZCX18fmzZtEtsDAwNx9OhRSW1ycjI2bNgAtVqNjRs3IisrS9IPADdv3sR3330HtVqNkJAQFBQUyEuIiP518fHxcHJyEgMMABgbG2PgwIE4ceKEOCUmOzsbRkZGMDExeWFtoqorPj4ederUgZOTk9imo6ODoUOH4uzZs8jMzARKzkbKNW/eHBkZGSgsLJR3EZECVHb8HzlyBM+ePcOMGTNeWPvP+1MhBgDq1KmDrl27Ii4uTvzg3rp1K6KiosSa48ePw8XFBeHh4bh+/TpWrVqFzp07S+a9rVixAl27dkVsbCySkpLw2Wef4eHDh2I/EdGbQqPRlDt339LSEikpKXj+/DkAICMjA4aGhjAyMpKXElVJRUVF0Gq1EATp5A5LS0tkZ2fj999/l7S/6ObNm6hbty5DP5FCVXb8R0VFwdXVFVqtFps2bYJarUZ4eHi5n6uV8adDDAA0adIE6enpFR49adKkCe7cuYOIiAhs27YNMTExKCgoQHBwMFBy8evq1auxbt06hIaGYvv27bh58yYaNmwo3xQR0b+uVatWSEpKwuPHj8U2QRBw9OhRFBcXizvw9PR0ZGVlwc7OTrzAccuWLdBqtS9sjajqaNOmDVJSUnD58mVJe+mFvRX97j948AA//vgjxowZAz09PXk3ESlAZcf/zZs3oaenh06dOiE8PBznzp3D5MmT0a9fP2RnZ0vWrYy/FGL09PTKTV6l7O3tJRfpWFtbo2XLlrh9+7akLiUlRfyzjo4OdHX/0tsiIvpbjB49GtWqVcOQIUOwa9cu/PTTT3jvvffK7NPc3d0RFRWF+Ph4hISEoG3btpg1axbUarWkjqiq6NmzJ5ydnTF+/Hhs3rwZERERmDdvHg4dOiQvFd2+fRve3t7o2bMnpk6dKu8mIoWozPgvKirC06dPERYWhjVr1uCnn35CaGgojh8/jmvXrmHdunWSbVbGX0oLDx8+hLW1dYVTJoqLixEaGoo5c+bAy8sLjRo1QmxsrNhfu3ZtzJo1C4sXL0bfvn2xY8cOFBUVSbZBRPSmsLKywsGDB1GvXj385z//waRJk6BSqTBt2jRYW1uL02Hs7e3RoUMHODo6wsPDA+vWrcOMGTOwadOmcq8LJFI6IyMjhIaGokePHliwYAF8fX3x4MEDLF++HCYmJmXuOhQaGgo3NzcMGjQIGzduhL6+vqSfiJSjMuO/9CSFh4cHevfuLa7bunVr9OvXD8eOHZNsszL+dIjJzc1FXFwcOnfuXO4pYK1Wi0mTJiEgIADm5uYYPXo09u/fD1dXV0ndrFmzEBcXh5YtW2L27Nno3r275MwMEdGbpHHjxggJCcHTp0+RkpKCVatW4fr162jRokW5+8JSHh4eyMzMxJMnT+RdRFWChYUFNmzYgJSUFDx9+hQ7duzAr7/+ioYNG6JmzZpAyfTLJUuWYN68eQgODsbChQsZYIiqgFeNf319fVhaWsLS0lK+Kho2bIiMjAxoNBp510v96RCzatUqPHv2rMJTwPfu3UN4eDiCgoKwYMECjBw5Eq1bty73zmPNmzfH6tWrcebMGaSnp2Pz5s3yEiKiN9KzZ89w4MABDBw4UN4l8fjxYxgZGcHc3FzeRVQlaTQa7Nq1C3369BEDflBQELZv345jx47Bzc1NvgoRVRHljf+2bdvi6tWrZa6Ru3PnDuzt7f/wAY0/HGIePXqEDz/8EN9++y2WLFlS4TNiioqKIAgCMjIyxLaIiAicP39efP306VNcvHhRfG1lZYXq1auLr4mI3iRFRUVITk4WX+fl5WHGjBmoW7euJMQkJSVJ7raSnJyML7/8Eu7u7rCyshLbiaqSW7duiX8uLi6GWq3Gw4cP8cEHHwAlX2q+//57fPTRR6hfv/4LaxKR0r1q/AOAr68vLl++jB07doht58+fx+HDh+Hr6yu2VdYrH3ZZUFAgPhMhJSUFqampaNCgAZYtW4a+fftK1unevTs6d+6Mr7/+GkVFRRgxYgRiY2Ph5uaG3NxcFBcXQ6PRwMHBAZs3b8bt27fRoUMHuLi4wMHBARcuXIC+vj4OHjwoeQ4DEdGbICcnBy1btkSLFi1gYWGB6OhoNGjQADt37pQ81HLSpEk4fvw4XF1dkZeXh9jYWLi4uGDHjh3lnkonqgq6d+8OQRDQqFEj/O///i8MDAzwww8/wMXFBSg5cNm6dWtYW1uL08teNHHiRPj5+cmbiUgBXjX+S23atAn+/v5o27YtqlevjpiYGHz44Yf44osvoKOjI6l9lQpDTHFxcZmHU1arVg1dunRBu3btyv1BgYGBsLOzg4eHB1Cyjb179+Lu3buoX78+fHx8sG/fPpiamsLLywuCICAhIQEnT56ERqNBixYt0LdvXz6xl4jeWAkJCThx4gS0Wi1cXFzg7u5e5lqY0juwPHnyBPr6+ujWrRs6depU7n6TqKq4desWDh8+jPz8fDRt2hTvvvuu5MY/OTk5WL9+fYXPhOjevXuZ62aJSBleNf5fdOPGDRw+fBjFxcXw8PCQPCTzj6gwxBAREREREb2J/vA1MURERERERP8mhhgiIiIiIlIUhhgiIiIiIlIUhhgiIiIiIlIUhhgiIiIiIlIUhhgiIiIiIlIUhhgiIiIiIlIUhhgiIiIiIlIUhhgiIiIiIlIUhhgiIiIiIlIUhhgiIiIiIlIUhhgiIiIiIlIUhhgiIiIiIlIUhhgiIiIiIlIUhhgiIiIiIlIUhhgiIiIiIlIUhhgiIiIiIlIUhhgiIiIiIlIUhhgiIiIiIlIUHY1GI8gbCwoKUFhYKG8mIiIiIiJ67QwNDWFkZCRvrlC5IYaIiIiIiOhNxelkRERERESkKAwxRERERESkKAwxRERERESkKAwxRERERESkKAwxRERERESkKAwxRERERESkKAwxRERERESkKAwxRERERESkKAwxRERERESkKAwxRERERESkKAwxRERERESkKAwxRERERESkKAwxRERERESkKAwxRERERESkKAwxRERERESkKAwxRERERESkKAwxRERERESkKAwxRERERESkKAwxRERERESkKAwxRERERESkKK8txOzZswdnz56VN/+tBEHA9u3bceXKFXkXERERERFVUZUKMVqtFp6enrC1tUVaWpq8G7m5uZg9ezaWLFki7/pbPXnyBDNnzsQ333wj7yIi+tvk5OQgICAAjRs3hkqlgp2dHXbu3CmpiY+Ph4eHB1QqFezt7bFw4UIUFBRIaoiqGo1Gg7Vr18LJyQkqlQq1a9cu890gKioKbm5uUKlUqFevHubMmYOsrCxJDREpT2XGf/fu3aFSqSRL9+7dJTWVpaPRaAR5o9zVq1fh5uYGAwMDBAQEYMqUKfIS7NmzBw4ODujQoYO8628jCAJ27NgBFxcXtGzZUt5NRPTaZWdnw8vLCwDw8ccfo3nz5khLS4OJiYm4/0tMTETfvn0xZswY+Pn5ITExEfPnz8eoUaOwbNky2RaJqgaNRoMpU6bg3Llz+PTTT9GxY0dkZ2cjOzsb77zzDgDg1KlT8Pb2hp+fH8aPH4+7d+8iICAATZo0QUhICHR1K3VslYjeMJUZ/0VFRejYsSPeeecd9O7dW1zXzMwMrq6uL2ytcioVYhYtWoSTJ0+iefPmuHbtGo4ePQo9PT15GRFRlRcQEIATJ07g8OHDqF69urwbADB69GgUFRUhJCQEOjo6AIDNmzcjICAA58+fR+3ateWrECnejh078OWXX+LYsWOoV6+evBsA8NFHH+Hy5cv4+eefxe8RBw8exPjx43HhwgXY29vLVyEiBajM+M/Pz4ezszOWLVsGHx8fefcf9spDHs+fP8e+ffvg7e2NkSNH4uLFi7h27Zq8DIGBgTh69KikTavV4tixY1ixYgXWrFmDtLQ0xMXFYf369SguLpbUpqamYt26dVCr1Th48KCkPycnB19//TVu3ryJBw8eYOXKlTh9+jSKi4uxfv16xMXFibWl7yM/Px9BQUFYsWIFEhISgJIzNydOnMDy5cuxadMmZGdni+sREb1KRkYGgoKCsHDhwgoDTFZWFk6dOoVhw4aJAQYABg4cCK1Wi1OnTknqiaoCjUaD9evX4z//+U+FX2AAQF9fH4aGhpIzLiYmJtDV1eVZGCKFquz4LyoqQn5+PmrUqCHv+lNeucc4efIkUlNT4ePjg44dO8LBwaHM3G8A2Lp1K6KiosTX2dnZ8Pb2xujRo3H27FnExMSga9eu+P7778uEmP3798PZ2RlhYWFISkrCBx98gHfffVcMGTk5OVixYgWOHTuGXr16YcmSJYiOji43xGzduhU7duxA7969ERUVhbCwMPTp0wchISGYM2cOZs6cicTERCxatAi9evXCs2fPxHWJiF4mISEBurq6aNeuHSIjI6FWq7Fhwwb8/vvvYk1ycjKysrLQqlUryboWFhaoW7curl69KmknqgoePnyI69evw8PDA6dPn8aKFSvw3XffITk5WVL33nvv4fr161i/fj00Gg3u3LmDhQsXwsfHB7a2tpJaIlKGyo7/vLw85OfnV3gQ8I96ZYjZtWsXOnfujHr16sHIyAje3t4ICwtDbm6uvFSi9MxJXFwcQkNDERoaij179iA2NlZSd/PmTUybNg3ffPMNjh49iu3bt+PcuXN4+PAhNm3aJKndsmULvv/+e6Snp2PUqFGSvhdFRUVh3bp12LFjB2JiYtCnTx9Mnz4dDx48wOnTp7F9+3YcOnQIDx48wKFDh+SrExGV6+rVq7CwsMBHH32E+fPn49q1a1i9ejXatWsn3p0xNTUV+vr6qFWrlmRdfX19VKtWjRcwU5V0+/ZtGBsbY+PGjRg7diyuXLmCoKAgdOjQAXv27BHrWrVqBbVajc8++wxWVlZo3749iouLsXLlSsmZSyJSjsqO/5ycHGg0Gnh6ekKlUsHR0RGff/45cnJyJNurrJeGmLS0NERFRWHEiBHizmXYsGFISUnBL7/8Ii8X5eXl4ccff8SHH36IJk2aiO3Ozs4YNmyYpHbr1q1o27YtRowYIbbZ2Nigd+/e+PnnnyW1bm5u8PT0hJ6eHuzs7CR9L+rRowecnZ0BAHp6evDx8UF+fj5mz54NfX19AEDr1q3RoEEDHhUlokpLSUnBnTt3ULt2bSQkJCAoKAgXL15Es2bNMHPmTBQVFfEOZPRWSk1NRW5uLu7du4dLly4hKCgIZ8+exdChQ+Hv7y+erTxy5AhmzpyJ2bNn4+zZs9i/fz+MjY0xfPhw5OfnyzdLRApQ2fFfp04dHDhwAPHx8YiIiMD48eOxdetW8TrSP+qlIebgwYPIz89HUlIS1Go11Go1wsPDYW5uXu6UslJpaWl48uQJ2rdvL++CtbW15PWNGzcQFxeHWrVqSW63FhwcXOaIZefOnSWvKyIPOKamptDX15fM09PT04ORkRGeP38uqSUiqkjp2ZR58+aJ8/dNTU3xySefICkpCY8ePYKJiQm0Wi00Go18dQiCAFNTU3kzkeKVXqS/aNEimJiYiG0zZsxAZmYmzp07h9zcXMycORO+vr6YP38+GjdujF69emHnzp1ISkpCcHCwbKtEpASVGf8AUK1aNXTv3h2Ojo7o3Lkz5s6di+DgYMTExIjXr/8RFYYYrVaL3bt3w8LCAqdOnUJkZCQiIyMRFRWFmjVr4sSJE/jtt9/kqwElF/gIglCpO5hptVp4eHggPj6+zCLfoRkbG0teExH9k2rXrg1zc/MyQaRhw4YQBAEZGRmwtbWFVqtFenq6pCYvLw9paWlo3LixpJ2oKrCxsYGurm6ZaZQ2NjaoVq0a0tPTcffuXTx69Ag9e/aU1NStWxctW7ZETEyMpJ2IlKEy478iHTp0gJmZGW7cuCHveqUKQ8y1a9dw7tw5rFmzBidOnJAspXcPCwsLk68GAKhRowaMjY1x69YteVeZO5s1aNAAjx8/RuPGjeHo6ChZGjRoIKklIvo3dezYEU+ePMGjR48k7Xfu3IGRkRHq1KkDe3t72NjYIDo6WlJz7do1ZGRkoGvXrpJ2oqqgZcuWMDAwKDNFOyUlBbm5uWjYsCGqV68OHR0dyY0wAKCwsBApKSmv7WJfIvpnVWb8VyQzMxMFBQV/6tEDFYaY0rMw3bp1k3fBzs4O3bp1Q0hISLlTJiwtLdGtWzesXr0aKSkpYvvRo0cREREhqR08eDCSkpLw3//+F4Lwf4+sefz4sWRdIqJ/m7OzM1q1aoWAgADx2pecnBysXr0affr0Qe3atWFqaoohQ4Zg48aNSE1NBUq+pC1fvhzu7u4v3ZkTKZWNjQ0GDBiAL774AhkZGUDJrIyvv/4ajo6OcHFxgZ2dHdq2bYtvv/1W/HwXBAHr169HcnIyBg0aJNsqESlBZcY/Sm4A8OKNwfLy8jBnzhxYWlr+qQN85YaY/Px87N+/H3369IGZmZm8GwAwatQoXL58GYmJifIu6OjoYPXq1dBqtWjXrh18fX3x7rvv4vPPP4efn5+ktkePHpg/fz4WLFiALl26YMKECejTpw/atGnz0tNPRET/NAMDA6xfvx4JCQlwcXGBr68vWrdujaKiIqxevVqsmzt3LmrXro327dtj7NixaNeuHe7cucM7MFGVplarodFoxLHh5OSE+Ph4bNmyBYaGhtDX18e6deugo6MDJycnDBw4EM7Ozli0aBFmzJiBvn37yjdJRArxqvEPALGxsWjYsCF8fHzg6+uLFi1a4NKlS/jhhx9gbm4u3+Qr6Wg0mv87/VHi8ePHCAoKwrvvvovWrVvLu4GS58CsX78erq6ucHV1RWBgIOzs7ODh4SHW5OfnIyQkBI8fP0aDBg0wePBgLF26FJGRkTh16pTkwVY3b95EREQE8vPzUadOHXh6esLGxgYoOdK5fv16eHt7o2nTpuI6xcXF2LhxI9q0aQNXV1eg5GGX8vdx8+ZNhIeH44MPPpCcri6vlojoVbKzs/Hjjz8iPT0dzZs3x4ABA8pcA1hUVIQDBw7g1q1bcHBwwODBg3ldH1V5hYWF2L9/P+7duwdbW1sMHTpUvND3xZrDhw/j+vXrMDExQf/+/SV3MiUiZXrV+C8oKMChQ4fEy01atGiBPn36wMjI6IWtVF65IebvIggCvLy8YGlpia1bt8q7iYiIiIiIXqnc6WSvw8WLF5GXlye+FgQBmzdvRlxcHEaPHi2pJSIiIiIiqqy/7UzM3LlzERgYiPbt28PKygoXLlzAb7/9hkWLFuE///mPvJyIiIiIiKhS/rYQo9FocPLkSVy4cAFFRUWwtLTEgAED/tQt1IiIiIiIiEr9bSGGiIiIiIjo7/C3XRNDRERERET0d2CIISIiIiIiRWGIISIiIiIiRWGIISIiIiIiRWGIISIiIiIiRWGIISIiIiIiRWGIISIiIiIiRdHRaDQL5Y1ERERERERvqv8Hn2qBHbAQ7JQAAAAASUVORK5CYII="/></p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Your-task-is-to-create-an-Excel-report-student_report.xlsx."><strong>Your task is to create an Excel report student_report.xlsx.</strong><a class="anchor-link" href="#Your-task-is-to-create-an-Excel-report-student_report.xlsx.">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">openpyxl</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Step-1.-Create-the-workbook">Step 1. Create the workbook<a class="anchor-link" href="#Step-1.-Create-the-workbook">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [1]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">openpyxl</span>
+
+<span class="c1"># Create a new workbook</span>
+<span class="n">workbook</span> <span class="o">=</span> <span class="n">openpyxl</span><span class="o">.</span><span class="n">Workbook</span><span class="p">()</span>
+
+<span class="c1"># Get the active worksheet</span>
+<span class="n">sheet</span> <span class="o">=</span> <span class="n">workbook</span><span class="o">.</span><span class="n">active</span>
+
+<span class="c1"># Rename the worksheet</span>
+<span class="n">sheet</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s2">"Students"</span>
+
+<span class="c1"># Save the workbook</span>
+<span class="n">workbook</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"student_report.xlsx"</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Excel file created."</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Excel file created.
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Step-2.-Create-the-table">Step 2. Create the table<a class="anchor-link" href="#Step-2.-Create-the-table">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [14]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Open the file .xlsx</span>
+<span class="n">workbook</span> <span class="o">=</span> <span class="n">openpyxl</span><span class="o">.</span><span class="n">load_workbook</span><span class="p">(</span><span class="s1">'student_report.xlsx'</span><span class="p">)</span>
+<span class="c1"># Select the worksheet</span>
+<span class="n">sheet</span> <span class="o">=</span> <span class="n">workbook</span><span class="p">[</span><span class="s2">"Students"</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [15]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">sheet</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s2">"No."</span><span class="p">,</span> <span class="s2">"Student"</span><span class="p">,</span> <span class="s2">"Assignment 1"</span><span class="p">,</span>
+              <span class="s2">"Assignment 2"</span><span class="p">,</span> <span class="s2">"Assignment 3"</span><span class="p">])</span>
+
+<span class="n">students</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s2">"Amina"</span><span class="p">,</span> <span class="mi">85</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">88</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">"Arman"</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">80</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">"Dias"</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">92</span><span class="p">,</span> <span class="mi">96</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">"Aigerim"</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">68</span><span class="p">,</span> <span class="mi">65</span><span class="p">]</span>
+<span class="p">]</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">student</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">students</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">sheet</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">student</span><span class="p">)</span>
+
+<span class="c1"># Save the book to a file</span>
+<span class="n">workbook</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"student_report.xlsx"</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Student data saved."</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Student data saved.
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Step-3.-Open-and-read-the-Excel-file">Step 3. Open and read the Excel file<a class="anchor-link" href="#Step-3.-Open-and-read-the-Excel-file">¶</a></h1><h1 id="Open-the-existing-Excel-file-and-display-all-student-records.">Open the existing Excel file and display all student records.<a class="anchor-link" href="#Open-the-existing-Excel-file-and-display-all-student-records.">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [16]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">openpyxl</span>
+
+<span class="n">workbook</span> <span class="o">=</span> <span class="n">openpyxl</span><span class="o">.</span><span class="n">load_workbook</span><span class="p">(</span><span class="s2">"student_report.xlsx"</span><span class="p">)</span>
+
+<span class="n">sheet</span> <span class="o">=</span> <span class="n">workbook</span><span class="p">[</span><span class="s2">"Students"</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">sheet</span><span class="o">.</span><span class="n">iter_rows</span><span class="p">(</span><span class="n">values_only</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>('No.', 'Student', 'Assignment 1', 'Assignment 2', 'Assignment 3')
+(1, 'Amina', 85, 90, 88)
+(2, 'Arman', 70, 75, 80)
+(3, 'Dias', 95, 92, 96)
+(4, 'Aigerim', 60, 68, 65)
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="values_only=True---means-that-we-get-cell-values-%E2%80%8B%E2%80%8Brather-than-Cell-objects">values_only=True - means that we get cell values ​​rather than Cell objects<a class="anchor-link" href="#values_only=True---means-that-we-get-cell-values-%E2%80%8B%E2%80%8Brather-than-Cell-objects">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Step-4.-Read-specific-cells">Step 4. Read specific cells<a class="anchor-link" href="#Step-4.-Read-specific-cells">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [17]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Read specific cells</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sheet</span><span class="p">[</span><span class="s2">"B2"</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sheet</span><span class="p">[</span><span class="s2">"C2"</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+<span class="c1"># Read using row and column numbers</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sheet</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Amina
+85
+Amina
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Step-5.-Modify-existing-data">Step 5. Modify existing data<a class="anchor-link" href="#Step-5.-Modify-existing-data">¶</a></h1><h1 id="Arman-completed-a-correction.-Change-his-Assignment-2-score-from-75-to-82.">Arman completed a correction. Change his Assignment 2 score from 75 to 82.<a class="anchor-link" href="#Arman-completed-a-correction.-Change-his-Assignment-2-score-from-75-to-82.">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [18]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">sheet</span><span class="o">.</span><span class="n">max_row</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="n">sheet</span><span class="p">[</span><span class="sa">f</span><span class="s2">"B</span><span class="si">{</span><span class="n">row</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">"Arman"</span><span class="p">:</span>
+        <span class="n">sheet</span><span class="p">[</span><span class="sa">f</span><span class="s2">"D</span><span class="si">{</span><span class="n">row</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">82</span>
+
+<span class="n">workbook</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"student_report.xlsx"</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Arman's score updated."</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Arman's score updated.
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Step-6.-Add-calculated-columns:-Average,-Result">Step 6. Add calculated columns: Average, Result<a class="anchor-link" href="#Step-6.-Add-calculated-columns:-Average,-Result">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Calculate-the-average-score-for-each-student.-A-student-passes-if-the-average-score-is-at-least-70.">Calculate the average score for each student. A student passes if the average score is at least 70.<a class="anchor-link" href="#Calculate-the-average-score-for-each-student.-A-student-passes-if-the-average-score-is-at-least-70.">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [19]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">sheet</span><span class="p">[</span><span class="s2">"F1"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"Average"</span>
+<span class="n">sheet</span><span class="p">[</span><span class="s2">"G1"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"Result"</span>
+
+<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">sheet</span><span class="o">.</span><span class="n">max_row</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+
+    <span class="n">scores</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">sheet</span><span class="p">[</span><span class="sa">f</span><span class="s2">"C</span><span class="si">{</span><span class="n">row</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+        <span class="n">sheet</span><span class="p">[</span><span class="sa">f</span><span class="s2">"D</span><span class="si">{</span><span class="n">row</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+        <span class="n">sheet</span><span class="p">[</span><span class="sa">f</span><span class="s2">"E</span><span class="si">{</span><span class="n">row</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+    <span class="p">]</span>
+
+    <span class="n">average</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
+
+    <span class="n">sheet</span><span class="p">[</span><span class="sa">f</span><span class="s2">"F</span><span class="si">{</span><span class="n">row</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">average</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">average</span> <span class="o">&gt;=</span> <span class="mi">70</span><span class="p">:</span>
+        <span class="n">sheet</span><span class="p">[</span><span class="sa">f</span><span class="s2">"G</span><span class="si">{</span><span class="n">row</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"Pass"</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sheet</span><span class="p">[</span><span class="sa">f</span><span class="s2">"G</span><span class="si">{</span><span class="n">row</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"Fail"</span>
+
+<span class="n">workbook</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"student_report.xlsx"</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Average scores and results calculated."</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Average scores and results calculated.
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Step-7.-Add-a-new-student">Step 7. Add a new student<a class="anchor-link" href="#Step-7.-Add-a-new-student">¶</a></h1><h1 id="A-new-student-joined-the-course.-Add-the-student-to-the-end-of-the-table.">A new student joined the course. Add the student to the end of the table.<a class="anchor-link" href="#A-new-student-joined-the-course.-Add-the-student-to-the-end-of-the-table.">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [20]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">name</span> <span class="o">=</span> <span class="s2">"Miras"</span>
+<span class="n">assignment1</span> <span class="o">=</span> <span class="mi">78</span>
+<span class="n">assignment2</span> <span class="o">=</span> <span class="mi">85</span>
+<span class="n">assignment3</span> <span class="o">=</span> <span class="mi">80</span>
+
+<span class="n">average</span> <span class="o">=</span> <span class="p">(</span><span class="n">assignment1</span> <span class="o">+</span> <span class="n">assignment2</span> <span class="o">+</span> <span class="n">assignment3</span><span class="p">)</span> <span class="o">/</span> <span class="mi">3</span>
+
+<span class="k">if</span> <span class="n">average</span> <span class="o">&gt;=</span> <span class="mi">70</span><span class="p">:</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="s2">"Pass"</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="s2">"Fail"</span>
+
+<span class="n">number</span> <span class="o">=</span> <span class="n">sheet</span><span class="o">.</span><span class="n">max_row</span>
+
+<span class="n">sheet</span><span class="o">.</span><span class="n">append</span><span class="p">([</span>
+    <span class="n">number</span><span class="p">,</span>
+    <span class="n">name</span><span class="p">,</span>
+    <span class="n">assignment1</span><span class="p">,</span>
+    <span class="n">assignment2</span><span class="p">,</span>
+    <span class="n">assignment3</span><span class="p">,</span>
+    <span class="nb">round</span><span class="p">(</span><span class="n">average</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="n">result</span>
+<span class="p">])</span>
+
+<span class="n">workbook</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"student_report.xlsx"</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"New student added."</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>New student added.
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Step-8.-Create-a-Summary-worksheet">Step 8. Create a Summary worksheet<a class="anchor-link" href="#Step-8.-Create-a-Summary-worksheet">¶</a></h1><h1 id="Create-a-new-worksheet-called-Summary-and-calculate-general-course-statistics.">Create a new worksheet called Summary and calculate general course statistics.<a class="anchor-link" href="#Create-a-new-worksheet-called-Summary-and-calculate-general-course-statistics.">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [21]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">students_sheet</span> <span class="o">=</span> <span class="n">workbook</span><span class="p">[</span><span class="s2">"Students"</span><span class="p">]</span>
+
+<span class="c1"># Remove old Summary sheet if it already exists</span>
+<span class="k">if</span> <span class="s2">"Summary"</span> <span class="ow">in</span> <span class="n">workbook</span><span class="o">.</span><span class="n">sheetnames</span><span class="p">:</span>
+    <span class="k">del</span> <span class="n">workbook</span><span class="p">[</span><span class="s2">"Summary"</span><span class="p">]</span>
+
+<span class="c1"># Create a new worksheet</span>
+<span class="n">summary_sheet</span> <span class="o">=</span> <span class="n">workbook</span><span class="o">.</span><span class="n">create_sheet</span><span class="p">(</span><span class="s2">"Summary"</span><span class="p">)</span>
+
+<span class="n">averages</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">passed</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">failed</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">students_sheet</span><span class="o">.</span><span class="n">max_row</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="n">average</span> <span class="o">=</span> <span class="n">students_sheet</span><span class="p">[</span><span class="sa">f</span><span class="s2">"F</span><span class="si">{</span><span class="n">row</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">students_sheet</span><span class="p">[</span><span class="sa">f</span><span class="s2">"G</span><span class="si">{</span><span class="n">row</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="n">averages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">average</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">result</span> <span class="o">==</span> <span class="s2">"Pass"</span><span class="p">:</span>
+        <span class="n">passed</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">failed</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="c1"># Write summary</span>
+<span class="n">summary_sheet</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s2">"Metric"</span><span class="p">,</span> <span class="s2">"Value"</span><span class="p">])</span>
+<span class="n">summary_sheet</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s2">"Number of students"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">averages</span><span class="p">)])</span>
+<span class="n">summary_sheet</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s2">"Course average"</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">averages</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">averages</span><span class="p">),</span> <span class="mi">2</span><span class="p">)])</span>
+<span class="n">summary_sheet</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s2">"Highest average"</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">averages</span><span class="p">)])</span>
+<span class="n">summary_sheet</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s2">"Lowest average"</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">averages</span><span class="p">)])</span>
+<span class="n">summary_sheet</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s2">"Passed"</span><span class="p">,</span> <span class="n">passed</span><span class="p">])</span>
+<span class="n">summary_sheet</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s2">"Failed"</span><span class="p">,</span> <span class="n">failed</span><span class="p">])</span>
+
+<span class="n">workbook</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"student_report.xlsx"</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Summary worksheet created."</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Summary worksheet created.
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Step-9.-Format-the-Excel-report">Step 9. Format the Excel report<a class="anchor-link" href="#Step-9.-Format-the-Excel-report">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [22]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">openpyxl</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">openpyxl.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Font</span><span class="p">,</span> <span class="n">Alignment</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">openpyxl.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_column_letter</span>
+
+<span class="n">workbook</span> <span class="o">=</span> <span class="n">openpyxl</span><span class="o">.</span><span class="n">load_workbook</span><span class="p">(</span><span class="s2">"student_report.xlsx"</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">sheet</span> <span class="ow">in</span> <span class="n">workbook</span><span class="o">.</span><span class="n">worksheets</span><span class="p">:</span>
+
+    <span class="c1"># Format header</span>
+    <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">sheet</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">cell</span><span class="o">.</span><span class="n">font</span> <span class="o">=</span> <span class="n">Font</span><span class="p">(</span><span class="n">bold</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">cell</span><span class="o">.</span><span class="n">alignment</span> <span class="o">=</span> <span class="n">Alignment</span><span class="p">(</span><span class="n">horizontal</span><span class="o">=</span><span class="s2">"center"</span><span class="p">)</span>
+
+    <span class="c1"># Adjust column widths</span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">sheet</span><span class="o">.</span><span class="n">max_column</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+
+        <span class="n">letter</span> <span class="o">=</span> <span class="n">get_column_letter</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
+        <span class="n">max_len</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">sheet</span><span class="o">.</span><span class="n">max_row</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+
+            <span class="n">value</span> <span class="o">=</span> <span class="n">sheet</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">max_len</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_len</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)))</span>
+
+        <span class="n">sheet</span><span class="o">.</span><span class="n">column_dimensions</span><span class="p">[</span><span class="n">letter</span><span class="p">]</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
+            <span class="mi">10</span><span class="p">,</span>
+            <span class="nb">min</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="n">max_len</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="p">)</span>
+
+<span class="n">workbook</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"student_report.xlsx"</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Report formatted."</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Report formatted.
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [23]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Closing the file</span>
+<span class="n">workbook</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Create-file-%E2%86%92-Write-%E2%86%92-Save-%E2%86%92-Open-%E2%86%92-Read-%E2%86%92-Access-cells-%E2%86%92-Modify-%E2%86%92-Calculate-%E2%86%92-Add-rows-%E2%86%92-Create-worksheet-%E2%86%92-Format-%E2%86%92-Save.">Create file → Write → Save → Open → Read → Access cells → Modify → Calculate → Add rows → Create worksheet → Format → Save.<a class="anchor-link" href="#Create-file-%E2%86%92-Write-%E2%86%92-Save-%E2%86%92-Open-%E2%86%92-Read-%E2%86%92-Access-cells-%E2%86%92-Modify-%E2%86%92-Calculate-%E2%86%92-Add-rows-%E2%86%92-Create-worksheet-%E2%86%92-Format-%E2%86%92-Save.">¶</a></h1>
+</div>
+</div>
+</div>
+</article>
+</div>
+<div class="pager"><a class="pg prev" href="../lectures/week2-lecture-2-4-working-with-json-files.html">← §4. Working with JSON Files</a><a class="pg next" href="../lectures/week2-lecture-2-6-pandas-and-excel.html">Pandas and Excel →</a></div>
+
+</main>
+<footer>
+  Сгенерировано <code>build.py</code> из ноутбуков курса · AITU
+</footer>
+</body>
+</html>

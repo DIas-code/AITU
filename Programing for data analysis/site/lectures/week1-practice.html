@@ -1,0 +1,1612 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Practical Lesson 1 — All Tasks with Reasoning · Programming for Data Analysis</title>
+<link rel="stylesheet" href="../assets/style.css">
+
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="../index.html"><b>PDA</b><span>Programming for Data Analysis</span></a>
+  <nav><a href="../index.html">Главная</a>
+<a href="../week1.html" class="on">Неделя 1</a>
+<a href="../week2.html">Неделя 2</a>
+<a href="../week3.html">Неделя 3</a>
+<a href="../assignments.html">Задания</a>
+<a href="../commands.html">Команды</a></nav>
+</header>
+<main>
+
+<div class="lechead">
+  <a class="back" href="../week1.html">← Неделя 1</a>
+  <h1>Practical Lesson 1 — All Tasks with Reasoning</h1>
+  <div class="meta">81 текстовых ячеек · 34 ячеек кода ·
+    <a href="../week1/practice.ipynb" download>скачать .ipynb</a></div>
+</div>
+<div class="leclayout">
+  <aside class="toc"><div class="toc-t">Содержание</div><a class="lv1" href="#Practical-Lesson-1-%E2%80%94-All-Tasks-with-Reasoning">Practical Lesson 1 — All Tasks with Reasoning</a><a class="lv2" href="#Main-Goal">Main Goal</a><a class="lv3" href="#Important-rule">Important rule</a><a class="lv2" href="#Student-Information">Student Information</a><a class="lv1" href="#Part-1-%E2%80%94-Development-Environments">Part 1 — Development Environments</a><a class="lv2" href="#Task-1.-Compare-Development-Environments">Task 1. Compare Development Environments</a><a class="lv3" href="#Explain-your-reasoning">Explain your reasoning</a><a class="lv1" href="#Part-2-%E2%80%94-Git-and-GitHub">Part 2 — Git and GitHub</a><a class="lv2" href="#Task-2.-Git-vs-GitHub">Task 2. Git vs GitHub</a><a class="lv2" href="#Task-2.1-%E2%80%94-Order-the-Git-Workflow">Task 2.1 — Order the Git Workflow</a><a class="lv1" href="#Part-3-%E2%80%94-CPU,-GPU,-TPU-and-Cloud">Part 3 — CPU, GPU, TPU and Cloud</a><a class="lv2" href="#Task-3.-CPU-vs-GPU-vs-TPU">Task 3. CPU vs GPU vs TPU</a><a class="lv2" href="#Task-3.1-%E2%80%94-Check-Your-Colab-Runtime">Task 3.1 — Check Your Colab Runtime</a><a class="lv3" href="#Reasoning-Questions">Reasoning Questions</a><a class="lv1" href="#Part-4-%E2%80%94-Python-Basics">Part 4 — Python Basics</a><a class="lv2" href="#Task-4.-Variables-and-Data-Types">Task 4. Variables and Data Types</a><a class="lv3" href="#Task-4.1">Task 4.1</a><a class="lv2" href="#Task-5.-Arithmetic-Operations">Task 5. Arithmetic Operations</a><a class="lv1" href="#Part-5-%E2%80%94-Conditional-Statements">Part 5 — Conditional Statements</a><a class="lv2" href="#Task-6.-Student-Performance-Classification">Task 6. Student Performance Classification</a><a class="lv3" href="#Task-6.1">Task 6.1</a><a class="lv1" href="#Part-6-%E2%80%94-Lists">Part 6 — Lists</a><a class="lv2" href="#Task-7.-Working-with-a-List">Task 7. Working with a List</a><a class="lv2" href="#Task-7.1-%E2%80%94-Modify-the-List">Task 7.1 — Modify the List</a><a class="lv1" href="#Part-7-%E2%80%94-Loops">Part 7 — Loops</a><a class="lv2" href="#Task-8.-Filtering-with-a-for-Loop">Task 8. Filtering with a for Loop</a><a class="lv2" href="#Task-9.-Sales-Analysis">Task 9. Sales Analysis</a><a class="lv1" href="#Part-8-%E2%80%94-Tuple">Part 8 — Tuple</a><a class="lv2" href="#Task-10.-Tuple">Task 10. Tuple</a><a class="lv1" href="#Part-9-%E2%80%94-Set">Part 9 — Set</a><a class="lv2" href="#Task-11.-Unique-Values">Task 11. Unique Values</a><a class="lv3" href="#Task-11.1">Task 11.1</a><a class="lv1" href="#Part-10-%E2%80%94-Dictionary">Part 10 — Dictionary</a><a class="lv2" href="#Task-12.-Student-Dictionary">Task 12. Student Dictionary</a><a class="lv1" href="#Part-11-%E2%80%94-Mini-Data-Analysis">Part 11 — Mini Data Analysis</a><a class="lv2" href="#Task-13.-Student-Performance-Dataset">Task 13. Student Performance Dataset</a><a class="lv1" href="#Part-12-%E2%80%94-Functions">Part 12 — Functions</a><a class="lv2" href="#Task-14.-Calculate-Average">Task 14. Calculate Average</a><a class="lv2" href="#Task-14.1-%E2%80%94-Create-get_status(score)">Task 14.1 — Create get_status(score)</a><a class="lv1" href="#Part-13-%E2%80%94-Modules,-Packages-and-Libraries">Part 13 — Modules, Packages and Libraries</a></aside>
+  <article class="nbdoc"><div class="cell border-box-sizing text_cell rendered" id="cell-id=cdb9df1f"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Practical-Lesson-1-%E2%80%94-All-Tasks-with-Reasoning">Practical Lesson 1 — All Tasks with Reasoning<a class="anchor-link" href="#Practical-Lesson-1-%E2%80%94-All-Tasks-with-Reasoning">¶</a></h1><p><strong>Course:</strong> Programming for Data Analysis and Database<br/>
+<strong>Week:</strong> 1<br/>
+<strong>Environment:</strong> Google Colab<br/>
+<strong>Language:</strong> Python</p>
+<hr/>
+<h2 id="Main-Goal">Main Goal<a class="anchor-link" href="#Main-Goal">¶</a></h2><p>This notebook combines all Week 1 practical tasks:</p>
+<ul>
+<li>Development environments</li>
+<li>Jupyter Notebook and Google Colab</li>
+<li>Git and GitHub</li>
+<li>CPU / GPU / TPU</li>
+<li>Python variables and data types</li>
+<li>Conditions</li>
+<li>Loops</li>
+<li>Functions</li>
+<li>Lists, tuples, sets, dictionaries</li>
+<li>Modules and packages</li>
+<li>Basic Data Science libraries</li>
+<li>Structured and reusable code</li>
+<li>Mini data analysis</li>
+</ul>
+<h3 id="Important-rule">Important rule<a class="anchor-link" href="#Important-rule">¶</a></h3><p>For each task, you must provide:</p>
+<ol>
+<li><strong>Working code</strong></li>
+<li><strong>Visible output</strong></li>
+<li><strong>A short explanation of your reasoning</strong></li>
+</ol>
+<p>Do not submit code without explanation.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=933f7ab5"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Student-Information">Student Information<a class="anchor-link" href="#Student-Information">¶</a></h2><p>Complete before starting.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=0e17617c">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">student_name</span> <span class="o">=</span> <span class="s2">"YOUR NAME"</span>
+<span class="n">group</span> <span class="o">=</span> <span class="s2">"YOUR GROUP"</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Student:"</span><span class="p">,</span> <span class="n">student_name</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Group:"</span><span class="p">,</span> <span class="n">group</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=d01074b6"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Part-1-%E2%80%94-Development-Environments">Part 1 — Development Environments<a class="anchor-link" href="#Part-1-%E2%80%94-Development-Environments">¶</a></h1><h2 id="Task-1.-Compare-Development-Environments">Task 1. Compare Development Environments<a class="anchor-link" href="#Task-1.-Compare-Development-Environments">¶</a></h2><p>Complete the table in your own words.</p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Main Purpose</th>
+<th>Best For</th>
+<th>Main Advantage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Jupyter Notebook</td>
+<td>Writing and running code in cells</td>
+<td>Data analysis</td>
+<td>Code, graphs, explanations etc. are in one place</td>
+</tr>
+<tr>
+<td>Google Colab</td>
+<td>Online</td>
+<td>Students and collaborative work</td>
+<td>Fast, no installation</td>
+</tr>
+<tr>
+<td>PyCharm</td>
+<td>Develop Python programs</td>
+<td>Large project</td>
+<td>Made specially for python, structure</td>
+</tr>
+<tr>
+<td>VS Code</td>
+<td>Writing and running different types of code</td>
+<td>Small and large programming projects</td>
+<td>Fast, flexible, and supports many languages</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Explain-your-reasoning">Explain your reasoning<a class="anchor-link" href="#Explain-your-reasoning">¶</a></h3><p>Answer:</p>
+<ol>
+<li>Why is Google Colab convenient for this course?</li>
+<li>When would you choose VS Code instead of Colab?</li>
+<li>Why is Jupyter popular in Data Science?</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=76fa5bc3"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Your answer:</strong></p>
+<ol>
+<li>Convenient for learning and quick experiments</li>
+<li>For projects</li>
+<li>You can explain the analysis directly next to the code and charts.</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=65ba6350"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Part-2-%E2%80%94-Git-and-GitHub">Part 2 — Git and GitHub<a class="anchor-link" href="#Part-2-%E2%80%94-Git-and-GitHub">¶</a></h1><h2 id="Task-2.-Git-vs-GitHub">Task 2. Git vs GitHub<a class="anchor-link" href="#Task-2.-Git-vs-GitHub">¶</a></h2><p>Answer in your own words:</p>
+<ul>
+<li>What is Git?</li>
+<li>What is GitHub?</li>
+<li>What is a repository?</li>
+<li>What is a commit?</li>
+<li>What is the difference between <code>push</code> and <code>pull</code>?</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=48c84586"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Your answer:</strong></p>
+<ul>
+<li>Git:  is a tool, that tracks changes in a project locally</li>
+<li>GitHub:  is an online platform for repositories, it stores it and support teamwork</li>
+<li>Repository:  project folder with code, data, README and chage history</li>
+<li>Commit:  saved version</li>
+<li>Push vs Pull:  send to github vs receive changes from github</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=8e24b0d0"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Task-2.1-%E2%80%94-Order-the-Git-Workflow">Task 2.1 — Order the Git Workflow<a class="anchor-link" href="#Task-2.1-%E2%80%94-Order-the-Git-Workflow">¶</a></h2><p>Put the following steps in the correct order:</p>
+<ul>
+<li><code>git push</code></li>
+<li>edit code</li>
+<li><code>git add .</code></li>
+<li><code>git commit -m "message"</code></li>
+</ul>
+<p>Write the correct order below.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=595dc7a0"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Correct order:</strong></p>
+<ol>
+<li>edit code</li>
+<li>git add .</li>
+<li>git commit -m 'mes'</li>
+<li>git push</li>
+</ol>
+<h3 id="Explain-your-reasoning">Explain your reasoning<a class="anchor-link" href="#Explain-your-reasoning">¶</a></h3><p>Why should commit messages be meaningful?</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=e9294476"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Part-3-%E2%80%94-CPU,-GPU,-TPU-and-Cloud">Part 3 — CPU, GPU, TPU and Cloud<a class="anchor-link" href="#Part-3-%E2%80%94-CPU,-GPU,-TPU-and-Cloud">¶</a></h1><h2 id="Task-3.-CPU-vs-GPU-vs-TPU">Task 3. CPU vs GPU vs TPU<a class="anchor-link" href="#Task-3.-CPU-vs-GPU-vs-TPU">¶</a></h2><p>Complete:</p>
+<table>
+<thead>
+<tr>
+<th>Hardware</th>
+<th>Main Idea</th>
+<th>Good For</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CPU</td>
+<td>General purpose processor</td>
+<td>regular python, logic, files, sqland small tables</td>
+</tr>
+<tr>
+<td>GPU</td>
+<td>Many parallel functions</td>
+<td>neural networks, matrices, images and LLMs</td>
+</tr>
+<tr>
+<td>TPU</td>
+<td>A specialized Google accelerator for ML</td>
+<td>TensorFlow/JAX workloads</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Explain-your-reasoning">Explain your reasoning<a class="anchor-link" href="#Explain-your-reasoning">¶</a></h3><p>Why does enabling a GPU not automatically make every Python program faster?</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=a3d77a94"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Your answer:</strong>
+The code must use GPU-aware libraries Pytorch, TensorFlow, JAX, CuPy</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=63ee4112"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Task-3.1-%E2%80%94-Check-Your-Colab-Runtime">Task 3.1 — Check Your Colab Runtime<a class="anchor-link" href="#Task-3.1-%E2%80%94-Check-Your-Colab-Runtime">¶</a></h2><p>Run the following cells.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=824e4de6">
+<div class="input">
+<div class="prompt input_prompt">In [1]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Python version:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">version</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Python version:
+3.14.7 (tags/v3.14.7:823f032, Aug  5 2026, 10:51:32) [MSC v.1944 64 bit (AMD64)]
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=bde2caad">
+<div class="input">
+<div class="prompt input_prompt">In [2]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># This command shows NVIDIA GPU information if a GPU is available.</span>
+<span class="o">!</span>nvidia-smi
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>"nvidia-smi" �� ���� ����७��� ��� ���譥�
+��������, �ᯮ��塞�� �ணࠬ��� ��� ������ 䠩���.
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=f7b47d28"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Reasoning-Questions">Reasoning Questions<a class="anchor-link" href="#Reasoning-Questions">¶</a></h3><ol>
+<li>Which runtime are you currently using: CPU, GPU, or TPU?</li>
+<li>Do we need an A100 or H100 for today's Python basics?</li>
+<li>In which kinds of tasks would a GPU become useful?</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=6b5d4f5c"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Your answer:</strong></p>
+<ol>
+<li>CPU</li>
+<li>No</li>
+<li>ML, LLMs something with big mrmoey usage</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=f1044569"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Part-4-%E2%80%94-Python-Basics">Part 4 — Python Basics<a class="anchor-link" href="#Part-4-%E2%80%94-Python-Basics">¶</a></h1><h2 id="Task-4.-Variables-and-Data-Types">Task 4. Variables and Data Types<a class="anchor-link" href="#Task-4.-Variables-and-Data-Types">¶</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=5ebcbdcf">
+<div class="input">
+<div class="prompt input_prompt">In [3]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">name</span> <span class="o">=</span> <span class="s2">"Aruzhan"</span>
+<span class="n">age</span> <span class="o">=</span> <span class="mi">22</span>
+<span class="n">gpa</span> <span class="o">=</span> <span class="mf">3.75</span>
+<span class="n">is_master_student</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">age</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">gpa</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">is_master_student</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Aruzhan
+22
+3.75
+True
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=fac7be96"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Task-4.1">Task 4.1<a class="anchor-link" href="#Task-4.1">¶</a></h3><p>Use <code>type()</code> to identify the type of each variable.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=2a6daa45">
+<div class="input">
+<div class="prompt input_prompt">In [6]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># TODO</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">age</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">gpa</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">is_master_student</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>&lt;class 'str'&gt;
+&lt;class 'int'&gt;
+&lt;class 'float'&gt;
+&lt;class 'bool'&gt;
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=e9c3d4cb"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Explain-your-reasoning">Explain your reasoning<a class="anchor-link" href="#Explain-your-reasoning">¶</a></h3><p>Answer:</p>
+<ol>
+<li>Why is <code>age</code> usually an integer?</li>
+<li>Why is <code>gpa</code> usually a float?</li>
+<li>Why is <code>is_master_student</code> a Boolean?</li>
+<li>What would happen if you stored age as text, for example <code>"22"</code>?</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=9a31ce30"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Your answer:</strong></p>
+<ol>
+<li>It usually perpresents whole numbers</li>
+<li>GPA usually has two digits after the decimal point.</li>
+<li>Because it represents True</li>
+<li>age will be string</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=355b53f9"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Task-5.-Arithmetic-Operations">Task 5. Arithmetic Operations<a class="anchor-link" href="#Task-5.-Arithmetic-Operations">¶</a></h2><p>You have three assignment scores.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=a48211dd">
+<div class="input">
+<div class="prompt input_prompt">In [7]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">assignment1</span> <span class="o">=</span> <span class="mi">78</span>
+<span class="n">assignment2</span> <span class="o">=</span> <span class="mi">85</span>
+<span class="n">assignment3</span> <span class="o">=</span> <span class="mi">92</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=296dd1dc"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Calculate:</p>
+<ul>
+<li>total score</li>
+<li>average score</li>
+<li>maximum</li>
+<li>minimum</li>
+<li>difference between Assignment 3 and Assignment 1</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=6c60e7da">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># TODO</span>
+
+<span class="n">total_score</span> <span class="o">=</span> <span class="n">assignment1</span> <span class="o">+</span> <span class="n">assignment2</span> <span class="o">+</span> <span class="n">assignment3</span>
+<span class="n">average_score</span> <span class="o">=</span> <span class="n">total_score</span> <span class="o">/</span> <span class="mi">3</span>
+<span class="n">maximum_score</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">assignment1</span><span class="p">,</span> <span class="n">assignment2</span><span class="p">,</span> <span class="n">assignment3</span><span class="p">)</span>
+<span class="n">minimum_score</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">assignment1</span><span class="p">,</span> <span class="n">assignment2</span><span class="p">,</span> <span class="n">assignment3</span><span class="p">)</span>
+<span class="n">difference</span> <span class="o">=</span> <span class="n">maximum_score</span> <span class="o">-</span> <span class="n">minimum_score</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Total:"</span><span class="p">,</span> <span class="n">total_score</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Average:"</span><span class="p">,</span> <span class="n">average_score</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Maximum:"</span><span class="p">,</span> <span class="n">maximum_score</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Minimum:"</span><span class="p">,</span> <span class="n">minimum_score</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Difference:"</span><span class="p">,</span> <span class="n">difference</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Total: 255
+Average: 85.0
+Maximum: 92
+Minimum: 78
+Difference: 14
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=b44ffe57"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Explain-your-reasoning">Explain your reasoning<a class="anchor-link" href="#Explain-your-reasoning">¶</a></h3><p>Why is dividing the total by the number of assignments a valid way to calculate the average?</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=a69a759b"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Your answer:</strong>
+When we use /(divide) result becomes float.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=d8ea8d48"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Part-5-%E2%80%94-Conditional-Statements">Part 5 — Conditional Statements<a class="anchor-link" href="#Part-5-%E2%80%94-Conditional-Statements">¶</a></h1><h2 id="Task-6.-Student-Performance-Classification">Task 6. Student Performance Classification<a class="anchor-link" href="#Task-6.-Student-Performance-Classification">¶</a></h2><p>Rules:</p>
+<ul>
+<li>90–100 → Excellent</li>
+<li>70–89 → Good</li>
+<li>50–69 → Satisfactory</li>
+<li>below 50 → Fail</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=53e8c2ea">
+<div class="input">
+<div class="prompt input_prompt">In [9]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">score</span> <span class="o">=</span> <span class="mi">83</span>
+
+<span class="c1"># TODO: write if / elif / else</span>
+<span class="k">if</span> <span class="n">score</span> <span class="o">&gt;=</span> <span class="mi">90</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'Excellent'</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">score</span> <span class="o">&gt;=</span> <span class="mi">70</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'Good'</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">score</span> <span class="o">&gt;=</span> <span class="mi">50</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'Satisfactory'</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'Fail'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Good
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=7038865c"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Task-6.1">Task 6.1<a class="anchor-link" href="#Task-6.1">¶</a></h3><p>Test the classification for:</p>
+<p><code>95, 82, 65, 40</code></p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=b86cc443">
+<div class="input">
+<div class="prompt input_prompt">In [10]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">test_scores</span> <span class="o">=</span> <span class="p">[</span><span class="mi">95</span><span class="p">,</span> <span class="mi">82</span><span class="p">,</span> <span class="mi">65</span><span class="p">,</span> <span class="mi">40</span><span class="p">]</span>
+
+<span class="c1"># TODO: classify all values using a loop</span>
+<span class="k">for</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">test_scores</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;=</span> <span class="mi">90</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'Excellent'</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">score</span> <span class="o">&gt;=</span> <span class="mi">70</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'Good'</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">score</span> <span class="o">&gt;=</span> <span class="mi">50</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'Satisfactory'</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'Fail'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Excellent
+Good
+Satisfactory
+Fail
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=bef226a1"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Explain-your-reasoning">Explain your reasoning<a class="anchor-link" href="#Explain-your-reasoning">¶</a></h3><p>Why does the order of conditions matter?</p>
+<p>For example, why is it better to check <code>score &gt;= 90</code> before <code>score &gt;= 70</code>?</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=6b63b5cb"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Your answer:</strong>
+Because if score &gt;= 90 will not be checked never if it wiil be after &gt;=70, &gt;=90 inside -&gt; &gt;=70</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=94f0394c"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Part-6-%E2%80%94-Lists">Part 6 — Lists<a class="anchor-link" href="#Part-6-%E2%80%94-Lists">¶</a></h1><h2 id="Task-7.-Working-with-a-List">Task 7. Working with a List<a class="anchor-link" href="#Task-7.-Working-with-a-List">¶</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=54b68c2e">
+<div class="input">
+<div class="prompt input_prompt">In [11]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">scores</span> <span class="o">=</span> <span class="p">[</span><span class="mi">78</span><span class="p">,</span> <span class="mi">85</span><span class="p">,</span> <span class="mi">92</span><span class="p">,</span> <span class="mi">67</span><span class="p">,</span> <span class="mi">88</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Scores:"</span><span class="p">,</span> <span class="n">scores</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Scores: [78, 85, 92, 67, 88]
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=1ba5ec86"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Complete:</p>
+<ol>
+<li>Print the first score.</li>
+<li>Print the last score.</li>
+<li>Print the number of scores.</li>
+<li>Calculate minimum, maximum, total, average.</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=567d0f9b">
+<div class="input">
+<div class="prompt input_prompt">In [16]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># TODO</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">scores</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">scores</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">scores</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">scores</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">scores</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">scores</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">scores</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>78
+88
+5
+67
+92
+410
+82.0
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=2f2b05a5"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Task-7.1-%E2%80%94-Modify-the-List">Task 7.1 — Modify the List<a class="anchor-link" href="#Task-7.1-%E2%80%94-Modify-the-List">¶</a></h2><ol>
+<li>Add <code>95</code>.</li>
+<li>Remove <code>67</code>.</li>
+<li>Sort the list.</li>
+<li>Print the final result.</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=f811e659">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># TODO</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=b3470a88"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Explain-your-reasoning">Explain your reasoning<a class="anchor-link" href="#Explain-your-reasoning">¶</a></h3><p>Why is a list suitable for storing many student scores?</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=5d1fbb12"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Your answer:</strong></p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=14dd5aed"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Part-7-%E2%80%94-Loops">Part 7 — Loops<a class="anchor-link" href="#Part-7-%E2%80%94-Loops">¶</a></h1><h2 id="Task-8.-Filtering-with-a-for-Loop">Task 8. Filtering with a <code>for</code> Loop<a class="anchor-link" href="#Task-8.-Filtering-with-a-for-Loop">¶</a></h2><p>Print only scores greater than or equal to 80.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=4d5fc14f">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">scores</span> <span class="o">=</span> <span class="p">[</span><span class="mi">78</span><span class="p">,</span> <span class="mi">85</span><span class="p">,</span> <span class="mi">92</span><span class="p">,</span> <span class="mi">67</span><span class="p">,</span> <span class="mi">88</span><span class="p">]</span>
+
+<span class="c1"># TODO</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=bd63e37c"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Explain-your-reasoning">Explain your reasoning<a class="anchor-link" href="#Explain-your-reasoning">¶</a></h3><p>Describe what happens during one iteration of the loop.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=c1cce90b"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Your answer:</strong></p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=a014c619"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Task-9.-Sales-Analysis">Task 9. Sales Analysis<a class="anchor-link" href="#Task-9.-Sales-Analysis">¶</a></h2><p>Monthly sales:</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=8127facb">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">sales</span> <span class="o">=</span> <span class="p">[</span><span class="mi">125000</span><span class="p">,</span> <span class="mi">138000</span><span class="p">,</span> <span class="mi">119000</span><span class="p">,</span> <span class="mi">145000</span><span class="p">,</span> <span class="mi">162000</span><span class="p">,</span> <span class="mi">155000</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=1bd01562"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Calculate:</p>
+<ol>
+<li>total sales</li>
+<li>average monthly sales</li>
+<li>minimum sales</li>
+<li>maximum sales</li>
+<li>number of months</li>
+<li>number of months above 140000</li>
+<li>percentage of months above 140000</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=d35918a8">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># TODO</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=2fa0bbfe"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Explain-your-reasoning">Explain your reasoning<a class="anchor-link" href="#Explain-your-reasoning">¶</a></h3><p>Why do we use a counter when calculating the number of months above 140000?</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=38688853"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Your answer:</strong></p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=0ccd698d"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Part-8-%E2%80%94-Tuple">Part 8 — Tuple<a class="anchor-link" href="#Part-8-%E2%80%94-Tuple">¶</a></h1><h2 id="Task-10.-Tuple">Task 10. Tuple<a class="anchor-link" href="#Task-10.-Tuple">¶</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=7d97a806">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">student</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"Anna"</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="s2">"Applied Data Analytics"</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">student</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">student</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">student</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=5a4998a5"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Try:</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=5aa54930">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Try changing the tuple</span>
+<span class="c1"># student[0] = "John"</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=fcb790f8"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Explain-your-reasoning">Explain your reasoning<a class="anchor-link" href="#Explain-your-reasoning">¶</a></h3><ol>
+<li>What happens when you try to modify a tuple?</li>
+<li>When might a tuple be more appropriate than a list?</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=c2cccc2a"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Your answer:</strong></p>
+<ol>
+<li></li>
+<li></li>
+</ol>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=a2ba7a93"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Part-9-%E2%80%94-Set">Part 9 — Set<a class="anchor-link" href="#Part-9-%E2%80%94-Set">¶</a></h1><h2 id="Task-11.-Unique-Values">Task 11. Unique Values<a class="anchor-link" href="#Task-11.-Unique-Values">¶</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=5329b348">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">languages</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"Python"</span><span class="p">,</span>
+    <span class="s2">"SQL"</span><span class="p">,</span>
+    <span class="s2">"Python"</span><span class="p">,</span>
+    <span class="s2">"Java"</span><span class="p">,</span>
+    <span class="s2">"SQL"</span><span class="p">,</span>
+    <span class="s2">"R"</span><span class="p">,</span>
+    <span class="s2">"Python"</span>
+<span class="p">]</span>
+
+<span class="n">unique_languages</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">languages</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">unique_languages</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=ffd81171"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Task-11.1">Task 11.1<a class="anchor-link" href="#Task-11.1">¶</a></h3><p>Print the number of unique programming languages.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=77c3bb65">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># TODO</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=95acaf73"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Explain-your-reasoning">Explain your reasoning<a class="anchor-link" href="#Explain-your-reasoning">¶</a></h3><p>Why did duplicate values disappear after converting the list to a set?</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=5bae0edd"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Your answer:</strong></p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=51986a5a"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Part-10-%E2%80%94-Dictionary">Part 10 — Dictionary<a class="anchor-link" href="#Part-10-%E2%80%94-Dictionary">¶</a></h1><h2 id="Task-12.-Student-Dictionary">Task 12. Student Dictionary<a class="anchor-link" href="#Task-12.-Student-Dictionary">¶</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=391360e3">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">student</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"Anna"</span><span class="p">,</span>
+    <span class="s2">"age"</span><span class="p">:</span> <span class="mi">22</span><span class="p">,</span>
+    <span class="s2">"program"</span><span class="p">:</span> <span class="s2">"Applied Data Analytics"</span><span class="p">,</span>
+    <span class="s2">"gpa"</span><span class="p">:</span> <span class="mf">3.7</span>
+<span class="p">}</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">student</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=9e71f19d"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Complete:</p>
+<ol>
+<li>Print the student's name.</li>
+<li>Print GPA.</li>
+<li>Add <code>"city": "Astana"</code>.</li>
+<li>Change GPA to <code>3.8</code>.</li>
+<li>Print all keys.</li>
+<li>Print all values.</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=c3b0051e">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># TODO</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=22533d8e"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Explain-your-reasoning">Explain your reasoning<a class="anchor-link" href="#Explain-your-reasoning">¶</a></h3><p>Why is a dictionary suitable for storing information about one student?</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=cde041be"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Your answer:</strong></p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=697cdd4f"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Part-11-%E2%80%94-Mini-Data-Analysis">Part 11 — Mini Data Analysis<a class="anchor-link" href="#Part-11-%E2%80%94-Mini-Data-Analysis">¶</a></h1><h2 id="Task-13.-Student-Performance-Dataset">Task 13. Student Performance Dataset<a class="anchor-link" href="#Task-13.-Student-Performance-Dataset">¶</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=10b6286f">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">students</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"Aruzhan"</span><span class="p">,</span> <span class="s2">"score"</span><span class="p">:</span> <span class="mi">85</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"Daniel"</span><span class="p">,</span> <span class="s2">"score"</span><span class="p">:</span> <span class="mi">72</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"Amina"</span><span class="p">,</span> <span class="s2">"score"</span><span class="p">:</span> <span class="mi">94</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"Mark"</span><span class="p">,</span> <span class="s2">"score"</span><span class="p">:</span> <span class="mi">61</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"Ali"</span><span class="p">,</span> <span class="s2">"score"</span><span class="p">:</span> <span class="mi">88</span><span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=633c3176"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Complete:</p>
+<ol>
+<li>Print all student names.</li>
+<li>Print students with score ≥ 80.</li>
+<li>Calculate the average score.</li>
+<li>Find the student with the highest score.</li>
+<li>Count how many students passed (score ≥ 50).</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=45f99d3c">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># TODO</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=571adc64"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Explain-your-reasoning">Explain your reasoning<a class="anchor-link" href="#Explain-your-reasoning">¶</a></h3><p>Explain how a <strong>list of dictionaries</strong> represents a simple dataset.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=da2f8f33"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Your answer:</strong></p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=dd4421b7"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Part-12-%E2%80%94-Functions">Part 12 — Functions<a class="anchor-link" href="#Part-12-%E2%80%94-Functions">¶</a></h1><h2 id="Task-14.-Calculate-Average">Task 14. Calculate Average<a class="anchor-link" href="#Task-14.-Calculate-Average">¶</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=d03b0d4a">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">calculate_average</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+
+<span class="n">scores</span> <span class="o">=</span> <span class="p">[</span><span class="mi">85</span><span class="p">,</span> <span class="mi">72</span><span class="p">,</span> <span class="mi">94</span><span class="p">,</span> <span class="mi">61</span><span class="p">,</span> <span class="mi">88</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">calculate_average</span><span class="p">(</span><span class="n">scores</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=717fe726"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Task-14.1-%E2%80%94-Create-get_status(score)">Task 14.1 — Create <code>get_status(score)</code><a class="anchor-link" href="#Task-14.1-%E2%80%94-Create-get_status(score)">¶</a></h2><p>Return:</p>
+<ul>
+<li>Excellent</li>
+<li>Good</li>
+<li>Satisfactory</li>
+<li>Fail</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=f4600e86">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_status</span><span class="p">(</span><span class="n">score</span><span class="p">):</span>
+    <span class="c1"># TODO</span>
+    <span class="k">pass</span>
+
+
+<span class="nb">print</span><span class="p">(</span><span class="n">get_status</span><span class="p">(</span><span class="mi">95</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">get_status</span><span class="p">(</span><span class="mi">82</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">get_status</span><span class="p">(</span><span class="mi">55</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">get_status</span><span class="p">(</span><span class="mi">30</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=7b9985b8"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Explain-your-reasoning">Explain your reasoning<a class="anchor-link" href="#Explain-your-reasoning">¶</a></h3><p>Why is a function better than copying the same condition block multiple times?</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=7376ddde"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Your answer:</strong></p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=a558ff95"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Part-13-%E2%80%94-Modules,-Packages-and-Libraries">Part 13 — Modules, Packages and Libraries<a class="anchor-link" href="#Part-13-%E2%80%94-Modules,-Packages-and-Libraries">¶</a></h1><h2 id="Task-15.-Standard-Modules">Task 15. Standard Modules<a class="anchor-link" href="#Task-15.-Standard-Modules">¶</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=1923f5fc">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Square root of 25:"</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">25</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Random number:"</span><span class="p">,</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=e2e7e118"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Task-15.1-%E2%80%94-NumPy">Task 15.1 — NumPy<a class="anchor-link" href="#Task-15.1-%E2%80%94-NumPy">¶</a></h3><p>Run:</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=56f4c528">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">50</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Array:"</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Mean:"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Maximum:"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=6da141e5"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Explain-your-reasoning">Explain your reasoning<a class="anchor-link" href="#Explain-your-reasoning">¶</a></h3><p>Explain in simple words:</p>
+<ul>
+<li>module</li>
+<li>package</li>
+<li>library</li>
+<li>why we use <code>import</code></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=617b1e97"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Your answer:</strong></p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=ae47ed03"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Part-14-%E2%80%94-Data-Science-Python-Ecosystem">Part 14 — Data Science Python Ecosystem<a class="anchor-link" href="#Part-14-%E2%80%94-Data-Science-Python-Ecosystem">¶</a></h1><h2 id="Task-16.-Match-Library-to-Purpose">Task 16. Match Library to Purpose<a class="anchor-link" href="#Task-16.-Match-Library-to-Purpose">¶</a></h2><p>Match:</p>
+<ol>
+<li>NumPy</li>
+<li>Pandas</li>
+<li>Matplotlib</li>
+<li>Seaborn</li>
+<li>Scikit-learn</li>
+</ol>
+<p>with:</p>
+<ul>
+<li>statistical visualization</li>
+<li>numerical arrays</li>
+<li>machine learning</li>
+<li>tables / DataFrames</li>
+<li>basic plots</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=baffb34d"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Your answer:</strong></p>
+<ol>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+</ol>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=3eada8a5"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Task-16.1-%E2%80%94-First-NumPy-+-Pandas-Example">Task 16.1 — First NumPy + Pandas Example<a class="anchor-link" href="#Task-16.1-%E2%80%94-First-NumPy-+-Pandas-Example">¶</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=0e18deea">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">scores</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">70</span><span class="p">,</span> <span class="mi">82</span><span class="p">,</span> <span class="mi">91</span><span class="p">,</span> <span class="mi">76</span><span class="p">,</span> <span class="mi">88</span><span class="p">])</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s2">"score"</span><span class="p">:</span> <span class="n">scores</span>
+<span class="p">})</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Average:"</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s2">"score"</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=f0da9989"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Explain-your-reasoning">Explain your reasoning<a class="anchor-link" href="#Explain-your-reasoning">¶</a></h3><p>What does NumPy do in this example?</p>
+<p>What does Pandas do?</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=4a72027f"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Your answer:</strong></p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=1a555195"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Part-15-%E2%80%94-Structured-and-Reusable-Code">Part 15 — Structured and Reusable Code<a class="anchor-link" href="#Part-15-%E2%80%94-Structured-and-Reusable-Code">¶</a></h1><h2 id="Task-17.-Improve-the-Code">Task 17. Improve the Code<a class="anchor-link" href="#Task-17.-Improve-the-Code">¶</a></h2><p>Less reusable:</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=5dd2b7c3">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+
+<span class="n">b</span> <span class="o">=</span> <span class="p">[</span><span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">70</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=9745a223"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Rewrite using:</p>
+<ul>
+<li>meaningful variable names</li>
+<li>one reusable function</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=07c09b5e">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># TODO</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=158b2069"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Explain-your-reasoning">Explain your reasoning<a class="anchor-link" href="#Explain-your-reasoning">¶</a></h3><p>Why is the second version easier to maintain?</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=c083c436"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Your answer:</strong></p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=a8739e7c"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Part-16-%E2%80%94-Individual-Task">Part 16 — Individual Task<a class="anchor-link" href="#Part-16-%E2%80%94-Individual-Task">¶</a></h1><h2 id="Task-18.-Product-Inventory-Analysis">Task 18. Product Inventory Analysis<a class="anchor-link" href="#Task-18.-Product-Inventory-Analysis">¶</a></h2><p>Dataset:</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=81f86f3d">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">products</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"Laptop"</span><span class="p">,</span> <span class="s2">"price"</span><span class="p">:</span> <span class="mi">450000</span><span class="p">,</span> <span class="s2">"quantity"</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"Mouse"</span><span class="p">,</span> <span class="s2">"price"</span><span class="p">:</span> <span class="mi">7000</span><span class="p">,</span> <span class="s2">"quantity"</span><span class="p">:</span> <span class="mi">15</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"Keyboard"</span><span class="p">,</span> <span class="s2">"price"</span><span class="p">:</span> <span class="mi">15000</span><span class="p">,</span> <span class="s2">"quantity"</span><span class="p">:</span> <span class="mi">10</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"Monitor"</span><span class="p">,</span> <span class="s2">"price"</span><span class="p">:</span> <span class="mi">120000</span><span class="p">,</span> <span class="s2">"quantity"</span><span class="p">:</span> <span class="mi">5</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"Headphones"</span><span class="p">,</span> <span class="s2">"price"</span><span class="p">:</span> <span class="mi">25000</span><span class="p">,</span> <span class="s2">"quantity"</span><span class="p">:</span> <span class="mi">8</span><span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=482471b0"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Complete all tasks:</p>
+<ol>
+<li>Display all product names.</li>
+<li>Calculate total value for each product: <code>price × quantity</code>.</li>
+<li>Calculate total inventory value.</li>
+<li>Find the most expensive product.</li>
+<li>Display products with price &gt; 20000.</li>
+<li>Calculate average product price.</li>
+<li>Create:</li>
+</ol>
+<div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">product_category</span><span class="p">(</span><span class="n">price</span><span class="p">):</span>
+</pre></div>
+<p>Rules:</p>
+<ul>
+<li><code>&lt; 20000</code> → Budget</li>
+<li><code>20000–100000</code> → Medium</li>
+<li><code>&gt; 100000</code> → Expensive</li>
+</ul>
+<ol start="8">
+<li>Display:</li>
+</ol>
+<p><code>Laptop | 450000 | Expensive</code></p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=f96edafc">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># TODO: Complete the individual task</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=597acee8"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Explain-your-reasoning">Explain your reasoning<a class="anchor-link" href="#Explain-your-reasoning">¶</a></h3><p>Write 4–6 sentences explaining:</p>
+<ul>
+<li>why a list of dictionaries is suitable here;</li>
+<li>how you calculated inventory value;</li>
+<li>how your classification function works;</li>
+<li>which part of your solution is reusable.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=f410334b"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Your explanation:</strong></p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=8c9e0922"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Part-17-%E2%80%94-Challenge-Task-%E2%AD%90">Part 17 — Challenge Task ⭐<a class="anchor-link" href="#Part-17-%E2%80%94-Challenge-Task-%E2%AD%90">¶</a></h1><p>Website visitors:</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=8d2603fa">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">visitors</span> <span class="o">=</span> <span class="p">[</span><span class="mi">120</span><span class="p">,</span> <span class="mi">135</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">98</span><span class="p">,</span> <span class="mi">175</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">142</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=091b2b17"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Calculate:</p>
+<ol>
+<li>total visitors</li>
+<li>average visitors</li>
+<li>maximum</li>
+<li>minimum</li>
+<li>number of days above 140</li>
+<li>percentage of days above 140</li>
+<li>classify each day as:<ul>
+<li><code>High</code> if &gt; 140</li>
+<li><code>Normal</code> otherwise</li>
+</ul>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=ce420cb3">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># TODO</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=19ca5419"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Explain-your-reasoning">Explain your reasoning<a class="anchor-link" href="#Explain-your-reasoning">¶</a></h3><p>Why is percentage often more informative than only a count?</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=b3b3f07d"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Your answer:</strong></p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=a0d96218"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Final-Reflection">Final Reflection<a class="anchor-link" href="#Final-Reflection">¶</a></h1><p>Answer in complete sentences.</p>
+<ol>
+<li>What is the difference between Jupyter Notebook and Google Colab?</li>
+<li>What is the difference between Git and GitHub?</li>
+<li>When do we need a GPU?</li>
+<li>What is the difference between list, tuple, set and dictionary?</li>
+<li>Why are functions important?</li>
+<li>What is the purpose of NumPy?</li>
+<li>What is the purpose of Pandas?</li>
+<li>Which task was the most difficult for you?</li>
+<li>What error did you encounter and how did you solve it?</li>
+<li>What did you learn today that you did not know before?</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=65b67156"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Your reflection:</strong></p>
+<ol>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+</ol>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=15bfca6e"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Assessment-%E2%80%94-100-points">Assessment — 100 points<a class="anchor-link" href="#Assessment-%E2%80%94-100-points">¶</a></h1><table>
+<thead>
+<tr>
+<th>Component</th>
+<th style="text-align:right">Points</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Development environments + Git/GitHub</td>
+<td style="text-align:right">10</td>
+</tr>
+<tr>
+<td>CPU/GPU/TPU reasoning</td>
+<td style="text-align:right">10</td>
+</tr>
+<tr>
+<td>Variables + data types</td>
+<td style="text-align:right">10</td>
+</tr>
+<tr>
+<td>Conditions + loops</td>
+<td style="text-align:right">15</td>
+</tr>
+<tr>
+<td>Python data structures</td>
+<td style="text-align:right">15</td>
+</tr>
+<tr>
+<td>Functions + reusable code</td>
+<td style="text-align:right">10</td>
+</tr>
+<tr>
+<td>Modules + Data Science libraries</td>
+<td style="text-align:right">10</td>
+</tr>
+<tr>
+<td>Individual task</td>
+<td style="text-align:right">15</td>
+</tr>
+<tr>
+<td>Reflection + reasoning quality</td>
+<td style="text-align:right">5</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td style="text-align:right"><strong>100</strong></td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="Submission">Submission<a class="anchor-link" href="#Submission">¶</a></h2><p>File name:</p>
+<p><code>Practice_01_Name_Surname.ipynb</code></p>
+<p>Before submission:</p>
+<ul>
+<li>complete all <code>TODO</code> cells;</li>
+<li>run all cells;</li>
+<li>keep outputs visible;</li>
+<li>answer all reasoning questions;</li>
+<li>complete the final reflection.</li>
+</ul>
+</div>
+</div>
+</div>
+</article>
+</div>
+<div class="pager"><a class="pg prev" href="../lectures/week1-lecture-1-3-mnozhestva-i-slovari.html">← Лекция 1.3. Множества и словари</a><a class="pg next" href="../lectures/week2-lecture-2-1-directories-and-files.html">Lecture 2. Working with Directories and Files in Python →</a></div>
+
+</main>
+<footer>
+  Сгенерировано <code>build.py</code> из ноутбуков курса · AITU
+</footer>
+</body>
+</html>
