@@ -1,0 +1,2 @@
+****** is a high-level, interpreted *******ming **nguage that has gained immense popu**rity in recent years. It was first created in the **te 1980s by Guido van Rossum, and since then, it has become one of the most widely used *******ming **nguages in the world.
+****** is known for its simplicity and ease of use, which makes it an ideal **nguage for beginners. It has a straightforward syntax and requires less c**e than other *******ming **nguages, which means that developers can focus on solving problems rather than writing long lines of c**e. ******_******_*******ming
