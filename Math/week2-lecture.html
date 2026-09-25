@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ru" data-lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Неделя 2 — лекция</title>
+<link rel="stylesheet" href="assets/style.css">
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"]]},options:{skipHtmlTags:["script","noscript","style","textarea","pre","code"]}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><b>ADA-M</b><span lang="ru">Математика для Data Science</span><span lang="en">Mathematics for Data Science</span></a>
+  <nav><a href="index.html"><span lang="ru">Главная</span><span lang="en">Home</span></a>
+<span class="wgrp"><b><span lang="ru">Неделя</span><span lang="en">Week</span>&nbsp;1</b><a href="week1-formulas.html"><span lang="ru">Формулы</span><span lang="en">Formulas</span></a><a href="week1-lecture.html"><span lang="ru">Лекция</span><span lang="en">Lecture</span></a></span>
+<span class="wgrp"><b><span lang="ru">Неделя</span><span lang="en">Week</span>&nbsp;2</b><a href="week2-formulas.html"><span lang="ru">Формулы</span><span lang="en">Formulas</span></a><a href="week2-lecture.html" class="on"><span lang="ru">Лекция</span><span lang="en">Lecture</span></a></span>
+<span class="wgrp"><b><span lang="ru">Неделя</span><span lang="en">Week</span>&nbsp;3</b><a href="week3-formulas.html"><span lang="ru">Формулы</span><span lang="en">Formulas</span></a><a href="week3-lecture.html"><span lang="ru">Лекция</span><span lang="en">Lecture</span></a></span>
+<a href="calculators.html"><span lang="ru">Калькуляторы</span><span lang="en">Calculators</span></a>
+<a href="tables.html"><span lang="ru">Таблицы</span><span lang="en">Tables</span></a></nav>
+  <button id="lang" type="button" title="Русский / English">EN</button>
+</header>
+<main>
+
+<div class="phead">
+  <div class="kicker"><span lang="ru">Неделя</span><span lang="en">Week</span> 2 · <span lang="ru">Лекция</span><span lang="en">Lecture</span></div>
+  <h1><span lang="ru">Меры изменчивости и критерий Фишера</span><span lang="en">Measures of variability and Fisher's test</span></h1>
+  <p lang="ru" class="sub">Разброс данных, сравнение дисперсий, точный тест</p><p lang="en" class="sub">Spread of data, comparing variances, the exact test</p>
+  <p class="switch"><a href="week2-formulas.html"><span lang="ru">Формулы</span><span lang="en">Formulas</span> →</a></p>
+</div>
+<article class="l"><h3><span lang="ru">Нулевая гипотеза</span><span lang="en">The null hypothesis</span></h3><ul lang="ru"><li>H₀ предполагает, что разница между генеральными параметрами групп равна нулю.</li><li>Наблюдаемые различия объявляются случайными, а не систематическими.</li><li>H₀ — то, что мы хотим опровергнуть; H₁ — экспериментальная гипотеза.</li></ul><ul lang="en"><li>H₀ assumes the difference between population parameters is zero.</li><li>Observed differences are declared random rather than systematic.</li><li>H₀ is what we want to refute; H₁ is the experimental hypothesis.</li></ul><p lang="ru" class="src">Источник: Лекция 2, слайды 8–9</p><p lang="en" class="src">Source: Lecture 2, slides 8–9</p></article><article class="l"><h3><span lang="ru">Параметрические и непараметрические критерии</span><span lang="en">Parametric and non-parametric tests</span></h3><ul lang="ru"><li>Параметрические оценивают различия средних (t-критерий Стьюдента).</li><li>Непараметрические оценивают лишь средние тенденции (Розенбаум Q, Манн–Уитни U, φ Фишера).</li><li>Параметрические позволяют прямо оценить различия, но требуют нормального распределения.</li></ul><ul lang="en"><li>Parametric tests compare means (Student's t-test).</li><li>Non-parametric tests only compare general tendencies (Rosenbaum Q, Mann–Whitney U, Fisher's φ).</li><li>Parametric tests assess differences directly but require normality.</li></ul><p lang="ru" class="src">Источник: Лекция 2, слайд 10</p><p lang="en" class="src">Source: Lecture 2, slide 10</p></article><article class="l"><h3><span lang="ru">Односторонний и двусторонний тест</span><span lang="en">One-tailed and two-tailed tests</span></h3><ul lang="ru"><li>Односторонний: H₁ задаёт направление (p₁ > p₂), учитываются только таблицы с разницей в эту сторону.</li><li>p-value будет меньше, чем в двустороннем, если предположение верно → тест чувствительнее.</li><li>Применяется, когда направление эффекта известно заранее.</li></ul><ul lang="en"><li>One-tailed: H₁ fixes the direction (p₁ > p₂); only tables differing that way are counted.</li><li>The p-value is smaller than in a two-tailed test if the assumption holds → more sensitive.</li><li>Used when the direction of the effect is known in advance.</li></ul><p lang="ru" class="src">Источник: Лекция 2, слайд 7</p><p lang="en" class="src">Source: Lecture 2, slide 7</p></article>
+<p class="filesrc">Lecture 2_Math_Data_Science.pptx</p>
+
+</main>
+<footer><span lang="ru">Конспект курса AITU · собрано build_site.py</span><span lang="en">AITU course notes · generated by build_site.py</span></footer>
+<script src="assets/app.js"></script>
+
+</body>
+</html>

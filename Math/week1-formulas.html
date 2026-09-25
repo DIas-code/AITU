@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ru" data-lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Неделя 1 — формулы</title>
+<link rel="stylesheet" href="assets/style.css">
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"]]},options:{skipHtmlTags:["script","noscript","style","textarea","pre","code"]}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><b>ADA-M</b><span lang="ru">Математика для Data Science</span><span lang="en">Mathematics for Data Science</span></a>
+  <nav><a href="index.html"><span lang="ru">Главная</span><span lang="en">Home</span></a>
+<span class="wgrp"><b><span lang="ru">Неделя</span><span lang="en">Week</span>&nbsp;1</b><a href="week1-formulas.html" class="on"><span lang="ru">Формулы</span><span lang="en">Formulas</span></a><a href="week1-lecture.html"><span lang="ru">Лекция</span><span lang="en">Lecture</span></a></span>
+<span class="wgrp"><b><span lang="ru">Неделя</span><span lang="en">Week</span>&nbsp;2</b><a href="week2-formulas.html"><span lang="ru">Формулы</span><span lang="en">Formulas</span></a><a href="week2-lecture.html"><span lang="ru">Лекция</span><span lang="en">Lecture</span></a></span>
+<span class="wgrp"><b><span lang="ru">Неделя</span><span lang="en">Week</span>&nbsp;3</b><a href="week3-formulas.html"><span lang="ru">Формулы</span><span lang="en">Formulas</span></a><a href="week3-lecture.html"><span lang="ru">Лекция</span><span lang="en">Lecture</span></a></span>
+<a href="calculators.html"><span lang="ru">Калькуляторы</span><span lang="en">Calculators</span></a>
+<a href="tables.html"><span lang="ru">Таблицы</span><span lang="en">Tables</span></a></nav>
+  <button id="lang" type="button" title="Русский / English">EN</button>
+</header>
+<main>
+
+<div class="phead">
+  <div class="kicker"><span lang="ru">Неделя</span><span lang="en">Week</span> 1 · <span lang="ru">Формулы</span><span lang="en">Formulas</span></div>
+  <h1><span lang="ru">t-критерий Стьюдента</span><span lang="en">Student's t-test</span></h1>
+  <p lang="ru" class="sub">Гипотезы, зависимые и независимые выборки</p><p lang="en" class="sub">Hypotheses, dependent and independent samples</p>
+  <p class="switch"><a href="week1-lecture.html"><span lang="ru">Лекция</span><span lang="en">Lecture</span> →</a></p>
+</div>
+<nav class="chips"><a href="#hyp"><span lang="ru">Гипотезы и правило решения</span><span lang="en">Hypotheses and the decision rule</span></a><a href="#t-one"><span lang="ru">t-критерий, одна выборка</span><span lang="en">One-sample t-test</span></a><a href="#t-paired"><span lang="ru">t-критерий, зависимые (парные) выборки</span><span lang="en">Paired t-test (dependent samples)</span></a><a href="#sd-practice"><span lang="ru">S_d через суммы (формула практики)</span><span lang="en">S_d from sums (practice formula)</span></a><a href="#t-ind"><span lang="ru">t-критерий, независимые выборки (запись лекции)</span><span lang="en">Independent-samples t-test (lecture form)</span></a><a href="#t-pooled"><span lang="ru">Объединённая дисперсия (классический вариант)</span><span lang="en">Pooled variance (textbook form)</span></a></nav>
+
+<article class="f" id="hyp">
+  <h3><span lang="ru">Гипотезы и правило решения</span><span lang="en">Hypotheses and the decision rule</span></h3>
+  <div class="math">\[ H_0:\ \mu_1=\mu_2 \qquad H_1:\ \mu_1\neq\mu_2 \qquad |t|>t_{\text{crit}} \]</div>
+  <dl><div class="r"><dt><span lang="ru">Что это</span><span lang="en">What it is</span></dt><dd lang="ru">Формальная запись того, что проверяем: H₀ — различий нет, H₁ — различия есть.</dd><dd lang="en">A formal statement of what is tested: H₀ — no difference, H₁ — there is one.</dd></div><div class="r"><dt><span lang="ru">Где используется</span><span lang="en">Where it is used</span></dt><dd lang="ru">С этой пары начинается любой статистический критерий.</dd><dd lang="en">Every statistical test starts with this pair.</dd></div><div class="r"><dt><span lang="ru">Как используется</span><span lang="en">How it is used</span></dt><dd lang="ru">Считаем статистику, берём критическое значение по df и α, сравниваем модули.</dd><dd lang="en">Compute the statistic, look up the critical value by df and α, compare absolute values.</dd></div><div class="r"><dt><span lang="ru">Пример</span><span lang="en">Example</span></dt><dd lang="ru">|t| = 8,38 > t_кр(0,05; 9) = 2,26 → H₀ отвергаем, различия значимы.</dd><dd lang="en">|t| = 8.38 > t_crit(0.05; 9) = 2.26 → reject H₀, the difference is significant.</dd></div></dl>
+  <p lang="ru" class="src">Источник: Лекция 1, слайды 9–11</p><p lang="en" class="src">Source: Lecture 1, slides 9–11</p>
+</article>
+<article class="f" id="t-one">
+  <h3><span lang="ru">t-критерий, одна выборка</span><span lang="en">One-sample t-test</span></h3>
+  <div class="math">\[ t=\frac{\bar{x}-\mu_0}{s/\sqrt{n}}\,,\qquad s=\sqrt{\frac{\sum (x_i-\bar{x})^2}{n-1}}\,,\qquad df=n-1 \]</div>
+  <dl><div class="r"><dt><span lang="ru">Что это</span><span lang="en">What it is</span></dt><dd lang="ru">Сравнивает среднее одной выборки с заданным числом.</dd><dd lang="en">Compares the mean of one sample with a given value.</dd></div><div class="r"><dt><span lang="ru">Где используется</span><span lang="en">Where it is used</span></dt><dd lang="ru">Когда есть норматив или эталон: «средний балл действительно равен 5?»</dd><dd lang="en">When there is a norm or reference value: “is the mean score really 5?”</dd></div><div class="r"><dt><span lang="ru">Как используется</span><span lang="en">How it is used</span></dt><dd lang="ru">Найти x̄ и s, подставить, сравнить |t| с t_кр при df = n−1.</dd><dd lang="en">Find x̄ and s, substitute, compare |t| with t_crit at df = n−1.</dd></div><div class="r"><dt><span lang="ru">Пример</span><span lang="en">Example</span></dt><dd lang="ru">x̄ = 5,4; s = 0,9; n = 10; μ₀ = 5 → t = 0,4 / 0,2846 = 1,41 < 2,26 → различий нет.</dd><dd lang="en">x̄ = 5.4; s = 0.9; n = 10; μ₀ = 5 → t = 0.4 / 0.2846 = 1.41 < 2.26 → no difference.</dd></div></dl>
+  <p lang="ru" class="src">Источник: Лекция 1, слайд 14</p><p lang="en" class="src">Source: Lecture 1, slide 14</p>
+</article>
+<article class="f" id="t-paired">
+  <h3><span lang="ru">t-критерий, зависимые (парные) выборки</span><span lang="en">Paired t-test (dependent samples)</span></h3>
+  <div class="math">\[ d_i=x_i-y_i\,,\quad \bar{d}=\frac{\sum d_i}{n}\,,\quad s_d=\sqrt{\frac{\sum (d_i-\bar{d})^2}{n-1}}\,,\quad t=\frac{\bar{d}}{s_d/\sqrt{n}}\,,\quad df=n-1 \]</div>
+  <dl><div class="r"><dt><span lang="ru">Что это</span><span lang="en">What it is</span></dt><dd lang="ru">Сравнивает «до» и «после» у одних и тех же объектов.</dd><dd lang="en">Compares “before” and “after” on the same subjects.</dd></div><div class="r"><dt><span lang="ru">Где используется</span><span lang="en">Where it is used</span></dt><dd lang="ru">Один и тот же человек измерен дважды: до тренинга и после.</dd><dd lang="en">The same person measured twice: before and after a treatment.</dd></div><div class="r"><dt><span lang="ru">Как используется</span><span lang="en">How it is used</span></dt><dd lang="ru">Посчитать разности d_i, дальше — как одновыборочный тест для d̄ против нуля.</dd><dd lang="en">Compute the differences d_i, then run a one-sample test of d̄ against zero.</dd></div><div class="r"><dt><span lang="ru">Пример</span><span lang="en">Example</span></dt><dd lang="ru">d̄ = 3,120; s_d = 1,177; n = 10 → t = 8,38 при t_кр = 2,26 → эффект значим.</dd><dd lang="en">d̄ = 3.120; s_d = 1.177; n = 10 → t = 8.38 vs t_crit = 2.26 → the effect is significant.</dd></div></dl>
+  <p lang="ru" class="src">Источник: Лекция 1, слайд 14; Assignment 1, Part I</p><p lang="en" class="src">Source: Lecture 1, slide 14; Assignment 1, Part I</p>
+</article>
+<article class="f" id="sd-practice">
+  <h3><span lang="ru">S_d через суммы (формула практики)</span><span lang="en">S_d from sums (practice formula)</span></h3>
+  <div class="math">\[ S_d=\sqrt{\frac{\sum d^2-\dfrac{(\sum d)^2}{n}}{n(n-1)}}\,,\qquad t=\frac{\bar{d}}{S_d} \]</div>
+  <dl><div class="r"><dt><span lang="ru">Что это</span><span lang="en">What it is</span></dt><dd lang="ru">Та же парная статистика, но считается через две суммы.</dd><dd lang="en">The same paired statistic, computed from two sums.</dd></div><div class="r"><dt><span lang="ru">Где используется</span><span lang="en">Where it is used</span></dt><dd lang="ru">В Practice 1; удобно, когда считаешь руками в столбик.</dd><dd lang="en">Used in Practice 1; convenient for hand calculation in a table.</dd></div><div class="r"><dt><span lang="ru">Как используется</span><span lang="en">How it is used</span></dt><dd lang="ru">Заполнить столбцы d и d², взять Σd и Σd². Здесь S_d — уже стандартная ошибка, делить на √n не нужно.</dd><dd lang="en">Fill in columns d and d², take Σd and Σd². Here S_d is already the standard error — do not divide by √n.</dd></div><div class="r"><dt><span lang="ru">Пример</span><span lang="en">Example</span></dt><dd lang="ru">Σd = 100; Σd² = 1006; n = 10 → S_d = 0,2582; t = 10 / 0,2582 = 38,73.</dd><dd lang="en">Σd = 100; Σd² = 1006; n = 10 → S_d = 0.2582; t = 10 / 0.2582 = 38.73.</dd></div></dl>
+  <p lang="ru" class="src">Источник: Practice 1 ADA-M.pdf, формула (35)</p><p lang="en" class="src">Source: Practice 1 ADA-M.pdf, formula (35)</p>
+</article>
+<article class="f" id="t-ind">
+  <h3><span lang="ru">t-критерий, независимые выборки (запись лекции)</span><span lang="en">Independent-samples t-test (lecture form)</span></h3>
+  <div class="math">\[ t=\frac{\bar{X}-\bar{Y}}{S_d}\,,\qquad S_d=\sqrt{\frac{S_X^2}{n_1}+\frac{S_Y^2}{n_2}}\,,\qquad df=n_1+n_2-2 \]</div>
+  <dl><div class="r"><dt><span lang="ru">Что это</span><span lang="en">What it is</span></dt><dd lang="ru">Сравнивает средние двух разных групп.</dd><dd lang="en">Compares the means of two different groups.</dd></div><div class="r"><dt><span lang="ru">Где используется</span><span lang="en">Where it is used</span></dt><dd lang="ru">Две независимые группы: контрольная и экспериментальная.</dd><dd lang="en">Two independent groups: control and experimental.</dd></div><div class="r"><dt><span lang="ru">Как используется</span><span lang="en">How it is used</span></dt><dd lang="ru">Посчитать дисперсию каждой группы, разделить на объёмы, сложить и взять корень.</dd><dd lang="en">Compute each group's variance, divide by its size, add, take the square root.</dd></div><div class="r"><dt><span lang="ru">Пример</span><span lang="en">Example</span></dt><dd lang="ru">n₁=9, X̄=526, S²=3579; n₂=8, Ȳ=638, S²=2596,29 → S_d = 26,874; t = −4,17; df = 15 → значимо.</dd><dd lang="en">n₁=9, X̄=526, S²=3579; n₂=8, Ȳ=638, S²=2596.29 → S_d = 26.874; t = −4.17; df = 15 → significant.</dd></div></dl>
+  <p lang="ru" class="src">Источник: Лекция 1, слайд 14; Assignment 1, Part I</p><p lang="en" class="src">Source: Lecture 1, slide 14; Assignment 1, Part I</p>
+</article>
+<article class="f" id="t-pooled">
+  <h3><span lang="ru">Объединённая дисперсия (классический вариант)</span><span lang="en">Pooled variance (textbook form)</span></h3>
+  <div class="math">\[ s_p^2=\frac{(n_1-1)s_1^2+(n_2-1)s_2^2}{n_1+n_2-2}\,,\qquad t=\frac{\bar{x}_1-\bar{x}_2}{\sqrt{s_p^2\left(\dfrac{1}{n_1}+\dfrac{1}{n_2}\right)}} \]</div>
+  <dl><div class="r"><dt><span lang="ru">Что это</span><span lang="en">What it is</span></dt><dd lang="ru">Тот же тест для независимых выборок, но дисперсии считаются равными.</dd><dd lang="en">The same independent-samples test, assuming equal variances.</dd></div><div class="r"><dt><span lang="ru">Где используется</span><span lang="en">Where it is used</span></dt><dd lang="ru">Основная форма в учебниках; в лекции дана версия с раздельными дисперсиями.</dd><dd lang="en">The standard textbook form; the lecture uses the separate-variances version.</dd></div><div class="r"><dt><span lang="ru">Как используется</span><span lang="en">How it is used</span></dt><dd lang="ru">Усреднить дисперсии с весами (n−1), подставить в знаменатель.</dd><dd lang="en">Average the variances weighted by (n−1), then substitute into the denominator.</dd></div><div class="r"><dt><span lang="ru">Пример</span><span lang="en">Example</span></dt><dd lang="ru">Те же данные → s_p² = 3120,4; t = −4,13 (лекционная формула даёт −4,17).</dd><dd lang="en">Same data → s_p² = 3120.4; t = −4.13 (the lecture formula gives −4.17).</dd></div></dl>
+  <p lang="ru" class="src">Источник: Учебник; сравнение с лекцией</p><p lang="en" class="src">Source: Textbook; compared with the lecture</p>
+</article>
+
+</main>
+<footer><span lang="ru">Конспект курса AITU · собрано build_site.py</span><span lang="en">AITU course notes · generated by build_site.py</span></footer>
+<script src="assets/app.js"></script>
+
+</body>
+</html>

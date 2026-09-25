@@ -1,0 +1,139 @@
+
+:root{
+  --bg:#f7f6f3; --card:#fff; --ink:#1a1f24; --mut:#6d7378; --line:#e2ded6;
+  --acc:#2f5ea8; --acc2:#e7eefa; --warm:#a8651c; --code:#f3f1ec;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.6 "Segoe UI",Inter,system-ui,Arial,sans-serif}
+a{color:var(--acc);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* язык */
+html[data-lang="ru"] [lang="en"]{display:none!important}
+html[data-lang="en"] [lang="ru"]{display:none!important}
+
+/* шапка */
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px;
+  padding:10px 22px;background:#fffffff2;backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:9px;color:var(--ink);font-weight:700;font-size:14px}
+.brand b{background:var(--acc);color:#fff;padding:3px 8px;border-radius:7px;font-size:12.5px;letter-spacing:.04em}
+.top nav{display:flex;gap:6px;align-items:center;flex-wrap:wrap;flex:1}
+.top nav>a{padding:6px 11px;border-radius:8px;font-size:14px;color:var(--mut);font-weight:600}
+.top nav>a:hover{background:var(--acc2);color:var(--acc);text-decoration:none}
+.top nav>a.on{background:var(--acc);color:#fff}
+.wgrp{display:inline-flex;align-items:center;gap:2px;border:1px solid var(--line);
+  border-radius:9px;padding:2px 3px 2px 9px;background:#fff}
+.wgrp b{font-size:12px;color:var(--mut);margin-right:5px;font-weight:700;white-space:nowrap}
+.wgrp a{font-size:13px;padding:4px 8px;border-radius:6px;color:var(--mut);font-weight:600;white-space:nowrap}
+.wgrp a:hover{background:var(--acc2);color:var(--acc);text-decoration:none}
+.wgrp a.on{background:var(--acc);color:#fff}
+#lang{border:1px solid var(--line);background:#fff;color:var(--ink);font:inherit;
+  font-size:13px;font-weight:700;padding:6px 13px;border-radius:8px;cursor:pointer}
+#lang:hover{border-color:var(--acc);color:var(--acc)}
+
+main{max-width:1000px;margin:0 auto;padding:26px 20px 60px}
+footer{border-top:1px solid var(--line);padding:20px;text-align:center;color:var(--mut);font-size:13px}
+
+.phead{margin-bottom:22px}
+.kicker{font-size:12.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--acc)}
+h1{font-size:34px;margin:7px 0 4px;letter-spacing:-.02em}
+.sub{color:var(--mut);margin:4px 0 0;font-size:15.5px}
+.switch{margin:12px 0 0;font-size:14px}
+
+/* главная */
+.hero{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px 30px;margin-bottom:22px}
+.hero h1{margin:0;font-size:36px}
+.wgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:15px}
+.wcard{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:20px}
+.wnum{font-size:12px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--acc)}
+.wcard h2{margin:5px 0 3px;font-size:20px;line-height:1.25}
+.wlinks{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.wlinks a{border:1px solid var(--line);border-radius:9px;padding:7px 13px;font-size:14px;
+  font-weight:600;color:var(--mut)}
+.wlinks a:hover{border-color:var(--acc);color:var(--acc);text-decoration:none}
+.wlinks a.primary{background:var(--acc);border-color:var(--acc);color:#fff}
+.wlinks a.primary:hover{background:#264c88}
+.wlinks i{font-style:normal;opacity:.7;font-size:12.5px;margin-left:4px}
+.tools{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+.tools a{background:var(--card);border:1px solid var(--line);border-radius:11px;
+  padding:11px 18px;font-weight:600;color:var(--ink)}
+.tools a:hover{border-color:var(--acc);color:var(--acc);text-decoration:none}
+
+/* чипы-оглавление */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+.chips a{background:var(--card);border:1px solid var(--line);border-radius:8px;
+  padding:5px 10px;font-size:13px;color:#4c5358}
+.chips a:hover{border-color:var(--acc);color:var(--acc);text-decoration:none}
+
+/* карточка формулы */
+.f{background:var(--card);border:1px solid var(--line);border-radius:15px;
+  padding:20px 22px;margin-bottom:15px}
+.f h3{margin:0 0 12px;font-size:20px;letter-spacing:-.01em}
+.math{background:var(--code);border:1px solid var(--line);border-radius:11px;
+  padding:12px 15px;overflow-x:auto;margin-bottom:14px}
+.f dl{margin:0}
+.f .r{display:grid;grid-template-columns:150px 1fr;gap:12px;padding:7px 0;
+  border-top:1px solid #f0ede7}
+.f .r:first-child{border-top:0;padding-top:0}
+.f dt{font-size:12.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--mut);padding-top:2px}
+.f dd{margin:0;font-size:15px;line-height:1.5}
+.f .r:last-child dd{background:#fbfaf6;border-left:3px solid var(--warm);
+  border-radius:0 7px 7px 0;padding:7px 11px;font-size:14.5px}
+.src{font-size:12.5px;color:#9aa0a4;margin:13px 0 0}
+.filesrc{font-size:13px;color:var(--mut);margin-top:24px;border-top:1px solid var(--line);padding-top:12px}
+
+/* лекция */
+.l{background:var(--card);border:1px solid var(--line);border-radius:15px;
+  padding:18px 22px;margin-bottom:13px}
+.l h3{margin:0 0 9px;font-size:18px}
+.l ul{margin:0;padding-left:20px}
+.l li{margin:5px 0;font-size:15px;line-height:1.5}
+
+/* таблицы и калькуляторы, перенесённые со старой версии */
+h2{font-size:23px;margin:30px 0 12px}
+.tablewrap{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:12px}
+table.crit{border-collapse:collapse;width:100%;font-size:13.5px}
+table.crit th,table.crit td{border:1px solid #eae6de;padding:5px 9px;text-align:center}
+table.crit thead th{background:#f4f2ee;font-weight:700}
+table.crit tbody th{background:#faf9f6}
+table.crit .num{font-variant-numeric:tabular-nums}
+table.crit .hl{background:#fff6e2}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:18px 20px;margin-bottom:14px}
+.calc h3{margin:0 0 12px;font-size:18px}
+.calc .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:10px}
+.calc label{display:block;font-size:12.5px;color:var(--mut);margin-bottom:4px;font-weight:600}
+.calc textarea,.calc input{width:100%;border:1px solid var(--line);border-radius:9px;
+  padding:8px 11px;font:inherit;font-size:14px;background:#fcfbf9}
+.calc textarea{min-height:64px;resize:vertical;font-family:Consolas,monospace;font-size:13.5px}
+.calc .btn{background:var(--acc);color:#fff;border:0;border-radius:9px;padding:9px 18px;
+  font:inherit;font-weight:600;font-size:14px;cursor:pointer;margin-top:4px}
+.calc .btn:hover{background:#264c88}
+.calc .out{margin-top:12px}
+.calc .out:empty{display:none}
+.kv{display:flex;justify-content:space-between;gap:14px;padding:5px 0;
+  border-bottom:1px solid #f1eee8;font-size:14px}
+.kv:last-child{border-bottom:0}
+.kv b{font-weight:600}
+.ok,.no,.err{border-radius:9px;padding:9px 13px;margin-top:10px;font-size:14px}
+.ok{background:#e8f3ec;border:1px solid #bcdcc7}
+.no{background:#fdf1e6;border:1px solid #edd2b0}
+.err{background:#fbe9e7;border:1px solid #efc4bf}
+.page-sub{color:var(--mut)}
+.no-print{}
+
+@media (max-width:760px){
+  h1{font-size:26px}
+  .f .r{grid-template-columns:1fr;gap:3px}
+  .f dt{padding-top:6px}
+  main{padding:20px 14px 46px}
+  .top{padding:9px 13px;gap:10px}
+}
+@media print{
+  .top,footer,#lang,.chips,.switch{display:none}
+  .f,.l{break-inside:avoid;border-color:#ccc}
+}

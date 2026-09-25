@@ -1,0 +1,31 @@
+<article class="topic">
+  <h3 id="t-ttable">Таблица распределения Стьюдента </h3>
+  <p class="lead">Значения \(t_{\text{кр}}\) для <b>двустороннего</b> теста: \(\mathbf{P}\{|t_n| &gt; t_{\text{кр}}\} = p\). Строка — число степеней свободы \(df\), столбец — уровень значимости \(p\).</p>
+  <p class="src">Assignment 1 <i>(Assignment_1_Math_Data_Science (1).pdf)</i>, с. 3 — «5. Таблица распределения Стьюдента»</p>
+  <div class="tablewrap" style="max-height:520px;overflow-y:auto">
+    <table class="crit compact">
+      <thead><tr><th>df \ p</th><th class="num">0,9</th><th class="num">0,8</th><th class="num">0,7</th><th class="num">0,6</th><th class="num">0,5</th><th class="num">0,4</th><th class="num">0,3</th><th class="num">0,2</th><th class="num">0,1</th><th class="num">0,05</th><th class="num">0,02</th><th class="num">0,01</th><th class="num">0,001</th></tr></thead>
+      <tbody id="ttable-body"></tbody>
+    </table>
+  </div>
+  <div class="note tip">
+    <span class="lbl">Как пользоваться</span>
+    <p>Для \(\alpha=0{,}05\) двусторонний берём колонку <b>0,05</b>. Пример: \(df=9\) → \(t_{\text{кр}}=2{,}26\). Если вычисленное \(|t|=8{,}38\), то \(8{,}38 &gt; 2{,}26\) → различия значимы.</p>
+  </div>
+</article>
+
+<article class="topic">
+  <h3 id="t-ftable">Таблица F-критерия Фишера, \(\alpha=0{,}05\)</h3>
+  <p class="lead">Столбец \(k_1\) — степени свободы <b>числителя</b> (бо́льшая дисперсия), строка \(k_2\) — <b>знаменателя</b>.</p>
+  <p class="src">Assignment 1 <i>(Assignment_1_Math_Data_Science (1).pdf)</i>, с. 4 — «1. Таблица значений F-критерия Фишера при \(\alpha=0{,}05\)»</p>
+  <div class="tablewrap" style="max-height:520px;overflow-y:auto">
+    <table class="crit compact">
+      <thead><tr><th>k₂ \ k₁</th><th class="num">1</th><th class="num">2</th><th class="num">3</th><th class="num">4</th><th class="num">5</th><th class="num">6</th><th class="num">8</th><th class="num">12</th><th class="num">24</th><th class="num">∞</th></tr></thead>
+      <tbody id="ftable-body"></tbody>
+    </table>
+  </div>
+  <div class="note warn">
+    <span class="lbl">Внимание к порядку</span>
+    <p>\(F(k_1;k_2)\) и \(F(k_2;k_1)\) — разные числа. Сначала всегда степени свободы той выборки, чья дисперсия оказалась в числителе.</p>
+  </div>
+</article>

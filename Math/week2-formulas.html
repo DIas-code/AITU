@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ru" data-lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Неделя 2 — формулы</title>
+<link rel="stylesheet" href="assets/style.css">
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"]]},options:{skipHtmlTags:["script","noscript","style","textarea","pre","code"]}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><b>ADA-M</b><span lang="ru">Математика для Data Science</span><span lang="en">Mathematics for Data Science</span></a>
+  <nav><a href="index.html"><span lang="ru">Главная</span><span lang="en">Home</span></a>
+<span class="wgrp"><b><span lang="ru">Неделя</span><span lang="en">Week</span>&nbsp;1</b><a href="week1-formulas.html"><span lang="ru">Формулы</span><span lang="en">Formulas</span></a><a href="week1-lecture.html"><span lang="ru">Лекция</span><span lang="en">Lecture</span></a></span>
+<span class="wgrp"><b><span lang="ru">Неделя</span><span lang="en">Week</span>&nbsp;2</b><a href="week2-formulas.html" class="on"><span lang="ru">Формулы</span><span lang="en">Formulas</span></a><a href="week2-lecture.html"><span lang="ru">Лекция</span><span lang="en">Lecture</span></a></span>
+<span class="wgrp"><b><span lang="ru">Неделя</span><span lang="en">Week</span>&nbsp;3</b><a href="week3-formulas.html"><span lang="ru">Формулы</span><span lang="en">Formulas</span></a><a href="week3-lecture.html"><span lang="ru">Лекция</span><span lang="en">Lecture</span></a></span>
+<a href="calculators.html"><span lang="ru">Калькуляторы</span><span lang="en">Calculators</span></a>
+<a href="tables.html"><span lang="ru">Таблицы</span><span lang="en">Tables</span></a></nav>
+  <button id="lang" type="button" title="Русский / English">EN</button>
+</header>
+<main>
+
+<div class="phead">
+  <div class="kicker"><span lang="ru">Неделя</span><span lang="en">Week</span> 2 · <span lang="ru">Формулы</span><span lang="en">Formulas</span></div>
+  <h1><span lang="ru">Меры изменчивости и критерий Фишера</span><span lang="en">Measures of variability and Fisher's test</span></h1>
+  <p lang="ru" class="sub">Разброс данных, сравнение дисперсий, точный тест</p><p lang="en" class="sub">Spread of data, comparing variances, the exact test</p>
+  <p class="switch"><a href="week2-lecture.html"><span lang="ru">Лекция</span><span lang="en">Lecture</span> →</a></p>
+</div>
+<nav class="chips"><a href="#range"><span lang="ru">Размах</span><span lang="en">Range</span></a><a href="#mad"><span lang="ru">Среднее абсолютное отклонение</span><span lang="en">Mean absolute deviation</span></a><a href="#var"><span lang="ru">Дисперсия</span><span lang="en">Variance</span></a><a href="#sd"><span lang="ru">Стандартное отклонение</span><span lang="en">Standard deviation</span></a><a href="#cv"><span lang="ru">Коэффициент вариации</span><span lang="en">Coefficient of variation</span></a><a href="#f-test"><span lang="ru">F-критерий Фишера</span><span lang="en">Fisher's F-test</span></a><a href="#fisher-exact"><span lang="ru">Точный тест Фишера</span><span lang="en">Fisher's exact test</span></a></nav>
+
+<article class="f" id="range">
+  <h3><span lang="ru">Размах</span><span lang="en">Range</span></h3>
+  <div class="math">\[ R = x_{\max} - x_{\min} \]</div>
+  <dl><div class="r"><dt><span lang="ru">Что это</span><span lang="en">What it is</span></dt><dd lang="ru">Расстояние между самым большим и самым маленьким значением.</dd><dd lang="en">The distance between the largest and the smallest value.</dd></div><div class="r"><dt><span lang="ru">Где используется</span><span lang="en">Where it is used</span></dt><dd lang="ru">Самая быстрая оценка разброса, первый взгляд на данные.</dd><dd lang="en">The quickest measure of spread, a first look at the data.</dd></div><div class="r"><dt><span lang="ru">Как используется</span><span lang="en">How it is used</span></dt><dd lang="ru">Отсортировать выборку и вычесть минимум из максимума.</dd><dd lang="en">Sort the sample and subtract the minimum from the maximum.</dd></div><div class="r"><dt><span lang="ru">Пример</span><span lang="en">Example</span></dt><dd lang="ru">2, 4, 4, 4, 5, 5, 7, 9 → R = 9 − 2 = 7.</dd><dd lang="en">2, 4, 4, 4, 5, 5, 7, 9 → R = 9 − 2 = 7.</dd></div></dl>
+  <p lang="ru" class="src">Источник: Лекция 2, слайды 2–3</p><p lang="en" class="src">Source: Lecture 2, slides 2–3</p>
+</article>
+<article class="f" id="mad">
+  <h3><span lang="ru">Среднее абсолютное отклонение</span><span lang="en">Mean absolute deviation</span></h3>
+  <div class="math">\[ \bar{d} = \frac{1}{n}\sum_{i=1}^{n}\left|x_i-\bar{x}\right| \]</div>
+  <dl><div class="r"><dt><span lang="ru">Что это</span><span lang="en">What it is</span></dt><dd lang="ru">Средняя величина отклонения значений от среднего.</dd><dd lang="en">The average size of deviations from the mean.</dd></div><div class="r"><dt><span lang="ru">Где используется</span><span lang="en">Where it is used</span></dt><dd lang="ru">Когда нужен разброс в исходных единицах и без усиления выбросов.</dd><dd lang="en">When spread is needed in original units, without amplifying outliers.</dd></div><div class="r"><dt><span lang="ru">Как используется</span><span lang="en">How it is used</span></dt><dd lang="ru">Найти x̄, взять модули отклонений, усреднить.</dd><dd lang="en">Find x̄, take absolute deviations, average them.</dd></div><div class="r"><dt><span lang="ru">Пример</span><span lang="en">Example</span></dt><dd lang="ru">Тот же набор, x̄ = 5 → d̄ = 1,5.</dd><dd lang="en">Same data, x̄ = 5 → d̄ = 1.5.</dd></div></dl>
+  <p lang="ru" class="src">Источник: Лекция 2, слайды 2–3</p><p lang="en" class="src">Source: Lecture 2, slides 2–3</p>
+</article>
+<article class="f" id="var">
+  <h3><span lang="ru">Дисперсия</span><span lang="en">Variance</span></h3>
+  <div class="math">\[ \sigma^2=\frac{1}{N}\sum (x_i-\mu)^2 \qquad\qquad s^2=\frac{1}{n-1}\sum (x_i-\bar{x})^2 \]</div>
+  <dl><div class="r"><dt><span lang="ru">Что это</span><span lang="en">What it is</span></dt><dd lang="ru">Средний квадрат отклонения от среднего.</dd><dd lang="en">The mean squared deviation from the mean.</dd></div><div class="r"><dt><span lang="ru">Где используется</span><span lang="en">Where it is used</span></dt><dd lang="ru">Основа почти всех критериев: t, F, χ².</dd><dd lang="en">The basis of almost every test: t, F, χ².</dd></div><div class="r"><dt><span lang="ru">Как используется</span><span lang="en">How it is used</span></dt><dd lang="ru">По всей совокупности делим на N, по выборке — на n−1 (поправка Бесселя).</dd><dd lang="en">Divide by N for a population, by n−1 for a sample (Bessel's correction).</dd></div><div class="r"><dt><span lang="ru">Пример</span><span lang="en">Example</span></dt><dd lang="ru">2, 4, 4, 4, 5, 5, 7, 9 → σ² = 4,0; s² = 4,571.</dd><dd lang="en">2, 4, 4, 4, 5, 5, 7, 9 → σ² = 4.0; s² = 4.571.</dd></div></dl>
+  <p lang="ru" class="src">Источник: Лекция 2, слайд 1 (там S² записана с 1/n)</p><p lang="en" class="src">Source: Lecture 2, slide 1 (there S² is written with 1/n)</p>
+</article>
+<article class="f" id="sd">
+  <h3><span lang="ru">Стандартное отклонение</span><span lang="en">Standard deviation</span></h3>
+  <div class="math">\[ s=\sqrt{s^2}=\sqrt{\frac{\sum (x_i-\bar{x})^2}{n-1}} \]</div>
+  <dl><div class="r"><dt><span lang="ru">Что это</span><span lang="en">What it is</span></dt><dd lang="ru">Дисперсия, возвращённая в исходные единицы измерения.</dd><dd lang="en">The variance brought back to the original units.</dd></div><div class="r"><dt><span lang="ru">Где используется</span><span lang="en">Where it is used</span></dt><dd lang="ru">Везде, где надо записать результат как «среднее ± разброс».</dd><dd lang="en">Wherever a result is reported as “mean ± spread”.</dd></div><div class="r"><dt><span lang="ru">Как используется</span><span lang="en">How it is used</span></dt><dd lang="ru">Извлечь корень из дисперсии.</dd><dd lang="en">Take the square root of the variance.</dd></div><div class="r"><dt><span lang="ru">Пример</span><span lang="en">Example</span></dt><dd lang="ru">s² = 4,571 → s = 2,138.</dd><dd lang="en">s² = 4.571 → s = 2.138.</dd></div></dl>
+  <p lang="ru" class="src">Источник: Лекция 2, слайды 2–3</p><p lang="en" class="src">Source: Lecture 2, slides 2–3</p>
+</article>
+<article class="f" id="cv">
+  <h3><span lang="ru">Коэффициент вариации</span><span lang="en">Coefficient of variation</span></h3>
+  <div class="math">\[ V=\frac{s}{\bar{x}}\cdot 100\,\% \]</div>
+  <dl><div class="r"><dt><span lang="ru">Что это</span><span lang="en">What it is</span></dt><dd lang="ru">Разброс, выраженный в процентах от среднего.</dd><dd lang="en">Spread expressed as a percentage of the mean.</dd></div><div class="r"><dt><span lang="ru">Где используется</span><span lang="en">Where it is used</span></dt><dd lang="ru">Сравнение разброса величин в разных единицах — роста и веса.</dd><dd lang="en">Comparing spread of quantities in different units — height and weight.</dd></div><div class="r"><dt><span lang="ru">Как используется</span><span lang="en">How it is used</span></dt><dd lang="ru">Разделить s на x̄. Ориентир: V > 33 % — совокупность неоднородна.</dd><dd lang="en">Divide s by x̄. Rule of thumb: V > 33 % means the data are heterogeneous.</dd></div><div class="r"><dt><span lang="ru">Пример</span><span lang="en">Example</span></dt><dd lang="ru">s = 2,138; x̄ = 5 → V = 42,8 % — набор неоднородный.</dd><dd lang="en">s = 2.138; x̄ = 5 → V = 42.8 % — the data are heterogeneous.</dd></div></dl>
+  <p lang="ru" class="src">Источник: Лекция 2, слайды 2–3</p><p lang="en" class="src">Source: Lecture 2, slides 2–3</p>
+</article>
+<article class="f" id="f-test">
+  <h3><span lang="ru">F-критерий Фишера</span><span lang="en">Fisher's F-test</span></h3>
+  <div class="math">\[ F=\frac{s_1^2}{s_2^2}\quad (s_1^2>s_2^2)\,,\qquad df_1=n_1-1\,,\quad df_2=n_2-1 \]</div>
+  <dl><div class="r"><dt><span lang="ru">Что это</span><span lang="en">What it is</span></dt><dd lang="ru">Сравнивает разброс двух выборок — равны ли дисперсии.</dd><dd lang="en">Compares the spread of two samples — are the variances equal?</dd></div><div class="r"><dt><span lang="ru">Где используется</span><span lang="en">Where it is used</span></dt><dd lang="ru">Проверка однородности групп; перед t-тестом для независимых выборок.</dd><dd lang="en">Checking group homogeneity; before an independent-samples t-test.</dd></div><div class="r"><dt><span lang="ru">Как используется</span><span lang="en">How it is used</span></dt><dd lang="ru">Бо́льшую дисперсию всегда в числитель, сравнить с F_кр по двум df.</dd><dd lang="en">Always put the larger variance on top, compare with F_crit using both df.</dd></div><div class="r"><dt><span lang="ru">Пример</span><span lang="en">Example</span></dt><dd lang="ru">s₁² = 25; s₂² = 16 → F = 1,56 < F_кр(0,05; 14; 11) = 2,74 → дисперсии равны.</dd><dd lang="en">s₁² = 25; s₂² = 16 → F = 1.56 < F_crit(0.05; 14; 11) = 2.74 → variances are equal.</dd></div></dl>
+  <p lang="ru" class="src">Источник: Лекция 2, слайд 1; Assignment 1, Part II</p><p lang="en" class="src">Source: Lecture 2, slide 1; Assignment 1, Part II</p>
+</article>
+<article class="f" id="fisher-exact">
+  <h3><span lang="ru">Точный тест Фишера</span><span lang="en">Fisher's exact test</span></h3>
+  <div class="math">\[ p=\frac{(a+b)!\,(c+d)!\,(a+c)!\,(b+d)!}{n!\;a!\;b!\;c!\;d!} \]</div>
+  <dl><div class="r"><dt><span lang="ru">Что это</span><span lang="en">What it is</span></dt><dd lang="ru">Точная вероятность получить такую таблицу 2×2, если связи нет.</dd><dd lang="en">The exact probability of getting such a 2×2 table if there is no association.</dd></div><div class="r"><dt><span lang="ru">Где используется</span><span lang="en">Where it is used</span></dt><dd lang="ru">Таблицы 2×2 с маленькими частотами, где χ² применять нельзя.</dd><dd lang="en">2×2 tables with small counts, where χ² is not applicable.</dd></div><div class="r"><dt><span lang="ru">Как используется</span><span lang="en">How it is used</span></dt><dd lang="ru">Посчитать p данной таблицы и всех ещё более крайних, сложить.</dd><dd lang="en">Compute p for the observed table and all more extreme ones, then sum.</dd></div><div class="r"><dt><span lang="ru">Пример</span><span lang="en">Example</span></dt><dd lang="ru">Таблица [[0, 10], [12, 2]] → p таблицы = 0,000034; двусторонний p = 0,000067 → связь значима.</dd><dd lang="en">Table [[0, 10], [12, 2]] → p of the table = 0.000034; two-sided p = 0.000067 → significant.</dd></div></dl>
+  <p lang="ru" class="src">Источник: Лекция 2, слайд 11</p><p lang="en" class="src">Source: Lecture 2, slide 11</p>
+</article>
+
+</main>
+<footer><span lang="ru">Конспект курса AITU · собрано build_site.py</span><span lang="en">AITU course notes · generated by build_site.py</span></footer>
+<script src="assets/app.js"></script>
+
+</body>
+</html>

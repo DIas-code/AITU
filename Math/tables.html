@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ru" data-lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Таблицы критических значений</title>
+<link rel="stylesheet" href="assets/style.css">
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"]]},options:{skipHtmlTags:["script","noscript","style","textarea","pre","code"]}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><b>ADA-M</b><span lang="ru">Математика для Data Science</span><span lang="en">Mathematics for Data Science</span></a>
+  <nav><a href="index.html"><span lang="ru">Главная</span><span lang="en">Home</span></a>
+<span class="wgrp"><b><span lang="ru">Неделя</span><span lang="en">Week</span>&nbsp;1</b><a href="week1-formulas.html"><span lang="ru">Формулы</span><span lang="en">Formulas</span></a><a href="week1-lecture.html"><span lang="ru">Лекция</span><span lang="en">Lecture</span></a></span>
+<span class="wgrp"><b><span lang="ru">Неделя</span><span lang="en">Week</span>&nbsp;2</b><a href="week2-formulas.html"><span lang="ru">Формулы</span><span lang="en">Formulas</span></a><a href="week2-lecture.html"><span lang="ru">Лекция</span><span lang="en">Lecture</span></a></span>
+<span class="wgrp"><b><span lang="ru">Неделя</span><span lang="en">Week</span>&nbsp;3</b><a href="week3-formulas.html"><span lang="ru">Формулы</span><span lang="en">Formulas</span></a><a href="week3-lecture.html"><span lang="ru">Лекция</span><span lang="en">Lecture</span></a></span>
+<a href="calculators.html"><span lang="ru">Калькуляторы</span><span lang="en">Calculators</span></a>
+<a href="tables.html" class="on"><span lang="ru">Таблицы</span><span lang="en">Tables</span></a></nav>
+  <button id="lang" type="button" title="Русский / English">EN</button>
+</header>
+<main>
+<div class="phead"><h1><span lang="ru">Таблицы</span><span lang="en">Tables</span></h1><p lang="ru" class="sub">Критические значения для t, F и χ². Колонка α = 0,05 подсвечена.</p><p lang="en" class="sub">Critical values for t, F and χ². The α = 0.05 column is highlighted.</p></div><article class="topic">
+  <h3 id="t-ttable">Таблица распределения Стьюдента </h3>
+  <p class="lead">Значения \(t_{\text{кр}}\) для <b>двустороннего</b> теста: \(\mathbf{P}\{|t_n| &gt; t_{\text{кр}}\} = p\). Строка — число степеней свободы \(df\), столбец — уровень значимости \(p\).</p>
+  <p class="src">Assignment 1 <i>(Assignment_1_Math_Data_Science (1).pdf)</i>, с. 3 — «5. Таблица распределения Стьюдента»</p>
+  <div class="tablewrap" style="max-height:520px;overflow-y:auto">
+    <table class="crit compact">
+      <thead><tr><th>df \ p</th><th class="num">0,9</th><th class="num">0,8</th><th class="num">0,7</th><th class="num">0,6</th><th class="num">0,5</th><th class="num">0,4</th><th class="num">0,3</th><th class="num">0,2</th><th class="num">0,1</th><th class="num">0,05</th><th class="num">0,02</th><th class="num">0,01</th><th class="num">0,001</th></tr></thead>
+      <tbody id="ttable-body"></tbody>
+    </table>
+  </div>
+  <div class="note tip">
+    <span class="lbl">Как пользоваться</span>
+    <p>Для \(\alpha=0{,}05\) двусторонний берём колонку <b>0,05</b>. Пример: \(df=9\) → \(t_{\text{кр}}=2{,}26\). Если вычисленное \(|t|=8{,}38\), то \(8{,}38 &gt; 2{,}26\) → различия значимы.</p>
+  </div>
+</article>
+
+<article class="topic">
+  <h3 id="t-ftable">Таблица F-критерия Фишера, \(\alpha=0{,}05\)</h3>
+  <p class="lead">Столбец \(k_1\) — степени свободы <b>числителя</b> (бо́льшая дисперсия), строка \(k_2\) — <b>знаменателя</b>.</p>
+  <p class="src">Assignment 1 <i>(Assignment_1_Math_Data_Science (1).pdf)</i>, с. 4 — «1. Таблица значений F-критерия Фишера при \(\alpha=0{,}05\)»</p>
+  <div class="tablewrap" style="max-height:520px;overflow-y:auto">
+    <table class="crit compact">
+      <thead><tr><th>k₂ \ k₁</th><th class="num">1</th><th class="num">2</th><th class="num">3</th><th class="num">4</th><th class="num">5</th><th class="num">6</th><th class="num">8</th><th class="num">12</th><th class="num">24</th><th class="num">∞</th></tr></thead>
+      <tbody id="ftable-body"></tbody>
+    </table>
+  </div>
+  <div class="note warn">
+    <span class="lbl">Внимание к порядку</span>
+    <p>\(F(k_1;k_2)\) и \(F(k_2;k_1)\) — разные числа. Сначала всегда степени свободы той выборки, чья дисперсия оказалась в числителе.</p>
+  </div>
+</article><h2 id="chi2"><span lang="ru">Критические значения χ² (Пирсона)</span><span lang="en">Critical values of χ² (Pearson)</span></h2><div class="tablewrap"><table class="crit"><thead><tr><th>k</th><th class="num">0,01</th><th class="num">0,025</th><th class="num">0,05</th><th class="num">0,95</th><th class="num">0,975</th><th class="num">0,99</th></tr></thead><tbody><tr><th>1</th><td class="num">6,63</td><td class="num">5,02</td><td class="num hl">3,84</td><td class="num">0,00393</td><td class="num">0,00098</td><td class="num">0,00016</td></tr><tr><th>2</th><td class="num">9,21</td><td class="num">7,38</td><td class="num hl">5,99</td><td class="num">0,10</td><td class="num">0,05</td><td class="num">0,02</td></tr><tr><th>3</th><td class="num">11,34</td><td class="num">9,35</td><td class="num hl">7,81</td><td class="num">0,35</td><td class="num">0,22</td><td class="num">0,11</td></tr><tr><th>4</th><td class="num">13,28</td><td class="num">11,14</td><td class="num hl">9,49</td><td class="num">0,71</td><td class="num">0,48</td><td class="num">0,30</td></tr><tr><th>5</th><td class="num">15,09</td><td class="num">12,83</td><td class="num hl">11,07</td><td class="num">1,15</td><td class="num">0,83</td><td class="num">0,55</td></tr><tr><th>6</th><td class="num">16,81</td><td class="num">14,45</td><td class="num hl">12,59</td><td class="num">1,64</td><td class="num">1,24</td><td class="num">0,87</td></tr><tr><th>7</th><td class="num">18,48</td><td class="num">16,01</td><td class="num hl">14,07</td><td class="num">2,17</td><td class="num">1,69</td><td class="num">1,24</td></tr><tr><th>8</th><td class="num">20,09</td><td class="num">17,53</td><td class="num hl">15,51</td><td class="num">2,73</td><td class="num">2,18</td><td class="num">1,65</td></tr><tr><th>9</th><td class="num">21,67</td><td class="num">19,02</td><td class="num hl">16,92</td><td class="num">3,33</td><td class="num">2,70</td><td class="num">2,09</td></tr><tr><th>10</th><td class="num">23,21</td><td class="num">20,48</td><td class="num hl">18,31</td><td class="num">3,94</td><td class="num">3,25</td><td class="num">2,56</td></tr><tr><th>11</th><td class="num">24,72</td><td class="num">21,92</td><td class="num hl">19,68</td><td class="num">4,57</td><td class="num">3,82</td><td class="num">3,05</td></tr><tr><th>12</th><td class="num">26,22</td><td class="num">23,34</td><td class="num hl">21,03</td><td class="num">5,23</td><td class="num">4,40</td><td class="num">3,57</td></tr><tr><th>13</th><td class="num">27,69</td><td class="num">24,74</td><td class="num hl">22,36</td><td class="num">5,89</td><td class="num">5,01</td><td class="num">4,11</td></tr><tr><th>14</th><td class="num">29,14</td><td class="num">26,12</td><td class="num hl">23,68</td><td class="num">6,57</td><td class="num">5,63</td><td class="num">4,66</td></tr><tr><th>15</th><td class="num">30,58</td><td class="num">27,49</td><td class="num hl">25,00</td><td class="num">7,26</td><td class="num">6,26</td><td class="num">5,23</td></tr><tr><th>16</th><td class="num">32,00</td><td class="num">28,85</td><td class="num hl">26,30</td><td class="num">7,96</td><td class="num">6,91</td><td class="num">5,81</td></tr><tr><th>17</th><td class="num">33,41</td><td class="num">30,19</td><td class="num hl">27,59</td><td class="num">8,67</td><td class="num">7,56</td><td class="num">6,41</td></tr><tr><th>18</th><td class="num">34,81</td><td class="num">31,53</td><td class="num hl">28,87</td><td class="num">9,39</td><td class="num">8,23</td><td class="num">7,01</td></tr><tr><th>19</th><td class="num">36,19</td><td class="num">32,85</td><td class="num hl">30,14</td><td class="num">10,12</td><td class="num">8,91</td><td class="num">7,63</td></tr><tr><th>20</th><td class="num">37,57</td><td class="num">34,17</td><td class="num hl">31,41</td><td class="num">10,85</td><td class="num">9,59</td><td class="num">8,26</td></tr><tr><th>21</th><td class="num">38,93</td><td class="num">35,48</td><td class="num hl">32,67</td><td class="num">11,59</td><td class="num">10,28</td><td class="num">8,90</td></tr><tr><th>22</th><td class="num">40,29</td><td class="num">36,78</td><td class="num hl">33,92</td><td class="num">12,34</td><td class="num">10,98</td><td class="num">9,54</td></tr><tr><th>23</th><td class="num">41,64</td><td class="num">38,08</td><td class="num hl">35,17</td><td class="num">13,09</td><td class="num">11,69</td><td class="num">10,20</td></tr><tr><th>24</th><td class="num">42,98</td><td class="num">39,36</td><td class="num hl">36,42</td><td class="num">13,85</td><td class="num">12,40</td><td class="num">10,86</td></tr><tr><th>25</th><td class="num">44,31</td><td class="num">40,65</td><td class="num hl">37,65</td><td class="num">14,61</td><td class="num">13,12</td><td class="num">11,52</td></tr><tr><th>26</th><td class="num">45,64</td><td class="num">41,92</td><td class="num hl">38,89</td><td class="num">15,38</td><td class="num">13,84</td><td class="num">12,20</td></tr><tr><th>27</th><td class="num">46,96</td><td class="num">43,19</td><td class="num hl">40,11</td><td class="num">16,15</td><td class="num">14,57</td><td class="num">12,88</td></tr><tr><th>28</th><td class="num">48,28</td><td class="num">44,46</td><td class="num hl">41,34</td><td class="num">16,93</td><td class="num">15,31</td><td class="num">13,56</td></tr><tr><th>29</th><td class="num">49,59</td><td class="num">45,72</td><td class="num hl">42,56</td><td class="num">17,71</td><td class="num">16,05</td><td class="num">14,26</td></tr><tr><th>30</th><td class="num">50,89</td><td class="num">46,98</td><td class="num hl">43,77</td><td class="num">18,49</td><td class="num">16,79</td><td class="num">14,95</td></tr></tbody></table></div><div lang="ru"><p class="src">Пересчитано и сверено с таблицей из Practice 3 ADA_M.pdf. В самой раздатке последняя колонка подписана 0,89 — по значениям это α = 0,99.</p></div><div lang="en"><p class="src">Recomputed and checked against the table in Practice 3 ADA_M.pdf. In the handout the last column is labelled 0.89 — by its values it is α = 0.99.</p></div>
+</main>
+<footer><span lang="ru">Конспект курса AITU · собрано build_site.py</span><span lang="en">AITU course notes · generated by build_site.py</span></footer>
+<script src="assets/app.js"></script>
+<script src="assets/calc.js"></script>
+</body>
+</html>

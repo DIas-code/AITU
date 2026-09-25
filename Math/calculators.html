@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="ru" data-lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Калькуляторы</title>
+<link rel="stylesheet" href="assets/style.css">
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"]]},options:{skipHtmlTags:["script","noscript","style","textarea","pre","code"]}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><b>ADA-M</b><span lang="ru">Математика для Data Science</span><span lang="en">Mathematics for Data Science</span></a>
+  <nav><a href="index.html"><span lang="ru">Главная</span><span lang="en">Home</span></a>
+<span class="wgrp"><b><span lang="ru">Неделя</span><span lang="en">Week</span>&nbsp;1</b><a href="week1-formulas.html"><span lang="ru">Формулы</span><span lang="en">Formulas</span></a><a href="week1-lecture.html"><span lang="ru">Лекция</span><span lang="en">Lecture</span></a></span>
+<span class="wgrp"><b><span lang="ru">Неделя</span><span lang="en">Week</span>&nbsp;2</b><a href="week2-formulas.html"><span lang="ru">Формулы</span><span lang="en">Formulas</span></a><a href="week2-lecture.html"><span lang="ru">Лекция</span><span lang="en">Lecture</span></a></span>
+<span class="wgrp"><b><span lang="ru">Неделя</span><span lang="en">Week</span>&nbsp;3</b><a href="week3-formulas.html"><span lang="ru">Формулы</span><span lang="en">Formulas</span></a><a href="week3-lecture.html"><span lang="ru">Лекция</span><span lang="en">Lecture</span></a></span>
+<a href="calculators.html" class="on"><span lang="ru">Калькуляторы</span><span lang="en">Calculators</span></a>
+<a href="tables.html"><span lang="ru">Таблицы</span><span lang="en">Tables</span></a></nav>
+  <button id="lang" type="button" title="Русский / English">EN</button>
+</header>
+<main>
+<div class="phead"><h1><span lang="ru">Калькуляторы</span><span lang="en">Calculators</span></h1><p lang="ru" class="sub">Значения вводятся через пробел, запятую или с новой строки. p-value считается точно, критические значения — по встроенным таблицам.</p><p lang="en" class="sub">Enter values separated by spaces, commas or new lines. p-values are exact; critical values come from built-in tables.</p></div><p class="page-sub" style="margin-bottom:18px">Значения вводятся через пробел, запятую или с новой строки. Десятичный разделитель — точка или запятая. p-value считается точно, критические значения — по встроенным таблицам.</p>
+
+<div class="calc" id="calc-desc">
+  <h3>Описательная статистика </h3>
+  <div class="row"><div>
+    <label for="d-data">Выборка</label>
+    <textarea id="d-data" placeholder="9.6 8.1 8.8 7.9 9.2 8.0 8.4 10.1 7.8 8.1">9.6 8.1 8.8 7.9 9.2 8.0 8.4 10.1 7.8 8.1</textarea>
+  </div></div>
+  <button class="btn" data-calc="desc">Посчитать</button>
+  <div class="out" id="out-desc"></div>
+</div>
+
+<div class="calc" id="calc-t1">
+  <h3>t-критерий: одновыборочный</h3>
+  <div class="row"><div>
+    <label for="t1-data">Выборка</label>
+    <textarea id="t1-data">5.7 4.2 6.4 5.5 5.3 4.2 5.1 5.9 7.5 5.0</textarea>
+  </div></div>
+  <div class="row c2">
+    <div><label for="t1-mu">Эталонное значение μ₀</label><input id="t1-mu" value="6"></div>
+    <div><label for="t1-a">Уровень значимости α</label>
+      <select id="t1-a"><option value="0.05">0,05</option><option value="0.01">0,01</option></select></div>
+  </div>
+  <button class="btn" data-calc="t1">Посчитать</button>
+  <div class="out" id="out-t1"></div>
+</div>
+
+<div class="calc" id="calc-tp">
+  <h3>t-критерий: зависимые (парные) выборки</h3>
+  <div class="row c2">
+    <div><label for="tp-a">Измерение 1 («до»)</label><textarea id="tp-a">9.6 8.1 8.8 7.9 9.2 8.0 8.4 10.1 7.8 8.1</textarea></div>
+    <div><label for="tp-b">Измерение 2 («после»)</label><textarea id="tp-b">5.7 4.2 6.4 5.5 5.3 4.2 5.1 5.9 7.5 5.0</textarea></div>
+  </div>
+  <div class="row"><div><label for="tp-al">Уровень значимости α</label>
+    <select id="tp-al"><option value="0.05">0,05</option><option value="0.01">0,01</option></select></div></div>
+  <button class="btn" data-calc="tp">Посчитать</button>
+  <div class="out" id="out-tp"></div>
+</div>
+
+<div class="calc" id="calc-ti">
+  <h3>t-критерий: независимые выборки</h3>
+  <div class="row c2">
+    <div><label for="ti-a">Выборка X</label><textarea id="ti-a">504 560 420 600 580 530 490 580 470</textarea></div>
+    <div><label for="ti-b">Выборка Y</label><textarea id="ti-b">580 692 700 621 640 561 680 630</textarea></div>
+  </div>
+  <div class="row"><div><label for="ti-al">Уровень значимости α</label>
+    <select id="ti-al"><option value="0.05">0,05</option><option value="0.01">0,01</option></select></div></div>
+  <button class="btn" data-calc="ti">Посчитать</button>
+  <div class="out" id="out-ti"></div>
+</div>
+
+<div class="calc" id="calc-f">
+  <h3>F-критерий Фишера (равенство дисперсий)</h3>
+  <p style="font-size:13px;color:var(--text-dim);margin-bottom:12px">Можно ввести сырые данные <b>или</b> сразу дисперсии с объёмами — заполните любой из двух блоков.</p>
+  <div class="row c2">
+    <div><label for="f-a">Выборка 1 (сырые данные)</label><textarea id="f-a"></textarea></div>
+    <div><label for="f-b">Выборка 2 (сырые данные)</label><textarea id="f-b"></textarea></div>
+  </div>
+  <div class="row c4">
+    <div><label for="f-s1">s²₁</label><input id="f-s1" value="25"></div>
+    <div><label for="f-n1">n₁</label><input id="f-n1" value="15"></div>
+    <div><label for="f-s2">s²₂</label><input id="f-s2" value="16"></div>
+    <div><label for="f-n2">n₂</label><input id="f-n2" value="12"></div>
+  </div>
+  <div class="row"><div><label for="f-al">Уровень значимости α</label>
+    <select id="f-al"><option value="0.05">0,05</option><option value="0.01">0,01</option></select></div></div>
+  <button class="btn" data-calc="f">Посчитать</button>
+  <div class="out" id="out-f"></div>
+</div>
+
+<div class="calc" id="calc-fisher">
+  <h3>Точный тест Фишера (таблица 2×2)</h3>
+  <div class="row c4">
+    <div><label for="fe-a">a (гр.1, признак +)</label><input id="fe-a" value="0"></div>
+    <div><label for="fe-b">b (гр.1, признак −)</label><input id="fe-b" value="10"></div>
+    <div><label for="fe-c">c (гр.2, признак +)</label><input id="fe-c" value="12"></div>
+    <div><label for="fe-d">d (гр.2, признак −)</label><input id="fe-d" value="2"></div>
+  </div>
+  <div class="row"><div><label for="fe-al">Уровень значимости α</label>
+    <select id="fe-al"><option value="0.05">0,05</option><option value="0.01">0,01</option></select></div></div>
+  <button class="btn" data-calc="fe">Посчитать</button>
+  <div class="out" id="out-fe"></div>
+</div>
+</main>
+<footer><span lang="ru">Конспект курса AITU · собрано build_site.py</span><span lang="en">AITU course notes · generated by build_site.py</span></footer>
+<script src="assets/app.js"></script>
+<script src="assets/calc.js"></script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ru" data-lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Неделя 3 — лекция</title>
+<link rel="stylesheet" href="assets/style.css">
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"]]},options:{skipHtmlTags:["script","noscript","style","textarea","pre","code"]}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><b>ADA-M</b><span lang="ru">Математика для Data Science</span><span lang="en">Mathematics for Data Science</span></a>
+  <nav><a href="index.html"><span lang="ru">Главная</span><span lang="en">Home</span></a>
+<span class="wgrp"><b><span lang="ru">Неделя</span><span lang="en">Week</span>&nbsp;1</b><a href="week1-formulas.html"><span lang="ru">Формулы</span><span lang="en">Formulas</span></a><a href="week1-lecture.html"><span lang="ru">Лекция</span><span lang="en">Lecture</span></a></span>
+<span class="wgrp"><b><span lang="ru">Неделя</span><span lang="en">Week</span>&nbsp;2</b><a href="week2-formulas.html"><span lang="ru">Формулы</span><span lang="en">Formulas</span></a><a href="week2-lecture.html"><span lang="ru">Лекция</span><span lang="en">Lecture</span></a></span>
+<span class="wgrp"><b><span lang="ru">Неделя</span><span lang="en">Week</span>&nbsp;3</b><a href="week3-formulas.html"><span lang="ru">Формулы</span><span lang="en">Formulas</span></a><a href="week3-lecture.html" class="on"><span lang="ru">Лекция</span><span lang="en">Lecture</span></a></span>
+<a href="calculators.html"><span lang="ru">Калькуляторы</span><span lang="en">Calculators</span></a>
+<a href="tables.html"><span lang="ru">Таблицы</span><span lang="en">Tables</span></a></nav>
+  <button id="lang" type="button" title="Русский / English">EN</button>
+</header>
+<main>
+
+<div class="phead">
+  <div class="kicker"><span lang="ru">Неделя</span><span lang="en">Week</span> 3 · <span lang="ru">Лекция</span><span lang="en">Lecture</span></div>
+  <h1><span lang="ru">Анализ номинативных данных, χ² Пирсона</span><span lang="en">Analysis of nominative data, Pearson's χ²</span></h1>
+  <p lang="ru" class="sub">Таблицы сопряжённости, ожидаемые частоты, распределение χ²</p><p lang="en" class="sub">Contingency tables, expected frequencies, the χ² distribution</p>
+  <p class="switch"><a href="week3-formulas.html"><span lang="ru">Формулы</span><span lang="en">Formulas</span> →</a></p>
+</div>
+<article class="l"><h3><span lang="ru">Когда применять χ² Пирсона</span><span lang="en">When Pearson's χ² applies</span></h3><ul lang="ru"><li>Анализ статистических различий.</li><li>Качественные данные: ранги, номинальные, бинарные (да / нет).</li><li>Две и более групп.</li><li>Количество наблюдений в каждой ячейке больше 5.</li></ul><ul lang="en"><li>Analysis of statistical differences.</li><li>Categorical data: ranks, nominal, binary (yes / no).</li><li>Two or more groups.</li><li>More than 5 observations in every cell.</li></ul><p lang="ru" class="src">Источник: Лекция 3, слайд 6</p><p lang="en" class="src">Source: Lecture 3, slide 6</p></article><article class="l"><h3><span lang="ru">Когда не применять</span><span lang="en">When it does not apply</span></h3><ul lang="ru"><li>Частота в ячейке меньше 5.</li><li>Зависимые группы.</li><li>Абсолютные величины: рост, вес, проценты.</li></ul><ul lang="en"><li>Cell frequency below 5.</li><li>Dependent groups.</li><li>Continuous measures: height, weight, percentages.</li></ul><p lang="ru" class="src">Источник: Лекция 3, слайд 6</p><p lang="en" class="src">Source: Lecture 3, slide 6</p></article><article class="l"><h3><span lang="ru">Как работает критерий</span><span lang="en">How the test works</span></h3><ul lang="ru"><li>Сравниваются реальные частоты (Observed) и ожидаемые «гипотетические» (Expected).</li><li>Малое расхождение — χ² не достиг критического значения — H₀ принимается.</li><li>Существенное расхождение — H₀ отвергается, различия статистически значимы.</li></ul><ul lang="en"><li>Observed frequencies are compared with expected “hypothetical” ones.</li><li>A small gap — χ² below the critical value — H₀ is accepted.</li><li>A large gap — H₀ is rejected, the differences are statistically significant.</li></ul><p lang="ru" class="src">Источник: Лекция 3, слайд 7</p><p lang="en" class="src">Source: Lecture 3, slide 7</p></article><article class="l"><h3><span lang="ru">Пример 1 — комиссуротомия</span><span lang="en">Example 1 — commissurotomy</span></h3><ul lang="ru"><li>Фактор: степень нарушения кровообращения (II, III, IV). Исход: результат операции.</li><li>Таблица 3×3, N = 170; итоги по столбцам 73, 68, 29.</li><li>Ожидаемые частоты: 30 × 73 / 170 = 12,88; 30 × 68 / 170 = 12,0; 80 × 73 / 170 = 34,35.</li><li>χ² = 34,98 при df = 4; критическое 9,5 → влияние есть.</li></ul><ul lang="en"><li>Factor: severity of circulatory disorder (II, III, IV). Outcome: result of surgery.</li><li>A 3×3 table, N = 170; column totals 73, 68, 29.</li><li>Expected counts: 30 × 73 / 170 = 12.88; 30 × 68 / 170 = 12.0; 80 × 73 / 170 = 34.35.</li><li>χ² = 34.98 at df = 4; critical value 9.5 → the factor matters.</li></ul><p lang="ru" class="src">Источник: Лекция 3, слайды 8–9</p><p lang="en" class="src">Source: Lecture 3, slides 8–9</p></article>
+<p class="filesrc">Lecture 3 ADA_M.pptx · Practice 3 ADA_M.pdf</p>
+
+</main>
+<footer><span lang="ru">Конспект курса AITU · собрано build_site.py</span><span lang="en">AITU course notes · generated by build_site.py</span></footer>
+<script src="assets/app.js"></script>
+
+</body>
+</html>

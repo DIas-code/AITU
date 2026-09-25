@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ru" data-lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Неделя 3 — формулы</title>
+<link rel="stylesheet" href="assets/style.css">
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"]]},options:{skipHtmlTags:["script","noscript","style","textarea","pre","code"]}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><b>ADA-M</b><span lang="ru">Математика для Data Science</span><span lang="en">Mathematics for Data Science</span></a>
+  <nav><a href="index.html"><span lang="ru">Главная</span><span lang="en">Home</span></a>
+<span class="wgrp"><b><span lang="ru">Неделя</span><span lang="en">Week</span>&nbsp;1</b><a href="week1-formulas.html"><span lang="ru">Формулы</span><span lang="en">Formulas</span></a><a href="week1-lecture.html"><span lang="ru">Лекция</span><span lang="en">Lecture</span></a></span>
+<span class="wgrp"><b><span lang="ru">Неделя</span><span lang="en">Week</span>&nbsp;2</b><a href="week2-formulas.html"><span lang="ru">Формулы</span><span lang="en">Formulas</span></a><a href="week2-lecture.html"><span lang="ru">Лекция</span><span lang="en">Lecture</span></a></span>
+<span class="wgrp"><b><span lang="ru">Неделя</span><span lang="en">Week</span>&nbsp;3</b><a href="week3-formulas.html" class="on"><span lang="ru">Формулы</span><span lang="en">Formulas</span></a><a href="week3-lecture.html"><span lang="ru">Лекция</span><span lang="en">Lecture</span></a></span>
+<a href="calculators.html"><span lang="ru">Калькуляторы</span><span lang="en">Calculators</span></a>
+<a href="tables.html"><span lang="ru">Таблицы</span><span lang="en">Tables</span></a></nav>
+  <button id="lang" type="button" title="Русский / English">EN</button>
+</header>
+<main>
+
+<div class="phead">
+  <div class="kicker"><span lang="ru">Неделя</span><span lang="en">Week</span> 3 · <span lang="ru">Формулы</span><span lang="en">Formulas</span></div>
+  <h1><span lang="ru">Анализ номинативных данных, χ² Пирсона</span><span lang="en">Analysis of nominative data, Pearson's χ²</span></h1>
+  <p lang="ru" class="sub">Таблицы сопряжённости, ожидаемые частоты, распределение χ²</p><p lang="en" class="sub">Contingency tables, expected frequencies, the χ² distribution</p>
+  <p class="switch"><a href="week3-lecture.html"><span lang="ru">Лекция</span><span lang="en">Lecture</span> →</a></p>
+</div>
+<nav class="chips"><a href="#chi2"><span lang="ru">Критерий χ² Пирсона</span><span lang="en">Pearson's χ² test</span></a><a href="#expected"><span lang="ru">Ожидаемая частота</span><span lang="en">Expected frequency</span></a><a href="#df"><span lang="ru">Число степеней свободы</span><span lang="en">Degrees of freedom</span></a><a href="#chi2-rule"><span lang="ru">Условия применения и вывод</span><span lang="en">Assumptions and conclusion</span></a><a href="#chi2-dist"><span lang="ru">Распределение χ²</span><span lang="en">The χ² distribution</span></a><a href="#chi2-pdf"><span lang="ru">Плотность распределения χ²</span><span lang="en">The χ² density function</span></a><a href="#gamma"><span lang="ru">Гамма-распределение и связь с χ²</span><span lang="en">The gamma distribution and its link to χ²</span></a></nav>
+
+<article class="f" id="chi2">
+  <h3><span lang="ru">Критерий χ² Пирсона</span><span lang="en">Pearson's χ² test</span></h3>
+  <div class="math">\[ \chi^2=\sum \frac{(O_i-E_i)^2}{E_i} \]</div>
+  <dl><div class="r"><dt><span lang="ru">Что это</span><span lang="en">What it is</span></dt><dd lang="ru">Мера расхождения наблюдаемых частот с ожидаемыми.</dd><dd lang="en">A measure of how far observed frequencies are from expected ones.</dd></div><div class="r"><dt><span lang="ru">Где используется</span><span lang="en">Where it is used</span></dt><dd lang="ru">Таблицы сопряжённости: есть ли связь между двумя качественными признаками.</dd><dd lang="en">Contingency tables: is there an association between two categorical variables?</dd></div><div class="r"><dt><span lang="ru">Как используется</span><span lang="en">How it is used</span></dt><dd lang="ru">По каждой ячейке посчитать (O−E)²/E, всё сложить, сравнить с χ²_кр по df.</dd><dd lang="en">For each cell compute (O−E)²/E, sum them all, compare with χ²_crit at df.</dd></div><div class="r"><dt><span lang="ru">Пример</span><span lang="en">Example</span></dt><dd lang="ru">Пример из лекции (3×3, N = 170) → χ² = 34,98 при χ²_кр(0,05; 4) = 9,5 → связь значима.</dd><dd lang="en">Lecture example (3×3, N = 170) → χ² = 34.98 vs χ²_crit(0.05; 4) = 9.5 → significant.</dd></div></dl>
+  <p lang="ru" class="src">Источник: Лекция 3, слайд 9 (на слайде обозначено Q вместо O)</p><p lang="en" class="src">Source: Lecture 3, slide 9 (на slideе обозначено Q вместо O)</p>
+</article>
+<article class="f" id="expected">
+  <h3><span lang="ru">Ожидаемая частота</span><span lang="en">Expected frequency</span></h3>
+  <div class="math">\[ E_{ij}=\frac{R_i\cdot C_j}{N} \]</div>
+  <dl><div class="r"><dt><span lang="ru">Что это</span><span lang="en">What it is</span></dt><dd lang="ru">Частота, которая была бы в ячейке при полном отсутствии связи.</dd><dd lang="en">The frequency a cell would have if there were no association at all.</dd></div><div class="r"><dt><span lang="ru">Где используется</span><span lang="en">Where it is used</span></dt><dd lang="ru">Первый шаг любого расчёта χ² — без E формулу не применить.</dd><dd lang="en">The first step of any χ² computation — without E the formula cannot be used.</dd></div><div class="r"><dt><span lang="ru">Как используется</span><span lang="en">How it is used</span></dt><dd lang="ru">R_i — итог строки, C_j — итог столбца, N — общий итог. Считается для каждой ячейки.</dd><dd lang="en">R_i is the row total, C_j the column total, N the grand total. Computed for every cell.</dd></div><div class="r"><dt><span lang="ru">Пример</span><span lang="en">Example</span></dt><dd lang="ru">30 × 73 / 170 = 12,88 ≈ 13 — совпадает с E, подписанным на слайде.</dd><dd lang="en">30 × 73 / 170 = 12.88 ≈ 13 — matches the E written on the slide.</dd></div></dl>
+  <p lang="ru" class="src">Источник: Лекция 3, слайд 9 (формулой не выписана, восстановлена из таблицы)</p><p lang="en" class="src">Source: Lecture 3, slide 9 (not written out as a formula, reconstructed from the table)</p>
+</article>
+<article class="f" id="df">
+  <h3><span lang="ru">Число степеней свободы</span><span lang="en">Degrees of freedom</span></h3>
+  <div class="math">\[ df=(n_1-1)(n_2-1) \]</div>
+  <dl><div class="r"><dt><span lang="ru">Что это</span><span lang="en">What it is</span></dt><dd lang="ru">Параметр, по которому выбирается строка в таблице критических значений.</dd><dd lang="en">The parameter that selects the row in the table of critical values.</dd></div><div class="r"><dt><span lang="ru">Где используется</span><span lang="en">Where it is used</span></dt><dd lang="ru">Нужен сразу после расчёта χ², перед сравнением с таблицей.</dd><dd lang="en">Needed right after computing χ², before comparing with the table.</dd></div><div class="r"><dt><span lang="ru">Как используется</span><span lang="en">How it is used</span></dt><dd lang="ru">(число строк − 1) × (число столбцов − 1). Итоговые строка и столбец не считаются.</dd><dd lang="en">(rows − 1) × (columns − 1). Total row and column are not counted.</dd></div><div class="r"><dt><span lang="ru">Пример</span><span lang="en">Example</span></dt><dd lang="ru">Таблица 3×3 → df = 2 × 2 = 4 → χ²_кр(0,05) = 9,5.</dd><dd lang="en">A 3×3 table → df = 2 × 2 = 4 → χ²_crit(0.05) = 9.5.</dd></div></dl>
+  <p lang="ru" class="src">Источник: Лекция 3, слайд 9</p><p lang="en" class="src">Source: Lecture 3, slide 9</p>
+</article>
+<article class="f" id="chi2-rule">
+  <h3><span lang="ru">Условия применения и вывод</span><span lang="en">Assumptions and conclusion</span></h3>
+  <div class="math">\[ E_{ij}>5\,,\qquad \chi^2>\chi^2_{\text{crit}} \]</div>
+  <dl><div class="r"><dt><span lang="ru">Что это</span><span lang="en">What it is</span></dt><dd lang="ru">Когда критерий вообще работает и как читать результат.</dd><dd lang="en">When the test is valid at all, and how to read the result.</dd></div><div class="r"><dt><span lang="ru">Где используется</span><span lang="en">Where it is used</span></dt><dd lang="ru">Проверять до расчёта: качественные данные, независимые группы, ожидаемая частота больше 5.</dd><dd lang="en">Check before computing: categorical data, independent groups, expected counts above 5.</dd></div><div class="r"><dt><span lang="ru">Как используется</span><span lang="en">How it is used</span></dt><dd lang="ru">Не применять при частоте в ячейке меньше 5, зависимых группах и абсолютных величинах (рост, вес, проценты).</dd><dd lang="en">Do not use with cell counts below 5, dependent groups, or continuous measures (height, weight, percentages).</dd></div><div class="r"><dt><span lang="ru">Пример</span><span lang="en">Example</span></dt><dd lang="ru">χ² = 34,98 > 9,5 → H₀ отвергаем: степень нарушения влияет на исход операции.</dd><dd lang="en">χ² = 34.98 > 9.5 → reject H₀: the severity level does affect the outcome.</dd></div></dl>
+  <p lang="ru" class="src">Источник: Лекция 3, слайды 6–7</p><p lang="en" class="src">Source: Lecture 3, slides 6–7</p>
+</article>
+<article class="f" id="chi2-dist">
+  <h3><span lang="ru">Распределение χ²</span><span lang="en">The χ² distribution</span></h3>
+  <div class="math">\[ \chi^2_n=\sum_{i=1}^{n} Z_i^2\,,\ \ Z_i\sim N(0,1)\,;\qquad M\chi^2_n=n\,,\qquad D\chi^2_n=2n \]</div>
+  <dl><div class="r"><dt><span lang="ru">Что это</span><span lang="en">What it is</span></dt><dd lang="ru">Сумма квадратов n независимых стандартных нормальных величин.</dd><dd lang="en">The sum of squares of n independent standard normal variables.</dd></div><div class="r"><dt><span lang="ru">Где используется</span><span lang="en">Where it is used</span></dt><dd lang="ru">Отсюда берутся критические значения в таблице.</dd><dd lang="en">This is where the table's critical values come from.</dd></div><div class="r"><dt><span lang="ru">Как используется</span><span lang="en">How it is used</span></dt><dd lang="ru">Параметр один — число степеней свободы n; при n > 2 мода равна n − 2.</dd><dd lang="en">A single parameter — the degrees of freedom n; for n > 2 the mode is n − 2.</dd></div><div class="r"><dt><span lang="ru">Пример</span><span lang="en">Example</span></dt><dd lang="ru">n = 4 → среднее 4, дисперсия 8, мода 2; асимметрия √(8/4) = 1,41.</dd><dd lang="en">n = 4 → mean 4, variance 8, mode 2; skewness √(8/4) = 1.41.</dd></div></dl>
+  <p lang="ru" class="src">Источник: Лекция 3, слайды 5, 11–12</p><p lang="en" class="src">Source: Lecture 3, slides 5, 11–12</p>
+</article>
+<article class="f" id="chi2-pdf">
+  <h3><span lang="ru">Плотность распределения χ²</span><span lang="en">The χ² density function</span></h3>
+  <div class="math">\[ p_{\chi^2}(x)=\frac{x^{\,n/2-1}e^{-x/2}}{2^{\,n/2}\,\Gamma(n/2)}\,,\ x>0\,;\qquad p(x)=0\,,\ x\le 0 \]</div>
+  <dl><div class="r"><dt><span lang="ru">Что это</span><span lang="en">What it is</span></dt><dd lang="ru">Формула кривой, по которой вычисляются p-value.</dd><dd lang="en">The curve from which p-values are computed.</dd></div><div class="r"><dt><span lang="ru">Где используется</span><span lang="en">Where it is used</span></dt><dd lang="ru">Теоретическая часть; на практике берут готовую таблицу или калькулятор.</dd><dd lang="en">Theory only; in practice one uses a table or a calculator.</dd></div><div class="r"><dt><span lang="ru">Как используется</span><span lang="en">How it is used</span></dt><dd lang="ru">Γ(n/2) — гамма-функция. При n ≤ 2 кривая убывает, при n > 2 имеет максимум.</dd><dd lang="en">Γ(n/2) is the gamma function. For n ≤ 2 the curve decreases, for n > 2 it has a peak.</dd></div><div class="r"><dt><span lang="ru">Пример</span><span lang="en">Example</span></dt><dd lang="ru">При n → ∞ распределение приближается к нормальному со средним n и дисперсией 2n.</dd><dd lang="en">As n → ∞ the distribution approaches a normal one with mean n and variance 2n.</dd></div></dl>
+  <p lang="ru" class="src">Источник: Лекция 3, слайд 11</p><p lang="en" class="src">Source: Lecture 3, slide 11</p>
+</article>
+<article class="f" id="gamma">
+  <h3><span lang="ru">Гамма-распределение и связь с χ²</span><span lang="en">The gamma distribution and its link to χ²</span></h3>
+  <div class="math">\[ f(x)=\frac{\lambda^r x^{r-1}e^{-\lambda x}}{\Gamma(r)}\,,\quad \Gamma(r)=\int_0^{\infty}x^{r-1}e^{-x}dx\,;\qquad \mu=\frac{r}{\lambda}\,,\quad \sigma^2=\frac{r}{\lambda^2} \]</div>
+  <dl><div class="r"><dt><span lang="ru">Что это</span><span lang="en">What it is</span></dt><dd lang="ru">Общее семейство распределений, частным случаем которого является χ².</dd><dd lang="en">The general family of distributions of which χ² is a special case.</dd></div><div class="r"><dt><span lang="ru">Где используется</span><span lang="en">Where it is used</span></dt><dd lang="ru">Объясняет, откуда взялась формула плотности χ².</dd><dd lang="en">Explains where the χ² density formula comes from.</dd></div><div class="r"><dt><span lang="ru">Как используется</span><span lang="en">How it is used</span></dt><dd lang="ru">Подставить λ = ½ и r = n/2 — получится ровно плотность χ² с n степенями свободы.</dd><dd lang="en">Substitute λ = ½ and r = n/2 — you get exactly the χ² density with n degrees of freedom.</dd></div><div class="r"><dt><span lang="ru">Пример</span><span lang="en">Example</span></dt><dd lang="ru">μ = r/λ = (n/2)/(½) = n, σ² = r/λ² = (n/2)/(¼) = 2n — совпадает с Mχ² и Dχ².</dd><dd lang="en">μ = r/λ = (n/2)/(½) = n, σ² = r/λ² = (n/2)/(¼) = 2n — matches Mχ² and Dχ².</dd></div></dl>
+  <p lang="ru" class="src">Источник: Лекция 3, слайды 2–4 (формулы 4.17–4.19)</p><p lang="en" class="src">Source: Lecture 3, slides 2–4 (формулы 4.17–4.19)</p>
+</article>
+
+</main>
+<footer><span lang="ru">Конспект курса AITU · собрано build_site.py</span><span lang="en">AITU course notes · generated by build_site.py</span></footer>
+<script src="assets/app.js"></script>
+
+</body>
+</html>
