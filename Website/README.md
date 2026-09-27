@@ -65,6 +65,8 @@ Aitu/
 ├── Math/, Programing for data analysis/, Prof english/, pedagogy/
 │                                     ← твои исходные материалы (pdf, pptx, ipynb, задания)
 ├── Orientation/                      документы программы
+├── Syllabi/                          силлабусы (только на компьютере, не в git)
+├── api/ics.js, vercel.json           для онлайн-версии на Vercel
 └── Dias Calendar/                    мини-сервер, который берёт календарь из Moodle
 ```
 
@@ -87,6 +89,14 @@ Aitu/
 Ссылка на твой календарь Moodle хранится только в `Dias Calendar/.env.local` и в git не попадает.
 
 ---
+
+## Онлайн-версия (Vercel)
+
+Сайт можно открыть откуда угодно после выкладки на Vercel (весь репозиторий `DIas-code/AITU`):
+- главный адрес сразу ведёт на `/Website/` (`vercel.json`);
+- дедлайны онлайн берутся функцией `api/ics.js` — ссылка на календарь Moodle хранится в настройках Vercel (`MOODLE_CALENDAR_URL`), в коде её нет; Dias Calendar онлайн не нужен;
+- после каждого `git push` Vercel сам выкладывает новую версию;
+- **силлабусы онлайн не выкладываются** — они лежат в `Aitu/Syllabi/` и в git не попадают.
 
 ## Как что-то поменять
 

@@ -28,11 +28,15 @@ Website/<Курс>/weekN/*.html      страницы уроков
 
 Даты: неделя 1 = 07.09.2026, 10 недель, midterm 05–10.10, endterm 09–14.11, сессия 16–28.11 (из академ. календаря).
 
+## Онлайн (Vercel)
+
+Выкладывается весь репозиторий (Framework: Other, без сборки). `vercel.json` — редирект `/` → `/Website/`. `api/ics.js` — функция календаря Moodle, ссылка в env `MOODLE_CALENDAR_URL` на Vercel. Каждый `git push` в main = новая версия онлайн. Силлабусы — `Aitu/Syllabi/`, в .gitignore, онлайн их нет (ссылка на силлабус на странице курса работает только локально). Пароля на сайте нет — Диас решил пока без него.
+
 ## Дедлайны из Moodle (`deadlines.html`)
 
 Два режима: «По неделям» (пн–вс, стрелки между неделями) и «По предметам»; фильтр по курсу. Занятия `Attendance` выбрасываются.
 - Разбор календаря — `Website/_shared/moodle.js`. Курс берётся из CATEGORIES («Курс | Преподаватель»), тип — из SUMMARY (`is due`, `opens`, `closes`). URL заданий в календаре AITU нет. Дедлайн ровно в 00:00 показывается как 24:00 предыдущего дня.
-- Живые данные: если запущен `Dias Calendar` (`npm run dev`, порт 3000), страница берёт календарь с `localhost:3000/api/ics`. Ссылка с токеном — только в `Dias Calendar/.env.local` (в .gitignore).
+- Живые данные онлайн — `/api/ics` на Vercel. Локально: если запущен `Dias Calendar` (`npm run dev`, порт 3000), страница берёт календарь с `localhost:3000/api/ics`. Ссылка с токеном — только в `Dias Calendar/.env.local` (в .gitignore).
 - Иначе — снимок `Website/_shared/moodle-snapshot.js` (в .gitignore). «Обнови дедлайны» = скачать календарь по ссылке из `.env.local` и перезаписать снимок (`window.MOODLE_SNAPSHOT = {fetchedAt, ics}`).
 - Курсы Moodle сопоставляются с sitemap по полю `moodle` у курса; незнакомые получают стабильный цвет по названию.
 
