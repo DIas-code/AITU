@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2.6 Pandas и Excel — Программирование</title>
+<link rel="stylesheet" href="../../_shared/site.css">
+</head>
+<body data-root="../../" data-course="prog" data-page="week2/2-6-pandas-excel.html">
+<main>
+<div class="phead">
+  <div class="kicker">Неделя 2 · Лекция 2.6</div>
+  <h1>Pandas и Excel: анализ отчёта</h1>
+  <p class="sub">Берём <code>student_report.xlsx</code> из прошлой лекции: смотрим данные, выбираем, фильтруем, считаем и сохраняем обратно в Excel.</p>
+</div>
+
+<section class="step">
+  <h2>1. Прочитать и осмотреть</h2>
+  <p class="why">Главное отличие от openpyxl: Pandas сразу даёт таблицу и инструменты анализа. Эти пять команд — первое, что делают с любыми новыми данными.</p>
+  <div class="code"><pre><code class="language-python">import pandas as pd
+
+df = pd.read_excel("student_report.xlsx")
+
+df.head()       # первые 5 строк
+df.shape        # (5, 7) — строк, столбцов
+df.columns      # названия столбцов
+df.info()       # типы и сколько непустых значений
+df.describe()   # count, mean, std, min, max по числовым столбцам</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>2. Выбрать столбцы и строки</h2>
+  <p class="why">Один столбец — в квадратных скобках, несколько — списком (двойные скобки). <code>iloc</code> выбирает строки по номеру позиции.</p>
+  <div class="code"><pre><code class="language-python">df["Student"]                                      # один столбец (Series)
+df[["Student", "Assignment 1", "Assignment 2"]]    # несколько — таблица
+
+df.iloc[0]      # первая строка
+df.iloc[0:3]    # первые три строки</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>3. Фильтр по условию</h2>
+  <p class="why">Условие даёт маску True/False, таблица по маске оставляет только подходящие строки. Несколько условий — через <code>&amp;</code> (и) или <code>|</code> (или), каждое в скобках.</p>
+  <div class="code"><pre><code class="language-python">df[df["Assignment 1"] &gt;= 80]                                  # Amina, Dias
+
+df[(df["Assignment 1"] &gt;= 80) &amp; (df["Assignment 2"] &gt;= 80)]</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>4. Новые столбцы</h2>
+  <p class="why"><code>mean(axis=1)</code> — среднее по строке (по каждому студенту). <code>apply</code> применяет функцию к каждому значению столбца.</p>
+  <div class="code"><pre><code class="language-python">df["Average"] = df[["Assignment 1", "Assignment 2", "Assignment 3"]].mean(axis=1)
+
+df["Result"] = df["Average"].apply(lambda x: "Pass" if x &gt;= 70 else "Fail")</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>5. Сохранить в Excel</h2>
+  <p class="why"><code>index=False</code> — не записывать служебный номер строки Pandas отдельным столбцом.</p>
+  <div class="code"><pre><code class="language-python">df.to_excel("student_results.xlsx", index=False)</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>6. Несколько листов в одном файле</h2>
+  <p class="why"><code>ExcelWriter</code> открывает один файл, и в него можно записать несколько таблиц — каждую на свой лист.</p>
+  <div class="code"><pre><code class="language-python">passed = df[df["Result"] == "Pass"]
+failed = df[df["Result"] == "Fail"]
+
+with pd.ExcelWriter("student_analysis.xlsx") as writer:
+    df.to_excel(writer, sheet_name="All Students", index=False)
+    passed.to_excel(writer, sheet_name="Passed", index=False)
+    failed.to_excel(writer, sheet_name="Failed", index=False)</code></pre></div>
+</section>
+
+<div id="pager"></div>
+</main>
+<script src="../../_shared/sitemap.js"></script>
+<script src="../../_shared/data.js"></script>
+<script src="../../_shared/site.js"></script>
+</body>
+</html>

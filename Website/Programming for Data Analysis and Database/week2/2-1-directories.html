@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2.1 Папки и файлы — Программирование</title>
+<link rel="stylesheet" href="../../_shared/site.css">
+</head>
+<body data-root="../../" data-course="prog" data-page="week2/2-1-directories.html">
+<main>
+<div class="phead">
+  <div class="kicker">Неделя 2 · Лекция 2.1</div>
+  <h1>Папки, пути и текстовые файлы</h1>
+  <p class="sub">Создаём структуру проекта <code>ai_course_project/</code> с папками data, reports, logs, backup и ведём в ней лог-файл.</p>
+</div>
+
+<section class="step">
+  <h2>1. Где я нахожусь и что здесь лежит</h2>
+  <p class="why">Модуль <code>os</code> — связь с операционной системой. Все относительные пути считаются от текущей папки, поэтому сначала надо знать, где ты.</p>
+  <div class="code"><pre><code class="language-python">import os
+
+os.getcwd()             # текущая рабочая папка
+os.listdir()            # что в ней лежит (имена файлов и папок)
+os.listdir("extracted") # содержимое другой папки</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>2. Создать папки проекта</h2>
+  <p class="why"><code>os.path.join</code> склеивает путь с правильным разделителем для Windows / Mac / Linux — вместо ручного <code>"a/b"</code>.</p>
+  <div class="code"><pre><code class="language-python">os.mkdir("ai_course_project")
+
+for folder in ["data", "reports", "logs", "backup"]:
+    os.mkdir(os.path.join("ai_course_project", folder))
+
+os.path.join("ai_course_project", "data", "students.txt")
+# 'ai_course_project/data/students.txt'</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>3. Проверить путь и создать вложенные папки</h2>
+  <p class="why"><code>mkdir</code> падает с ошибкой, если папка уже есть. <code>makedirs(..., exist_ok=True)</code> создаёт сразу несколько уровней и спокойно пропускает существующие.</p>
+  <div class="code"><pre><code class="language-python">os.path.exists("ai_course_project")   # True — путь существует
+os.path.isdir("ai_course_project")    # True — это папка
+os.path.isfile("ai_course_project")   # False — не файл
+
+os.makedirs("ai_course_project/data/raw", exist_ok=True)</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>4. То же самое через pathlib</h2>
+  <p class="why"><code>pathlib</code> — современная замена <code>os.path</code>: путь — это объект, части склеиваются оператором <code>/</code>. <code>parents=True</code> создаёт недостающие родительские папки.</p>
+  <div class="code"><pre><code class="language-python">from pathlib import Path
+
+project = Path("ai_course_project1")
+for name in ["data1", "reports1", "logs1", "backup1"]:
+    (project / name).mkdir(parents=True, exist_ok=True)</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>5. Части пути</h2>
+  <p class="why">Имя, расширение, родительская папка — без ручного разрезания строки.</p>
+  <div class="code"><pre><code class="language-python">file_path = Path("ai_course_project/data/students.txt")
+
+file_path.name       # 'students.txt'
+file_path.stem       # 'students'   — имя без расширения
+file_path.suffix     # '.txt'
+file_path.parent     # ai_course_project/data
+file_path.resolve()  # полный (абсолютный) путь
+file_path.exists()   # False — файла пока нет</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>6. Записать текстовый файл</h2>
+  <p class="why"><code>with open(...)</code> сам закроет файл после блока. Режим <code>"w"</code> создаёт файл или перезаписывает его целиком. <code>\n</code> — перенос строки.</p>
+  <div class="code"><pre><code class="language-python">log_file = Path("ai_course_project/logs/application.log")
+
+with open(log_file, "w", encoding="utf-8") as file:
+    file.write("Application started\n")
+    file.write("Student dataset loaded\n")
+    file.write("Processing completed\n")</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>7. Прочитать файл: три способа</h2>
+  <p class="why"><code>read()</code> — всё одной строкой, <code>readline()</code> — одну строку, <code>readlines()</code> — список строк. Для больших файлов лучше идти циклом по строкам: файл не грузится в память целиком.</p>
+  <div class="code"><pre><code class="language-python">with open(log_file, "r", encoding="utf-8") as file:
+    content = file.read()        # 'Application started\nStudent ...'
+
+with open(log_file, "r", encoding="utf-8") as file:
+    first_line = file.readline() # 'Application started\n'
+
+with open(log_file, "r", encoding="utf-8") as file:
+    lines = file.readlines()     # ['Application started\n', ...]
+
+with open(log_file, "r", encoding="utf-8") as file:
+    for line in file:
+        print(line.strip())      # strip() убирает \n и пробелы по краям</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>8. Дописать, найти, посчитать</h2>
+  <p class="why">Режим <code>"a"</code> добавляет в конец, не стирая старое. Поиск — обычная проверка <code>in</code> по каждой строке.</p>
+  <div class="code"><pre><code class="language-python">with open(log_file, "a", encoding="utf-8") as file:
+    file.write("Report generated\n")
+
+with open(log_file, "r", encoding="utf-8") as file:
+    for line in file:
+        if "completed" in line.lower():
+            print(line.strip())          # Processing completed
+
+with open(log_file, "r", encoding="utf-8") as file:
+    line_count = sum(1 for line in file) # 4 строки</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>9. Режимы open() и бинарные файлы</h2>
+  <p class="why"><code>"r"</code> — чтение, <code>"w"</code> — перезапись, <code>"a"</code> — дописать, <code>"b"</code> — бинарный режим для картинок, архивов и т. п. В бинарном режиме получаешь байты, а не текст.</p>
+  <div class="code"><pre><code class="language-python">with open("street.jpg", "rb") as f:
+    data = f.read()
+
+data[:5]     # первые 5 байт файла
+type(data)   # bytes</code></pre></div>
+</section>
+
+<div id="pager"></div>
+</main>
+<script src="../../_shared/sitemap.js"></script>
+<script src="../../_shared/data.js"></script>
+<script src="../../_shared/site.js"></script>
+</body>
+</html>

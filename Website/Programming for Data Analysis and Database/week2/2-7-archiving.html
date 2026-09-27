@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2.7 Архивы — Программирование</title>
+<link rel="stylesheet" href="../../_shared/site.css">
+</head>
+<body data-root="../../" data-course="prog" data-page="week2/2-7-archiving.html">
+<main>
+<div class="phead">
+  <div class="kicker">Неделя 2 · Лекция 2.7</div>
+  <h1>Архивы: резервная копия проекта</h1>
+  <p class="sub">Упаковать файлы проекта в ZIP и TAR, посмотреть содержимое, распаковать один файл или всё сразу.</p>
+</div>
+
+<section class="step">
+  <h2>1. Создать ZIP</h2>
+  <p class="why">Модуль <code>zipfile</code> встроен в Python. Режим <code>"w"</code> создаёт архив заново. Без параметра <code>compression</code> файлы просто складываются, а не сжимаются.</p>
+  <div class="code"><pre><code class="language-python">import zipfile
+
+with zipfile.ZipFile("project_backup.zip", "w") as archive:
+    archive.write("file3.csv")
+    archive.write("file2.jpg")
+    archive.write("file1.xlsx")</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>2. Со сжатием и дописыванием</h2>
+  <p class="why"><code>ZIP_DEFLATED</code> — обычное сжатие. Есть ещё <code>ZIP_STORED</code> (без сжатия), <code>ZIP_BZIP2</code>, <code>ZIP_LZMA</code>. Режим <code>"a"</code> добавляет файл в существующий архив.</p>
+  <div class="code"><pre><code class="language-python">with zipfile.ZipFile("project_backup1.zip", "w", compression=zipfile.ZIP_DEFLATED) as archive:
+    archive.write("file3.csv")
+    archive.write("file2.jpg")
+    archive.write("file1.xlsx")
+
+with zipfile.ZipFile("project_backup1.zip", "a", compression=zipfile.ZIP_DEFLATED) as archive:
+    archive.write("students.json")</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>3. Что внутри архива</h2>
+  <p class="why"><code>namelist()</code> — просто имена, <code>infolist()</code> — подробности. Маленький файл после сжатия может стать больше: сжатию нужны служебные данные, а выигрыш бывает только на больших файлах с повторами.</p>
+  <div class="code"><pre><code class="language-python">with zipfile.ZipFile("project_backup1.zip", "r") as archive:
+    archive.namelist()            # ['file3.csv', 'file2.jpg', ...]
+    for f in archive.infolist():
+        print(f.filename, f.file_size, f.compress_size)
+# file3.csv 452 245        — сжался почти вдвое
+# file4.txt 20 22          — маленький файл стал больше
+
+    if "file1.xlsx" in archive.namelist():
+        print("file1.xlsx found")</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>4. Распаковать</h2>
+  <p class="why"><code>extract</code> — один файл, <code>extractall</code> — всё. Второй аргумент — папка назначения, её создадут автоматически.</p>
+  <div class="code"><pre><code class="language-python">with zipfile.ZipFile("project_backup1.zip", "r") as archive:
+    archive.extract("students.json", "extracted")
+    archive.extractall("restored_project")</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>5. Заархивировать целую папку</h2>
+  <p class="why"><code>os.walk</code> обходит папку со всеми подпапками. <code>arcname</code> задаёт путь внутри архива: <code>relpath</code> убирает лишнее начало, чтобы в ZIP лежало <code>file1.xlsx</code>, а не <code>restored_project/file1.xlsx</code>.</p>
+  <div class="code"><pre><code class="language-python">import os
+
+project_folder = "restored_project"
+with zipfile.ZipFile("project_backup1.zip", "w", compression=zipfile.ZIP_DEFLATED) as archive:
+    for root, directories, files in os.walk(project_folder):
+        for file in files:
+            file_path = os.path.join(root, file)
+            archive.write(file_path, arcname=os.path.relpath(file_path, project_folder))</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>6. TAR и .tar.gz</h2>
+  <p class="why">TAR сначала складывает всё в один контейнер, а сжатие (<code>gz</code>) идёт поверх, одним куском. Поэтому <code>.tar.gz</code> часто меньше ZIP, где каждый файл сжимается отдельно. На Linux это стандарт.</p>
+  <div class="code"><pre><code class="language-python">import tarfile
+
+with tarfile.open("project_backup2.tar", "w") as archive:        # без сжатия
+    archive.add("restored_project", arcname="restored_project")
+
+with tarfile.open("project_backup3.tar.gz", "w:gz") as archive:  # со сжатием gzip
+    archive.add("restored_project", arcname="restored_project")</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>7. Читать и распаковывать TAR</h2>
+  <p class="why">Режим <code>"r:gz"</code> — чтение сжатого архива. <code>filter="data"</code> — безопасная распаковка: без него Python 3.12+ выдаёт предупреждение, а архив из чужих рук может записать файлы куда не надо.</p>
+  <div class="code"><pre><code class="language-python">with tarfile.open("project_backup3.tar.gz", "r:gz") as archive:
+    archive.getnames()                  # ['restored_project', 'restored_project/file1.xlsx', ...]
+    for m in archive.getmembers():
+        print(m.name, m.size, m.isfile(), m.isdir())
+
+    member = archive.getmember("restored_project/file1.xlsx")
+    archive.extract(member, path="extracted", filter="data")
+    archive.extractall(path="restored_project1", filter="data")</code></pre></div>
+</section>
+
+<div id="pager"></div>
+</main>
+<script src="../../_shared/sitemap.js"></script>
+<script src="../../_shared/data.js"></script>
+<script src="../../_shared/site.js"></script>
+</body>
+</html>

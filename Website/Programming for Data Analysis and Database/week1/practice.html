@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Практика 1 — Программирование</title>
+<link rel="stylesheet" href="../../_shared/site.css">
+</head>
+<body data-root="../../" data-course="prog" data-page="week1/practice.html">
+<main>
+<div class="phead">
+  <div class="kicker">Неделя 1 · Практика</div>
+  <h1>Практика 1: решения задач</h1>
+  <p class="sub">Код для всех задач практики — от переменных до мини-анализа данных. Теоретические вопросы (Git, CPU/GPU) — в самом ноутбуке.</p>
+</div>
+
+<section class="step">
+  <h2>1. Типы и арифметика (задачи 4–5)</h2>
+  <p class="why">Возраст — целое (<code>int</code>), GPA — дробное (<code>float</code>), да/нет — <code>bool</code>. Если хранить возраст строкой <code>"22"</code>, с ним нельзя будет считать.</p>
+  <div class="code"><pre><code class="language-python">name, age, gpa, is_master = "Aruzhan", 22, 3.75, True
+type(name), type(age), type(gpa), type(is_master)   # str int float bool
+
+a1, a2, a3 = 78, 85, 92
+total = a1 + a2 + a3         # 255
+average = total / 3          # 85.0
+max(a1, a2, a3), min(a1, a2, a3)   # 92, 78
+a3 - a1                      # 14</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>2. Оценка по баллу (задача 6)</h2>
+  <p class="why">Порядок условий важен: сначала проверяем самое строгое (≥ 90). Если первой поставить проверку ≥ 70, балл 95 получит «Good», и до «Excellent» дело не дойдёт.</p>
+  <div class="code"><pre><code class="language-python">for score in [95, 82, 65, 40]:
+    if score &gt;= 90:
+        print("Excellent")
+    elif score &gt;= 70:
+        print("Good")
+    elif score &gt;= 50:
+        print("Satisfactory")
+    else:
+        print("Fail")</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>3. Список: доступ и изменения (задачи 7–8)</h2>
+  <p class="why"><code>[-1]</code> — последний элемент без <code>len</code>. <code>remove</code> удаляет по значению, <code>sort</code> меняет сам список. Фильтр — цикл с <code>if</code> на каждой итерации.</p>
+  <div class="code"><pre><code class="language-python">scores = [78, 85, 92, 67, 88]
+scores[0], scores[-1], len(scores)       # 78, 88, 5
+min(scores), max(scores), sum(scores), sum(scores) / len(scores)   # 67 92 410 82.0
+
+scores.append(95)
+scores.remove(67)
+scores.sort()             # [78, 85, 88, 92, 95]
+
+for s in [78, 85, 92, 67, 88]:
+    if s &gt;= 80:
+        print(s)          # 85 92 88</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>4. Анализ продаж со счётчиком (задача 9)</h2>
+  <p class="why">Счётчик нужен, чтобы узнать, <i>сколько</i> месяцев прошло условие. Процент понятнее голого числа: «3 из 6» → 50%.</p>
+  <div class="code"><pre><code class="language-python">sales = [125000, 138000, 119000, 145000, 162000, 155000]
+
+total = sum(sales)                  # 844000
+average = total / len(sales)        # 140666.67
+count_above = 0
+for s in sales:
+    if s &gt; 140000:
+        count_above += 1            # 3
+percent = count_above / len(sales) * 100   # 50.0</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>5. Кортеж, множество, словарь (задачи 10–12)</h2>
+  <p class="why">Кортеж нельзя изменить (<code>TypeError</code>) — годится для неизменных записей. Множество само убирает дубли. Словарь хранит «поле → значение» одного объекта.</p>
+  <div class="code"><pre><code class="language-python">student = ("Anna", 22, "Applied Data Analytics")
+student[0] = "John"         # TypeError: кортеж неизменяемый
+
+languages = ["Python", "SQL", "Python", "Java", "SQL", "R", "Python"]
+len(set(languages))         # 4
+
+student = {"name": "Anna", "age": 22, "program": "Applied Data Analytics", "gpa": 3.7}
+student["name"], student["gpa"]
+student["city"] = "Astana"  # добавить
+student["gpa"] = 3.8        # изменить
+student.keys(), student.values()</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>6. Список словарей = маленький датасет (задача 13)</h2>
+  <p class="why">Каждый словарь — строка таблицы, ключи — столбцы. Ровно так потом выглядят данные для Pandas.</p>
+  <div class="code"><pre><code class="language-python">students = [{"name": "Aruzhan", "score": 85}, {"name": "Daniel", "score": 72},
+            {"name": "Amina", "score": 94}, {"name": "Mark", "score": 61},
+            {"name": "Ali", "score": 88}]
+
+[s["name"] for s in students]                    # все имена
+[s["name"] for s in students if s["score"] &gt;= 80]  # Aruzhan, Amina, Ali
+sum(s["score"] for s in students) / len(students)  # 80.0
+max(students, key=lambda s: s["score"])["name"]   # 'Amina'
+sum(1 for s in students if s["score"] &gt;= 50)       # 5 сдали</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>7. Функции (задачи 14, 17)</h2>
+  <p class="why">Функция — один раз написать, много раз вызвать. Нашёл ошибку — исправляешь в одном месте, а не в каждой копии кода.</p>
+  <div class="code"><pre><code class="language-python">def calculate_average(values):
+    return sum(values) / len(values)
+
+def get_status(score):
+    if score &gt;= 90:
+        return "Excellent"
+    elif score &gt;= 70:
+        return "Good"
+    elif score &gt;= 50:
+        return "Satisfactory"
+    return "Fail"
+
+get_status(95), get_status(55)      # 'Excellent', 'Satisfactory'
+
+group_a_scores = [10, 20, 30]       # вместо a и b — понятные имена
+group_b_scores = [50, 60, 70]
+calculate_average(group_a_scores)   # 20.0
+calculate_average(group_b_scores)   # 60.0</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>8. Модули и библиотеки (задачи 15–16)</h2>
+  <p class="why">Модуль — один файл с кодом, пакет — папка модулей, библиотека — набор пакетов. <code>import</code> подключает готовый код. NumPy — числовые массивы, Pandas — таблицы, Matplotlib — графики, Seaborn — статистические графики, scikit-learn — машинное обучение.</p>
+  <div class="code"><pre><code class="language-python">import math, random
+math.sqrt(25)             # 5.0
+random.randint(1, 10)     # случайное от 1 до 10
+
+import numpy as np
+import pandas as pd
+scores = np.array([70, 82, 91, 76, 88])     # NumPy — массив чисел
+df = pd.DataFrame({"score": scores})        # Pandas — таблица из него
+df["score"].mean()                          # 81.4</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>9. Индивидуальная задача: склад (задача 18)</h2>
+  <p class="why">Стоимость позиции = цена × количество. Категория — функция, чтобы правило было в одном месте. Строка в нужном формате — f-строка.</p>
+  <div class="code"><pre><code class="language-python">products = [
+    {"name": "Laptop", "price": 450000, "quantity": 3},
+    {"name": "Mouse", "price": 7000, "quantity": 15},
+    {"name": "Keyboard", "price": 15000, "quantity": 10},
+    {"name": "Monitor", "price": 120000, "quantity": 5},
+    {"name": "Headphones", "price": 25000, "quantity": 8},
+]
+
+def product_category(price):
+    if price &lt; 20000:
+        return "Budget"
+    elif price &lt;= 100000:
+        return "Medium"
+    return "Expensive"
+
+for p in products:
+    p["value"] = p["price"] * p["quantity"]
+
+sum(p["value"] for p in products)              # 2 405 000 — весь склад
+max(products, key=lambda p: p["price"])["name"]   # 'Laptop'
+[p["name"] for p in products if p["price"] &gt; 20000]
+sum(p["price"] for p in products) / len(products) # 123400.0
+
+for p in products:
+    print(f'{p["name"]} | {p["price"]} | {product_category(p["price"])}')
+# Laptop | 450000 | Expensive</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>10. Challenge: посетители сайта (задача ⭐)</h2>
+  <p class="why">Та же схема, что с продажами, плюс метка для каждого дня.</p>
+  <div class="code"><pre><code class="language-python">visitors = [120, 135, 150, 98, 175, 160, 142]
+
+sum(visitors), sum(visitors) / len(visitors)   # 980, 140.0
+max(visitors), min(visitors)                   # 175, 98
+high_days = sum(1 for v in visitors if v &gt; 140)   # 4
+high_days / len(visitors) * 100                   # 57.14 %
+["High" if v &gt; 140 else "Normal" for v in visitors]</code></pre></div>
+</section>
+
+<div id="pager"></div>
+</main>
+<script src="../../_shared/sitemap.js"></script>
+<script src="../../_shared/data.js"></script>
+<script src="../../_shared/site.js"></script>
+</body>
+</html>

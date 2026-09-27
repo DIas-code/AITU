@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Дедлайны — ADA-M · AITU</title>
+<link rel="stylesheet" href="_shared/site.css">
+<style>
+/* ── только для этой страницы ── */
+.tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.seg{display:inline-flex;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:3px}
+.seg button{border:0;background:none;font:inherit;font-size:14px;font-weight:600;color:var(--mut);padding:6px 14px;border-radius:7px;cursor:pointer}
+.seg button.on{background:var(--ink);color:#fff}
+.btn{border:1px solid var(--line);background:var(--card);font:inherit;font-size:14px;font-weight:600;color:var(--ink);
+  padding:7px 13px;border-radius:9px;cursor:pointer}
+.btn:hover{border-color:var(--ink)}
+.btn[disabled]{opacity:.5;cursor:default}
+.spacer{flex:1}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+.chip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--card);border-radius:999px;
+  padding:5px 12px;font:inherit;font-size:13.5px;font-weight:600;color:var(--mut);cursor:pointer}
+.chip i{width:9px;height:9px;border-radius:50%;background:var(--c)}
+.chip.on{background:var(--c);border-color:var(--c);color:#fff}
+.chip.on i{background:#fff}
+.chip .n{font-weight:700;opacity:.7}
+.src{font-size:13.5px;color:var(--mut);margin-top:6px}
+.src b{color:var(--ink)}
+.src.warn b{color:var(--wip)}
+
+.wknav{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.wknav .arrow{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--card);font-size:18px;cursor:pointer;color:var(--ink)}
+.wknav .arrow:hover{border-color:var(--ink)}
+.wknav .lbl{min-width:230px;text-align:center}
+.wknav .lbl b{display:block;font-size:19px;letter-spacing:-.01em}
+.wknav .lbl span{font-size:13px;color:var(--mut)}
+
+.days{background:var(--card);border:1px solid var(--line);border-radius:15px;overflow:hidden}
+.day{display:grid;grid-template-columns:110px minmax(0,1fr);border-top:1px solid var(--soft);min-height:48px}
+.day:first-child{border-top:0}
+.day .dn{padding:11px 16px;border-right:1px solid var(--soft)}
+.day .dn b{display:block;font-size:14px}
+.day .dn span{font-size:12.5px;color:var(--mut)}
+.day.today{background:#fffaf0}
+.day.today .dn b{color:var(--late)}
+.day.past{opacity:.62}
+.day .ev{padding:6px 12px;display:flex;flex-direction:column;gap:6px;justify-content:center}
+.day .none{font-size:13px;color:#b4b0a8;padding:6px 4px}
+.day.weekend .dn{background:#faf9f6}
+
+.e{border-left:4px solid var(--c);background:#fcfbf9;border-radius:0 10px 10px 0;padding:8px 12px}
+.e summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:10px;align-items:baseline}
+.e summary::-webkit-details-marker{display:none}
+.e .t{font:600 13.5px/1.3 Consolas,monospace;color:var(--ink)}
+.e .ttl{overflow-wrap:anywhere;font-weight:600;font-size:14.5px;line-height:1.35}
+.e .cn{display:block;font-size:12.5px;color:var(--c);font-weight:700;margin-top:1px}
+.e .tag{font-size:11.5px;font-weight:700;border-radius:5px;padding:1px 6px;margin-left:6px;vertical-align:1px;background:var(--soft);color:var(--mut)}
+.e .tag.quiz{background:#efe7f7;color:#6a3f95}
+.e .desc{margin:8px 0 2px 62px;font-size:13.5px;color:#4c5358;white-space:pre-wrap;overflow-wrap:anywhere;max-height:240px;overflow:auto}
+.e.overdue{opacity:.6}
+
+.cgroup{margin-bottom:22px}
+.cgroup h2{display:flex;align-items:center;gap:10px;margin:0 0 10px;font-size:19px}
+.cgroup h2 i{width:12px;height:12px;border-radius:50%;background:var(--c)}
+.cgroup h2 small{font-size:13px;color:var(--mut);font-weight:600}
+.wkrow{display:grid;grid-template-columns:130px minmax(0,1fr);gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.wkrow .wl b{display:block;font-size:14px}
+.wkrow .wl span{font-size:12.5px;color:var(--mut)}
+.wkrow .ev{display:flex;flex-direction:column;gap:6px}
+.e .dt{display:block;font-size:12.5px;color:var(--mut);font-weight:600;margin-top:1px}
+.empty2{background:var(--card);border:1px dashed var(--line);border-radius:15px;padding:22px;color:var(--mut);text-align:center}
+
+@media (max-width:640px){
+  .day{grid-template-columns:minmax(0,1fr)}
+  .day .dn{border-right:0;padding:9px 14px 0;display:flex;gap:8px;align-items:baseline}
+  .wkrow{grid-template-columns:minmax(0,1fr)}
+  .e summary{grid-template-columns:44px minmax(0,1fr)}
+  .e summary .st{grid-column:2;justify-self:start}
+  .e .desc{margin-left:0}
+  .wknav .lbl{min-width:0;flex:1}
+}
+</style>
+</head>
+<body data-root="" data-page="deadlines">
+<main class="wide">
+  <div class="phead">
+    <div class="kicker">Moodle</div>
+    <h1>Дедлайны</h1>
+    <p class="src" id="src">Загружаю календарь…</p>
+  </div>
+
+  <div class="tools">
+    <div class="seg" id="mode">
+      <button type="button" data-m="week">По неделям</button>
+      <button type="button" data-m="course">По предметам</button>
+    </div>
+    <span class="spacer"></span>
+    <label class="small muted" id="pastWrap" hidden><input type="checkbox" id="past"> показать прошедшие</label>
+    <button class="btn" type="button" id="refresh">↻ Обновить</button>
+  </div>
+  <div class="chips" id="chips"></div>
+  <div id="view"></div>
+</main>
+<script src="_shared/sitemap.js"></script>
+<script src="_shared/data.js"></script>
+<script src="_shared/site.js"></script>
+<script src="_shared/moodle-snapshot.js"></script>
+<script src="_shared/moodle.js"></script>
+<script>
+(function () {
+  var S = SITE, M = MOODLE, esc = SITE_DATA.esc, DAY = 864e5;
+  var state = { mode: 'week', course: 'all', week: null, past: false, events: [], info: null };
+  try { var saved = JSON.parse(localStorage.getItem('dl-view') || '{}'); if (saved.mode) state.mode = saved.mode; if (saved.course) state.course = saved.course; } catch (e) {}
+  var q = /[?&]mode=(week|course)/.exec(location.search); if (q) state.mode = q[1];
+  function save() { try { localStorage.setItem('dl-view', JSON.stringify({ mode: state.mode, course: state.course })); } catch (e) {} }
+
+  /* ── даты: работаем с ключами YYYY-MM-DD по времени Алматы ── */
+  function kd(key) { return new Date(key + 'T00:00:00Z'); }
+  function addDays(key, n) { return new Date(+kd(key) + n * DAY).toISOString().slice(0, 10); }
+  function monday(key) { var d = kd(key), w = (d.getUTCDay() + 6) % 7; return addDays(key, -w); }
+  var MON = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
+  var WD = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье'];
+  function human(key) { var d = kd(key); return d.getUTCDate() + ' ' + MON[d.getUTCMonth()]; }
+  function semWeek(key) { return Math.floor((kd(key) - kd(S.term.week1)) / (7 * DAY)) + 1; }
+  function todayKey() { return M.dayKey(new Date()); }
+
+  /* ── курсы: цвет и короткое имя из sitemap, для незнакомых — стабильный цвет по названию ── */
+  var PALETTE = ['#2f5ea8', '#2c7a57', '#7b4ba6', '#a8651c', '#b3402e', '#1f7a8c', '#6b6f24', '#8c3b6b'];
+  function courseInfo(name) {
+    var n = (name || '').toLowerCase();
+    for (var i = 0; i < S.courses.length; i++) {
+      var c = S.courses[i];
+      if (c.moodle && c.moodle.toLowerCase() === n) return { key: c.id, short: c.short, color: c.color, full: c.title };
+    }
+    var h = 0; for (var j = 0; j < n.length; j++) h = (h * 31 + n.charCodeAt(j)) >>> 0;
+    return { key: 'x' + h, short: name || 'Без курса', color: PALETTE[h % PALETTE.length], full: name || 'Без курса' };
+  }
+
+  function statusOf(e) {
+    var now = new Date(), t = todayKey(), k = M.effectiveKey(e);
+    if (e.due < now) return '<span class="st late">Просрочено</span>';
+    if (k === t) return '<span class="st late">Сегодня</span>';
+    if (k === addDays(t, 1)) return '<span class="st wip">Завтра</span>';
+    var n = Math.round((kd(k) - kd(t)) / DAY);
+    return '<span class="st todo">через ' + n + ' дн.</span>';
+  }
+  var TAG = { due: '', closes: '<span class="tag quiz">квиз закрывается</span>', opens: '<span class="tag quiz">квиз открывается</span>', event: '<span class="tag">событие</span>' };
+
+  function card(e, opts) {
+    var ci = e.ci;
+    return '<details class="e' + (e.due < new Date() ? ' overdue' : '') + '" style="--c:' + ci.color + '"><summary>' +
+      '<span class="t">' + M.timeText(e) + '</span>' +
+      '<span><span class="ttl">' + esc(e.title) + '</span>' + TAG[e.type] +
+      (opts.withCourse ? '<span class="cn">' + esc(ci.short) + '</span>' : '') +
+      (opts.withDate ? '<span class="dt">' + WD[(kd(M.effectiveKey(e)).getUTCDay() + 6) % 7] + ', ' + human(M.effectiveKey(e)) + '</span>' : '') +
+      '</span>' + statusOf(e) + '</summary>' +
+      (e.description ? '<div class="desc">' + esc(e.description) + '</div>' : '<div class="desc muted">Описания в Moodle нет.</div>') +
+      '</details>';
+  }
+
+  function visible() {
+    return state.events.filter(function (e) { return state.course === 'all' || e.ci.key === state.course; });
+  }
+
+  /* ── режим «по неделям» ── */
+  function renderWeek() {
+    var start = state.week, end = addDays(start, 6), t = todayKey(), sw = semWeek(start);
+    var h = '<div class="wknav"><button class="arrow" id="prev" title="Предыдущая неделя">‹</button>' +
+      '<div class="lbl"><b>' + human(start) + ' — ' + human(end) + '</b><span>' +
+      (sw >= 1 && sw <= S.term.weeks ? 'Неделя ' + sw + ' семестра' : sw > S.term.weeks ? 'после учебных недель' : 'до начала семестра') +
+      '</span></div><button class="arrow" id="next" title="Следующая неделя">›</button>' +
+      (monday(t) !== start ? '<button class="btn" id="now">Эта неделя</button>' : '') + '</div>';
+    var list = visible();
+    h += '<div class="days">';
+    for (var i = 0; i < 7; i++) {
+      var k = addDays(start, i);
+      var evs = list.filter(function (e) { return M.effectiveKey(e) === k; });
+      h += '<div class="day' + (k === t ? ' today' : '') + (k < t ? ' past' : '') + (i > 4 ? ' weekend' : '') + '">' +
+        '<div class="dn"><b>' + WD[i] + '</b><span>' + human(k) + (k === t ? ' · сегодня' : '') + '</span></div><div class="ev">';
+      h += evs.length ? evs.map(function (e) { return card(e, { withCourse: state.course === 'all' }); }).join('') : '<span class="none">—</span>';
+      h += '</div></div>';
+    }
+    h += '</div>';
+    return h;
+  }
+
+  /* ── режим «по предметам» ── */
+  function renderCourse() {
+    var now = new Date(), list = visible().filter(function (e) { return state.past || e.due >= now; });
+    if (!list.length) return '<div class="empty2">' + (state.past ? 'Дедлайнов нет.' : 'Впереди дедлайнов нет. Прошедшие — галочка «показать прошедшие».') + '</div>';
+    var groups = {}, order = [];
+    list.forEach(function (e) { if (!groups[e.ci.key]) { groups[e.ci.key] = []; order.push(e.ci.key); } groups[e.ci.key].push(e); });
+    return order.map(function (key) {
+      var evs = groups[key], ci = evs[0].ci, byWeek = {}, weeks = [];
+      evs.forEach(function (e) { var m = monday(M.effectiveKey(e)); if (!byWeek[m]) { byWeek[m] = []; weeks.push(m); } byWeek[m].push(e); });
+      return '<section class="cgroup" style="--c:' + ci.color + '"><h2><i></i>' + esc(ci.full) + ' <small>' + evs.length + '</small></h2>' +
+        weeks.map(function (m) {
+          var sw = semWeek(m);
+          return '<div class="wkrow"><div class="wl"><b>' + (sw >= 1 && sw <= S.term.weeks ? 'Неделя ' + sw : 'Вне недель') + '</b><span>' + human(m) + ' — ' + human(addDays(m, 6)) + '</span></div>' +
+            '<div class="ev">' + byWeek[m].map(function (e) { return card(e, { withDate: true }); }).join('') + '</div></div>';
+        }).join('') + '</section>';
+    }).join('');
+  }
+
+  function render() {
+    document.querySelectorAll('#mode button').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-m') === state.mode); });
+    document.getElementById('pastWrap').hidden = state.mode !== 'course';
+
+    // фильтр курсов: все курсы из sitemap + незнакомые из Moodle
+    var seen = {}, chips = [{ key: 'all', short: 'Все', color: '#1a1f24' }];
+    S.courses.forEach(function (c) { var ci = courseInfo(c.moodle); seen[ci.key] = 1; chips.push(ci); });
+    state.events.forEach(function (e) { if (!seen[e.ci.key]) { seen[e.ci.key] = 1; chips.push(e.ci); } });
+    var now = new Date();
+    document.getElementById('chips').innerHTML = chips.map(function (ci) {
+      var n = state.events.filter(function (e) { return e.due >= now && (ci.key === 'all' || e.ci.key === ci.key); }).length;
+      return '<button type="button" class="chip' + (state.course === ci.key ? ' on' : '') + '" data-c="' + ci.key + '" style="--c:' + ci.color + '">' +
+        (ci.key === 'all' ? '' : '<i></i>') + esc(ci.short) + ' <span class="n">' + n + '</span></button>';
+    }).join('');
+
+    var view = document.getElementById('view');
+    view.innerHTML = state.mode === 'week' ? renderWeek() : renderCourse();
+    var p = document.getElementById('prev'), nx = document.getElementById('next'), nw = document.getElementById('now');
+    if (p) p.onclick = function () { state.week = addDays(state.week, -7); render(); };
+    if (nx) nx.onclick = function () { state.week = addDays(state.week, 7); render(); };
+    if (nw) nw.onclick = function () { state.week = monday(todayKey()); render(); };
+  }
+
+  function sourceLine(info) {
+    var el = document.getElementById('src'), hm = function (d) { return d.toLocaleString('ru-RU', { timeZone: M.TZ, day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }); };
+    el.className = 'src';
+    if (info.source === 'live') el.innerHTML = '<b>Живые данные из Moodle</b> · обновлено ' + hm(info.syncedAt);
+    else if (info.source === 'snapshot') { el.className = 'src warn'; el.innerHTML = '<b>Снимок календаря от ' + hm(info.syncedAt) + '</b> · для свежих данных запусти Dias Calendar (<code>npm run dev</code>) и нажми «Обновить»'; }
+    else if (M.ONLINE) { el.className = 'src warn'; el.innerHTML = '<b>Не удалось загрузить Moodle.</b> Попробуй «Обновить» чуть позже.'; }
+    else { el.className = 'src warn'; el.innerHTML = '<b>Не удалось загрузить Moodle.</b> Запусти Dias Calendar (<code>npm run dev</code>) и нажми «Обновить».'; }
+  }
+
+  function load() {
+    var btn = document.getElementById('refresh');
+    btn.disabled = true; btn.textContent = '↻ Загружаю…';
+    M.load(function (info) {
+      state.info = info;
+      state.events = info.events.map(function (e) { e.ci = courseInfo(e.course); return e; });
+      sourceLine(info);
+      btn.disabled = false; btn.textContent = '↻ Обновить';
+      render();
+    });
+  }
+
+  document.getElementById('mode').onclick = function (ev) { var m = ev.target.getAttribute('data-m'); if (m) { state.mode = m; save(); render(); } };
+  document.getElementById('chips').onclick = function (ev) { var b = ev.target.closest('.chip'); if (b) { state.course = b.getAttribute('data-c'); save(); render(); } };
+  document.getElementById('past').onchange = function (ev) { state.past = ev.target.checked; render(); };
+  document.getElementById('refresh').onclick = load;
+
+  state.week = monday(todayKey());
+  load();
+})();
+</script>
+</body>
+</html>

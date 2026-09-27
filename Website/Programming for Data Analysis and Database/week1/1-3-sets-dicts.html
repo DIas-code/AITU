@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.3 Множества и словари — Программирование</title>
+<link rel="stylesheet" href="../../_shared/site.css">
+</head>
+<body data-root="../../" data-course="prog" data-page="week1/1-3-sets-dicts.html">
+<main>
+<div class="phead">
+  <div class="kicker">Неделя 1 · Лекция 1.3</div>
+  <h1>Множества и словари</h1>
+  <p class="sub">set — уникальные элементы и быстрый поиск. dict — пары «ключ → значение». В конце — подсчёт голосов на выборах.</p>
+</div>
+
+<section class="step">
+  <h2>1. Множество: только уникальные</h2>
+  <p class="why">Повторы в множестве исчезают сами, порядок не гарантирован — зато проверка «есть ли элемент» очень быстрая. Пустое множество — только <code>set()</code>, потому что <code>{}</code> — это пустой словарь.</p>
+  <div class="code"><pre><code class="language-python">{2, 3, 5, 7, 7, 5}          # {2, 3, 5, 7}
+set(range(10, 100, 10))     # из любого итерируемого
+set()                       # пустое множество
+
+set([5, 7, 8, 5, 2, 2, 1])  # убрать дубликаты из списка → {1, 2, 5, 7, 8}</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>2. Уникальные строки из файла</h2>
+  <p class="why">Типичная задача: в файле растения с повторами — сколько разных? Set comprehension собирает множество прямо при чтении.</p>
+  <div class="code"><pre><code class="language-python">with open("plants.txt", encoding="utf8") as file:
+    plants = {line.strip() for line in file}
+len(plants)     # сколько уникальных названий
+
+# с большой буквы — те, что кончаются на «а»
+print(*map(str.title, filter(lambda p: p[-1] == "а", plants)))</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>3. Принадлежность и сравнение</h2>
+  <p class="why"><code>in</code> / <code>not in</code> — есть ли элемент. <code>&lt;=</code> — подмножество, <code>&lt;</code> — строгое подмножество. Два множества могут быть ни больше, ни меньше, ни равны друг другу — поэтому сортировать множества бессмысленно.</p>
+  <div class="code"><pre><code class="language-python">plants = {"береза", "липа", "дуб", "клен", "сосна", "ромашка", "роза", "мак", "ландыш"}
+trees = {"береза", "липа", "дуб", "клен", "сосна"}
+flowers = {"ромашка", "роза", "мак", "ландыш", "липа"}
+
+"сосна" in plants      # True
+flowers &lt;= plants      # True  — все цветы есть среди растений
+plants &gt; trees         # True  — строгое надмножество
+flowers &lt; trees, flowers &gt; trees, flowers == trees   # все False</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>4. Операции над множествами</h2>
+  <p class="why">Как в математике. У каждой операции есть оператор и метод с тем же смыслом. Разность несимметрична: от перестановки меняется результат.</p>
+  <div class="code"><pre><code class="language-python">flowers &amp; trees   # пересечение: {'липа'}               .intersection()
+flowers | trees   # объединение: всё вместе             .union()
+flowers - trees   # разность: цветы, которые не деревья  .difference()
+trees - flowers   # другой результат!
+flowers ^ trees   # симметрическая разность: всё, кроме общего  .symmetric_difference()
+
+{name[::-1] for name in plants}   # set comprehension</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>5. Добавить и удалить</h2>
+  <p class="why"><code>add</code> — один элемент, <code>update</code> — сразу много. Уже существующий элемент не добавится второй раз, и ошибки не будет. <code>remove</code> падает, если элемента нет, <code>discard</code> — нет.</p>
+  <div class="code"><pre><code class="language-python">garden = {"липа", "береза", "роза"}
+garden.add("лаванда")
+garden.update(["вишня", "яблоня", "роза"])   # «роза» не задвоится
+
+garden.remove("береза")
+garden.remove("береза")    # KeyError — уже нет
+garden.discard("береза")   # молча ничего не делает</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>6. Словарь: ключ → значение</h2>
+  <p class="why">Ключи уникальны (как множество), значения могут повторяться. Удобно собрать словарь из двух списков через <code>zip</code>. Цикл по словарю идёт по <b>ключам</b>.</p>
+  <div class="code"><pre><code class="language-python">capitals = {"Казахстан": "Астана", "Китай": "Пекин"}
+
+states = "Казахстан", "Украина", "Китай"
+cities = "Астана", "Киев", "Пекин"
+capitals = dict(zip(states, cities))
+
+legs = {"корова": 4, "кошка": 4, "петух": 2}
+for key in legs:
+    print(key, legs[key])</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>7. Чтение, запись, удаление</h2>
+  <p class="why">Обращение к несуществующему ключу — ошибка <code>KeyError</code>. Поэтому сначала проверяй <code>in</code> или бери <code>get</code> со значением по умолчанию. Присваивание либо создаёт ключ, либо меняет значение.</p>
+  <div class="code"><pre><code class="language-python">legs["кошка"]              # 4
+legs["слон"]               # KeyError
+"слон" in legs             # False
+legs.get("слон", "не знаю")   # 'не знаю' — без ошибки
+
+legs["осёл"] = 4           # новый ключ
+legs["осёл"] = 3           # тот же ключ — значение заменилось
+del legs["петух"]          # удалить пару
+
+{a: len(s) for a, s in zip(["корова", "кошка"], ["му", "мяу"])}   # dict comprehension</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>8. Задача: подсчёт голосов</h2>
+  <p class="why">Множество — чтобы быстро отбросить несуществующие фамилии. Словарь — чтобы считать голоса за каждого. <code>sorted(..., key=..., reverse=True)</code> — рейтинг по убыванию голосов.</p>
+  <div class="code"><pre><code class="language-python">with open("students.txt", encoding="utf8") as file:
+    students = {line.strip() for line in file}
+
+votes = {}
+with open("elections.txt", encoding="utf8") as file:
+    for line in file:
+        name = line.strip()
+        if name not in students:
+            continue                   # шуточный голос — пропустить
+        votes[name] = votes.get(name, 0) + 1
+
+rating = sorted(votes.items(), key=lambda pair: pair[1], reverse=True)
+winner = rating[0][0]
+
+for name, n in rating:
+    print(name.ljust(30), n)           # ljust — выровнять по ширине 30</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>9. То же через Counter</h2>
+  <p class="why"><code>Counter</code> из <code>collections</code> — словарь-счётчик: отсутствующий ключ равен 0, а <code>most_common()</code> сразу даёт отсортированный рейтинг.</p>
+  <div class="code"><pre><code class="language-python">from collections import Counter
+
+votes = Counter()
+with open("elections.txt", encoding="utf8") as file:
+    for line in file:
+        if line.strip() in students:
+            votes[line.strip()] += 1
+
+rating = votes.most_common()    # [('Фамилия', 12), ...]
+winner = rating[0][0]</code></pre></div>
+</section>
+
+<div id="pager"></div>
+</main>
+<script src="../../_shared/sitemap.js"></script>
+<script src="../../_shared/data.js"></script>
+<script src="../../_shared/site.js"></script>
+</body>
+</html>

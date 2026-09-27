@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.2 Числовые данные — Программирование</title>
+<link rel="stylesheet" href="../../_shared/site.css">
+</head>
+<body data-root="../../" data-course="prog" data-page="week1/1-2-numbers.html">
+<main>
+<div class="phead">
+  <div class="kicker">Неделя 1 · Лекция 1.2</div>
+  <h1>Числа, циклы и условия</h1>
+  <p class="sub">Какие бывают числа в Python, как считать в цикле и как программа выбирает, что делать.</p>
+</div>
+
+<section class="step">
+  <h2>1. Целые числа int</h2>
+  <p class="why">В Python целые числа не переполняются: <code>int</code> растёт сколько нужно, ограничение только память. Числа можно писать в двоичной, восьмеричной и шестнадцатеричной системе.</p>
+  <div class="code"><pre><code class="language-python">2 ** 10        # 1024
+2 ** 1000      # огромное число — и это нормально
+
+0b11111111     # 255 — двоичная
+0o76           # 62  — восьмеричная: 7·8 + 6
+0xF3           # 243 — шестнадцатеричная: 15·16 + 3
+
+int("12345")   # строка → число</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>2. Дроби: Fraction, Decimal, float</h2>
+  <p class="why"><code>Fraction</code> — точные обыкновенные дроби. <code>Decimal</code> — точные десятичные (для денег). <code>float</code> — обычные дробные числа для науки: быстрые, но с погрешностью.</p>
+  <div class="code"><pre><code class="language-python">from fractions import Fraction
+Fraction(5, 27) + Fraction(91, 11)   # 2512/297 — без округления
+
+from decimal import Decimal
+Decimal("12.3456786777") + Decimal("0.9876")   # 13.3332786777 — точно
+# Decimal создают из строки, а не из float
+
+2 ** -1    # 0.5  — float
+2 / 5      # 0.4
+10 / 5     # 2.0  — деление через / всегда даёт float
+float("0.9")</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>3. Обмен значениями</h2>
+  <p class="why">В Python не нужна временная переменная — это распаковка кортежа.</p>
+  <div class="code"><pre><code class="language-python">a, b = 7, 12
+a, b = b, a     # теперь a = 12, b = 7</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>4. Счётчики и сумма</h2>
+  <p class="why"><code>x += 1</code> — короткая запись <code>x = x + 1</code>. Так считают, сколько раз что-то случилось. Сумма — переменная-накопитель, которая начинается с нуля.</p>
+  <div class="code"><pre><code class="language-python">x = y = 10
+x += 1       # 11 — инкремент
+y -= 1       # 9  — декремент
+
+s = 0
+for x in 4, 6, 15:
+    s += x
+s            # 25</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>5. Цикл while</h2>
+  <p class="why">Повторяет тело, пока условие истинно. Если условие никогда не станет ложным — цикл будет бесконечным. Если ложно сразу — не выполнится ни разу.</p>
+  <div class="code"><pre><code class="language-python">x = 0
+while x &lt; 100:
+    print(x)       # 0, 10, 20, ..., 90
+    x += 10
+
+x = 1
+while x &gt; 0:       # бесконечный цикл: x только растёт
+    x += 1</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>6. Прогрессии и range</h2>
+  <p class="why">Арифметическая прогрессия — такая частая задача, что для неё есть <code>range(start, stop, step)</code>. Как и в срезах, stop не входит. Геометрическую делают через <code>*=</code>.</p>
+  <div class="code"><pre><code class="language-python">for x in range(10, 50, 5):
+    print(x)            # 10 15 20 ... 45 — 50 не входит
+
+print(*range(0, 10))    # 0 1 2 ... 9
+print(*range(9, -1, -1))  # 9 8 ... 0 — обратный отсчёт
+
+x = 1
+while x &lt; 100:
+    print(x)            # 1 2 4 8 16 32 64
+    x *= 2</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>7. Условия if / else</h2>
+  <p class="why"><code>if</code> выполняет блок только при истинном условии, <code>else</code> — во всех остальных случаях. f-строка подставляет значения переменных в текст: <code>{18 - x}</code>.</p>
+  <div class="code"><pre><code class="language-python">x = int(input("Какое сегодня число? "))
+if x &lt; 1 or x &gt; 31:
+    print("Такого не может быть!")
+
+age = int(input("Сколько вам лет? "))
+if age &lt; 18:
+    print(f"Вам нельзя смотреть этот фильм! Приходите через {18 - age} лет.")
+else:
+    print("Фильм загружается...")</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>8. Вложенные условия и elif</h2>
+  <p class="why">Определяем четверть точки. Вложенные <code>if</code> быстро «уезжают» вправо. <code>elif</code> делает то же самое плоско: проверяет условия по очереди до первого истинного. Последний <code>else</code> ловит точки на осях — их легко забыть, поэтому код надо тестировать.</p>
+  <div class="code"><pre><code class="language-python">x, y = map(int, input("Координаты через пробел: ").split())
+
+if y &gt; 0 and x &gt; 0:
+    print("I четверть")
+elif y &gt; 0 and x &lt; 0:
+    print("II четверть")
+elif y &lt; 0 and x &lt; 0:
+    print("III четверть")
+elif y &lt; 0 and x &gt; 0:
+    print("IV четверть")
+else:
+    print("На оси или в начале координат")
+# and — «и», or — «или», not — «не»</code></pre></div>
+</section>
+
+<div id="pager"></div>
+</main>
+<script src="../../_shared/sitemap.js"></script>
+<script src="../../_shared/data.js"></script>
+<script src="../../_shared/site.js"></script>
+</body>
+</html>

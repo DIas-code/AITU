@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1.1 Основы Python — Программирование</title>
+<link rel="stylesheet" href="../../_shared/site.css">
+</head>
+<body data-root="../../" data-course="prog" data-page="week1/1-1-intro.html">
+<main>
+<div class="phead">
+  <div class="kicker">Неделя 1 · Лекция 1.1</div>
+  <h1>Основы Python: строки, кортежи, списки</h1>
+  <p class="sub">Типы данных, работа со строками, распаковка, списки и их обработка: comprehension, map, filter, zip, enumerate, itertools.</p>
+</div>
+
+<section class="step">
+  <h2>1. Узнать тип объекта</h2>
+  <p class="why"><code>type()</code> показывает, с чем ты работаешь. Первое, что проверяют, когда код ведёт себя странно.</p>
+  <div class="code"><pre><code class="language-python">type("Hello, world!")   # str
+type(1.2)               # float
+type([1, 2, 3])         # list
+type(1.2) == int        # False</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>2. Строки: кавычки, сложение, умножение</h2>
+  <p class="why">Одинарные и двойные кавычки равноправны: берёшь те, которых нет внутри текста. Или экранируешь <code>\"</code>. Строки можно складывать и умножать на число, но не на другую строку.</p>
+  <div class="code"><pre><code class="language-python">"I'm a student."
+'I registered in "Teams"'
+"The film \"D'Artagnan and the Three Musketeers\""
+
+"Student" + "ADA-26"     # 'StudentADA-26' (порядок важен)
+"Student ADA-26!" * 3    # повторить 3 раза
+"a" * "b"                # TypeError</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>3. Методы строк</h2>
+  <p class="why">Строки неизменяемы: метод возвращает <b>новую</b> строку, а исходная остаётся прежней. Чтобы сохранить результат, его нужно присвоить.</p>
+  <div class="code"><pre><code class="language-python">s = "Hello, student ADA-26!"
+s.lower()            # 'hello, student ada-26!'
+s.upper()            # 'HELLO, STUDENT ADA-26!'
+s.title()            # 'Hello, Student Ada-26!'
+s.replace("e", "A")  # 'HAllo, studAnt ADA-26!'
+s                    # 'Hello, student ADA-26!' — не изменилась</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>4. Индексы и срезы</h2>
+  <p class="why"><code>[start:stop:step]</code>, stop не входит. Отрицательный шаг идёт с конца — так проще всего перевернуть строку.</p>
+  <div class="code"><pre><code class="language-python">s = "characterization"
+s[1]          # 'h'
+s[1:5]        # 'hara'
+s[4:] + s[:4] # 'acterizationchar' — сдвиг
+s[1:11:2]     # 'hrcei' — через один
+s[::-1]       # 'noitaziretcarahc' — задом наперёд</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>5. Кортежи и распаковка</h2>
+  <p class="why">Кортеж — неизменяемый набор значений. Распаковка раскладывает любой итерируемый объект по переменным без цикла. <code>*rest</code> забирает «всё остальное» в список.</p>
+  <div class="code"><pre><code class="language-python">x, y, z = 1, 2, 3
+A = 1, 2, 4               # это кортеж (1, 2, 4)
+x, y, z = A
+
+a, b, c, d, e = "HELLO"   # H E L L O
+a, b, c = "HELLO"         # ValueError — длины не совпали
+
+a, b, *rest = [1, 2, 3, 4, 5]      # a=1, b=2, rest=[3, 4, 5]
+*rest, last = [1, 2, 3, 4, 5]      # last=5
+a, *mid, z = [1, 2, 3, 4, 5]       # mid=[2, 3, 4]</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>6. Списки, split и join</h2>
+  <p class="why">Список изменяемый (<code>[]</code>), кортеж — нет (<code>()</code>). <code>split</code> режет строку на список, <code>join</code> склеивает обратно. <code>==</code> сравнивает содержимое, <code>is</code> — тот же ли это объект в памяти.</p>
+  <div class="code"><pre><code class="language-python">a = ["1", "2", "3", "4", "5"]
+b = list("12345")
+a == b      # True  — одинаковое содержимое
+a is b      # False — разные объекты
+
+" ".join(a)      # '1 2 3 4 5'
+"***".join(a)    # '1***2***3***4***5'
+
+s = "Early to bed, early to rise, makes a man healthy"
+s.split()        # по пробелам: ['Early', 'to', 'bed,', ...]
+s.split(", ")    # по разделителю: ['Early to bed', 'early to rise', ...]</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>7. Срезы списка, + и *</h2>
+  <p class="why">Срезы работают так же, как у строк. Если шаг отрицательный, а start меньше stop, получится пустой список.</p>
+  <div class="code"><pre><code class="language-python">words = text.split()
+words[3]          # 4-е слово
+words[0:9]        # слова 0..8
+words[7:20:2]     # с 7-го по 19-е через одно
+words[6:19:-2]    # [] — шаг назад, а start &lt; stop
+words[::-1]       # в обратном порядке
+
+["a", "b"] + ["c"]   # ['a', 'b', 'c']
+["a", "b"] * 2       # ['a', 'b', 'a', 'b']</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>8. List comprehension: обработать и отфильтровать</h2>
+  <p class="why">Короткая запись «новый список из старого»: <code>[что_сделать for x in список if условие]</code>. Здесь — убрать отступы у строк стиха и оставить только нужные.</p>
+  <div class="code"><pre><code class="language-python">lines = text.splitlines()                        # строка → список строк
+stripped = [line.strip() for line in lines]      # убрать пробелы по краям
+
+with_love = [l for l in stripped if "любовь" in l]           # только фильтр
+lower_ne  = [l.lower() for l in stripped if "не" in l]       # фильтр + обработка
+
+print(*lower_ne, sep="\n")   # * раскладывает список в аргументы print</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>9. lambda, map и filter</h2>
+  <p class="why"><code>lambda</code> — короткая функция без имени. <code>map</code> применяет функцию к каждому элементу, <code>filter</code> отбирает. Оба ленивые и одноразовые: второй раз по ним пройти нельзя, в отличие от списка.</p>
+  <div class="code"><pre><code class="language-python">double = lambda x: x * 2        # то же, что def double(x): return x * 2
+list(map(lambda x: x * x, [1, 2, 3, 4]))   # [1, 4, 9, 16]
+
+upper_ne = map(str.upper, filter(lambda s: "не" in s, stripped))
+
+b = map(lambda ch: chr(ord(ch) + 1), "Astana")
+print(*b)   # B t u b o b
+print(*b)   # пусто — map уже исчерпан
+c = [chr(ord(ch) + 1) for ch in "Astana"]   # список можно читать сколько угодно</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>10. zip и enumerate</h2>
+  <p class="why"><code>zip</code> идёт по нескольким спискам параллельно (останавливается на самом коротком). <code>enumerate</code> даёт номер вместе с элементом — не нужен счётчик.</p>
+  <div class="code"><pre><code class="language-python">a = "Алексей Руслан Тимур".split()
+b = "Алёна Рита Тая".split()
+for x, y in zip(a, b):
+    print(x, "+", y)           # Алексей + Алёна ...
+
+for i, student in enumerate(["Маша", "Вася", "Петя"]):
+    print(i, student)          # 0 Маша, 1 Вася, 2 Петя</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>11. itertools: перестановки и комбинации</h2>
+  <p class="why">Готовые переборы, чтобы не писать вложенные циклы. <code>permutations</code> — порядок важен, <code>combinations</code> — не важен, <code>product</code> — все пары, <code>chain</code> — склеить последовательности.</p>
+  <div class="code"><pre><code class="language-python">import itertools as it
+
+list(it.permutations("ABC"))                  # ABC ACB BAC BCA CAB CBA
+it.permutations("ABCDE", 3)                   # по 3 из 5, порядок важен
+it.combinations("ABCDE", 2)                   # AB AC ... DE — 10 пар
+it.combinations_with_replacement("ABCDE", 2)  # плюс AA, BB, ...
+it.product([1, 2, 3, 4], "ABC")               # 1A 1B 1C 2A ... 4C
+it.chain("первое", "слово")                   # п е р в о е с л о в о</code></pre></div>
+</section>
+
+<div id="pager"></div>
+</main>
+<script src="../../_shared/sitemap.js"></script>
+<script src="../../_shared/data.js"></script>
+<script src="../../_shared/site.js"></script>
+</body>
+</html>

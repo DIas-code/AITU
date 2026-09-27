@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2.4 JSON — Программирование</title>
+<link rel="stylesheet" href="../../_shared/site.css">
+</head>
+<body data-root="../../" data-course="prog" data-page="week2/2-4-json.html">
+<main>
+<div class="phead">
+  <div class="kicker">Неделя 2 · Лекция 2.4</div>
+  <h1>JSON: данные курса и студентов</h1>
+  <p class="sub">JSON — текстовый формат для хранения и обмена данными. В отличие от CSV умеет вложенность: списки внутри словарей и наоборот.</p>
+</div>
+
+<section class="step">
+  <h2>1. Данные в Python и запись в файл</h2>
+  <p class="why">Словарь Python почти один в один становится JSON. <code>json.dump</code> пишет в файл, <code>indent=4</code> — с отступами, чтобы файл читался глазами.</p>
+  <div class="code"><pre><code class="language-python">import json
+
+students = {
+    "course": "Programming for AI",
+    "semester": 1,
+    "students": [
+        {"id": 1, "name": "Amina", "scores": [85, 90, 88], "active": True},
+        {"id": 2, "name": "Arman", "scores": [70, 75, 80], "active": True},
+        {"id": 3, "name": "Dias",  "scores": [95, 92, 96], "active": True},
+    ],
+}
+
+with open("students.json", "w", encoding="utf-8") as file:
+    json.dump(students, file, indent=4)</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>2. Прочитать и добраться до значений</h2>
+  <p class="why"><code>json.load</code> возвращает обычный словарь. Дальше — ключи и индексы по цепочке, шаг за шагом вглубь.</p>
+  <div class="code"><pre><code class="language-python">with open("students.json", "r", encoding="utf-8") as file:
+    data = json.load(file)            # dict
+
+data["course"]                        # 'Programming for AI'
+data["students"][0]                   # первый студент — словарь
+data["students"][0]["name"]           # 'Amina'
+data["students"][0]["scores"]         # [85, 90, 88]
+
+for s in data["students"]:
+    print(s["id"], s["name"], round(sum(s["scores"]) / len(s["scores"]), 2))
+# 1 Amina 87.67 · 2 Arman 75.0 · 3 Dias 94.33</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>3. Изменить и сохранить</h2>
+  <p class="why">Изменения делаются в памяти. Файл на диске не меняется, пока снова не вызовешь <code>json.dump</code>.</p>
+  <div class="code"><pre><code class="language-python">for s in data["students"]:
+    if s["name"] == "Arman":
+        s["scores"][1] = 82          # вторая оценка: 75 → 82
+
+with open("students.json", "w", encoding="utf-8") as file:
+    json.dump(data, file, indent=4)</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>4. Добавить поля и записи</h2>
+  <p class="why">В словарь можно просто присвоить новый ключ, в список — добавить элемент через <code>append</code>.</p>
+  <div class="code"><pre><code class="language-python">for s in data["students"]:
+    s["average"] = round(sum(s["scores"]) / len(s["scores"]), 2)
+    s["result"] = "Pass" if s["average"] &gt;= 70 else "Fail"
+
+data["students"].append(
+    {"id": 4, "name": "Aigerim", "scores": [60, 68, 65], "active": True}
+)</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>5. Удалить поле и запись</h2>
+  <p class="why"><code>pop(key, None)</code> удаляет ключ и не падает, если его нет. Запись удобнее убрать, собрав новый список без неё.</p>
+  <div class="code"><pre><code class="language-python">for s in data["students"]:
+    s.pop("active", None)            # убрать поле у всех
+
+data["students"] = [s for s in data["students"] if s["name"] != "Aigerim"]
+
+with open("students.json", "w", encoding="utf-8") as file:
+    json.dump(data, file, indent=4, ensure_ascii=False)
+# ensure_ascii=False — кириллица сохранится буквами, а не кодами А...</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>6. JSON-строка вместо файла</h2>
+  <p class="why">Буква <b>s</b> на конце = string. <code>dump / load</code> работают с файлом, <code>dumps / loads</code> — со строкой (например, ответ от API).</p>
+  <div class="code"><pre><code class="language-python">student = {"name": "Amina", "age": 22, "city": "Astana"}
+json_string = json.dumps(student, indent=4)   # dict → str
+
+json_string = '{"model": "RandomForest", "accuracy": 0.91, "trained": true}'
+config = json.loads(json_string)              # str → dict
+config["accuracy"]                            # 0.91
+# true в JSON → True в Python</code></pre></div>
+</section>
+
+<div id="pager"></div>
+</main>
+<script src="../../_shared/sitemap.js"></script>
+<script src="../../_shared/data.js"></script>
+<script src="../../_shared/site.js"></script>
+</body>
+</html>

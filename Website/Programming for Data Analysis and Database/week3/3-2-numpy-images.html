@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3.2 NumPy и картинки — Программирование</title>
+<link rel="stylesheet" href="../../_shared/site.css">
+</head>
+<body data-root="../../" data-course="prog" data-page="week3/3-2-numpy-images.html">
+<main>
+<div class="phead">
+  <div class="kicker">Неделя 3 · Лекция 3.2</div>
+  <h1>Картинка как массив NumPy</h1>
+  <p class="sub">Фотография — это просто массив чисел. Обрезать, уменьшить, перевернуть, осветлить — всё делается срезами и арифметикой.</p>
+</div>
+
+<section class="step">
+  <h2>1. Загрузить картинку</h2>
+  <p class="why"><code>plt.imread</code> читает файл сразу в массив NumPy. Форма <code>(высота, ширина, 3)</code>: у каждого пикселя три числа — красный, зелёный, синий, от 0 до 255.</p>
+  <div class="code"><pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+
+image = plt.imread("street.jpg")
+plt.imshow(image)
+plt.axis("off")
+plt.show()
+
+image.shape   # (3000, 4000, 3) — 3000 строк, 4000 столбцов, 3 канала
+image.size    # 36 000 000 чисел
+image.dtype   # uint8 — целые от 0 до 255</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>2. Один пиксель</h2>
+  <p class="why">Индекс <code>image[строка, столбец, канал]</code>. Без канала получаешь все три цвета пикселя.</p>
+  <div class="code"><pre><code class="language-python">image[100, 200]       # [ 73  88 143] — R, G, B
+image[100, 200, 0]    # 73  — только красный
+image[100, 200, 2]    # 143 — только синий</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>3. Чёрно-белая версия</h2>
+  <p class="why">Среднее по оси каналов (<code>axis=2</code>) превращает три числа пикселя в одно — яркость. Для такой картинки нужно указать <code>cmap="gray"</code>, иначе Matplotlib раскрасит её своей палитрой.</p>
+  <div class="code"><pre><code class="language-python">gray = image.mean(axis=2)          # (3000, 4000) — один канал
+
+plt.figure(figsize=(10, 8))        # холст
+plt.subplot(1, 2, 1)               # 1 ряд, 2 места, рисуем в 1-е
+plt.imshow(gray)                   # палитра по умолчанию — цветная
+plt.subplot(1, 2, 2)
+plt.imshow(gray, cmap="gray")      # серая палитра
+plt.show()</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>4. Сделать ярче</h2>
+  <p class="why">Прибавляем 40 ко всем пикселям. <code>np.clip</code> обрезает значения по границам 0…255, чтобы они не вышли за допустимый диапазон.</p>
+  <div class="code"><pre><code class="language-python">bright = np.clip(image + 40, 0, 255)
+plt.imshow(bright)</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>5. Обрезать, уменьшить, перевернуть</h2>
+  <p class="why">Всё это — срезы. Шаг <code>::10</code> берёт каждый 10-й пиксель (картинка в 10 раз меньше), шаг <code>::-1</code> идёт с конца (переворот).</p>
+  <div class="code"><pre><code class="language-python">image[500:2000, 1200:3500]   # вырезать прямоугольник
+image[1000:2000]             # полоса строк 1000–2000
+image[:, 100:1200]           # полоса столбцов
+image[:1500, :2000]          # левый верхний угол
+
+small = image[::10, ::10]    # (300, 400, 3) — уменьшили в 10 раз
+flipped = image[::-1, :]     # вверх ногами</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>6. Разделить на каналы RGB</h2>
+  <p class="why">Каждый канал — отдельная матрица 3000×4000. Показываем их рядом, каждую в своём цвете.</p>
+  <div class="code"><pre><code class="language-python">red   = image[:, :, 0]
+green = image[:, :, 1]
+blue  = image[:, :, 2]
+
+fig, axes = plt.subplots(1, 3, figsize=(12, 4))
+axes[0].imshow(red, cmap="Reds")
+axes[1].imshow(green, cmap="Greens")
+axes[2].imshow(blue, cmap="Blues")
+plt.show()</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>7. Изменить пиксели</h2>
+  <p class="why">Сначала <code>copy()</code>, иначе испортишь оригинал: срез в NumPy ссылается на те же данные.</p>
+  <div class="code"><pre><code class="language-python">modified = image.copy()
+modified[500:1000, 1000:2000] = 255   # белый прямоугольник
+plt.imshow(modified)</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>8. Нормализация 0…1</h2>
+  <p class="why">Нейросети работают с дробными числами в диапазоне 0…1, а не 0…255. Переводим в <code>float32</code> и делим на 255.</p>
+  <div class="code"><pre><code class="language-python">normalized = image.astype(np.float32) / 255.0
+normalized.min(), normalized.max()   # 0.0 1.0
+normalized[1, 2]                     # [0.30 0.35 0.56]</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>9. Пачка картинок (batch)</h2>
+  <p class="why">Модель принимает не одну картинку, а пачку. <code>expand_dims(axis=0)</code> добавляет ось «номер картинки» спереди, <code>np.stack</code> собирает несколько картинок в одну пачку.</p>
+  <div class="code"><pre><code class="language-python">batch = np.expand_dims(normalized, axis=0)
+batch.shape   # (1, 3000, 4000, 3) — 1 картинка, высота, ширина, каналы
+
+# 32 картинки одного размера → одна пачка
+from PIL import Image
+images = []
+for i in range(32):
+    img = Image.open(f"images/image_{i}.jpg").resize((224, 224))
+    images.append(np.array(img))
+batch = np.stack(images)   # (32, 224, 224, 3)
+
+# На практике пачки собирает DataLoader: 3200 картинок / 32 = 100 пачек за эпоху</code></pre></div>
+</section>
+
+<div id="pager"></div>
+</main>
+<script src="../../_shared/sitemap.js"></script>
+<script src="../../_shared/data.js"></script>
+<script src="../../_shared/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ADA-M · AITU — главная</title>
+<link rel="stylesheet" href="_shared/site.css">
+</head>
+<body data-root="">
+<main class="wide"></main>
+<script src="_shared/sitemap.js"></script>
+<script src="_shared/data.js"></script>
+<script src="_shared/site.js"></script>
+<script>
+/* Главная: что сейчас, ближайшие сроки, курсы, полная таблица сроков. Данные — из _shared/sitemap.js */
+(function () {
+  var S = SITE, D = SITE_DATA, NOW = SITE_NOW, url = SITE_URL, today = new Date();
+  var all = [];
+  S.courses.forEach(function (c) { c.tasks.forEach(function (t) { all.push({ c: c, t: t }); }); });
+  all.sort(function (a, b) { return D.taskDate(a.t) - D.taskDate(b.t); });
+
+  var wkTxt = NOW < 1 ? 'до начала' : NOW > S.term.weeks ? 'сессия' : 'неделя ' + NOW;
+  var h = '<div class="hero"><div><div class="kicker">Applied Data Analytics · 1 курс</div><h1>' + S.term.name + '</h1></div>' +
+    '<div class="wkbadge"><b>' + wkTxt + '</b><span>' + (NOW >= 1 && NOW <= S.term.weeks ? D.weekRange(NOW) : '') + ' из ' + S.term.weeks + '</span></div></div>';
+
+  // ближайшие 14 дней — только напоминания, сдано ли — сайт не знает
+  var soon = all.filter(function (x) { var d = D.taskDate(x.t); return d >= today && d - today < 14 * 864e5; });
+  h += '<h2>Ближайшие сроки</h2><div class="list">';
+  if (!soon.length) h += '<div class="empty">На ближайшие две недели сроков нет.</div>';
+  soon.forEach(function (x) {
+    h += '<div class="row" style="--c:' + x.c.color + '"><span class="cn">' + x.c.short + '</span>' +
+      '<span><a href="' + url(x.c.dir, 'course.html') + '#w' + x.t.w + '" style="color:inherit"><b>' + D.esc(x.t.title) + '</b></a> <span class="dt">· ' + D.taskWhen(x.t) + (x.t.dueNote ? ' · ' + x.t.dueNote : '') + '</span></span>' +
+      D.badge(x.t) + '</div>';
+  });
+  var rec = S.courses.filter(function (c) { return c.recurring; });
+  rec.forEach(function (c) {
+    h += '<div class="row" style="--c:' + c.color + '"><span class="cn">' + c.short + '</span><span>' + c.recurring + '</span><span class="st todo">каждую неделю</span></div>';
+  });
+  h += '</div><p class="small" style="margin:8px 2px 0"><a href="deadlines.html">Все дедлайны из Moodle — по неделям и по предметам →</a></p>';
+
+  // курсы
+  h += '<h2>Курсы</h2><div class="grid">';
+  S.courses.forEach(function (c) {
+    var next = c.tasks.filter(function (t) { return D.taskDate(t) >= today; })[0];
+    var wk = c.weeks.filter(function (x) { return x.w === NOW; })[0];
+    h += '<a class="ccard" style="--c:' + c.color + '" href="' + url(c.dir, 'course.html') + '">' +
+      '<h3>' + c.title + '</h3><span class="t">' + (wk ? 'Эта неделя: ' + D.esc(wk.topic) : c.code) + '</span>' +
+      '<span class="t">Страниц на сайте: ' + c.pages.length + ' · сроков: ' + c.tasks.length + '</span>' +
+      '<span class="next">' + (next ? 'Дальше: <b>' + D.esc(next.title) + '</b> — ' + D.taskWhen(next) : 'Все сроки впереди закрыты') + '</span></a>';
+  });
+  h += '</div>';
+
+  // календарь
+  h += '<h2>Календарь</h2><div class="events">';
+  S.term.events.forEach(function (e) {
+    var a = new Date(e.from + 'T00:00:00'), b = new Date(e.to + 'T23:59:59');
+    var d = function (s) { return s.slice(8, 10) + '.' + s.slice(5, 7); };
+    h += '<span class="' + (today >= a && today <= b ? 'cur' : '') + '">' + d(e.from) + (e.to !== e.from ? '–' + d(e.to) : '') + ' · ' + e.title + '</span>';
+  });
+  h += '</div>';
+
+  // таблица сроков по неделям
+  h += '<h2>Сроки по неделям</h2><div class="tw"><table class="plan"><thead><tr><th>Неделя</th>';
+  S.courses.forEach(function (c) { h += '<th class="c" style="--c:' + c.color + '">' + c.short + '</th>'; });
+  h += '</tr></thead><tbody>';
+  for (var w = 1; w <= S.term.weeks + 1; w++) {
+    h += '<tr class="' + (w === NOW ? 'cur' : '') + '"><th>' + (w > S.term.weeks ? 'Сессия<small>16–28.11</small>' : w + '<small>' + D.weekRange(w) + '</small>') + '</th>';
+    S.courses.forEach(function (c) {
+      h += '<td>';
+      c.tasks.filter(function (t) { return t.w === w; }).forEach(function (t) {
+        h += '<span class="it">' + D.badge(t) + ' ' + D.esc(t.title) + '</span>';
+      });
+      h += '</td>';
+    });
+    h += '</tr>';
+  }
+  h += '</tbody></table></div>';
+
+  // ориентация
+  var O = S.orientation;
+  h += '<h2>Ориентация и документы программы</h2><div class="pl">';
+  O.links.forEach(function (l) { h += '<a href="' + url(O.dir, l.href) + '">' + l.title + '</a>'; });
+  h += '</div>';
+
+  document.querySelector('main').innerHTML = h;
+})();
+</script>
+</body>
+</html>

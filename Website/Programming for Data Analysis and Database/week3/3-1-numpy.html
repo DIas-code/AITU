@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3.1 NumPy: основы — Программирование</title>
+<link rel="stylesheet" href="../../_shared/site.css">
+</head>
+<body data-root="../../" data-course="prog" data-page="week3/3-1-numpy.html">
+<main>
+<div class="phead">
+  <div class="kicker">Неделя 3 · Лекция 3.1</div>
+  <h1>NumPy: массивы и вычисления</h1>
+  <p class="sub">Зачем нужен NumPy, как создать массив, взять из него кусок и посчитать всё сразу без циклов.</p>
+</div>
+
+<section class="step">
+  <h2>1. Массив вместо списка</h2>
+  <p class="why">Списки Python медленные на больших объёмах. Картинки, звук, таблицы и нейросети — это миллионы чисел, поэтому в анализе данных их хранят в массивах NumPy (<code>ndarray</code>).</p>
+  <div class="code"><pre><code class="language-python">import numpy as np
+
+A = np.array([85, 90, 88, 92])   # список → массив
+type(A)       # numpy.ndarray
+A.size        # 4 — сколько элементов
+A.itemsize    # 8 — сколько байт занимает один элемент</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>2. Размерности: shape и ndim</h2>
+  <p class="why"><code>shape</code> — размер по каждой оси, <code>ndim</code> — сколько осей. По shape сразу видно, что лежит в массиве.</p>
+  <div class="code"><pre><code class="language-python">np.array(5).ndim                        # 0 — просто число
+np.array([5, 10, 15]).shape             # (3,)   — вектор, 1D
+np.array([[1, 2, 3], [4, 5, 6]]).shape  # (2, 3) — матрица, 2D
+np.array([[[1, 2], [3, 4]],
+          [[5, 6], [7, 8]]]).shape      # (2, 2, 2) — 3D-тензор
+
+# Как это выглядит в реальных данных:
+# ч/б картинка        (28, 28)
+# цветная картинка    (224, 224, 3)       — высота, ширина, RGB
+# пачка из 32 картинок (32, 224, 224, 3)</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>3. Матрица: flatten и транспонирование</h2>
+  <p class="why"><code>flatten()</code> вытягивает матрицу в одну строку (создаёт новую копию), <code>.T</code> меняет строки и столбцы местами.</p>
+  <div class="code"><pre><code class="language-python">B = np.array([[1,  2,  3,  4],
+              [5,  6,  7,  8],
+              [9, 10, 11, 12],
+              [13, 14, 15, 16]])
+
+B.size       # 16
+B.flatten()  # [ 1  2  3 ... 16]
+B.T          # первая строка стала первым столбцом</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>4. Готовые массивы</h2>
+  <p class="why">Не нужно вводить числа руками: заготовки из нулей, единиц, диапазонов. <code>reshape</code> раскладывает числа в нужную форму.</p>
+  <div class="code"><pre><code class="language-python">np.zeros((2, 3))       # матрица 2×3 из нулей
+np.ones((3, 3))        # 3×3 из единиц
+np.eye(3)              # единичная матрица 3×3
+np.arange(0, 10, 2)    # [0 2 4 6 8]       — от, до, шаг
+np.linspace(0, 2, 5)   # [0. 0.5 1. 1.5 2.] — 5 точек поровну
+
+A = np.arange(60).reshape(6, 10)  # 60 чисел → 6 строк × 10 столбцов
+np.zeros_like(A)                  # такая же форма, но из нулей</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>5. Срезы: взять кусок массива</h2>
+  <p class="why">Запись <code>A[строки, столбцы]</code>. Двоеточие — «всё», <code>a:b</code> — от a до b, не включая b.</p>
+  <div class="code"><pre><code class="language-python">A[3:5]        # строки 3 и 4                     → (2, 10)
+A[:, 3:5]     # все строки, столбцы 3 и 4          → (6, 2)
+A[2:5, 2:7]   # прямоугольник в середине           → (3, 5)
+A[:3, :5]     # левый верхний угол                 → (3, 5)
+A[3:, :5]     # левый нижний угол                  → (3, 5)</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>6. Запись через срез</h2>
+  <p class="why">Срез можно не только читать, но и перезаписать: целый столбец или каждую вторую строку за одну строку кода.</p>
+  <div class="code"><pre><code class="language-python">A = np.arange(60).reshape(6, 10)
+A[:, 4] = range(111, 700, 111)   # столбец 4 = 111, 222, ..., 666
+
+A = np.arange(60).reshape(6, 10)
+A[1::2, :] = np.zeros((3, 10))   # строки 1, 3, 5 обнулить (шаг 2)</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>7. Арифметика и векторизация</h2>
+  <p class="why">Операции применяются ко всем элементам сразу — это и есть векторизация. Цикл <code>for</code> не нужен, и работает в разы быстрее.</p>
+  <div class="code"><pre><code class="language-python">x = np.array([1, 2, 3])
+y = np.array([10, 20, 30])
+
+x + y        # [11 22 33]  — поэлементно
+x * y        # [10 40 90]  — поэлементно
+x @ y        # 140         — скалярное произведение: 10 + 40 + 90
+np.sqrt(x)   # [1. 1.414 1.732]
+
+# Было: список и цикл
+scores = [70, 80, 90]
+new_scores = []
+for s in scores:
+    new_scores.append(s + 5)
+
+# Стало: одна строка
+scores = np.array([70, 80, 90])
+new_scores = scores + 5      # [75 85 95]</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>8. Случайные числа и статистика</h2>
+  <p class="why"><code>seed</code> фиксирует случайность: при каждом запуске выйдут те же числа — важно для воспроизводимости в заданиях.</p>
+  <div class="code"><pre><code class="language-python">np.random.seed(42)
+np.random.rand(3, 3)      # 3×3 случайных числа из [0, 1)
+
+data = np.array([5, 10, 15, 20, 25])
+data.mean()     # 15.0  — среднее
+data.std()      # 7.07  — стандартное отклонение
+data.max()      # 25
+data.argmax()   # 4     — индекс максимума</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>9. Broadcasting и слой нейросети</h2>
+  <p class="why">Broadcasting: NumPy сам «растягивает» меньший массив до формы большего. Так в нейросети к каждой строке данных прибавляется один и тот же bias.</p>
+  <div class="code"><pre><code class="language-python">X = np.array([[10, 20, 30],
+              [40, 50, 60]])
+bias = np.array([1, 2, 3])
+X + bias        # [[11 22 33]
+                #  [41 52 63]]  — bias прибавился к каждой строке
+
+# Линейный слой: Y = X @ W + b
+X = np.array([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]])   # 3 объекта × 2 признака
+W = np.array([[0.5, 0.2], [0.1, 0.8]])               # веса модели
+b = np.array([1, 2])                                 # смещение
+Y = X @ W + b   # [[1.7 3.8] [2.9 5.8] [4.1 7.8]]
+
+# В реальности: X (32, 100) @ W (100, 64) + b (64,) → Y (32, 64)</code></pre></div>
+</section>
+
+<div id="pager"></div>
+</main>
+<script src="../../_shared/sitemap.js"></script>
+<script src="../../_shared/data.js"></script>
+<script src="../../_shared/site.js"></script>
+</body>
+</html>

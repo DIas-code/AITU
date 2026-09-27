@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2.5 Excel — Программирование</title>
+<link rel="stylesheet" href="../../_shared/site.css">
+</head>
+<body data-root="../../" data-course="prog" data-page="week2/2-5-excel.html">
+<main>
+<div class="phead">
+  <div class="kicker">Неделя 2 · Лекция 2.5</div>
+  <h1>Excel через openpyxl: отчёт по студентам</h1>
+  <p class="sub">Собираем <code>student_report.xlsx</code>: лист с оценками, средние, новый студент, лист со сводкой, оформление.</p>
+</div>
+
+<section class="step">
+  <h2>1. Создать книгу и лист</h2>
+  <p class="why"><code>openpyxl</code> работает с .xlsx напрямую: книга (workbook) → листы (sheet) → ячейки. Ставится один раз: <code>pip install openpyxl</code>.</p>
+  <div class="code"><pre><code class="language-python">import openpyxl
+
+workbook = openpyxl.Workbook()   # новая пустая книга
+sheet = workbook.active          # лист, который открыт по умолчанию
+sheet.title = "Students"
+workbook.save("student_report.xlsx")</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>2. Заполнить таблицу</h2>
+  <p class="why"><code>sheet.append</code> дописывает строку в конец листа. <code>enumerate(..., start=1)</code> даёт порядковый номер с единицы.</p>
+  <div class="code"><pre><code class="language-python">workbook = openpyxl.load_workbook("student_report.xlsx")
+sheet = workbook["Students"]
+
+sheet.append(["No.", "Student", "Assignment 1", "Assignment 2", "Assignment 3"])
+students = [["Amina", 85, 90, 88], ["Arman", 70, 75, 80],
+            ["Dias", 95, 92, 96], ["Aigerim", 60, 68, 65]]
+for i, student in enumerate(students, start=1):
+    sheet.append([i] + student)
+
+workbook.save("student_report.xlsx")</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>3. Прочитать строки и ячейки</h2>
+  <p class="why"><code>values_only=True</code> — получать значения, а не объекты ячеек. К ячейке можно обратиться по адресу (<code>"B2"</code>) или по номерам строки и столбца.</p>
+  <div class="code"><pre><code class="language-python">for row in sheet.iter_rows(values_only=True):
+    print(row)          # (1, 'Amina', 85, 90, 88) ...
+
+sheet["B2"].value                     # 'Amina'
+sheet["C2"].value                     # 85
+sheet.cell(row=2, column=2).value     # 'Amina'</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>4. Изменить значение</h2>
+  <p class="why">Идём по строкам с 2-й (1-я — заголовок) до <code>max_row</code>, ищем нужное имя в столбце B и пишем новую оценку в столбец D.</p>
+  <div class="code"><pre><code class="language-python">for row in range(2, sheet.max_row + 1):
+    if sheet[f"B{row}"].value == "Arman":
+        sheet[f"D{row}"] = 82          # Assignment 2: 75 → 82
+workbook.save("student_report.xlsx")</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>5. Столбцы Average и Result</h2>
+  <p class="why">Считаем в Python и записываем результат в новые столбцы F и G. Проходной — средний балл от 70.</p>
+  <div class="code"><pre><code class="language-python">sheet["F1"], sheet["G1"] = "Average", "Result"
+
+for row in range(2, sheet.max_row + 1):
+    scores = [sheet[f"C{row}"].value, sheet[f"D{row}"].value, sheet[f"E{row}"].value]
+    average = sum(scores) / len(scores)
+    sheet[f"F{row}"] = round(average, 2)
+    sheet[f"G{row}"] = "Pass" if average &gt;= 70 else "Fail"
+
+workbook.save("student_report.xlsx")</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>6. Добавить студента</h2>
+  <p class="why">Номер нового студента = <code>max_row</code>: строк на одну больше из-за заголовка, поэтому номер получается правильный.</p>
+  <div class="code"><pre><code class="language-python">a1, a2, a3 = 78, 85, 80
+average = (a1 + a2 + a3) / 3
+sheet.append([sheet.max_row, "Miras", a1, a2, a3, round(average, 2),
+              "Pass" if average &gt;= 70 else "Fail"])
+workbook.save("student_report.xlsx")</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>7. Лист Summary со сводкой</h2>
+  <p class="why">Новый лист со статистикой курса. Старый Summary сначала удаляем, чтобы при повторном запуске не было ошибки и дублей.</p>
+  <div class="code"><pre><code class="language-python">if "Summary" in workbook.sheetnames:
+    del workbook["Summary"]
+summary = workbook.create_sheet("Summary")
+
+averages, passed = [], 0
+for row in range(2, sheet.max_row + 1):
+    averages.append(sheet[f"F{row}"].value)
+    passed += sheet[f"G{row}"].value == "Pass"
+
+summary.append(["Metric", "Value"])
+summary.append(["Number of students", len(averages)])
+summary.append(["Course average", round(sum(averages) / len(averages), 2)])
+summary.append(["Highest average", max(averages)])
+summary.append(["Lowest average", min(averages)])
+summary.append(["Passed", passed])
+summary.append(["Failed", len(averages) - passed])
+workbook.save("student_report.xlsx")</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>8. Оформление</h2>
+  <p class="why">Жирный заголовок по центру и ширина столбцов по самому длинному значению (но от 10 до 30 символов). <code>get_column_letter(3)</code> → <code>"C"</code>.</p>
+  <div class="code"><pre><code class="language-python">from openpyxl.styles import Font, Alignment
+from openpyxl.utils import get_column_letter
+
+for ws in workbook.worksheets:
+    for cell in ws[1]:                                   # первая строка
+        cell.font = Font(bold=True)
+        cell.alignment = Alignment(horizontal="center")
+    for col in range(1, ws.max_column + 1):
+        max_len = max(len(str(ws.cell(r, col).value or "")) for r in range(1, ws.max_row + 1))
+        ws.column_dimensions[get_column_letter(col)].width = max(10, min(30, max_len + 2))
+
+workbook.save("student_report.xlsx")
+workbook.close()</code></pre></div>
+</section>
+
+<div id="pager"></div>
+</main>
+<script src="../../_shared/sitemap.js"></script>
+<script src="../../_shared/data.js"></script>
+<script src="../../_shared/site.js"></script>
+</body>
+</html>

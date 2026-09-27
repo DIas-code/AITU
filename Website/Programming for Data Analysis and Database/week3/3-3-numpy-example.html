@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3.3 NumPy: разбор примера — Программирование</title>
+<link rel="stylesheet" href="../../_shared/site.css">
+</head>
+<body data-root="../../" data-course="prog" data-page="week3/3-3-numpy-example.html">
+<main>
+<div class="phead">
+  <div class="kicker">Неделя 3 · Лекция 3.3</div>
+  <h1>Пример: онлайн-курсы и оценки</h1>
+  <p class="sub">20 пользователей × 12 курсов. Матрица оценок <code>R</code>: 0 — не проходил, 1…5 — оценка. Весь анализ — только средствами NumPy.</p>
+</div>
+
+<section class="step">
+  <h2>1. Создать матрицу и подписи</h2>
+  <p class="why"><code>int8</code> — оценки маленькие, хватает одного байта. Отдельно массивы с номерами пользователей и названиями курсов, чтобы потом выводить понятные ответы.</p>
+  <div class="code"><pre><code class="language-python">import numpy as np
+
+n_users, n_items = 20, 12
+R = np.zeros((n_users, n_items), dtype=np.int8)   # (20, 12), всё нули
+
+users = np.arange(1, n_users + 1)                 # [1 ... 20]
+courses = np.array(["Python Basics", "Data Analysis", "SQL", "ML Intro",
+                    "Deep Learning", "NLP", "Computer Vision", "Cloud",
+                    "Cybersecurity", "Project Mgmt", "DevOps", "GIS"], dtype=object)</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>2. Заполнить случайными оценками</h2>
+  <p class="why"><code>default_rng(42)</code> — генератор с фиксированным seed. Берём 200 случайных пар (пользователь, курс) и одним присваиванием ставим им оценки: это индексация массивами.</p>
+  <div class="code"><pre><code class="language-python">rng = np.random.default_rng(42)
+m = 200
+u_idx = rng.integers(0, n_users, size=m)   # 200 случайных строк
+i_idx = rng.integers(0, n_items, size=m)   # 200 случайных столбцов
+ratings = rng.integers(1, 6, size=m)       # оценки 1..5 (6 не входит)
+
+R[u_idx, i_idx] = ratings                  # повтор пары — перезапишется
+
+R[:5, :3] = rng.integers(1, 6, size=(5, 3))   # заполнить угол срезом</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>3. Сохранить и загрузить</h2>
+  <p class="why"><code>.npy</code> — родной формат NumPy: сохраняет форму и тип. <code>array_equal</code> проверяет, что загрузилось то же самое.</p>
+  <div class="code"><pre><code class="language-python">np.save("ratings.npy", R)
+R2 = np.load("ratings.npy")
+np.array_equal(R, R2)   # True</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>4. Прочитать и изменить оценки</h2>
+  <p class="why">Люди считают с 1, NumPy — с 0. Поэтому пользователь 10 — это строка 9. Строка — все оценки пользователя, столбец — все оценки курса.</p>
+  <div class="code"><pre><code class="language-python">u, c = 10, 3
+ui, ci = u - 1, c - 1     # перевод в индексы с нуля
+
+R[ui, ci]     # оценка пользователя 10 за курс 3
+R[ui, :]      # все оценки пользователя 10
+R[:, ci]      # все оценки курса 3
+
+R[ui, ci] = 5          # пользователь 10 поставил 5
+R[7 - 1, 2 - 1] = 0    # пользователь 7 удалил оценку курса 2</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>5. Поднять оценки курса на 1, но не выше 5</h2>
+  <p class="why">Маска <code>col0 &gt; 0</code> выбирает только тех, кто проходил курс — нули трогать нельзя. <code>np.clip</code> не даёт выйти за 5.</p>
+  <div class="code"><pre><code class="language-python">col0 = R[:, 0]
+taken0 = col0 &gt; 0                                   # True там, где есть оценка
+col0[taken0] = np.clip(col0[taken0] + 1, 1, 5)
+R[:, 0] = col0</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>6. Маски: кто что прошёл</h2>
+  <p class="why">Сравнение даёт массив True/False. Сумма маски = количество True. <code>axis=1</code> — по строкам (на пользователя), <code>axis=0</code> — по столбцам (на курс).</p>
+  <div class="code"><pre><code class="language-python">x = np.array([1, 5, 8, 2, 0])
+x[x &gt; 2]                          # [5 8] — фильтр маской
+
+taken = R &gt; 0
+courses_per_user = taken.sum(axis=1)   # сколько курсов у каждого
+users_per_course = taken.sum(axis=0)   # сколько людей на каждом курсе
+
+# какие курсы прошёл пользователь 10
+idx = np.nonzero(R[ui, :])[0]          # индексы ненулевых
+courses[idx]                           # их названия</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>7. Доля высоких оценок без деления на ноль</h2>
+  <p class="why"><code>&amp;</code> — «и» для масок. <code>np.divide(..., where=...)</code> делит только там, где знаменатель больше нуля, а в остальных местах оставляет 0 из <code>out</code>.</p>
+  <div class="code"><pre><code class="language-python">high = R &gt;= 4
+high_count  = (high &amp; taken).sum(axis=0)
+taken_count = taken.sum(axis=0)
+
+high_share = np.divide(high_count, taken_count,
+                       out=np.zeros_like(high_count, dtype=float),
+                       where=taken_count &gt; 0)</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>8. Средние без нулей: два способа</h2>
+  <p class="why">Нули — это «не проходил», а не оценка 0, их нельзя усреднять. Способ A: заменить 0 на <code>NaN</code> и взять <code>nanmean</code>. Способ B: сумма ÷ количество по маске. Результаты совпадают.</p>
+  <div class="code"><pre><code class="language-python"># A) через NaN
+R_nan = R.astype(np.float32).copy()
+R_nan[R_nan == 0] = np.nan
+mean_course = np.nanmean(R_nan, axis=0)
+mean_user   = np.nanmean(R_nan, axis=1)
+
+# B) сумма / количество
+cnt = taken.sum(axis=0)
+mean_course_b = np.divide(R.sum(axis=0), cnt,
+                          out=np.zeros(n_items), where=cnt &gt; 0)
+
+courses[mean_course &gt;= 3]                        # курсы со средним ≥ 3
+users[np.where(courses_per_user &gt;= 8)[0]]        # у кого ≥ 8 курсов
+courses[np.argsort(mean_course_b)[-3:][::-1]]    # топ-3 по средней
+courses[np.argmax(users_per_course)]             # самый популярный</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>9. Центрирование по пользователю</h2>
+  <p class="why">Один всегда ставит 5, другой строже. Вычитаем из оценок человека его среднее: 0 — «как обычно», плюс — нравится больше, минус — меньше. <code>mean_u[:, None]</code> делает из вектора столбец, чтобы сработал broadcasting.</p>
+  <div class="code"><pre><code class="language-python">mean_u = mean_user.astype(np.float32)             # (20,)
+R_centered = R.astype(np.float32) - mean_u[:, None]  # (20,12) - (20,1)
+R_centered[~taken] = 0.0                          # ~ — «не»: пропуски оставить 0
+
+# Пример: оценки [5, 4, 5], среднее 4.67 → [0.33, -0.67, 0.33]</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>10. Стандартизация по курсу (z-score)</h2>
+  <p class="why">z = (оценка − среднее курса) / std курса. После этого у каждого курса среднее 0 и разброс 1 — курсы можно сравнивать. Если std = 0, делим на 1, чтобы не получить деление на ноль.</p>
+  <div class="code"><pre><code class="language-python">Rf = R.astype(np.float32)
+cnt = taken.sum(axis=0)
+
+mean_i = np.divide(np.where(taken, Rf, 0).sum(axis=0), cnt,
+                   out=np.zeros(n_items, dtype=np.float32), where=cnt &gt; 0)
+
+diff2 = (Rf - mean_i[None, :]) ** 2
+diff2[~taken] = 0
+std_i = np.sqrt(np.divide(diff2.sum(axis=0), cnt,
+                          out=np.zeros(n_items, dtype=np.float32), where=cnt &gt; 0))
+
+std_safe = np.where(std_i &lt; 1e-8, 1.0, std_i)     # защита от std = 0
+R_z = (Rf - mean_i[None, :]) / std_safe[None, :]
+R_z[~taken] = 0.0
+# проверка: по каждому курсу среднее ≈ 0, std ≈ 1</code></pre></div>
+</section>
+
+<div id="pager"></div>
+</main>
+<script src="../../_shared/sitemap.js"></script>
+<script src="../../_shared/data.js"></script>
+<script src="../../_shared/site.js"></script>
+</body>
+</html>

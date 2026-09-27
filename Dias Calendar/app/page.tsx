@@ -1,0 +1,18 @@
+'use client';
+import {useEffect,useMemo,useState} from 'react';
+type E={id:string;title:string;start:string;end?:string|null;description?:string|null;url?:string|null;categories?:string[];course?:string|null};
+const fmt=(d:string,o:Intl.DateTimeFormatOptions)=>new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Almaty',...o}).format(new Date(d));
+function dayKey(d:Date){return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Almaty',year:'numeric',month:'2-digit',day:'2-digit'}).format(d)}
+function status(s:string){const now=new Date(),d=new Date(s),today=dayKey(now),dk=dayKey(d);const tomorrow=new Date(now);tomorrow.setDate(now.getDate()+1);if(d<now)return 'Overdue';if(dk===today)return 'Today';if(dk===dayKey(tomorrow))return 'Tomorrow';const days=Math.ceil((d.getTime()-now.getTime())/86400000);return `${days} days left`}
+function group(s:string){const now=new Date(),d=new Date(s),today=dayKey(now);if(dayKey(d)===today)return 'TODAY';const t=new Date(now);t.setDate(now.getDate()+1);if(dayKey(d)===dayKey(t))return 'TOMORROW';const diff=(d.getTime()-now.getTime())/86400000;if(diff>=0&&diff<7)return 'THIS WEEK';if(diff>=7)return 'LATER';return 'OVERDUE'}
+export default function Home(){const [events,setEvents]=useState<E[]>([]),[loading,setLoading]=useState(true),[error,setError]=useState(''),[synced,setSynced]=useState(''),[showPast,setShowPast]=useState(false),[query,setQuery]=useState('');
+ async function load(){setLoading(true);setError('');try{const r=await fetch('/api/calendar',{cache:'no-store'});const j=await r.json();if(!r.ok)throw new Error(j.error||'Sync failed');setEvents(j.events);setSynced(j.syncedAt)}catch(e){setError(e instanceof Error?e.message:'Sync failed')}finally{setLoading(false)}}
+ useEffect(()=>{load()},[]);
+ const filtered=useMemo(()=>events.filter(e=>(showPast||new Date(e.start)>=new Date())&&e.title.toLowerCase().includes(query.toLowerCase())),[events,showPast,query]);
+ const groups=['TODAY','TOMORROW','THIS WEEK','LATER','OVERDUE'];
+ return <main><header><div><span className="eyebrow">ASTANA IT UNIVERSITY</span><h1>Deadlines</h1><p className="sub">Moodle, without the noise.</p></div><button className="sync" onClick={load} disabled={loading}>{loading?'Syncing…':'↻ Sync Moodle'}</button></header>
+ <section className="toolbar"><input aria-label="Search deadlines" placeholder="Search assignments…" value={query} onChange={e=>setQuery(e.target.value)}/><label><input type="checkbox" checked={showPast} onChange={e=>setShowPast(e.target.checked)}/> Show past</label>{synced&&<span>Last synced {fmt(synced,{hour:'2-digit',minute:'2-digit'})}</span>}</section>
+ {error&&<div className="error"><b>Could not sync Moodle.</b><br/>{error}</div>}
+ {!loading&&!error&&filtered.length===0&&<div className="empty">No deadlines found.</div>}
+ <div className="groups">{groups.map(g=>{const xs=filtered.filter(e=>group(e.start)===g);if(!xs.length)return null;return <section className="group" key={g}><h2>{g}</h2>{xs.map(e=><article className="card" key={e.id}><div className="dot"/><div className="content"><div className="meta">{e.categories?.[0]||'MOODLE EVENT'}</div><h3>{e.title}</h3><div className="when">{fmt(e.start,{weekday:'short',day:'numeric',month:'short'})} · {fmt(e.start,{hour:'2-digit',minute:'2-digit'})} <span className={status(e.start)==='Overdue'?'late':''}>· {status(e.start)}</span></div>{e.description&&<p>{e.description.replace(/<[^>]+>/g,' ').slice(0,180)}</p>}</div>{e.url&&<a className="open" href={e.url} target="_blank" rel="noreferrer">Open in Moodle ↗</a>}</article>)}</section>})}</div>
+ <footer>Times shown in Asia/Almaty (UTC+5).</footer></main>}

@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2.3 CSV — Программирование</title>
+<link rel="stylesheet" href="../../_shared/site.css">
+</head>
+<body data-root="../../" data-course="prog" data-page="week2/2-3-csv.html">
+<main>
+<div class="phead">
+  <div class="kicker">Неделя 2 · Лекция 2.3</div>
+  <h1>CSV: таблица студентов</h1>
+  <p class="sub">Файл <code>students.csv</code> с колонками id, name, assignment1–3: создать, прочитать, посчитать средние, изменить, сохранить обработанную версию.</p>
+</div>
+
+<section class="step">
+  <h2>1. Записать CSV</h2>
+  <p class="why">CSV — таблица в текстовом файле, значения через запятую. Модуль <code>csv</code> встроен в Python. <code>newline=""</code> обязателен: без него в Windows между строками появляются пустые.</p>
+  <div class="code"><pre><code class="language-python">import csv
+
+header = ["id", "name", "assignment1", "assignment2", "assignment3"]
+students = [
+    [1, "Amina", 85, 90, 88],
+    [2, "Arman", 70, 75, 80],
+    [3, "Dias", 95, 92, 96],
+    [4, "Aigerim", 60, 68, 65],
+]
+
+with open("students.csv", "w", newline="", encoding="utf-8") as file:
+    writer = csv.writer(file)
+    writer.writerow(header)      # одна строка
+    writer.writerows(students)   # много строк сразу</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>2. Прочитать построчно</h2>
+  <p class="why"><code>csv.reader</code> отдаёт каждую строку списком, и все значения — <b>строки</b>. Для расчётов их нужно переводить в <code>int</code>. <code>next(reader)</code> забирает первую строку (заголовок), и цикл дальше идёт только по данным.</p>
+  <div class="code"><pre><code class="language-python">with open("students.csv", "r", encoding="utf-8") as file:
+    reader = csv.reader(file)
+    header = next(reader)          # ['id', 'name', 'assignment1', ...]
+    for row in reader:
+        name, a1 = row[1], int(row[2])
+        print(name, a1)            # Amina 85 ...</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>3. Читать по названиям колонок</h2>
+  <p class="why"><code>DictReader</code> превращает строку в словарь «колонка → значение». Код читается понятнее и не ломается, если колонки поменяют местами.</p>
+  <div class="code"><pre><code class="language-python">with open("students.csv", "r", encoding="utf-8") as file:
+    for student in csv.DictReader(file):
+        print(student["name"], student["assignment1"])
+# {'id': '1', 'name': 'Amina', 'assignment1': '85', ...}</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>4. Средний балл и фильтр</h2>
+  <p class="why">Считаем среднее каждого студента и выводим только тех, у кого оно не ниже 80.</p>
+  <div class="code"><pre><code class="language-python">with open("students.csv", "r", encoding="utf-8") as file:
+    for student in csv.DictReader(file):
+        scores = [int(student["assignment1"]),
+                  int(student["assignment2"]),
+                  int(student["assignment3"])]
+        average = sum(scores) / len(scores)
+        if average &gt;= 80:
+            print(student["name"], round(average, 2))
+# Amina 87.67
+# Dias 94.33</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>5. Добавить запись</h2>
+  <p class="why">Режим <code>"a"</code> дописывает строку в конец файла, остальное не трогает.</p>
+  <div class="code"><pre><code class="language-python">with open("students.csv", "a", newline="", encoding="utf-8") as file:
+    csv.writer(file).writerow([5, "Miras", 78, 85, 80])</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>6. Изменить существующую запись</h2>
+  <p class="why">CSV нельзя поправить «на месте». Схема всегда такая: прочитать всё в память → изменить нужное → перезаписать файл целиком. <code>fieldnames</code> запоминаем, чтобы записать тот же заголовок.</p>
+  <div class="code"><pre><code class="language-python">rows = []
+with open("students.csv", "r", encoding="utf-8") as file:
+    reader = csv.DictReader(file)
+    fieldnames = reader.fieldnames
+    for student in reader:
+        if student["name"] == "Arman":
+            student["assignment2"] = "82"    # было 75
+        rows.append(student)
+
+with open("students.csv", "w", newline="", encoding="utf-8") as file:
+    writer = csv.DictWriter(file, fieldnames=fieldnames)
+    writer.writeheader()
+    writer.writerows(rows)</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>7. Новые колонки и новый файл</h2>
+  <p class="why">Добавляем в словарь каждого студента вычисленные поля <code>average</code> и <code>result</code> и сохраняем в отдельный файл — исходные данные остаются нетронутыми.</p>
+  <div class="code"><pre><code class="language-python">processed = []
+with open("students.csv", "r", encoding="utf-8") as file:
+    for s in csv.DictReader(file):
+        avg = (int(s["assignment1"]) + int(s["assignment2"]) + int(s["assignment3"])) / 3
+        s["average"] = round(avg, 2)
+        s["result"] = "Pass" if avg &gt;= 70 else "Fail"
+        processed.append(s)
+
+fieldnames = ["id", "name", "assignment1", "assignment2", "assignment3", "average", "result"]
+with open("students_processed.csv", "w", newline="", encoding="utf-8") as file:
+    writer = csv.DictWriter(file, fieldnames=fieldnames)
+    writer.writeheader()
+    writer.writerows(processed)</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>8. То же в Pandas — одной строкой</h2>
+  <p class="why">Модуль <code>csv</code> показывает, как устроен файл. Pandas сразу даёт таблицу (<code>DataFrame</code>) с типами чисел, с которой удобно анализировать.</p>
+  <div class="code"><pre><code class="language-python">import pandas as pd
+
+df = pd.read_csv("students_processed.csv")
+print(df)
+type(df)   # pandas.DataFrame</code></pre></div>
+</section>
+
+<div id="pager"></div>
+</main>
+<script src="../../_shared/sitemap.js"></script>
+<script src="../../_shared/data.js"></script>
+<script src="../../_shared/site.js"></script>
+</body>
+</html>

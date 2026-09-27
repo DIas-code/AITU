@@ -54,3 +54,9 @@ temp/
 
 # ---- Office temp lock files ----
 ~$*
+
+# ---- Личное: снимок календаря Moodle ----
+Website/_shared/moodle-snapshot.js
+
+# ---- Силлабусы: только локально, не в git и не на сайте онлайн ----
+Syllabi/

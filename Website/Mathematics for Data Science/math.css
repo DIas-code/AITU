@@ -1,0 +1,63 @@
+/* Блоки, которые есть только у математики: карточки формул, конспект лекции, таблицы, калькуляторы. */
+.switch{margin:12px 0 0;font-size:14px}
+/* чипы-оглавление */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+.chips a{background:var(--card);border:1px solid var(--line);border-radius:8px;
+  padding:5px 10px;font-size:13px;color:#4c5358}
+.chips a:hover{border-color:var(--acc);color:var(--acc);text-decoration:none}
+
+/* карточка формулы */
+.f{background:var(--card);border:1px solid var(--line);border-radius:15px;
+  padding:20px 22px;margin-bottom:15px}
+.f h3{margin:0 0 12px;font-size:20px;letter-spacing:-.01em}
+.math{background:var(--code);border:1px solid var(--line);border-radius:11px;
+  padding:12px 15px;overflow-x:auto;margin-bottom:14px}
+.f dl{margin:0}
+.f .r{display:grid;grid-template-columns:150px 1fr;gap:12px;padding:7px 0;
+  border-top:1px solid #f0ede7}
+.f .r:first-child{border-top:0;padding-top:0}
+.f dt{font-size:12.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--mut);padding-top:2px}
+.f dd{margin:0;font-size:15px;line-height:1.5}
+.f .r:last-child dd{background:#fbfaf6;border-left:3px solid var(--warm);
+  border-radius:0 7px 7px 0;padding:7px 11px;font-size:14.5px}
+.src{font-size:12.5px;color:#9aa0a4;margin:13px 0 0}
+.filesrc{font-size:13px;color:var(--mut);margin-top:24px;border-top:1px solid var(--line);padding-top:12px}
+
+/* лекция */
+.l{background:var(--card);border:1px solid var(--line);border-radius:15px;
+  padding:18px 22px;margin-bottom:13px}
+.l h3{margin:0 0 9px;font-size:18px}
+.l ul{margin:0;padding-left:20px}
+.l li{margin:5px 0;font-size:15px;line-height:1.5}
+
+/* таблицы и калькуляторы, перенесённые со старой версии */
+h2{font-size:23px;margin:30px 0 12px}
+.tablewrap{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:12px}
+table.crit{border-collapse:collapse;width:100%;font-size:13.5px}
+table.crit th,table.crit td{border:1px solid #eae6de;padding:5px 9px;text-align:center}
+table.crit thead th{background:#f4f2ee;font-weight:700}
+table.crit tbody th{background:#faf9f6}
+table.crit .num{font-variant-numeric:tabular-nums}
+table.crit .hl{background:#fff6e2}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:18px 20px;margin-bottom:14px}
+.calc h3{margin:0 0 12px;font-size:18px}
+.calc .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:10px}
+.calc label{display:block;font-size:12.5px;color:var(--mut);margin-bottom:4px;font-weight:600}
+.calc textarea,.calc input{width:100%;border:1px solid var(--line);border-radius:9px;
+  padding:8px 11px;font:inherit;font-size:14px;background:#fcfbf9}
+.calc textarea{min-height:64px;resize:vertical;font-family:Consolas,monospace;font-size:13.5px}
+.calc .btn{background:var(--acc);color:#fff;border:0;border-radius:9px;padding:9px 18px;
+  font:inherit;font-weight:600;font-size:14px;cursor:pointer;margin-top:4px}
+.calc .btn:hover{background:#264c88}
+.calc .out{margin-top:12px}
+.calc .out:empty{display:none}
+.kv{display:flex;justify-content:space-between;gap:14px;padding:5px 0;
+  border-bottom:1px solid #f1eee8;font-size:14px}
+.kv:last-child{border-bottom:0}
+.kv b{font-weight:600}
+.ok,.no,.err{border-radius:9px;padding:9px 13px;margin-top:10px;font-size:14px}
+.ok{background:#e8f3ec;border:1px solid #bcdcc7}
+.no{background:#fdf1e6;border:1px solid #edd2b0}
+.err{background:#fbe9e7;border:1px solid #efc4bf}
