@@ -60,3 +60,6 @@ Website/_shared/moodle-snapshot.js
 
 # ---- Силлабусы: только локально, не в git и не на сайте онлайн ----
 Syllabi/
+
+# ---- Книги с авторским правом: только локально ----
+Prof english/essay-assistant/Living with AI.pdf

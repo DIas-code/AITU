@@ -1,3 +1,5 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Essay Writing Assistant</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -123,6 +125,9 @@ textarea{resize:vertical;line-height:1.45}
 .idea-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .idea{display:grid;gap:5px;text-align:left;padding:12px;border:1px solid var(--rule);border-radius:8px;background:var(--sunk);cursor:pointer}
 .idea b{font-size:13px}.idea span{font:15px/1.35 var(--serif)}.idea small{color:var(--ink-3);line-height:1.35}
+.idea .side{font:600 10.5px/1.2 var(--sans);letter-spacing:.06em;text-transform:uppercase}.idea .side.benefit{color:var(--ok)}.idea .side.risk{color:var(--fix)}
+.idea .book{font:12.5px/1.4 var(--sans);color:var(--ink-2)}
+.idea-grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
 .idea:hover{border-color:var(--accent)}.idea.selected{border-color:var(--accent);background:var(--accent-soft);box-shadow:inset 0 0 0 1px var(--accent)}
 .choice-work{display:grid;gap:10px}.choice{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;padding:12px;border-top:1px solid var(--rule)}
 .choice h4,.choice .hint{grid-column:1/-1;margin:0}.choice label{font-size:12px;font-weight:600;color:var(--ink-2)}.choice textarea{min-height:64px}
@@ -264,7 +269,7 @@ body:not(.has-ai) .ai-only{display:none!important}
       <div class="file"><input type="file" id="srcFile" accept=".txt,.md,.pdf,.html,.htm,text/plain,application/pdf"></div>
       <div class="field"><label for="srcText">Or paste the article text</label><textarea id="srcText" rows="6" placeholder="Paste the abstract or the parts of the article you use."></textarea></div>
       <div class="row2">
-        <div class="field"><label for="srcAuthor">Author(s)</label><input type="text" id="srcAuthor" placeholder="Beagon et al."></div>
+        <div class="field"><label for="srcAuthor">Author(s)</label><input type="text" id="srcAuthor" placeholder="Wilson"></div>
         <div class="field"><label for="srcYear">Year</label><input type="text" id="srcYear" placeholder="2023"></div>
       </div>
       <div class="field"><label for="srcTitle">Title</label><input type="text" id="srcTitle"></div>
@@ -316,6 +321,21 @@ const RANGES = { intro: [40, 60], body: [70, 100], conclusion: [35, 50] };
 /* Each type: how the four (or five) cards are framed, what the thesis should do,
    and which signals prove the essay fits the type. */
 const TYPES = {
+  aiimpact: {
+    name: "AI Impact Opinion Essay (Assignment 2)",
+    desc: "Weigh the benefits and the risks of AI for society or the economy, then say clearly which side is stronger.",
+    intro: "Introduce AI, narrow to society or the economy, and state whether the overall impact will be more positive or more negative.",
+    bodies: ["Your strongest argument (the side you support)", "The other side: admit it, then show why it weighs less", "Optional: a second argument for your side"],
+    conclusion: "Restate your verdict and the condition it depends on. No new arguments.",
+    position: "Overall, will AI have a more positive or a more negative impact on society / the economy — and on what condition?",
+    fit: [
+      { re: /\b(more positive|more negative|largely positive|largely negative|predominantly (positive|negative)|benefits (clearly |are likely to )?outweigh|risks (clearly |are likely to )?outweigh|overall,? (the )?(impact|effect))/i, msg: "The verdict is not visible. Say it directly, e.g. “This essay argues that the overall impact of AI on the economy is likely to be more positive than negative.”" },
+      { re: /\b(benefit|advantage|positive|opportunit|improv|productiv|efficien|growth)/i, msg: "No benefits of AI are named. One body paragraph should present a benefit." },
+      { re: /\b(risk|drawback|disadvantage|negative|threat|harm|danger|bias|unintended|concern)/i, msg: "No risks are named. The task asks you to consider risks or unintended consequences — admit the other side in one body paragraph." },
+      { re: /\b(admittedly|although|while|however|nevertheless|on the other hand|it is true that|critics)\b/i, msg: "The other side is not signalled. Introduce it with “Admittedly, …” or “Critics argue that …”, then answer it with “However, …”." },
+      { cite: true, msg: "Cite Wilson (2023) in at least one body paragraph, e.g. “According to Wilson (2023), …”." }
+    ]
+  },
   opinion: {
     name: "Opinion Essay",
     desc: "State a clear personal position and defend it with reasoned arguments.",
@@ -468,6 +488,70 @@ const COMPETENCE_IDEAS = [
   { id: "integrated problem-solving", name: "Integrated problem-solving", plain: "combining different competences to develop viable, inclusive and equitable solutions", ask: "Would this help turn several kinds of analysis into one workable solution?" }
 ];
 
+/* Assignment 2 idea bank from Wilson (2023) "Living with AI". `side`: benefit / risk; `area`: economy / society.
+   `plain` explains the idea in Russian, `book` says what the book reports (paraphrase it, do not copy), `where` is the book section. */
+const AI_IDEAS = [
+  { id: "investment and growth", side: "benefit", area: "economy", name: "Investment and economic growth",
+    plain: "В ИИ вкладывают огромные деньги, он становится частью почти любого бизнеса и может заметно увеличить мировую экономику.",
+    book: "Global private investment in AI exceeded US$93 billion in 2021 (Stanford); half of the businesses surveyed by McKinsey in 2022 used AI in at least one function; PwC estimates that AI may add over US$15 trillion to the global economy by 2030.",
+    where: "opening section “Living with AI”", ask: "Who actually gains from this growth — everyone, or mainly large companies?" },
+  { id: "productivity across industries", side: "benefit", area: "economy", name: "Productivity and automation",
+    plain: "ИИ берёт на себя рутину и делает работу быстрее и точнее — в сельском хозяйстве, логистике, финансах, медицине.",
+    book: "AI is transforming agriculture (“AgTech”), transport, logistics, health care and education; banks use it to detect fraud at scale; factories are increasingly automated.",
+    where: "“Fever Pitch: The AI Hype Machine” and the opening section", ask: "Can you name one concrete industry or company where this is visible?" },
+  { id: "new kinds of jobs", side: "benefit", area: "economy", name: "New kinds of jobs",
+    plain: "Часть профессий исчезнет, но появятся новые — люди будут работать вместе с ИИ, а не вместо него.",
+    book: "Wilson admits that many human jobs will ultimately be replaced, but expects a labour-market shift towards working alongside AI systems, creating new types of employment.",
+    where: "“Fever Pitch: The AI Hype Machine”", ask: "Which new job (e.g. data analyst, AI engineer) shows this shift best?" },
+  { id: "medicine and science", side: "benefit", area: "society", name: "Medicine and science",
+    plain: "ИИ помогает исследователям и врачам: анализ данных, поиск новых лекарств.",
+    book: "Medical laboratories use AI in research, including the design of new drugs; AI is described as a powerful, useful tool across many domains.",
+    where: "opening section; “Living with AI” (final section)", ask: "Is this benefit available to everyone, or only to rich countries?" },
+  { id: "safety and crime prevention", side: "benefit", area: "society", name: "Safety and crime prevention",
+    plain: "ИИ помогает полиции находить преступников и материалы насилия над детьми; автоматика сделала авиаперелёты безопаснее.",
+    book: "Wilson’s AiLECS lab develops AI with the Australian Federal Police to flag child-abuse material; facial recognition has helped rescue children; computerisation has made air travel safer over many years.",
+    where: "“The Dilemma of Consent”, “Under Surveillance”, “The ‘Responsible AI’ Imperative”", ask: "How does this benefit balance against the privacy risk?" },
+  { id: "everyday convenience", side: "benefit", area: "society", name: "Everyday convenience and access",
+    plain: "Перевод, поиск, голосовые помощники, телефоны — ИИ упрощает повседневную жизнь и учёбу.",
+    book: "AI enables accurate machine translation, more useful search engines and tools that improve grammar; smart assistants answer everyday questions.",
+    where: "“The Creativity of AI”", ask: "Does convenience also create over-reliance (e.g. students)?" },
+  { id: "job replacement and hidden labour", side: "risk", area: "economy", name: "Job loss and exploited workers",
+    plain: "ИИ заменяет людей, а «невидимую» работу для ИИ часто делают низкооплачиваемые работники в бедных странах.",
+    book: "Many jobs will be replaced; data labelling has become an economy of its own, and OpenAI’s contractor in Kenya paid workers under US$2 per hour to label violent and abusive texts, with inadequate mental-health support (TIME, 2023).",
+    where: "“Fever Pitch”, “Translating Ideals into Practice”", ask: "Who carries the costs of AI, and who gets the profit?" },
+  { id: "hype and failed projects", side: "risk", area: "economy", name: "Hype and wasted investment",
+    plain: "Возможности ИИ часто преувеличивают; многие корпоративные проекты проваливаются, деньги тратятся впустую.",
+    book: "A 2019 Gartner report predicted that only about 15 per cent of many corporate AI projects would succeed, partly because firms overpromise; the US Federal Trade Commission warned companies to “keep your AI claims in check” (2023).",
+    where: "“Fever Pitch: The AI Hype Machine”", ask: "Does this mean AI is useless, or that businesses must use it more carefully?" },
+  { id: "bias and automated decisions", side: "risk", area: "society", name: "Bias and unfair automated decisions",
+    plain: "ИИ учится на данных людей и повторяет их предвзятость; автоматические решения без контроля человека могут разрушать жизни.",
+    book: "The COMPAS tool wrongly rated Black defendants as higher-risk more often than white defendants; Australia’s automated “robodebt” scheme illegally raised over A$1.7 billion in debts against hundreds of thousands of people — a failure of human oversight.",
+    where: "“The ‘Responsible AI’ Imperative”", ask: "Is the problem the algorithm itself, or the people who use it without control?" },
+  { id: "privacy and surveillance", side: "risk", area: "society", name: "Privacy and surveillance",
+    plain: "ИИ питается личными данными; распознавание лиц используют без ведома людей; утечки данных ведут к мошенничеству.",
+    book: "Retail chains used facial recognition without customers’ knowledge; Clearview AI scraped billions of facial images and breached Australian privacy law; data brokers form a multibillion-dollar market, and stored data are frequently leaked.",
+    where: "“Under Surveillance”", ask: "Would people accept this if they knew it was happening?" },
+  { id: "misinformation and deepfakes", side: "risk", area: "society", name: "Misinformation and deepfakes",
+    plain: "Чат-боты уверенно пишут неправду, а дипфейки скоро нельзя будет отличить от реальности.",
+    book: "Chatbots can produce completely incorrect statements in confident language; in the 2020 Deepfake Detection Challenge the best algorithm detected only 65 per cent of unseen deepfakes; most deepfakes are non-consensual pornography.",
+    where: "“The ‘Responsible AI’ Imperative”, “Weaponising AI”", ask: "How could this damage trust in news, elections or education?" },
+  { id: "autonomous weapons", side: "risk", area: "society", name: "Autonomous weapons",
+    plain: "ИИ уже используют в оружии, которое само выбирает цель без человека.",
+    book: "A UN report (2021) described an AI-guided drone that may have attacked targets in Libya without human control; the Red Cross called for a ban on unpredictable autonomous weapons.",
+    where: "“Weaponising AI”", ask: "Who is responsible when a machine decides to kill?" },
+  { id: "creative work and copyright", side: "risk", area: "economy", name: "Creative work and copyright",
+    plain: "Генеративный ИИ учится на работах художников и музыкантов без их согласия и конкурирует с ними.",
+    book: "Image generators were trained on billions of scraped images (LAION-5B) without artists’ consent, leading to lawsuits in 2023; Google limited the release of MusicLM over concerns for the music industry.",
+    where: "“AI as Artist?”", ask: "Should creators be paid when their work trains AI?" },
+  { id: "energy and data centres", side: "risk", area: "society", name: "Environmental cost",
+    plain: "Данные для ИИ хранятся в дата-центрах, которые дают заметную долю выбросов CO₂.",
+    book: "Data centres contributed close to 1 per cent of global carbon dioxide emissions in 2021, and the figure has probably risen since.",
+    where: "“Under Surveillance”", ask: "Does this cost grow faster than the benefits?" }
+];
+
+/* Wilson’s own overall position — useful for deciding “which side wins”. */
+const AI_VERDICT_NOTE = "Wilson (2023) concludes that AI tools will be “broadly beneficial” for the most part, but only if the risks of misuse are carefully considered and mitigated; regulation, however, may not keep pace with AI. He also stresses that all AI successes and failures are ultimately human ones.";
+
 /* Linking expressions the checker counts. */
 const LINKERS = ["furthermore", "moreover", "in addition", "another significant", "however", "nevertheless", "by contrast", "in contrast", "although", "while", "whereas", "therefore", "thus", "consequently", "as a result", "hence", "for example", "for instance", "such as", "this suggests", "this is illustrated", "according to", "in conclusion", "taken together", "ultimately", "firstly", "secondly", "finally", "similarly", "likewise", "this means", "this indicates", "in particular", "on the one hand", "on the other hand", "overall", "to conclude", "because", "since"];
 
@@ -552,13 +636,14 @@ const STOP = new Set("a an the and or but if of to in on at by for with from as 
 
 const EXAMPLE = {
   settings: {
-    topic: "Which competences are most important for achieving the Sustainable Development Goals?",
-    prompt: "Identify 2–3 competences you consider most important for achieving the SDGs. Explain why, support your arguments with ideas or findings from Beagon et al. (2022), and provide relevant examples or explanations.",
-    length: "300-350", level: "C1", type: "competence", citation: "APA",
-    srcAuthor: "Beagon et al.", srcYear: "2022",
-    srcTitle: "Preparing engineering students for the challenges of the SDGs: what competences are required?",
-    srcText: "Despite the emerging discussions about the growing role of engineers in achieving the Sustainable Development Goals (SDGs), there is a lack of agreement on which competences should be prioritised to prepare engineering students to resolve future sustainability challenges. This study examined and compared the views of key stakeholders of engineering education (Academics, Employers and Students) using twelve focus groups in Denmark, Finland, France and Ireland. The findings were mapped against competences identified in previous studies to highlight gaps and opportunities for development. The results confirm the strong emphasis on normative, strategic and systems thinking competences in engineering. However, the outcomes also lack acknowledgement of anticipatory competence, contradicting the future oriented perspective required to achieve sustainable development. The findings can be used by educators to inform programme development and to implement opportunities for students to develop the competences necessary to support sustainable development and the SDGs.",
-    required: "2–3 competences\nideas or findings from Beagon et al. (2022)\nrelevant examples or explanations"
+    topic: "Will AI have a more positive or negative impact on society and the economy?",
+    prompt: "Write an academic opinion essay of 300–350 words. Clearly state whether you believe the overall impact of AI will be more positive or more negative; discuss the impact of AI on either society or the economy; develop your position with relevant arguments, explanations and examples; consider possible benefits, risks or unintended consequences of AI; organise the essay into an introduction, body paragraphs and conclusion; use academic vocabulary, linking devices and hedging language. Reading: Wilson, C. (2023). Living with AI. Monash University Publishing.",
+    length: "300-350", level: "C1", type: "aiimpact", citation: "APA",
+    srcAuthor: "Wilson", srcYear: "2023",
+    srcTitle: "Living with AI",
+    /* Key sentences from the book. For full quotation checking, load “Living with AI.pdf” with the file button. */
+    srcText: "Stanford University reported that, in 2021, global private investment in AI topped US$93 billion. McKinsey, in a 2022 review of AI adoption, reported that half of the businesses surveyed had deployed AI in one of their functions—topping the list of these AI technologies were robotic process automation, computer vision and language understanding. And a recent PwC report estimated that, by 2030, AI will be contributing well over US$15 trillion to the global economy. Medical laboratories make use of AI in their research activities, including the design of new drugs. Financial institutions use AI to detect fraud at scale, while algorithmic trading is beginning to dominate stock markets. The late theoretical physicist Stephen Hawking described the ultimate realisation of highly competent AI as ‘either the best, or the worst thing, ever to happen to humanity’. And it’s true that this is enabling beneficial transformation across many industries. For example, farming and agriculture are already benefiting from AI playing an increasingly bigger role in the vibrant ‘AgTech’ sector. Similarly, transportation, logistics, health care and education are all being positively impacted by AI in its various forms. Yes, many human jobs will ultimately be replaced. Undoubtedly, though, there will be a labour market shift to working alongside AI systems, creating new types of employment. In 2019, an oft-quoted Gartner report predicted that the success rate for many types of corporate AI projects was a dramatically low 15 per cent. In February 2023, in a blog post titled ‘Keep Your AI Claims in Check’, the US Federal Trade Commission cautioned advertisers not to exaggerate the proficiencies of AI systems nor claim something as being AI when it’s not. The report found that most customers had no idea they were being surveilled—few saw or remembered what was noted as manifestly inadequate physical signage at store entrances. The Office of the Australian Information Commissioner found that the company breached Australian privacy laws, with the commissioner stating: ‘The indiscriminate scraping of people’s facial images, only a fraction of whom would ever be connected with law enforcement investigations, may adversely impact the personal freedoms of all Australians who perceive themselves to be under surveillance.’ Organisations known as data brokers, whose sole purpose is to buy and sell personal data, are part of a multibillion-dollar market that undoubtedly fuels much of AI. Yet, more and more, dedicated data centres are being recognised as an environmental concern—they collectively contributed close to 1 per cent of global carbon dioxide emissions in 2021, a number that has likely risen since then. The headline result of this investigation was that black defendants were much more likely to be incorrectly classified by COMPAS as presenting a higher risk of reoffending than white defendants. For example, air travel has become safer and safer over many years with the increasing computerisation of the associated functions. Closer to home, a massively disastrous implementation of completely automated decision-making—what some have described as an ‘AI’ failure—was the robodebt scheme run by Australia’s social security agency, Centrelink. This was not a failure of an algorithm as such, however, but rather of deliberate human decision-making in the engineering and implementation of an automated system. They can generate completely incorrect assertions, blithely constructing them using confident-sounding language. The relationship between the outsourcing firm and OpenAI was eventually terminated, but not before workers were engaged for under US$2 per hour to review this material. In 2021, the United Nations Security Council reported that an AI-guided military drone was believed to have been used to attack military targets in Libya without ‘requiring data connectivity between the operator and the munition: in effect, a true “fire, forget and find” capability’. But the results emphasised that detecting deepfakes is not easy—the winning algorithm was able to correctly detect only 65 per cent of the deepfakes in the black box dataset. However, according to one widely publicised report, by far the most prevalent form of deepfake today is AI-generated pornography. Many artists have argued in essence that the inclusion of their original works in this massive collection, and its subsequent use for generative AI, mean they are being ripped off and their copyright infringed upon. And for the most part, these tools will be broadly beneficial. However, this assertion presupposes that the risks of AI misuse will have been carefully considered and mitigated. This discussion needs leadership, but its stewards cannot be those who simply have a vested financial interest in pushing ahead with AI development—there needs to be as much focus on AI’s costs as on its benefits. The challenge is that the pace of development (and updating) of the appropriate regulatory regimes is likely to be outstripped by the pace of development of AI itself. Ultimately, all AI successes are human successes and all AI failures are human failures.",
+    required: "overall impact\nbenefits\nrisks\nWilson"
   },
   essay: {
     intro: {
@@ -736,7 +821,7 @@ function analyse(model) {
       const s = k => (p.parts[k] || "").trim();
       const at = k => ({ para: p.id, key: k });
       if (!s("point")) out.push(issue("fix", "PEEL", w, "There is no Point. Start the paragraph with one sentence that states its main idea.", at("point")));
-      if (!s("evidence")) out.push(issue(["source", "competence"].includes(settings.type) ? "fix" : "warn", "PEEL", w, "There is no Evidence. Add information from your source that supports the point.", at("evidence")));
+      if (!s("evidence")) out.push(issue(["source", "competence", "aiimpact"].includes(settings.type) ? "fix" : "warn", "PEEL", w, "There is no Evidence. Add information from your source that supports the point.", at("evidence")));
       if (!s("explanation")) out.push(issue("fix", "Examples & explanation", w, s("evidence") ? "This paragraph contains evidence, but you need to explain why it supports your argument." : "Add an Explanation: say why your point matters.", at("explanation")));
       else if (!EXPLAIN_RE.test(s("explanation"))) out.push(issue("warn", "Examples & explanation", w, "Your explanation restates information but does not say why it matters. Try “This suggests that…” or “This is particularly important because…”.", Object.assign({ quote: s("explanation") }, at("explanation"))));
       if (!s("example")) out.push(issue("warn", "Examples & explanation", w, "There is no concrete example. Add a real situation, project or profession that illustrates the point.", at("example")));
@@ -925,7 +1010,7 @@ function citationChecks(paras, settings, hasSource, structured) {
   });
 
   if (!hasSource) out.unshift(issue("warn", "Citations", "Source", "No article is loaded. The assistant cannot check whether your references or claims match the source. Upload the article or paste its text on the left."));
-  if (hasSource && !any && style !== "none" && ["source", "competence"].includes(settings.type)) out.push(issue("fix", "Citations", "Whole essay", `You loaded a source but never cite it. Refer to it in a body paragraph, e.g. “According to ${author || "Author"} (${year || "Year"}), …”.`));
+  if (hasSource && !any && style !== "none" && ["source", "competence", "aiimpact"].includes(settings.type)) out.push(issue("fix", "Citations", "Whole essay", `You loaded a source but never cite it. Refer to it in a body paragraph, e.g. “According to ${author || "Author"} (${year || "Year"}), …”.`));
   return out;
 }
 
@@ -1024,10 +1109,10 @@ function essayToText(essay, withBody3) {
     .filter(Boolean).join("\n\n");
 }
 
-const STORE = "essay-writing-assistant-v2";
+const STORE = "essay-writing-assistant-v3"; /* v2 = Assignment 1 draft, still kept in the browser */
 function load() { try { const s = JSON.parse(localStorage.getItem(STORE)); return s && s.settings && s.essay ? s : null; } catch (e) { return null; } }
 let saveTimer;
-function save() { clearTimeout(saveTimer); saveTimer = setTimeout(() => { try { localStorage.setItem(STORE, JSON.stringify({ settings: S.settings, essay: S.essay, mode: S.mode, reviewText: S.reviewText, isExample: S.isExample, plan: S.plan })); } catch (e) {} }, 400); }
+function save() { clearTimeout(saveTimer); saveTimer = setTimeout(() => { try { localStorage.setItem(STORE, JSON.stringify({ settings: S.settings, essay: S.essay, mode: S.mode, reviewText: S.reviewText, isExample: S.isExample, plan: S.plan, aiplan: S.aiplan })); } catch (e) {} }, 400); }
 
 const saved = load();
 const S = Object.assign({
@@ -1139,6 +1224,7 @@ function renderDesk() {
   cards.replaceChildren();
   if (S.mode === "review") { cards.append(reviewBox()); return; }
   if (S.mode === "guided" && S.settings.type === "competence") cards.append(competencePlanner());
+  if (S.mode === "guided" && S.settings.type === "aiimpact") cards.append(aiPlanner());
   visibleSections().forEach(id => cards.append(sectionCard(id)));
   $$("#cards textarea").forEach(autosize);
   markActive();
@@ -1183,6 +1269,7 @@ function competencePlanner() {
 }
 
 function completionHelp(sec, key) {
+  if (S.settings.type === "aiimpact") return aiCompletion(sec, key);
   const chosen = (S.plan && S.plan.chosen) || [];
   const idea = chosen[Math.max(0, Number(sec.replace("body", "")) - 1)] || "[chosen competence]";
   const all = joinedIdeas(chosen);
@@ -1207,6 +1294,204 @@ function completionHelp(sec, key) {
     }
   };
   return map[kindOf(sec)][key];
+}
+
+/* ---------- Assignment 2: AI impact planner ---------- */
+function aiPlan() {
+  const p = S.aiplan = S.aiplan || { area: "", verdict: "", mine: [], other: "", reasons: {}, examples: {} };
+  p.verdictSide = p.verdict === "positive" ? "benefit" : p.verdict === "negative" ? "risk" : "";
+  return p;
+}
+/* Body 1 = main argument, Body 2 = the other side, Body 3 = second argument. */
+function aiIdeaFor(sec) {
+  const p = aiPlan();
+  const id = sec === "body1" ? p.mine[0] : sec === "body2" ? p.other : sec === "body3" ? p.mine[1] : "";
+  return AI_IDEAS.find(x => x.id === id);
+}
+function aiPick(field, value) {
+  const p = aiPlan();
+  if (field === "verdict" && p.verdict !== value) { p.mine = []; p.other = ""; }
+  p[field] = value;
+  S.isExample = false; save(); renderDesk();
+}
+function toggleAiIdea(id) {
+  const p = aiPlan();
+  if (!p.verdict) { toast("Сначала выбери вывод: more positive или more negative."); return; }
+  const idea = AI_IDEAS.find(x => x.id === id);
+  if (idea.side === p.verdictSide) {
+    const i = p.mine.indexOf(id);
+    if (i >= 0) p.mine.splice(i, 1);
+    else if (p.mine.length < 2) p.mine.push(id);
+    else { toast("Для своей стороны хватит двух аргументов."); return; }
+  } else p.other = p.other === id ? "" : id;
+  S.isExample = false; save(); renderDesk();
+}
+function aiPlanner() {
+  const p = aiPlan();
+  const opt = (field, value, title, text, small) => h("button", { type: "button", class: "idea" + (p[field] === value ? " selected" : ""), "aria-pressed": p[field] === value, onclick: () => aiPick(field, value) },
+    h("b", {}, title), h("span", {}, text), small ? h("small", {}, small) : null);
+  const intro = h("div", { class: "planner-intro" },
+    h("div", {}, h("span", { class: "eyebrow" }, "Before you write · Assignment 2"), h("h3", {}, "Weigh both sides, then choose")),
+    h("p", {}, "Не начинай со вступления. Реши три вещи: о чём пишешь (общество или экономика), какой у тебя вывод и какие 2–3 идеи из книги Wilson ты используешь. Вступление и тезис пиши в самом конце."));
+  const how = h("div", { class: "competence-help" },
+    h("b", {}, "Как устроено это эссе"),
+    h("span", {}, "Вопрос «more positive or negative?» требует рассмотреть обе стороны, но ответить одной. Абзац 1 — твой главный аргумент. Абзац 2 — другая сторона: честно признай её (Admittedly, … / Critics argue that …), потом объясни, почему она весит меньше (However, …). Абзац 3 (по желанию) — второй аргумент за твою сторону."),
+    h("span", {}, "Позиция самой книги: " + AI_VERDICT_NOTE),
+    h("span", {}, "Сильный вывод обычно с условием: «more positive, provided that it is regulated and controlled by humans». Это и есть hedging, который просит задание."));
+  const area = h("div", { class: "idea-grid two" },
+    opt("area", "economy", "1 · Economy", "Рост, производительность, рабочие места, бизнес, инвестиции."),
+    opt("area", "society", "1 · Society", "Здоровье, безопасность, приватность, неравенство, доверие к информации."));
+  const verdict = h("div", { class: "idea-grid two" },
+    opt("verdict", "positive", "2 · More positive", "Плюсы перевешивают — при условии контроля и регулирования.", "Ближе к выводу самого Wilson."),
+    opt("verdict", "negative", "2 · More negative", "Риски перевешивают — регулирование не успевает за ИИ.", "Сложнее, но тоже можно защитить книгой."));
+  const ideas = AI_IDEAS.filter(c => !p.area || c.area === p.area || c.id === p.other || p.mine.includes(c.id))
+    .sort((a, b) => (a.side === p.verdictSide ? 0 : 1) - (b.side === p.verdictSide ? 0 : 1));
+  const grid = h("div", { class: "idea-grid" });
+  ideas.forEach(c => {
+    const selected = p.mine.includes(c.id) || p.other === c.id;
+    grid.append(h("button", { type: "button", class: "idea" + (selected ? " selected" : ""), "aria-pressed": selected, onclick: () => toggleAiIdea(c.id) },
+      h("span", { class: "side " + c.side }, (c.side === "benefit" ? "Benefit" : "Risk") + " · " + c.area + (p.verdictSide ? (c.side === p.verdictSide ? " · your side" : " · other side") : "")),
+      h("b", {}, c.name), h("span", {}, c.plain), h("small", {}, c.ask)));
+  });
+  const work = h("div", { class: "choice-work" });
+  const slots = [["body1", "Body 1 · your main argument", p.mine[0]], ["body2", "Body 2 · the other side (admit, then answer)", p.other], ["body3", "Body 3 · optional second argument", p.mine[1]]];
+  if (!p.mine.length || !p.other) work.append(h("div", { class: "status warn" },
+    !p.verdict ? "Выбери тему (1) и вывод (2), потом карточки (3)." : `3 · Выбери 1–2 карточки со своей стороны (${p.verdictSide === "benefit" ? "Benefit" : "Risk"}) и одну с другой стороны.`));
+  slots.forEach(([sec, label, id]) => {
+    const c = AI_IDEAS.find(x => x.id === id);
+    if (!c) return;
+    const reason = h("textarea", { rows: 2, placeholder: c.side === p.verdictSide ? "Своими словами: почему это делает влияние ИИ более " + (p.verdict === "positive" ? "positive" : "negative") + "?" : "Своими словами: почему эта сторона весит меньше? (условие, контроль, регулирование…)" });
+    reason.value = p.reasons[id] || "";
+    reason.addEventListener("input", () => { p.reasons[id] = reason.value; save(); });
+    const example = h("textarea", { rows: 2, placeholder: "Свой пример: страна, компания, профессия, ситуация (можно из Казахстана)." });
+    example.value = p.examples[id] || "";
+    example.addEventListener("input", () => { p.examples[id] = example.value; save(); });
+    work.append(h("section", { class: "choice" },
+      h("h4", {}, `${label}: ${c.name}`),
+      h("p", { class: "hint" }, h("b", {}, "Wilson (2023), " + c.where + ": "), c.book),
+      h("label", {}, "Your reason"), reason,
+      h("label", {}, "Your example"), example,
+      h("p", { class: "hint" }, "Перескажи факт из книги своими словами и сошлись: “Wilson (2023) reports that …”. Не копируй и не генерируй текст — эссе проверяют на AI (не больше 15%).")));
+  });
+  return h("article", { class: "card planner" }, intro, how, area, verdict, grid, work,
+    h("div", { class: "planner-foot" },
+      h("b", {}, "Ready to write?"),
+      h("span", {}, "Body 1 — твой аргумент, Body 2 — другая сторона и ответ на неё, Body 3 — по желанию. Твоя причина становится Explanation, твой пример — Example. Тезис пиши последним: вывод + условие.")));
+}
+
+function aiCompletion(sec, key) {
+  const p = aiPlan();
+  const v = p.verdict || "[positive / negative]";
+  const area = p.area === "economy" ? "the economy" : p.area === "society" ? "society" : "[society / the economy]";
+  const c = aiIdeaFor(sec);
+  const name = c ? c.name.toLowerCase() : "[your idea]";
+  const mine = c && c.side === p.verdictSide;
+  const map = {
+    intro: {
+      hook: ["Одно общее предложение об ИИ — без своей позиции.", "Artificial intelligence has rapidly moved from research laboratories into everyday life, from search engines to financial services."],
+      context: ["Сузь тему до общества или экономики и покажи, что мнения расходятся.", `Its growing role in ${area} has raised both high expectations and serious concerns.`],
+      thesis: ["Дай прямой ответ: more positive или more negative + условие.", `This essay argues that the overall impact of AI on ${area} is likely to be more ${v} than ${v === "negative" ? "positive" : "negative"}, provided that …`],
+      preview: ["Только порядок абзацев, без объяснений.", "It first examines …, before considering the risks of … ."]
+    },
+    body: {
+      point: [mine ? "Одна причина за твой вывод." : "Признай другую сторону — честно, но коротко.", mine ? `One of the strongest arguments is that AI ${c && c.side === "risk" ? "may cause" : "can bring"} …` : `Admittedly, AI also brings ${c && c.side === "risk" ? "serious risks such as" : "clear benefits such as"} ${name}.`],
+      evidence: ["Перескажи факт из книги своими словами.", `${S.settings.srcAuthor || "Wilson"} (${S.settings.srcYear || "2023"}) reports that …`],
+      explanation: [mine ? "Объясни, почему этот факт делает влияние ИИ более " + v + "." : "Ответь на эту сторону: почему она не перевешивает твой вывод?", mine ? "This suggests that …" : "However, this problem appears to result from … rather than from the technology itself."],
+      example: ["Конкретный случай: страна, компания, профессия.", "For instance, in Kazakhstan, …"],
+      link: ["Верни абзац к вопросу эссе.", mine ? `Therefore, this makes the overall impact of AI on ${area} more ${v}.` : `Thus, although ${name} is a real concern, it does not outweigh … .`]
+    },
+    conclusion: {
+      restate: ["Повтори вывод другими словами.", `In conclusion, AI appears likely to have a more ${v} than ${v === "negative" ? "positive" : "negative"} effect on ${area}.`],
+      summary: ["Кратко обе стороны — без новых фактов и ссылок.", "Although it may cause …, its ability to … seems more significant."],
+      final: ["Финальная мысль: условие или рекомендация.", "Ultimately, whether AI benefits … depends on how carefully humans regulate and control it."]
+    }
+  };
+  return map[kindOf(sec)][key];
+}
+
+function aiGuide(sec, key) {
+  const p = aiPlan();
+  const v = p.verdict || "[positive / negative]";
+  const other = v === "negative" ? "positive" : "negative";
+  const area = p.area === "economy" ? "the economy" : p.area === "society" ? "society" : "[society / the economy]";
+  const c = aiIdeaFor(sec);
+  const name = c ? c.name.toLowerCase() : "[this idea]";
+  const mine = !c || c.side === p.verdictSide;
+  const author = S.settings.srcAuthor || "Wilson", year = S.settings.srcYear || "2023";
+  const guides = {
+    intro: {
+      hook: { use: "Первое предложение: общая тема ИИ, ещё без позиции.", options: [
+        ["Artificial intelligence (AI) has become part of everyday life, from … to …", "Искусственный интеллект стал частью повседневной жизни — от … до …", "Лучший вариант: сразу два знакомых примера."],
+        ["Over the past decade, AI has moved from research laboratories into …", "За последнее десятилетие ИИ перешёл из лабораторий в …", "Подходит, если хочешь подчеркнуть скорость изменений."],
+        ["Few technologies have attracted as much investment and debate as AI.", "Мало какие технологии привлекали столько инвестиций и споров, как ИИ.", "Хорошо ведёт к экономике."]
+      ]},
+      context: { use: "Второе предложение: сужает тему до общества/экономики и показывает спор.", options: [
+        [`While its supporters expect … for ${area}, critics warn that …`, `Сторонники ожидают … для ${area === "society" ? "общества" : area === "the economy" ? "экономики" : "[общества/экономики]"}, а критики предупреждают, что …`, "Лучший вариант: сразу обе стороны."],
+        [`Its growing influence on ${area} has raised both hopes and concerns.`, "Его растущее влияние вызывает и надежды, и опасения.", "Короткий нейтральный переход."]
+      ]},
+      thesis: { use: "Главное предложение: прямой ответ на вопрос + условие (hedging).", options: [
+        [`This essay argues that the overall impact of AI on ${area} is likely to be more ${v} than ${other}, provided that …`, `В эссе утверждается, что общее влияние ИИ, вероятно, будет скорее ${v === "negative" ? "негативным" : v === "positive" ? "позитивным" : "[позитивным/негативным]"}, при условии что …`, "Лучший вариант: вывод + условие."],
+        [`Although AI carries real risks, its benefits for ${area} appear to outweigh them.`, "Хотя ИИ несёт реальные риски, его польза, по-видимому, перевешивает.", "Для вывода «more positive»."],
+        [`Despite its benefits, AI may ultimately do more harm than good to ${area} because …`, "Несмотря на пользу, ИИ в итоге может принести больше вреда, потому что …", "Для вывода «more negative»."]
+      ]},
+      preview: { use: "Последнее предложение введения: порядок абзацев.", options: [
+        ["The essay first examines …, and then considers the counter-argument that …", "Сначала рассматривается …, затем контраргумент о том, что …", "Лучший вариант для схемы «аргумент → другая сторона»."],
+        ["Both the benefits and the risks will be considered before a final judgement is reached.", "Будут рассмотрены и польза, и риски, а затем сделан вывод.", "Короче, без названий аргументов."]
+      ]}
+    },
+    body: {
+      point: { use: mine ? "Первое предложение: один аргумент за твой вывод." : "Первое предложение: признай другую сторону.", options: mine ? [
+        [`The main reason for this view is that AI ${p.verdictSide === "risk" ? "threatens" : "improves"} …`, "Главная причина такой позиции в том, что ИИ …", "Лучший вариант: прямо и ясно."],
+        [`Firstly, ${name} ${p.verdictSide === "risk" ? "poses a serious risk to" : "brings significant benefits to"} ${area}.`, "Во-первых, … ", "Для первого абзаца."],
+        [`A further argument is that …`, "Ещё один аргумент состоит в том, что …", "Для Body 3."]
+      ] : [
+        [`Admittedly, AI also ${c && c.side === "risk" ? "creates serious risks, such as" : "offers clear benefits, such as"} ${name}.`, "Безусловно, ИИ также … — например …", "Лучший вариант: честное признание."],
+        ["Critics argue that …", "Критики утверждают, что …", "Если хочешь подать это как чужое мнение."],
+        ["It is true that …; however, …", "Верно, что …; однако …", "Признание и ответ в одном предложении."]
+      ]},
+      evidence: { use: "Факт из книги своими словами + ссылка.", options: [
+        [`According to ${author} (${year}), …`, `Согласно ${author} (${year}), …`, "Лучший вариант для пересказа."],
+        [`${author} (${year}) reports that …`, `${author} (${year}) сообщает, что …`, "Для цифр и случаев (Gartner, robodebt, PwC)."],
+        [`${author} (${year}) warns that …`, `${author} (${year}) предупреждает, что …`, "Для рисков."]
+      ]},
+      explanation: { use: mine ? "Твоя логика: почему факт поддерживает вывод." : "Ответ на другую сторону: почему она весит меньше.", options: mine ? [
+        ["This suggests that …", "Это позволяет предположить, что …", "Лучший осторожный вариант."],
+        ["In practical terms, this means that …", "На практике это означает, что …", "Для экономики/бизнеса."],
+        ["This is significant because …", "Это важно, потому что …", "Универсально."]
+      ] : [
+        ["However, this problem appears to result from … rather than from AI itself.", "Однако эта проблема, по-видимому, вызвана …, а не самим ИИ.", "Лучший вариант (Wilson: ошибки ИИ — это ошибки людей)."],
+        ["Nevertheless, such risks could be reduced through …", "Тем не менее эти риски можно снизить с помощью …", "Регулирование, контроль, прозрачность."],
+        ["Even so, these benefits may not reach everyone, because …", "И всё же эта польза может достаться не всем, потому что …", "Если твой вывод — more negative."]
+      ]},
+      example: { use: "Конкретная ситуация.", options: [
+        ["For instance, in Kazakhstan, …", "Например, в Казахстане …", "Лучший вариант: свой, не из книги."],
+        ["A relevant example is …", "Подходящий пример — …", "Для известного случая."],
+        ["This can be seen in …", "Это видно на примере …", "Короткий переход."]
+      ]},
+      link: { use: "Последнее предложение: вернуть абзац к вопросу.", options: mine ? [
+        [`Therefore, this makes the overall impact of AI on ${area} more ${v}.`, "Таким образом, это делает общее влияние ИИ более …", "Лучший вариант."],
+        ["For this reason, …", "По этой причине …", "Короче."]
+      ] : [
+        [`Thus, although ${name} is a real concern, it does not outweigh …`, "Таким образом, хотя это реальная проблема, она не перевешивает …", "Лучший вариант."],
+        ["Overall, this risk can be managed if …", "В целом этот риск управляем, если …", "Через условие."]
+      ]}
+    },
+    conclusion: {
+      restate: { use: "Повторить вывод другими словами.", options: [
+        [`In conclusion, AI appears likely to have a more ${v} than ${other} effect on ${area}.`, "В заключение, ИИ, по-видимому, окажет скорее … влияние.", "Лучший вариант."],
+        [`Overall, the evidence suggests that the ${p.verdictSide === "risk" ? "risks" : "benefits"} of AI outweigh its ${p.verdictSide === "risk" ? "benefits" : "risks"}.`, "В целом аргументы показывают, что … перевешивают …", "Через «outweigh»."]
+      ]},
+      summary: { use: "Кратко обе стороны, без новых фактов и ссылок.", options: [
+        ["Although AI may cause …, its ability to … seems more significant.", "Хотя ИИ может вызвать …, его способность … кажется важнее.", "Лучший вариант: две стороны в одном предложении."],
+        ["While … remain real concerns, …", "Хотя … остаются реальными проблемами, …", "Подходит для обоих выводов."]
+      ]},
+      final: { use: "Финальная мысль: условие или рекомендация, не новый аргумент.", options: [
+        ["Ultimately, whether AI benefits … depends on how carefully humans regulate and control it.", "В конечном счёте польза ИИ зависит от того, насколько тщательно люди его регулируют.", "Лучший вариант — совпадает с выводом Wilson."],
+        ["It is therefore essential that governments and companies …", "Поэтому важно, чтобы правительства и компании …", "Рекомендация."]
+      ]}
+    }
+  };
+  return guides[kindOf(sec)][key];
 }
 
 function toggleCompetence(id) {
@@ -1285,6 +1570,7 @@ function joinedIdeas(items) {
 }
 
 function fieldGuide(sec, key) {
+  if (S.settings.type === "aiimpact") return aiGuide(sec, key);
   const chosen = (S.plan && S.plan.chosen) || [];
   const n = Math.max(0, Number(sec.replace("body", "")) - 1);
   const idea = chosen[n] || "[this competence]";
@@ -1366,6 +1652,12 @@ function partRow(sec, p) {
     const picked = S.plan && S.plan.chosen[Number(sec.slice(4)) - 1];
     if (picked && p.key === "point") q = `State that ${picked} is important and give your main reason. Do not explain everything yet.`;
     if (picked && p.key === "explanation") q = `In your own reasoning, why does ${picked} help achieve the SDGs?`;
+  }
+  if (S.settings.type === "aiimpact" && sec.startsWith("body")) {
+    const idea = aiIdeaFor(sec);
+    if (idea && p.key === "point") q = `State your argument about “${idea.name.toLowerCase()}” in one sentence. ${idea.side === aiPlan().verdictSide ? "This supports your verdict." : "This is the other side — admit it first."}`;
+    if (idea && p.key === "evidence") q = `What does Wilson (2023) report about this? (${idea.where})`;
+    if (idea && p.key === "explanation") q = idea.side === aiPlan().verdictSide ? "In your own words: why does this make the overall impact more " + (aiPlan().verdict || "positive/negative") + "?" : "Why does this risk/benefit matter LESS than your main argument? (condition, regulation, human control…)";
   }
   const ta = h("textarea", { id, rows: 1, placeholder: S.mode === "template" ? p.label + "…" : p.hint });
   ta.value = S.essay[sec][p.key] || "";
@@ -1475,7 +1767,7 @@ function init() {
   $("#clearExample").addEventListener("click", () => {
     Object.assign(S.settings, { topic: "", prompt: "", srcText: "", srcAuthor: "", srcYear: "", srcTitle: "", required: "" });
     ["topic", "prompt", "srcText", "srcAuthor", "srcYear", "srcTitle", "required"].forEach(id => { $("#" + id).value = ""; });
-    S.essay = blankEssay(); S.reviewText = ""; S.isExample = false; S.plan = { chosen: [], reasons: {}, examples: {} }; S.proposal = null; S.tutor = null; S.scope = null;
+    S.essay = blankEssay(); S.reviewText = ""; S.isExample = false; S.plan = { chosen: [], reasons: {}, examples: {} }; S.aiplan = null; S.proposal = null; S.tutor = null; S.scope = null;
     S.active = { sec: "intro", key: "thesis" };
     renderSourceStatus(); renderDesk(); changed();
     $("#topic").focus();
