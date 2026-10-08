@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Бриф на троих</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600;700&family=Golos+Text:wght@400;500;600;700&display=swap">
+<style>
+  /* Layout: одна колонка-документ; сверху сводная таблица ролей, ниже по карточке на человека, цвет человека = цвет его раздела */
+  :root{
+    --paper:#F5F6F8; --surface:#FFFFFF; --ink:#18202E; --muted:#596273; --rule:#D9DDE4;
+    --navy:#24365C; --navy-soft:#E7ECF4;
+    --a:#B4531F; --a-soft:#F8EADF;
+    --b:#2F6E5A; --b-soft:#E2F0EA;
+    --c:#5B4A9E; --c-soft:#ECE8F7;
+    --warn:#8A5A00; --warn-soft:#FBF1D9;
+    --display:"Spectral",Georgia,"Times New Roman",serif;
+    --body:"Golos Text","Segoe UI",system-ui,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#11151C; --surface:#191E27; --ink:#E5E8EE; --muted:#9CA4B3; --rule:#2B313D;
+      --navy:#A9BCE2; --navy-soft:#1E2738;
+      --a:#EC9566; --a-soft:#382519; --b:#73C2A6; --b-soft:#15302A; --c:#AC9CEB; --c-soft:#262041;
+      --warn:#E8BC5E; --warn-soft:#33290F; color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#11151C; --surface:#191E27; --ink:#E5E8EE; --muted:#9CA4B3; --rule:#2B313D;
+    --navy:#A9BCE2; --navy-soft:#1E2738;
+    --a:#EC9566; --a-soft:#382519; --b:#73C2A6; --b-soft:#15302A; --c:#AC9CEB; --c-soft:#262041;
+    --warn:#E8BC5E; --warn-soft:#33290F; color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--paper);color:var(--ink);font:16px/1.6 var(--body);padding-inline:18px}
+  .wrap{max-width:880px;margin:0 auto;padding-block:36px 72px;display:grid;gap:22px}
+  h1,h2,h3{font-family:var(--display);text-wrap:balance;color:var(--navy);margin:0}
+  h1{font-size:clamp(30px,5.4vw,42px);line-height:1.08;font-weight:700}
+  h2{font-size:25px;line-height:1.2;font-weight:600}
+  h3{font-size:18.5px;line-height:1.3;font-weight:600;color:var(--ink)}
+  p{margin:0}
+  .eyebrow{font-size:12px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+  header{display:grid;gap:10px;border-bottom:3px solid var(--navy);padding-bottom:18px}
+  .lead{color:var(--muted);max-width:66ch}
+  .facts{display:flex;flex-wrap:wrap;gap:8px 22px;font-size:14.5px}
+  .facts b{color:var(--navy)}
+  section.block{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:22px 24px;display:grid;gap:14px}
+  .tw{overflow-x:auto}
+  table{border-collapse:collapse;width:100%;font-size:14.5px;line-height:1.45}
+  th,td{text-align:left;vertical-align:top;padding:9px 10px;border-bottom:1px solid var(--rule)}
+  th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .who{display:inline-flex;align-items:center;gap:8px;font-weight:600;white-space:nowrap}
+  .dot{width:11px;height:11px;border-radius:50%;flex:none}
+  .pa .dot,.dot.pa{background:var(--a)} .pb .dot,.dot.pb{background:var(--b)} .pc .dot,.dot.pc{background:var(--c)}
+  /* карточка человека */
+  .person{border-top:5px solid var(--tone);}
+  .person.pa{--tone:var(--a);--tone-soft:var(--a-soft)}
+  .person.pb{--tone:var(--b);--tone-soft:var(--b-soft)}
+  .person.pc{--tone:var(--c);--tone-soft:var(--c-soft)}
+  .person-head{display:grid;gap:6px}
+  .person-head .eyebrow{color:var(--tone)}
+  .scope{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{font-size:13px;font-weight:500;background:var(--tone-soft);color:var(--ink);padding:3px 10px;border-radius:999px}
+  .sub{display:grid;gap:6px;padding:14px 0 2px;border-top:1px solid var(--rule)}
+  .sub-title{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 14px;align-items:baseline}
+  .words{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+  ul{margin:0;padding-left:20px;display:grid;gap:4px}
+  .ev{font-size:14.5px}
+  .ev li::marker{color:var(--tone)}
+  .en{font-style:italic}
+  .label{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .handoff{background:var(--tone-soft);border-radius:6px;padding:12px 14px;display:grid;gap:4px;font-size:14.5px}
+  .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+  .rules li{font-size:15px}
+  .warn{background:var(--warn-soft);border-left:4px solid var(--warn);padding:12px 16px;border-radius:0 6px 6px 0;font-size:15px}
+  .steps{counter-reset:s;display:grid;gap:12px;list-style:none;padding:0}
+  .steps li{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start}
+  .steps li::before{counter-increment:s;content:counter(s);font-family:var(--display);font-weight:700;font-size:20px;color:var(--navy);line-height:1.25}
+  code{font-size:.92em;background:var(--navy-soft);padding:1px 5px;border-radius:4px}
+  a{color:var(--navy)}
+  a:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
+  .toc{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:14px;padding-top:4px}
+  .toc a{color:var(--navy);text-decoration:none;border-bottom:1px solid var(--rule)}
+  .toc a:hover{border-bottom-color:var(--navy)}
+  .src{display:grid;gap:8px;padding:16px 0 4px;border-top:1px solid var(--rule)}
+  .src-head{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:baseline;justify-content:space-between}
+  .src-name{font-weight:600}
+  .tag{font-size:12px;font-weight:600;padding:2px 9px;border-radius:999px;background:var(--navy-soft);color:var(--navy);white-space:nowrap}
+  .tag.strong{background:var(--b-soft);color:var(--b)}
+  .tag.mid{background:var(--warn-soft);color:var(--warn)}
+  .src dl{display:grid;grid-template-columns:120px 1fr;gap:4px 12px;margin:0;font-size:14.5px}
+  .src dt{color:var(--muted);font-size:13px;padding-top:2px}
+  .src dd{margin:0}
+  .users{display:flex;flex-wrap:wrap;gap:6px 12px}
+  .users .who{font-weight:500;font-size:14px}
+  .apa{font-size:13.5px;color:var(--muted);padding-left:24px;text-indent:-24px;word-break:break-word}
+  .phr{font-size:14.5px;display:grid;gap:4px;background:var(--paper);border-radius:6px;padding:10px 14px}
+  .phr .en{color:var(--ink)}
+  .done li{font-size:14.5px}
+  .done li::marker{content:"☐  ";color:var(--tone)}
+  @media (max-width:520px){ .src dl{grid-template-columns:1fr} .src dt{padding-top:6px} }
+  @page{size:A4;margin:14mm 14mm}
+  @media print{
+    body{padding-inline:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .wrap{padding-block:0;gap:16px}
+    .sub,.handoff,tr,.steps li,.warn{break-inside:avoid}
+    h2,h3,.sub-title{break-after:avoid}
+  }
+  @media (max-width:520px){ section.block{padding:18px 16px} th,td{padding:8px 6px} }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Professional English C1 · Midterm · Policy brief</div>
+  <h1>The Impact of AI on the Data Analytics Profession — кто что делает</h1>
+  <p class="lead">Бриф пишем втроём, каждый — свою часть в одном файле. Ниже: кто за что отвечает, что именно написать в каждом подразделе, на какие цифры опираться и что передать остальным.</p>
+  <div class="facts">
+    <span><b>Сдать:</b> до Practice 1 недели 5 (уточнить день)</span>
+    <span><b>Формат:</b> PDF, 2–4 страницы</span>
+    <span><b>Защита:</b> 8–10 минут, говорят все трое</span>
+    <span><b>Файл:</b> <code>policy-brief-draft.docx</code></span>
+  </div>
+  <nav class="toc" aria-label="Содержание">
+    <a href="#roles">Кто за что</a><a href="#process">Как работаем</a><a href="#sources">Источники</a>
+    <a href="#part-a">Часть A</a><a href="#part-b">Часть B</a><a href="#part-c">Часть C</a><a href="#rules">Правила</a><a href="#qa">Вопросы на защите</a>
+  </nav>
+</header>
+
+<section class="block" id="roles">
+  <h2>Кто за что отвечает</h2>
+  <div class="tw">
+  <table>
+    <thead><tr><th>Кто</th><th>Часть брифа</th><th>Баллы по рубрике</th><th>Объём</th><th>На защите</th></tr></thead>
+    <tbody>
+      <tr class="pa"><td><span class="who"><span class="dot"></span>A · Диас</span></td><td>Key messages, раздел 1 (Context &amp; Problem), рис. 1</td><td class="num">10 + 15</td><td class="num">≈ 450 слов</td><td class="num">0:00–3:00</td></tr>
+      <tr class="pb"><td><span class="who"><span class="dot"></span>B · [имя]</span></td><td>Раздел 2 (Evidence &amp; Findings), таблица навыков, рис. 2</td><td class="num">20</td><td class="num">≈ 550 слов</td><td class="num">3:00–6:00</td></tr>
+      <tr class="pc"><td><span class="who"><span class="dot"></span>C · [имя]</span></td><td>Раздел 3 (Recommendations), References, сборка PDF</td><td class="num">15 + 5</td><td class="num">≈ 300 слов</td><td class="num">6:00–9:00</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p style="font-size:14.5px;color:var(--muted)">Ещё 10 баллов — за стиль и язык всего текста (критерий 6), они общие. У C меньше текста, зато на нём список литературы, финальная сборка и сдача.</p>
+</section>
+
+<section class="block" id="process">
+  <h2>Как работаем</h2>
+  <ol class="steps">
+    <li><div><b>Общий файл.</b> Диас загружает <code>policy-brief-draft.docx</code> в Google Docs или OneDrive и даёт доступ на редактирование. Каждый пишет только в своих разделах. В файле под каждым подзаголовком уже есть серая заметка (что писать), список цифр с источниками и метка <b>[write here]</b>.</div></li>
+    <li><div><b>Черновики.</b> Каждый пишет свою часть своими словами. Серые заметки и списки цифр пока не удаляем, они нужны для проверки.</div></li>
+    <li><div><b>Передача.</b> Три короткие передачи между частями (описаны в карточках ниже). Без них бриф развалится на три отдельных текста.</div></li>
+    <li><div><b>Перекрёстная проверка.</b> A читает часть B, B — часть C, C — часть A. Схема со слайда 25: <i>Praise</i> (что хорошо), <i>Probe</i> (один вопрос к утверждению), <i>Polish</i> (одна конкретная правка). Оставлять комментарием, а не править чужой текст.</div></li>
+    <li><div><b>Финал.</b> A сверяет Key messages с готовым текстом. C удаляет заметки, проверяет ссылки, собирает PDF и сдаёт в Moodle.</div></li>
+    <li><div><b>Прогон защиты.</b> Минимум два раза с таймером, 8–10 минут, с переходами между спикерами.</div></li>
+  </ol>
+</section>
+
+<section class="block" id="sources">
+  <h2>Источники, которые используем</h2>
+  <p>Всего 8 источников, по рубрике нужно не меньше 5. Все цифры ниже сверены с первоисточниками или их аннотациями (07.10.2026). Брать цифры только отсюда. Если нужна новая цифра, сначала найти её в первоисточнике и сказать C, чтобы он добавил источник в список.</p>
+  <p style="font-size:14.5px;color:var(--muted)">Надёжность: <span class="tag strong">рецензируемый журнал</span> — статья прошла проверку учёными, самый сильный уровень; <span class="tag">официальные данные</span> — государственная статистика и международные организации; <span class="tag mid">рабочий доклад</span> — серьёзное исследование, но в журнале ещё не опубликовано, об этом пишем в 2.1.</p>
+
+  <div class="src">
+    <div class="src-head"><span class="src-name">1. U.S. Bureau of Labor Statistics (2026)</span><span class="tag">официальные данные</span></div>
+    <dl>
+      <dt>Что это</dt><dd>Бюро трудовой статистики США — государственное ведомство. Официальный прогноз занятости по профессиям на 2024–2034 гг. и заметка о том, как ИИ на него влияет.</dd>
+      <dt>Цифры</dt><dd>Data scientists +33,5% (около 82 500 новых мест); operations research analysts +21,5%; все профессии в среднем +3,1%. Рост профессии BLS отчасти связывает с внедрением ИИ.</dd>
+      <dt>Для чего</dt><dd>Профессия растёт, а не исчезает. Это рис. 1.</dd>
+      <dt>Кто и где</dt><dd class="users"><span class="who pa"><span class="dot"></span>A: Key messages, рис. 1</span><span class="who pb"><span class="dot"></span>B: 2.2</span></dd>
+      <dt>В тексте</dt><dd>первый раз <span class="en">(U.S. Bureau of Labor Statistics [BLS], 2026)</span>, дальше <span class="en">(BLS, 2026)</span></dd>
+    </dl>
+    <p class="apa">U.S. Bureau of Labor Statistics. (2026, July 16). Artificial intelligence, information technology, and employment, 2024–34. <i>The Economics Daily</i>. <a href="https://www.bls.gov/opub/ted/2026/artificial-intelligence-information-technology-and-employment-2024-34.htm">bls.gov</a></p>
+  </div>
+
+  <div class="src">
+    <div class="src-head"><span class="src-name">2. World Economic Forum (2025). The Future of Jobs Report 2025</span><span class="tag">официальные данные</span></div>
+    <dl>
+      <dt>Что это</dt><dd>Всемирный экономический форум раз в 2–3 года опрашивает крупных работодателей по всему миру: какие профессии и навыки будут расти и падать до 2030 года.</dd>
+      <dt>Цифры</dt><dd>39% ключевых навыков работников изменится к 2030 году; 63% работодателей называют нехватку навыков главным барьером. Big data specialists — самая быстрорастущая профессия, data entry clerks — среди самых быстро сокращающихся. AI &amp; big data — самый быстрорастущий навык.</dd>
+      <dt>Для чего</dt><dd>Риск 3 (разрыв навыков) и обоснование рекомендации 1.</dd>
+      <dt>Кто и где</dt><dd class="users"><span class="who pa"><span class="dot"></span>A: Key messages, 1.1, 1.3</span><span class="who pb"><span class="dot"></span>B: 2.5</span><span class="who pc"><span class="dot"></span>C: 3.1</span></dd>
+      <dt>В тексте</dt><dd><span class="en">(World Economic Forum, 2025)</span></dd>
+    </dl>
+    <p class="apa">World Economic Forum. (2025). <i>The future of jobs report 2025</i>. <a href="https://www.weforum.org/publications/the-future-of-jobs-report-2025/">weforum.org</a></p>
+  </div>
+
+  <div class="src">
+    <div class="src-head"><span class="src-name">3. Eloundou, Manning, Mishkin &amp; Rock (2024)</span><span class="tag strong">рецензируемый журнал · Science</span></div>
+    <dl>
+      <dt>Что это</dt><dd>Статья в <i>Science</i>, одном из самых авторитетных научных журналов. Авторы оценили, какая доля задач в каждой профессии может быть затронута языковыми моделями (GPT).</dd>
+      <dt>Цифры</dt><dd>Сами языковые модели затрагивают больше половины задач примерно в 1,8% профессий. С программами, построенными на их основе, — чуть больше чем в 46%.</dd>
+      <dt>Для чего</dt><dd>Показать масштаб: эффект резко вырастет, когда ИИ встроят в обычные рабочие программы. Поэтому действовать надо сейчас.</dd>
+      <dt>Кто и где</dt><dd class="users"><span class="who pa"><span class="dot"></span>A: 1.4</span></dd>
+      <dt>В тексте</dt><dd><span class="en">(Eloundou et al., 2024)</span></dd>
+    </dl>
+    <p class="apa">Eloundou, T., Manning, S., Mishkin, P., &amp; Rock, D. (2024). GPTs are GPTs: Labor market impact potential of LLMs. <i>Science, 384</i>(6702), 1306–1308. <a href="https://doi.org/10.1126/science.adj0998">doi.org/10.1126/science.adj0998</a></p>
+  </div>
+
+  <div class="src">
+    <div class="src-head"><span class="src-name">4. Brynjolfsson, Li &amp; Raymond (2025). Generative AI at Work</span><span class="tag strong">рецензируемый журнал · QJE</span></div>
+    <dl>
+      <dt>Что это</dt><dd>Статья в <i>Quarterly Journal of Economics</i>, одном из ведущих экономических журналов. Изучали операторов службы поддержки, которым дали ИИ-ассистента, и сравнили их работу до и после.</dd>
+      <dt>Цифры</dt><dd>Продуктивность +14% в среднем, +34% у новичков и менее опытных, почти без эффекта у опытных.</dd>
+      <dt>Для чего</dt><dd>ИИ быстрее всего «подтягивает» новичков. Значит, джунов можно обучать с ИИ, а не заменять им.</dd>
+      <dt>Кто и где</dt><dd class="users"><span class="who pb"><span class="dot"></span>B: 2.3</span><span class="who pc"><span class="dot"></span>C: 3.1 (опора)</span></dd>
+      <dt>В тексте</dt><dd><span class="en">(Brynjolfsson, Li, &amp; Raymond, 2025)</span> — все фамилии, не <span class="en">et al.</span></dd>
+    </dl>
+    <p class="apa">Brynjolfsson, E., Li, D., &amp; Raymond, L. (2025). Generative AI at work. <i>The Quarterly Journal of Economics, 140</i>(2), 889–942. <a href="https://doi.org/10.1093/qje/qjae044">doi.org/10.1093/qje/qjae044</a></p>
+  </div>
+
+  <div class="src">
+    <div class="src-head"><span class="src-name">5. Dell'Acqua et al. (2023). Navigating the Jagged Technological Frontier</span><span class="tag mid">рабочий доклад · Harvard</span></div>
+    <dl>
+      <dt>Что это</dt><dd>Эксперимент Гарвардской школы бизнеса с консалтинговой компанией BCG. 758 консультантов случайно разделили на группы с ИИ и без и дали им реальные рабочие задачи. Случайное разделение — самый сильный способ доказать причину и следствие.</dd>
+      <dt>Цифры</dt><dd>На задачах в пределах возможностей ИИ: на 12,2% больше задач, на 25,1% быстрее, качество на 40% выше. На задаче за пределами возможностей ИИ: на 19 п.п. меньше правильных ответов.</dd>
+      <dt>Для чего</dt><dd>Риск 2: без проверки ИИ ухудшает результат. Основа правила проверки в рекомендации 2.</dd>
+      <dt>Кто и где</dt><dd class="users"><span class="who pa"><span class="dot"></span>A: Key messages, 1.3</span><span class="who pb"><span class="dot"></span>B: 2.4, 2.5</span><span class="who pc"><span class="dot"></span>C: 3.1, 3.2</span></dd>
+      <dt>В тексте</dt><dd><span class="en">(Dell'Acqua et al., 2023)</span></dd>
+    </dl>
+    <p class="apa">Dell'Acqua, F., McFowland, E., III, Mollick, E., Lifshitz-Assaf, H., Kellogg, K. C., Rajendran, S., Krayer, L., Candelon, F., &amp; Lakhani, K. R. (2023). <i>Navigating the jagged technological frontier: Field experimental evidence of the effects of AI on knowledge worker productivity and quality</i> (Harvard Business School Working Paper No. 24-013). <a href="https://doi.org/10.2139/ssrn.4573321">doi.org/10.2139/ssrn.4573321</a></p>
+  </div>
+
+  <div class="src">
+    <div class="src-head"><span class="src-name">6. Brynjolfsson, Chandar &amp; Chen (2025). Canaries in the Coal Mine?</span><span class="tag mid">рабочий доклад · Stanford</span></div>
+    <dl>
+      <dt>Что это</dt><dd>Исследование Стэнфорда по данным зарплатных ведомостей миллионов работников в США: как меняется занятость в профессиях, которые сильнее всего затронуты ИИ, по возрастам.</dd>
+      <dt>Цифры</dt><dd>Занятость 22–25-летних в самых затронутых ИИ профессиях упала примерно на 13% относительно других групп. Падение идёт в основном через меньший найм и там, где ИИ заменяет задачи, а не дополняет.</dd>
+      <dt>Для чего</dt><dd>Риск 1 (сжимается вход в профессию) и основа стажировок в рекомендации 2.</dd>
+      <dt>Кто и где</dt><dd class="users"><span class="who pa"><span class="dot"></span>A: Key messages, 1.3</span><span class="who pb"><span class="dot"></span>B: 2.3</span><span class="who pc"><span class="dot"></span>C: 3.2</span></dd>
+      <dt>В тексте</dt><dd><span class="en">(Brynjolfsson, Chandar, &amp; Chen, 2025)</span> — все фамилии, чтобы не спутать с источником 4</dd>
+    </dl>
+    <p class="apa">Brynjolfsson, E., Chandar, B., &amp; Chen, R. (2025). <i>Canaries in the coal mine? Six facts about the recent employment effects of artificial intelligence</i> [Working paper]. Stanford Digital Economy Lab. <a href="https://digitaleconomy.stanford.edu/publication/canaries-in-the-coal-mine-six-facts-about-the-recent-employment-effects-of-artificial-intelligence/">digitaleconomy.stanford.edu</a></p>
+  </div>
+
+  <div class="src">
+    <div class="src-head"><span class="src-name">7. Green (2024). AI and the Changing Demand for Skills in the Labour Market</span><span class="tag">официальные данные · OECD</span></div>
+    <dl>
+      <dt>Что это</dt><dd>Исследование OECD (серия OECD Artificial Intelligence Papers, No. 14). Автор разобрал онлайн-вакансии в 10 странах OECD примерно за 10 лет (база Lightcast) и посмотрел, какие навыки просят в профессиях, затронутых ИИ. Это первоисточник, на котором построен бриф OECD.</dd>
+      <dt>Цифры</dt><dd>В профессиях, сильнее всего затронутых ИИ, доля вакансий, где нужен хотя бы один эмоциональный, когнитивный или цифровой навык, выросла на 8 п.п. Там, где ИИ внедрён сильнее всего, спрос на рутинные управленческие, офисные и цифровые навыки начинает падать (без цифры).</dd>
+      <dt>Для чего</dt><dd>Какие навыки растут, а какие теряют вес. Основа таблицы навыков.</dd>
+      <dt>Кто и где</dt><dd class="users"><span class="who pb"><span class="dot"></span>B: 2.2, 2.5, рис. 2</span></dd>
+      <dt>В тексте</dt><dd><span class="en">(Green, 2024)</span>. Цифру «15%» из брифа OECD не используем: в первоисточнике её нет.</dd>
+    </dl>
+    <p class="apa">Green, A. (2024). <i>Artificial intelligence and the changing demand for skills in the labour market</i> (OECD Artificial Intelligence Papers, No. 14). OECD Publishing. <a href="https://doi.org/10.1787/88684e36-en">doi.org/10.1787/88684e36-en</a></p>
+  </div>
+
+  <div class="src">
+    <div class="src-head"><span class="src-name">8. OECD (2024). How Is AI Changing the Way Workers Perform Their Jobs?</span><span class="tag">официальные данные · OECD</span></div>
+    <dl>
+      <dt>Что это</dt><dd>Policy brief OECD, который преподаватель дал на паре как образец. Это пересказ исследования Green (2024), своих данных в нём нет. PDF лежит в папке курса.</dd>
+      <dt>Для чего</dt><dd>Только одна фраза-рамка во введении: международные организации уже признают, что ИИ меняет работу и нужные навыки. Цифры берём из Green (2024), не отсюда.</dd>
+      <dt>Кто и где</dt><dd class="users"><span class="who pa"><span class="dot"></span>A: 1.1</span></dd>
+      <dt>В тексте</dt><dd><span class="en">(OECD, 2024)</span></dd>
+    </dl>
+    <p class="apa">OECD. (2024). <i>How is AI changing the way workers perform their jobs and the skills they require?</i> (OECD Policy Brief). OECD Publishing. <a href="https://doi.org/10.1787/8dc62c72-en">doi.org/10.1787/8dc62c72-en</a></p>
+  </div>
+
+  <div class="warn">Убрали: Tomlinson et al. (2025) — препринт без рецензии, его мысль покрывает Eloundou; Концепцию ИИ и Закон об ИИ Казахстана — бриф общий, не про Казахстан.</div>
+</section>
+
+<!-- ─────────────── A ─────────────── -->
+<section class="block person pa" id="part-a">
+  <div class="person-head">
+    <div class="eyebrow">Часть A · Диас</div>
+    <h2>Key messages и раздел 1: Context and Problem Statement</h2>
+    <div class="scope"><span class="chip">Executive summary · 10</span><span class="chip">Context &amp; Problem · 15</span><span class="chip">≈ 450 слов + рис. 1</span></div>
+  </div>
+  <p>Задача раздела: показать, что проблема есть, кого она касается и почему ею надо заниматься сейчас. Логика со слайда 11: <b>проблема → почему она возникла → почему важна сейчас</b>. Подробный разбор доказательств — у B, поэтому здесь у каждого риска одна главная цифра, не больше.</p>
+
+  <div class="sub">
+    <div class="sub-title"><h3>1.1 How AI is changing data analytics</h3><span class="words">≈ 130 слов</span></div>
+    <ul class="ev">
+      <li>Первая фраза — общая рамка: международные организации уже признают, что ИИ меняет то, как люди работают и какие навыки им нужны <span class="en">(OECD, 2024)</span>.</li>
+      <li>Пример «до / после», как у OECD со страховой компанией: младший аналитик раньше два дня писал SQL и собирал недельный отчёт, теперь ИИ даёт черновик примерно за час, а работа — проверить цифры и объяснить их. Пример иллюстративный, так и подаём.</li>
+      <li>Big data specialists — самая быстрорастущая профессия до 2030 года, data entry clerks — среди самых быстро сокращающихся <span class="en">(World Economic Forum, 2025)</span>.</li>
+    </ul>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title"><h3>1.2 Who is affected</h3><span class="words">≈ 40 слов</span></div>
+    <ul class="ev"><li>Одно-два предложения: студенты и выпускники, работодатели, вузы, руководители и граждане, которые принимают решения на основе анализа.</li></ul>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title"><h3>1.3 Key employment risks</h3><span class="words">≈ 200 слов, по ≈ 65 на риск</span></div>
+    <p style="font-size:14.5px">Каждый риск — короткий абзац: что происходит → чем это плохо.</p>
+    <ul class="ev">
+      <li><b>Risk 1: A shrinking entry route.</b> Рутинные задачи были «школой» для новичков. Если их делает ИИ, компании могут нанимать меньше джунов, и через 5–10 лет не хватит опытных аналитиков. Цифра: занятость 22–25-летних в профессиях, сильнее всего затронутых ИИ, упала примерно на 13% относительно других групп <span class="en">(Brynjolfsson, Chandar, &amp; Chen, 2025)</span>.</li>
+      <li><b>Risk 2: Lower quality and unclear accountability.</b> ИИ выдаёт убедительный, но иногда неверный анализ. Непроверенная ошибка становится ошибкой в решении, и непонятно, кто за неё отвечает. Цифра: на задаче за пределами возможностей ИИ — на 19 п.п. меньше правильных ответов <span class="en">(Dell'Acqua et al., 2023)</span>.</li>
+      <li><b>Risk 3: A widening skills gap.</b> Навыки меняются быстрее, чем учебные программы. Цифры: 39% ключевых навыков изменится к 2030 году, 63% работодателей называют нехватку навыков главным барьером <span class="en">(World Economic Forum, 2025)</span>.</li>
+    </ul>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title"><h3>1.4 Why the issue needs attention now</h3><span class="words">≈ 60 слов</span></div>
+    <ul class="ev"><li>ИИ встраивают в обычные рабочие программы, и эффект будет расти: сами языковые модели затрагивают больше половины задач примерно в 1,8% профессий, а с программами на их основе — чуть больше чем в 46% <span class="en">(Eloundou et al., 2024)</span>. Найм и обучение под это пока не перестроены.</li></ul>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title"><h3>Key messages</h3><span class="words">готово, ≈ 170 слов</span></div>
+    <ul class="ev"><li>Пять пунктов уже написаны. В конце, когда B и C закончат, сверить: цифры совпадают с текстом, последний пункт повторяет рекомендации C почти слово в слово. Тест со слайда 7: если читатель остановится здесь, он поймёт проблему и что делать?</li></ul>
+  </div>
+
+  <div class="phr">
+    <span class="label">Фразы для начала (дальше своими словами)</span>
+    <span class="en">International organisations already recognise that…</span>
+    <span class="en">Until recently, a junior analyst would… Today, …</span>
+    <span class="en">These changes affect several groups: …</span>
+    <span class="en">The first risk is… / A second risk concerns… / Finally, …</span>
+    <span class="en">Without action, … could …</span>
+    <span class="en">This matters now because…</span>
+  </div>
+  <div style="display:grid;gap:6px">
+    <span class="label">Готово, когда</span>
+    <ul class="done">
+      <li>Есть пример «до / после» и одна фраза со ссылкой на OECD (2024).</li>
+      <li>Три риска с подзаголовками Risk 1–3, у каждого одна цифра и ссылка.</li>
+      <li>Объяснено, почему важно сейчас (Eloundou).</li>
+      <li>Подпись к рис. 1 с источником.</li>
+      <li>Key messages совпадают с текстом B и рекомендациями C.</li>
+      <li>Около 450 слов, без серых заметок в своём разделе.</li>
+    </ul>
+  </div>
+
+  <div class="two">
+    <div class="handoff"><span class="label">Передать B</span>Финальные названия трёх рисков. Выводы B должны их объяснять, а не повторять.</div>
+    <div class="handoff"><span class="label">На защите · 0:00–3:00</span>Слайды: название и вопрос к залу, key messages, контекст с рис. 1, три риска. Переход: «Now [B] will show what the evidence tells us».</div>
+  </div>
+</section>
+
+<!-- ─────────────── B ─────────────── -->
+<section class="block person pb" id="part-b">
+  <div class="person-head">
+    <div class="eyebrow">Часть B · [имя]</div>
+    <h2>Раздел 2: Evidence and Findings</h2>
+    <div class="scope"><span class="chip">Evidence &amp; Findings · 20</span><span class="chip">≈ 550 слов</span><span class="chip">таблица навыков + рис. 2</span></div>
+  </div>
+  <p>Самый «дорогой» раздел. Каждый вывод строим по схеме со слайда 10: <b>доказательство → что это значит → что из этого следует для политики</b>. Не перечислять цифры, а объяснять их. Последняя фраза каждого вывода ведёт к одной из рекомендаций C.</p>
+
+  <div class="sub">
+    <div class="sub-title"><h3>2.1 Approach and limitations</h3><span class="words">≈ 60 слов</span></div>
+    <ul class="ev">
+      <li>Начало: <span class="en">This brief synthesises eight sources published in 2023–2026…</span> Какие: две статьи в рецензируемых журналах (<i>Science</i>, <i>QJE</i>), полевой эксперимент, рабочий доклад Стэнфорда, анализ вакансий OECD, отчёт WEF, статистика BLS.</li>
+      <li>Ограничение (за него дают баллы): данные в основном из США и стран OECD; две работы (Dell'Acqua; Brynjolfsson, Chandar &amp; Chen) — рабочие доклады, ещё не опубликованные в журналах.</li>
+    </ul>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title"><h3>2.2 Finding 1: Demand is growing, but the tasks are changing</h3><span class="words">≈ 130 слов</span></div>
+    <ul class="ev">
+      <li>Data scientists +33,5% (около 82 500 рабочих мест), operations research analysts +21,5%, все профессии +3,1% за 2024–34 гг.; BLS связывает рост отчасти с внедрением ИИ <span class="en">(BLS, 2026)</span>.</li>
+      <li>Вакансии в 10 странах OECD: в профессиях, сильнее всего затронутых ИИ, доля вакансий с эмоциональными, когнитивными или цифровыми навыками выросла на 8 п.п. <span class="en">(Green, 2024)</span>.</li>
+      <li>Но там, где ИИ внедрён сильнее всего, спрос на рутинные управленческие, офисные и цифровые навыки начинает падать <span class="en">(Green, 2024)</span>. Без цифры: в первоисточнике её нет.</li>
+      <li>Что это значит: рутину берёт ИИ, ценнее становятся суждение и умение объяснить.</li>
+    </ul>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title"><h3>2.3 Finding 2: AI helps beginners most — but can also replace them</h3><span class="words">≈ 120 слов</span></div>
+    <ul class="ev">
+      <li>ИИ-ассистент: +14% продуктивности в среднем, +34% у новичков, почти ноль у опытных <span class="en">(Brynjolfsson, Li, &amp; Raymond, 2025)</span>.</li>
+      <li>Падение занятости 22–25-летних видно там, где ИИ <b>заменяет</b> задачи, а не там, где <b>дополняет</b> <span class="en">(Brynjolfsson, Chandar, &amp; Chen, 2025)</span>.</li>
+      <li>Что следует: исход зависит от того, как работодатель использует ИИ → ведёт к рекомендации 2 (стажировки).</li>
+    </ul>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title"><h3>2.4 Finding 3: AI improves work only when people check it</h3><span class="words">≈ 120 слов</span></div>
+    <ul class="ev">
+      <li>758 консультантов BCG. На задачах в пределах возможностей ИИ: на 12,2% больше задач, на 25,1% быстрее, качество на 40% выше. За пределами: на 19 п.п. меньше правильных ответов <span class="en">(Dell'Acqua et al., 2023)</span>.</li>
+      <li>Граница этих возможностей пользователю не видна, поэтому нужны и навык проверки, и время на неё → ведёт к рекомендации 1 (обучение) и правилу проверки в рекомендации 2.</li>
+    </ul>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title"><h3>2.5 Skills the profession will need</h3><span class="words">таблица + ≈ 40 слов</span></div>
+    <ul class="ev">
+      <li>Таблица уже заполнена: когнитивные, технические, межличностные навыки и зачем каждый нужен. Переписать своими словами, проверить, что у каждого навыка есть «потому что ИИ теперь…».</li>
+      <li>Под таблицей 1–2 предложения вывода.</li>
+      <li>Рис. 2 «до / после» — оставить таблицей или перерисовать в Canva, с подписью и источником.</li>
+    </ul>
+  </div>
+
+  <div class="phr">
+    <span class="label">Фразы для начала (дальше своими словами)</span>
+    <span class="en">This brief synthesises eight sources published in 2023–2026…</span>
+    <span class="en">Most of this evidence comes from…, so the findings should be read as indicative.</span>
+    <span class="en">Data from … show that… / According to…</span>
+    <span class="en">This suggests that… / In practice, this means…</span>
+    <span class="en">However, … / At the same time, …</span>
+    <span class="en">The policy implication is that…</span>
+  </div>
+  <div style="display:grid;gap:6px">
+    <span class="label">Готово, когда</span>
+    <ul class="done">
+      <li>В 2.1 названы типы источников и честное ограничение (США/OECD, два рабочих доклада).</li>
+      <li>У каждого из трёх выводов есть: цифра со ссылкой → что это значит → что следует для политики.</li>
+      <li>Риски A объяснены, а не пересказаны теми же словами.</li>
+      <li>Таблица навыков переписана своими словами, все три типа на месте.</li>
+      <li>Рис. 2 с подписью и источником.</li>
+      <li>Около 550 слов, без серых заметок в своём разделе.</li>
+    </ul>
+  </div>
+
+  <div class="two">
+    <div class="handoff"><span class="label">Передать C</span>Последние фразы выводов 2–4 (policy implication). Рекомендации C должны ссылаться на них: «As Finding 3 shows…».</div>
+    <div class="handoff"><span class="label">На защите · 3:00–6:00</span>Слайды: три вывода (заголовок слайда = вывод, одна цифра), навыки. Переход: «So what should be done? [C] will present our recommendations».</div>
+  </div>
+</section>
+
+<!-- ─────────────── C ─────────────── -->
+<section class="block person pc" id="part-c">
+  <div class="person-head">
+    <div class="eyebrow">Часть C · [имя]</div>
+    <h2>Раздел 3: Policy Recommendations, References и сборка</h2>
+    <div class="scope"><span class="chip">Recommendations · 15</span><span class="chip">References · 5</span><span class="chip">≈ 300 слов</span><span class="chip">финальный PDF</span></div>
+  </div>
+  <p>Ровно две рекомендации, каждая по формуле со слайда 13: <b>кто → что делает → какой результат</b>. Каждая вытекает из конкретного вывода B. Таблицы в файле уже заполнены, их нужно переписать своими словами и добавить, как измерить успех.</p>
+
+  <div class="sub">
+    <div class="sub-title"><h3>Вступление к разделу</h3><span class="words">≈ 30 слов</span></div>
+    <ul class="ev"><li>Одно предложение-мост: данные показывают, что ИИ полезен, только когда его проверяют, а главный риск — для тех, кто входит в профессию. Поэтому предлагаем две меры.</li></ul>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title"><h3>3.1 Recommendation 1: Teach analysts to work with AI — and to check it</h3><span class="words">≈ 120 слов</span></div>
+    <ul class="ev">
+      <li><b>Кто:</b> вузы с программами по data analytics / data science; органы, которые аккредитуют программы.</li>
+      <li><b>Что:</b> обязательный модуль по анализу данных с ИИ и проверке его результатов. Студенты работают с ИИ на реальных данных, оценивается умение находить и исправлять ошибки ИИ; в конце — проект для работодателя.</li>
+      <li><b>Результат:</b> выпускники, которые с первого дня продуктивны с ИИ и замечают его ошибки. Как измерить: доля выпускников с работой через 6 месяцев, отзывы работодателей.</li>
+      <li><b>Опора:</b> выводы 2–3; WEF (2025); Dell'Acqua et al. (2023); Brynjolfsson, Li &amp; Raymond (2025).</li>
+    </ul>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title"><h3>3.2 Recommendation 2: Keep the entry route open and set a review standard</h3><span class="words">≈ 150 слов</span></div>
+    <ul class="ev">
+      <li><b>Кто:</b> крупные работодатели аналитиков (банки, телеком, госсектор) вместе с профессиональными сообществами.</li>
+      <li><b>Что:</b> (a) оплачиваемые стажировки «AI-augmented junior analyst» на 6–12 месяцев с наставником; (b) правило: любой анализ, сделанный с ИИ и использованный для решения, проверяет и подписывает конкретный аналитик; (c) связать оба пункта с профессиональным сертификатом.</li>
+      <li><b>Результат:</b> новички по-прежнему могут войти в профессию, решения с ИИ надёжнее. Здесь прямо назвать слова из задания: <span class="en">training, job design, professional standards, status</span>.</li>
+      <li>Одна фраза о том, кто платит: работодатель платит стажёру зарплату и получает обученного сотрудника; государство может частично поддержать. Как измерить: число стажировок, доля стажёров, оставшихся через 12 месяцев.</li>
+    </ul>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title"><h3>References (APA 7)</h3><span class="words">список готов, 8 источников</span></div>
+    <ul class="ev">
+      <li>Пройти поиском по <code>(</code> весь документ: каждая ссылка в тексте есть в списке, и каждый источник из списка процитирован.</li>
+      <li>По алфавиту, отступ второй строки, курсивом — название работы или журнала. Если кто-то добавил новый источник, оформить и вставить его.</li>
+    </ul>
+  </div>
+
+  <div class="sub">
+    <div class="sub-title"><h3>Финальная сборка</h3><span class="words">после проверки</span></div>
+    <ul class="ev">
+      <li>Удалить все серые заметки, списки «Evidence to use» и метки [write here].</li>
+      <li>Проверить объём: 2–4 страницы вместе с рисунками и литературой. Если больше — сокращаем по согласованию с автором части.</li>
+      <li>Имена всех троих и группа на первой странице.</li>
+      <li>Word: Файл → Сохранить как → PDF. Сдать в Moodle до Practice 1 недели 5.</li>
+    </ul>
+  </div>
+
+  <div class="phr">
+    <span class="label">Фразы для начала (дальше своими словами)</span>
+    <span class="en">The evidence suggests that… We therefore propose two actions.</span>
+    <span class="en">[Actor] should [verb] … in order to …</span>
+    <span class="en">As Finding 3 shows, …</span>
+    <span class="en">This would help… / The expected outcome is…</span>
+    <span class="en">Success could be measured by…</span>
+  </div>
+  <div style="display:grid;gap:6px">
+    <span class="label">Готово, когда</span>
+    <ul class="done">
+      <li>Ровно две рекомендации, у каждой: кто, что делает, какой результат, как измерить.</li>
+      <li>Каждая ссылается на конкретный вывод B.</li>
+      <li>В рекомендации 2 прямо названы training, job design, professional standards, status.</li>
+      <li>Нет расплывчатого «raise awareness» без объяснения как.</li>
+      <li>Все ссылки в тексте есть в списке и наоборот; 8 источников по алфавиту.</li>
+      <li>Заметки удалены, 2–4 страницы, имена на первой странице, PDF сдан.</li>
+    </ul>
+  </div>
+
+  <div class="two">
+    <div class="handoff"><span class="label">Передать A</span>Финальные формулировки двух рекомендаций — A вставит их в последний пункт Key messages.</div>
+    <div class="handoff"><span class="label">На защите · 6:00–9:00</span>Слайды: две рекомендации, вывод, references. Вернуться к вопросу из начала. Ответы на вопросы готовим вместе (список в <code>defence.html</code>).</div>
+  </div>
+</section>
+
+<section class="block" id="rules">
+  <h2>Правила для всех</h2>
+  <div class="warn"><b>Пишем своими словами.</b> Использовать ИИ можно не больше чем на 15% работы. На защите могут спросить, как вы использовали ИИ, и понимаете ли вы свои цифры. Черновик даёт структуру и проверенные цифры, а текст — ваш.</div>
+  <div class="two">
+    <div style="display:grid;gap:8px">
+      <span class="label">Как писать</span>
+      <ul class="rules">
+        <li>Для неспециалиста: коротко, прямо, активный залог.</li>
+        <li>Осторожные формулировки: <span class="en">may, is likely to, suggests, there is early evidence that</span>.</li>
+        <li>Глаголы вместо существительных: <span class="en">implement</span>, а не <span class="en">the implementation of</span>.</li>
+        <li>Британское написание, как во всём файле: <span class="en">programme, recognise, analyse, labour</span>.</li>
+      </ul>
+    </div>
+    <div style="display:grid;gap:8px">
+      <span class="label">Чего не делать</span>
+      <ul class="rules">
+        <li><span class="en">undoubtedly, every job, will destroy, must immediately</span> — минус за стиль.</li>
+        <li>Цифры без ссылки. Новую цифру — только с источником, и сказать C, чтобы он добавил его в список.</li>
+        <li>Повторять одну мысль в разных разделах: A называет риск, B объясняет данные, C предлагает меру.</li>
+        <li>Править чужой раздел без спроса — только комментарием.</li>
+      </ul>
+    </div>
+  </div>
+  <p style="font-size:14.5px;color:var(--muted)">Ссылки в тексте: (Автор, год). Три и больше авторов — <span class="en">et al.</span>, кроме двух работ Brynjolfsson 2025: у них разные соавторы, поэтому пишем все фамилии: <span class="en">(Brynjolfsson, Chandar, &amp; Chen, 2025)</span> и <span class="en">(Brynjolfsson, Li, &amp; Raymond, 2025)</span>.</p>
+</section>
+
+
+<section class="block" id="qa">
+  <h2>Вопросы на защите и кто отвечает</h2>
+  <p style="font-size:14.5px;color:var(--muted)">За понимание и ответы на вопросы — 6 баллов. Отвечает тот, чья это часть, остальные дополняют.</p>
+  <div class="tw">
+  <table>
+    <thead><tr><th>Вопрос</th><th>Отвечает</th><th>Опора для ответа</th></tr></thead>
+    <tbody>
+      <tr><td class="en">Most of your evidence is from the US. Is it relevant elsewhere?</td><td><span class="who pb"><span class="dot"></span>B</span></td><td>Согласиться: выводы indicative, мы это написали в 2.1. Но инструменты ИИ одинаковые везде, а WEF — опрос работодателей по всему миру (39%).</td></tr>
+      <tr><td class="en">Two of your sources are working papers. Why trust them?</td><td><span class="who pb"><span class="dot"></span>B</span></td><td>Dell'Acqua — эксперимент со случайным разделением на группы, самый сильный метод. Chandar &amp; Chen — данные по миллионам работников. Мы прямо указали это ограничение.</td></tr>
+      <tr><td class="en">If AI makes analysts more productive, why not just hire fewer?</td><td><span class="who pa"><span class="dot"></span>A</span></td><td>Спрос растёт (BLS +33,5%). Без джунов сейчас через 5–10 лет не будет опытных, а именно они проверяют работу ИИ.</td></tr>
+      <tr><td class="en">Will AI replace data analysts completely?</td><td><span class="who pa"><span class="dot"></span>A</span></td><td>Без драмы: <span class="en">The evidence does not suggest that.</span> Профессия растёт, меняется набор задач.</td></tr>
+      <tr><td class="en">Who will pay for the apprenticeships?</td><td><span class="who pc"><span class="dot"></span>C</span></td><td>Работодатель платит зарплату и получает обученного сотрудника; новичок с ИИ продуктивнее (+34%). Государство может частично поддержать — это предложение для обсуждения.</td></tr>
+      <tr><td class="en">Isn't the sign-off rule just more bureaucracy?</td><td><span class="who pc"><span class="dot"></span>C</span></td><td>Только для анализа, по которому принимают решение. Без проверки результат хуже на 19 п.п.; ошибка в решении дороже проверки.</td></tr>
+      <tr><td class="en">Why only two recommendations?</td><td><span class="who pc"><span class="dot"></span>C</span></td><td>Задание просит 1–2. Две конкретные с исполнителем и измеримым результатом лучше пяти расплывчатых.</td></tr>
+      <tr><td class="en">How did you use AI in this brief?</td><td>все</td><td>Честно: для структуры и проверки языка; все цифры сверены с источниками; текст и рекомендации наши.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+</div>
+</body>
+</html>

@@ -158,7 +158,7 @@ window.SITE = {
         { w: 1, topic: 'SDGs и компетенции будущих специалистов. Grammar: пассив', files: ['week1/Week 1_Practice 4_Vocabulary for students.pdf', 'week1/Week 1_Vocabulary.docx'] },
         { w: 2, topic: 'SDGs: мозговой штурм решений, прототипы. Grammar: косвенная речь', files: ['week2/Week 2 Practice 1-2_for students (1).pptx'] },
         { w: 3, topic: 'Assignment 1: презентация прототипа. Grammar: conditionals 1–2', files: ['assignment1/sdg7-slides.html', 'assignment1/SDG 7 — Smart Renewable Microgrid Canvas.pdf', 'assignment1/Assignment_1_Assessment_Rubric.docx'] },
-        { w: 4, topic: 'Влияние ИИ на экономику и общество. Grammar: mixed conditionals' },
+        { w: 4, topic: 'Влияние ИИ на экономику и общество. Policy brief. Grammar: mixed conditionals', files: ['policy brief/Week 4 Practice 1-2_final for students.pptx', 'policy brief/OECD (2024) How is AI changing the way workers perform their jobs.pdf'] },
         { w: 5, topic: 'Повторение. Midterm: policy brief' },
         { w: 6, topic: 'Дезинформация в науке и технологиях. Grammar: герундий' },
         { w: 7, topic: 'Assignment 2: кейс «Exposing misinformation». Grammar: причастия' },
@@ -169,7 +169,15 @@ window.SITE = {
       pages: [],
       extras: [
         { href: 'essay-assistant/index.html', title: 'Помощник для эссе' },
-        { href: 'essay-assistant/sdg-competences-summary.html', title: 'Статья о компетенциях SDG — конспект' }
+        { href: 'essay-assistant/sdg-competences-summary.html', title: 'Статья о компетенциях SDG — конспект' },
+        { href: 'policy brief/class-answers.html', title: 'Policy brief — ответы к практике (неделя 4)' },
+        { href: 'policy brief/brief-kit.html', title: 'Midterm: policy brief по Data Analytics — набор' },
+        { href: 'policy brief/policy-brief.html', title: 'Midterm: сам policy brief (текст, 4 стр.)' },
+        { href: 'policy brief/plan-na-troih.html', title: 'Midterm: план на троих + источники' },
+        { href: 'policy brief/chast-a-frazy.html', title: 'Midterm: часть A — как начинать предложения' },
+        { href: 'policy brief/chast-b-frazy.html', title: 'Midterm: часть B — как начинать предложения' },
+        { href: 'policy brief/chast-c-frazy.html', title: 'Midterm: часть C — как начинать предложения' },
+        { href: 'policy brief/defence.html', title: 'Midterm: защита policy brief' }
       ],
       tasks: [
         { w: 2, title: 'Writing: reflective response (communication skills & SDGs)', pts: '5%*' },

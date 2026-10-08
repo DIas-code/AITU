@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Policy Brief — The Impact of AI on Data Analytics</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  @page{size:A4;margin:15mm 17mm 15mm}
+  :root{--ink:#1B2230;--muted:#5E6573;--rule:#D8D5CC;--navy:#24365C;--navy-soft:#E9EDF4;--accent:#B4531F;--accent-soft:#F7EBE2}
+  *{box-sizing:border-box}
+  html{background:#e9e8e4}
+  body{margin:0;color:var(--ink);font:10.4pt/1.47 Georgia,"Times New Roman",serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .doc{background:#fff;max-width:210mm;margin:24px auto;padding:16mm 17mm}
+  @media print{html{background:#fff}.doc{margin:0;padding:0;max-width:none}}
+  h1,h2,h3,.eyebrow,.meta,.box-title,figcaption,.fig-title,table,.rec dt{font-family:"Segoe UI",Arial,Helvetica,sans-serif}
+  .eyebrow{font-size:8pt;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:700}
+  h1{font-size:19pt;line-height:1.15;color:var(--navy);margin:4pt 0 6pt}
+  .meta{font-size:8.5pt;color:var(--muted);border-bottom:2.5pt solid var(--navy);padding-bottom:7pt;margin-bottom:10pt}
+  h2{font-size:12.5pt;color:var(--navy);margin:14pt 0 4pt;break-after:avoid}
+  h3{font-size:10.5pt;margin:9pt 0 2pt;break-after:avoid}
+  p{margin:0 0 6pt}
+  .summary{background:var(--navy-soft);border-left:4pt solid var(--navy);padding:8pt 12pt 4pt;margin-bottom:6pt}
+  .box-title{font-size:9pt;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--navy);margin-bottom:4pt}
+  .summary ul{margin:0 0 4pt;padding-left:14pt}
+  .summary li{margin-bottom:4pt}
+  figure{margin:8pt 0 10pt;break-inside:avoid}
+  figure img{display:block;width:100%;max-width:128mm;margin:0 auto}
+  figcaption{font-size:8pt;color:var(--muted);margin-top:3pt}
+  .fig-title{font-size:9pt;font-weight:700;margin-bottom:4pt}
+  table{border-collapse:collapse;width:100%;font-size:8.6pt;line-height:1.35}
+  th,td{border:0.6pt solid var(--rule);padding:4pt 6pt;vertical-align:top;text-align:left}
+  th{background:var(--navy-soft);color:var(--navy)}
+  .flow td:first-child{font-weight:700;width:22%;background:#FAFAF8}
+  .rec{border:0.8pt solid var(--rule);border-top:3pt solid var(--accent);padding:7pt 11pt 3pt;margin:7pt 0;break-inside:avoid}
+  .rec h3{margin-top:0;color:var(--accent)}
+  .rec dl{display:grid;grid-template-columns:20mm 1fr;gap:3pt 8pt;margin:0 0 4pt}
+  .rec dt{font-size:8.5pt;font-weight:700;color:var(--muted);padding-top:1pt}
+  .rec dd{margin:0}
+  .refs p{padding-left:7mm;text-indent:-7mm;font-size:9pt;line-height:1.38;margin-bottom:4pt;word-break:break-word}
+  .note{font-size:9pt;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="doc">
+
+<div class="eyebrow">Policy Brief · Data Analytics · October 2026</div>
+<h1>The Impact of AI on the Data Analytics Profession: Risks, Skills and Policy Responses for Kazakhstan</h1>
+<div class="meta">Prepared by: [Name Surname], [Name Surname], [Name Surname] · Group [___] · Astana IT University<br>
+For: Ministry of Science and Higher Education of the Republic of Kazakhstan; Ministry of Artificial Intelligence and Digital Development; university programme leaders; employers of data analysts</div>
+
+<div class="summary">
+  <div class="box-title">Key messages</div>
+  <ul>
+    <li><b>AI is changing data analytics, not replacing it.</b> AI tools now write queries, clean data and draft reports. Yet demand for data professionals keeps rising: US employment of data scientists is projected to grow by 33.5% in 2024–34, compared with 3.1% for all occupations (U.S. Bureau of Labor Statistics [BLS], 2026).</li>
+    <li><b>The entry route into the profession is at risk.</b> In the occupations most exposed to AI, employment of workers aged 22–25 has fallen by about 13% relative to other groups, mainly because firms hire fewer young people (Brynjolfsson, Chandar, &amp; Chen, 2025).</li>
+    <li><b>Unchecked AI output lowers the quality of decisions.</b> When consultants used AI on a task beyond its capabilities, they were 19 percentage points less likely to reach a correct answer (Dell'Acqua et al., 2023).</li>
+    <li><b>We recommend two actions:</b> (1) universities, supported by the Ministry of Science and Higher Education, should add a compulsory module on AI-assisted analytics and verification to data degrees; (2) large employers, coordinated by the Ministry of AI and Digital Development, should offer paid junior apprenticeships and require a named analyst to sign off any AI-generated analysis used for decisions.</li>
+  </ul>
+</div>
+
+<h2>1. Context and problem statement</h2>
+<p>Consider a typical task in a bank or a telecom company. A junior analyst used to spend two days writing SQL queries, cleaning data and building a weekly sales report. Today an AI assistant can produce a draft of the same report in about an hour. The analyst's job is no longer to write the code, but to check whether the numbers are right and to explain what they mean.</p>
+<p>Data analytics is one of the fields most exposed to generative AI. An analysis of 200,000 conversations with Microsoft Copilot found that computer and mathematical occupations have some of the highest AI applicability, and that gathering information and writing are the activities AI supports most (Tomlinson et al., 2025). The effect is likely to grow as AI is built into everyday software: Eloundou et al. (2024) estimate that large language models alone could affect over half of the tasks in about 1.8% of jobs, but this share rises to just over 46% when software built on these models is taken into account. At the same time, the World Economic Forum (2025) lists big data specialists as the fastest-growing job to 2030, while data entry clerks are among the fastest-declining.</p>
+<p>These changes affect several groups: students and recent graduates who want to enter the field, employers who hire analysts, universities that design data programmes, and managers and citizens who rely on analysis to make decisions. Three employment risks stand out.</p>
+<h3>Risk 1: A shrinking entry route</h3>
+<p>Routine tasks such as writing standard queries and preparing reports have traditionally been the training ground for junior analysts. If AI takes over these tasks, employers may hire fewer juniors. In the short term this saves money; in the long term it could leave the profession without experienced analysts in five to ten years.</p>
+<h3>Risk 2: Lower quality and unclear accountability</h3>
+<p>AI can produce analysis that looks convincing but is wrong. If no one checks it, an AI error becomes an error in a business or government decision. It is often unclear who is responsible when this happens.</p>
+<h3>Risk 3: A widening skills gap</h3>
+<p>Employers in Kazakhstan expect 39% of workers' core skills to change by 2030, the same as the global average, and 63% of employers worldwide name skills gaps as the main barrier to transforming their business (World Economic Forum, 2025). University programmes are updated more slowly than the tools change.</p>
+<p><b>Why act now?</b> Kazakhstan already has a policy framework for AI. The Concept for the Development of Artificial Intelligence for 2024–2029 names human capital as one of its priorities (Government of the Republic of Kazakhstan, 2024), and the Law "On Artificial Intelligence" has been in force since January 2026 (Law No. 230-VIII, 2025). However, these documents do not yet specify how specific professions and university programmes should adapt. Data analytics is a good place to start, because the change there is already visible.</p>
+
+<figure>
+  <img src="figures/fig1-bls-growth.svg" alt="Projected change in US employment 2024–34: data scientists +33.5%, operations research analysts +21.5%, all occupations +3.1%">
+  <figcaption><b>Figure 1.</b> Projected change in US employment, 2024–34, selected occupations. Source: U.S. Bureau of Labor Statistics (2026).</figcaption>
+</figure>
+
+<h2>2. Evidence and findings</h2>
+<p><b>Approach.</b> This brief synthesises ten sources published in 2023–2026: peer-reviewed studies, field experiments, reports by the OECD and the World Economic Forum, US labour statistics and Kazakhstan's policy documents. Most of the detailed evidence comes from the United States and other OECD countries, and there is little data on data analysts in Kazakhstan. The findings for Kazakhstan should therefore be read as indicative.</p>
+
+<h3>Finding 1: Demand is growing, but the tasks are changing</h3>
+<p>BLS (2026) projects that employment of data scientists will grow by 33.5% (about 82,500 jobs) and that of operations research analysts by 21.5% in 2024–34, and it links this growth partly to AI adoption. However, the content of the work is shifting. In occupations highly exposed to AI, demand for emotional, digital and social skills has grown by about 15%, and demand for cognitive skills has also risen. Meanwhile, workplaces most exposed to AI post slightly fewer vacancies requiring routine management, business and digital skills (a decline of about three percentage points) (OECD, 2024). <i>In practice, this means that AI is taking over the routine part of analysis, while human judgement and communication are becoming more valuable.</i></p>
+
+<h3>Finding 2: AI helps beginners most — but can also replace them</h3>
+<p>In a study of customer support agents, an AI assistant raised productivity by 14% on average and by 34% for novice and low-skilled workers, with minimal effect on experienced staff (Brynjolfsson, Li, &amp; Raymond, 2025). This suggests that AI could help juniors learn faster. Yet the same tools also reduce the need for junior work: the decline in employment among 22–25-year-olds appears mainly where AI automates tasks rather than where it complements them (Brynjolfsson, Chandar, &amp; Chen, 2025). <i>The policy implication is that the outcome depends on how employers choose to use AI.</i></p>
+
+<h3>Finding 3: AI improves work only when people check it</h3>
+<p>In a field experiment with 758 consultants, those who used AI on tasks within its capabilities completed 12.2% more tasks, worked 25.1% faster and produced results of 40% higher quality. On a task outside its capabilities, however, they were 19 percentage points less likely to be correct (Dell'Acqua et al., 2023). The boundary between these tasks is not visible to the user. <i>Analysts therefore need both the skills and the time to verify AI output.</i></p>
+
+<h3>Skills the profession will need</h3>
+<table>
+  <tr><th style="width:17%">Type</th><th style="width:43%">Skills</th><th>Why they matter as AI spreads</th></tr>
+  <tr><td><b>Cognitive</b></td><td>Framing the right business question; statistical and causal reasoning; critical evaluation of AI output</td><td>AI can write the query, but a person must decide whether the answer makes sense (Dell'Acqua et al., 2023).</td></tr>
+  <tr><td><b>Technical</b></td><td>SQL and Python at a level needed to check AI code; effective use of AI tools; data quality, governance and privacy</td><td>AI and big data is the fastest-growing skill to 2030 (World Economic Forum, 2025); errors and data leaks become more costly.</td></tr>
+  <tr><td><b>Interpersonal</b></td><td>Explaining results to non-technical managers; working with stakeholders; ethical responsibility</td><td>Social and emotional skills are growing fastest in AI-exposed occupations (OECD, 2024).</td></tr>
+</table>
+
+<figure style="margin-top:10pt">
+  <div class="fig-title">How AI changes the work of a junior data analyst</div>
+  <table class="flow">
+    <tr><td>Before AI</td><td>Writes SQL queries by hand, cleans data, builds the same weekly reports and dashboards.</td></tr>
+    <tr><td>With an AI tool</td><td>AI generates queries and Python code, suggests cleaning steps, drafts charts and text summaries.</td></tr>
+    <tr><td>Change in tasks</td><td>Less routine coding and reporting; more checking outputs, framing questions and explaining results.</td></tr>
+    <tr><td>Change in skills</td><td>Critical evaluation, statistical reasoning, data governance, communication with decision-makers.</td></tr>
+  </table>
+  <figcaption><b>Figure 2.</b> Illustrative scenario based on Dell'Acqua et al. (2023), OECD (2024) and Tomlinson et al. (2025).</figcaption>
+</figure>
+
+<h2>3. Policy recommendations</h2>
+<p>The evidence shows that AI makes analysts more productive only when they can check its work, and that the main risk is to people entering the profession. We therefore propose two actions.</p>
+
+<div class="rec">
+  <h3>Recommendation 1. Teach analysts to work with AI — and to check it</h3>
+  <dl>
+    <dt>Who</dt><dd>Universities with data analytics and data science programmes, supported by the Ministry of Science and Higher Education through the AI-Sana programme.</dd>
+    <dt>Action</dt><dd>From the 2027–28 academic year, add a compulsory module on AI-assisted analytics and verification. Students use AI tools on real datasets and are assessed on how well they find and correct AI errors. The module ends with a project for a partner employer.</dd>
+    <dt>Outcome</dt><dd>Graduates who are productive with AI from their first day and can recognise its mistakes, which narrows the skills gap. Success can be measured by the share of graduates employed within six months and by employer feedback.</dd>
+  </dl>
+</div>
+
+<div class="rec">
+  <h3>Recommendation 2. Keep the entry route open and set a review standard</h3>
+  <dl>
+    <dt>Who</dt><dd>Large employers of analysts (banks, telecom companies, public agencies), coordinated by the Ministry of Artificial Intelligence and Digital Development.</dd>
+    <dt>Action</dt><dd>(a) Offer paid 6–12-month "AI-augmented junior analyst" apprenticeships with a mentor; (b) adopt a rule that any AI-generated analysis used for a decision is reviewed and signed off by a named analyst; (c) link both to a professional certificate for data analysts.</dd>
+    <dt>Outcome</dt><dd>Young people can still enter and grow in the profession, and AI-assisted decisions become more reliable. The profession itself is strengthened: <b>training</b> (mentored apprenticeships), <b>job design</b> (time for checking AI output becomes part of the role), <b>professional standards</b> (the sign-off rule and certificate) and <b>status</b> (a recognised qualification). The rule also supports the accountability principles of the Law "On Artificial Intelligence".</dd>
+  </dl>
+</div>
+<p class="note">Costs could be shared: employers pay the apprentices' salaries and benefit from trained staff, while the state could consider partial support through existing programmes. Apprenticeships and university projects would also generate the local data on analysts' work that Kazakhstan currently lacks.</p>
+
+<h2>References</h2>
+<div class="refs">
+<p>Brynjolfsson, E., Chandar, B., &amp; Chen, R. (2025). <i>Canaries in the coal mine? Six facts about the recent employment effects of artificial intelligence</i> [Working paper]. Stanford Digital Economy Lab. https://digitaleconomy.stanford.edu/publication/canaries-in-the-coal-mine-six-facts-about-the-recent-employment-effects-of-artificial-intelligence/</p>
+<p>Brynjolfsson, E., Li, D., &amp; Raymond, L. (2025). Generative AI at work. <i>The Quarterly Journal of Economics, 140</i>(2), 889–942. https://doi.org/10.1093/qje/qjae044</p>
+<p>Dell'Acqua, F., McFowland, E., III, Mollick, E., Lifshitz-Assaf, H., Kellogg, K. C., Rajendran, S., Krayer, L., Candelon, F., &amp; Lakhani, K. R. (2023). <i>Navigating the jagged technological frontier: Field experimental evidence of the effects of AI on knowledge worker productivity and quality</i> (Harvard Business School Working Paper No. 24-013). https://doi.org/10.2139/ssrn.4573321</p>
+<p>Eloundou, T., Manning, S., Mishkin, P., &amp; Rock, D. (2024). GPTs are GPTs: Labor market impact potential of LLMs. <i>Science, 384</i>(6702), 1306–1308. https://doi.org/10.1126/science.adj0998</p>
+<p>Government of the Republic of Kazakhstan. (2024). <i>Concept for the development of artificial intelligence for 2024–2029</i> (Resolution No. 592). https://primeminister.kz/en/news/concept-for-artificial-intelligence-development-for-2024-2029-adopted-by-government-28786</p>
+<p>Law of the Republic of Kazakhstan No. 230-VIII "On Artificial Intelligence." (2025, November 17). https://adilet.zan.kz/rus/docs/Z2500000230</p>
+<p>OECD. (2024). <i>How is AI changing the way workers perform their jobs and the skills they require?</i> (OECD Policy Brief). OECD Publishing. https://doi.org/10.1787/8dc62c72-en</p>
+<p>Tomlinson, K., Jaffe, S., Wang, W., Counts, S., &amp; Suri, S. (2025). <i>Working with AI: Measuring the occupational implications of generative AI</i> (arXiv:2507.07935). arXiv. https://doi.org/10.48550/arXiv.2507.07935</p>
+<p>U.S. Bureau of Labor Statistics. (2026, July 16). Artificial intelligence, information technology, and employment, 2024–34. <i>The Economics Daily</i>. https://www.bls.gov/opub/ted/2026/artificial-intelligence-information-technology-and-employment-2024-34.htm</p>
+<p>World Economic Forum. (2025). <i>The future of jobs report 2025</i>. https://www.weforum.org/publications/the-future-of-jobs-report-2025/</p>
+</div>
+
+</div>
+</body>
+</html>
