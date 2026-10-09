@@ -34,111 +34,90 @@
 <section class="task" id="p4t2">
   <h2>Практика 4, задача 2. Три методики обучения</h2>
   <p class="cond">Результаты теста. Метод A: 2, 4, 3, 1, 5. Метод B: 5, 6, 4, 7, 3. Метод C: 8, 10, 9, 8, 7. α = 0,05.</p>
-  <h4>Шаг 1. Какой критерий</h4>
-  <p>3 группы, сравниваем средние → <b>one-way ANOVA</b> (t попарно нельзя — растёт ошибка 1-го рода).</p>
+  <h4>Шаг 1. Критерий</h4>
+  <p>3 группы, сравниваем средние → <b>one-way ANOVA</b>. k = 3 групп, N = 15 значений, α = 0,05.</p>
   <h4>Шаг 2. Гипотезы</h4>
   <div class="hyp"><b>H₀:</b><span>μ<sub>A</sub> = μ<sub>B</sub> = μ<sub>C</sub> — методика не влияет на результат</span><b>H₁:</b><span>хотя бы одно среднее отличается — хотя бы одна методика даёт другой результат</span></div>
-  <h4>Шаг 3. Формулы</h4>
-  <div class="math">\[ SS_W=\sum_j\sum_i (x_{ij}-\bar{x}_j)^2\,,\quad SS_B=\sum_j n_j(\bar{x}_j-\bar{x})^2\,,\quad SS_T=SS_B+SS_W \]
-  \[ df_B=k-1\,,\quad df_W=N-k\,,\quad MS_B=\frac{SS_B}{df_B}\,,\quad MS_W=\frac{SS_W}{df_W}\,,\quad F=\frac{MS_B}{MS_W} \]</div>
-  <h4>Шаг 4. Средние групп и общее среднее (k = 3, N = 15)</h4>
-  <div class="math">\[ \bar{x}_{\text{A}}=\frac{15}{5}=3 \]
-  \[ \bar{x}_{\text{B}}=\frac{25}{5}=5 \]
-  \[ \bar{x}_{\text{C}}=\frac{42}{5}=8{,}4 \]
-  \[ \bar{x}=\frac{\text{сумма всех}}{N}=\frac{82}{15}=5{,}467 \]</div>
-  <h4>Шаг 5. SS<sub>W</sub> — отклонения внутри групп (x − x̄ своей группы)</h4>
-  <div class="tablewrap"><table class="crit"><thead><tr><th>Группа</th><th>x</th><th>x − x̄ⱼ</th><th>(x − x̄ⱼ)²</th></tr></thead><tbody><tr><td><b>A</b></td><td>2</td><td>−1</td><td>1</td></tr><tr><td></td><td>4</td><td>1</td><td>1</td></tr><tr><td></td><td>3</td><td>0</td><td>0</td></tr><tr><td></td><td>1</td><td>−2</td><td>4</td></tr><tr><td></td><td>5</td><td>2</td><td>4</td></tr><tr><td></td><td></td><td><b>Σ A</b></td><td><b>10</b></td></tr><tr><td><b>B</b></td><td>5</td><td>0</td><td>0</td></tr><tr><td></td><td>6</td><td>1</td><td>1</td></tr><tr><td></td><td>4</td><td>−1</td><td>1</td></tr><tr><td></td><td>7</td><td>2</td><td>4</td></tr><tr><td></td><td>3</td><td>−2</td><td>4</td></tr><tr><td></td><td></td><td><b>Σ B</b></td><td><b>10</b></td></tr><tr><td><b>C</b></td><td>8</td><td>−0,4</td><td>0,16</td></tr><tr><td></td><td>10</td><td>1,6</td><td>2,56</td></tr><tr><td></td><td>9</td><td>0,6</td><td>0,36</td></tr><tr><td></td><td>8</td><td>−0,4</td><td>0,16</td></tr><tr><td></td><td>7</td><td>−1,4</td><td>1,96</td></tr><tr><td></td><td></td><td><b>Σ C</b></td><td><b>5,2</b></td></tr></tbody></table></div><div class="math">\[ SS_W=10+10+5{,}2=25{,}2 \]</div>
-  <h4>Шаг 6. SS<sub>B</sub> — отклонения средних групп от общего среднего</h4>
-  <div class="math">\[ 5\cdot(3-5{,}467)^2=5\cdot6{,}084=30{,}422 \]
-  \[ 5\cdot(5-5{,}467)^2=5\cdot0{,}218=1{,}089 \]
-  \[ 5\cdot(8{,}4-5{,}467)^2=5\cdot8{,}604=43{,}022 \]
-  \[ SS_B=30{,}422+1{,}089+43{,}022=74{,}533 \]</div>
-  <h4>Шаг 7. Проверка: SS<sub>T</sub></h4>
-  <div class="math">\[ SS_T=SS_B+SS_W=74{,}533+25{,}2=99{,}733 \]</div>
-  <h4>Шаг 8. Степени свободы и MS</h4>
+  <h4>Шаг 3. Средние групп и общее среднее</h4>
+  <div class="math">\[ \bar{x}_{\text{A}}=\frac{\sum x}{n}=\frac{2+4+3+1+5}{5}=\frac{15}{5}=3 \]
+  \[ \bar{x}_{\text{B}}=\frac{\sum x}{n}=\frac{5+6+4+7+3}{5}=\frac{25}{5}=5 \]
+  \[ \bar{x}_{\text{C}}=\frac{\sum x}{n}=\frac{8+10+9+8+7}{5}=\frac{42}{5}=8{,}4 \]
+  \[ \bar{x}=\frac{\text{сумма всех}}{N}=\frac{15+25+42}{15}=\frac{82}{15}=5{,}467 \]</div>
+  <h4>Шаг 4. SS<sub>W</sub> — внутри групп: формула и подстановка</h4>
+  <div class="math">\[ \begin{aligned}SS_{\text{A}} &= \sum (x-\bar{x}_{\text{A}})^2 \\ &= (2-3)^2+(4-3)^2+(3-3)^2 \\ &\phantom{=}+ (1-3)^2+(5-3)^2 \\ &= 1+1+0+4+4 \\ &= 10\end{aligned} \]
+  \[ \begin{aligned}SS_{\text{B}} &= \sum (x-\bar{x}_{\text{B}})^2 \\ &= (5-5)^2+(6-5)^2+(4-5)^2 \\ &\phantom{=}+ (7-5)^2+(3-5)^2 \\ &= 0+1+1+4+4 \\ &= 10\end{aligned} \]
+  \[ \begin{aligned}SS_{\text{C}} &= \sum (x-\bar{x}_{\text{C}})^2 \\ &= (8-8{,}4)^2+(10-8{,}4)^2+(9-8{,}4)^2 \\ &\phantom{=}+ (8-8{,}4)^2+(7-8{,}4)^2 \\ &= 0{,}16+2{,}56+0{,}36+0{,}16+1{,}96 \\ &= 5{,}2\end{aligned} \]
+  \[ SS_W=SS_{\text{A}}+SS_{\text{B}}+SS_{\text{C}}=10+10+5{,}2=25{,}2 \]</div>
+  <h4>Шаг 5. SS<sub>B</sub> — между группами: формула и подстановка</h4>
+  <div class="math">\[ \begin{aligned}SS_B &= \sum n_j(\bar{x}_j-\bar{x})^2 \\ &= 5(3-5{,}467)^2+5(5-5{,}467)^2 \\ &\phantom{=}+ 5(8{,}4-5{,}467)^2 \\ &= 30{,}422+1{,}089+43{,}022 \\ &= 74{,}533\end{aligned} \]
+  \[ SS_T=SS_B+SS_W=74{,}533+25{,}2=99{,}733 \]</div>
+  <h4>Шаг 6. Степени свободы, MS и F: формула и подстановка</h4>
   <div class="math">\[ df_B=k-1=3-1=2\,,\qquad df_W=N-k=15-3=12 \]
-  \[ MS_B=\frac{74{,}533}{2}=37{,}267\,,\qquad MS_W=\frac{25{,}2}{12}=2{,}1 \]</div>
-  <h4>Шаг 9. F</h4>
-  <div class="math">\[ F=\frac{MS_B}{MS_W}=\frac{37{,}267}{2{,}1}=17{,}746 \]</div>
-  <h4>Шаг 10. Таблица ANOVA</h4>
-  <div class="tablewrap"><table class="crit"><thead><tr><th>Источник</th><th>SS</th><th>df</th><th>MS</th><th>F</th></tr></thead><tbody><tr><td>Между группами</td><td>74,533</td><td>2</td><td>37,267</td><td>17,746</td></tr><tr><td>Внутри групп</td><td>25,2</td><td>12</td><td>2,1</td><td></td></tr><tr><td>Общее</td><td>99,733</td><td>14</td><td></td><td></td></tr></tbody></table></div>
-  <h4>Шаг 11. Критическое значение</h4>
-  <p>Таблица Фишера, α = 0,05, df<sub>B</sub> = 2 (столбец), df<sub>W</sub> = 12 (строка):</p><div class="math">\[ F_{\text{кр}}=3{,}89 \]</div>
-  <h4>Шаг 12. Сравнение и вывод</h4>
+  \[ MS_B=\frac{SS_B}{df_B}=\frac{74{,}533}{2}=37{,}267\,,\qquad MS_W=\frac{SS_W}{df_W}=\frac{25{,}2}{12}=2{,}1 \]
+  \[ F=\frac{MS_B}{MS_W}=\frac{37{,}267}{2{,}1}=17{,}746 \]</div><div class="tablewrap"><table class="crit"><thead><tr><th>Источник</th><th>SS</th><th>df</th><th>MS</th><th>F</th></tr></thead><tbody><tr><td>Между группами</td><td>74,533</td><td>2</td><td>37,267</td><td>17,746</td></tr><tr><td>Внутри групп</td><td>25,2</td><td>12</td><td>2,1</td><td></td></tr><tr><td>Общее</td><td>99,733</td><td>14</td><td></td><td></td></tr></tbody></table></div>
+  <h4>Шаг 7. Критическое значение</h4>
+  <p>По таблице Фишера (α = 0,05, df<sub>B</sub> = 2 — столбец, df<sub>W</sub> = 12 — строка):</p><div class="math">\[ F_{\text{кр}}=3{,}89 \]</div>
+  <h4>Шаг 8. Вывод</h4>
   <p class="no"><b>F = 17,746 &gt; F<sub>кр</sub> = 3,89 → H₀ отвергаем, принимаем H₁.</b><br>Вывод: средние результаты трёх методик значимо различаются (лучше всех метод C).</p>
 </section>
 <section class="task" id="p4t1">
   <h2>Практика 4, задача 1. Тип рекламы и объём продаж</h2>
   <p class="cond">ТВ: 6,525; 7,069; 7,065; 7,359; 7,636; 7,929. Радио: 10,418; 8,016; 7,608; 8,175; 8,335; 8,397. Газеты: 6,062; 8,609; 7,143; 6,923; 5,857. Интернет: 5,086; 8,198; 7,009; 7,972. α = 0,05.</p>
-  <h4>Шаг 1. Какой критерий</h4>
-  <p>4 группы, сравниваем средние → <b>one-way ANOVA</b> (t попарно нельзя — растёт ошибка 1-го рода).</p>
+  <h4>Шаг 1. Критерий</h4>
+  <p>4 группы, сравниваем средние → <b>one-way ANOVA</b>. k = 4 групп, N = 21 значений, α = 0,05.</p>
   <h4>Шаг 2. Гипотезы</h4>
   <div class="hyp"><b>H₀:</b><span>μ<sub>ТВ</sub> = μ<sub>Радио</sub> = μ<sub>Газеты</sub> = μ<sub>Интернет</sub> — тип рекламы не влияет на продажи</span><b>H₁:</b><span>хотя бы одно среднее отличается — хотя бы один тип рекламы даёт другой объём</span></div>
-  <h4>Шаг 3. Формулы</h4>
-  <div class="math">\[ SS_W=\sum_j\sum_i (x_{ij}-\bar{x}_j)^2\,,\quad SS_B=\sum_j n_j(\bar{x}_j-\bar{x})^2\,,\quad SS_T=SS_B+SS_W \]
-  \[ df_B=k-1\,,\quad df_W=N-k\,,\quad MS_B=\frac{SS_B}{df_B}\,,\quad MS_W=\frac{SS_W}{df_W}\,,\quad F=\frac{MS_B}{MS_W} \]</div>
-  <h4>Шаг 4. Средние групп и общее среднее (k = 4, N = 21)</h4>
-  <div class="math">\[ \bar{x}_{\text{ТВ}}=\frac{43{,}583}{6}=7{,}2638 \]
-  \[ \bar{x}_{\text{Радио}}=\frac{50{,}949}{6}=8{,}4915 \]
-  \[ \bar{x}_{\text{Газеты}}=\frac{34{,}594}{5}=6{,}9188 \]
-  \[ \bar{x}_{\text{Интернет}}=\frac{28{,}265}{4}=7{,}0663 \]
-  \[ \bar{x}=\frac{\text{сумма всех}}{N}=\frac{157{,}391}{21}=7{,}4948 \]</div>
-  <h4>Шаг 5. SS<sub>W</sub> — отклонения внутри групп (x − x̄ своей группы)</h4>
-  <div class="tablewrap"><table class="crit"><thead><tr><th>Группа</th><th>x</th><th>x − x̄ⱼ</th><th>(x − x̄ⱼ)²</th></tr></thead><tbody><tr><td><b>ТВ</b></td><td>6,525</td><td>−0,7388</td><td>0,5459</td></tr><tr><td></td><td>7,069</td><td>−0,1948</td><td>0,038</td></tr><tr><td></td><td>7,065</td><td>−0,1988</td><td>0,0395</td></tr><tr><td></td><td>7,359</td><td>0,0952</td><td>0,0091</td></tr><tr><td></td><td>7,636</td><td>0,3722</td><td>0,1385</td></tr><tr><td></td><td>7,929</td><td>0,6652</td><td>0,4424</td></tr><tr><td></td><td></td><td><b>Σ ТВ</b></td><td><b>1,2134</b></td></tr><tr><td><b>Радио</b></td><td>10,418</td><td>1,9265</td><td>3,7114</td></tr><tr><td></td><td>8,016</td><td>−0,4755</td><td>0,2261</td></tr><tr><td></td><td>7,608</td><td>−0,8835</td><td>0,7806</td></tr><tr><td></td><td>8,175</td><td>−0,3165</td><td>0,1002</td></tr><tr><td></td><td>8,335</td><td>−0,1565</td><td>0,0245</td></tr><tr><td></td><td>8,397</td><td>−0,0945</td><td>0,0089</td></tr><tr><td></td><td></td><td><b>Σ Радио</b></td><td><b>4,8517</b></td></tr><tr><td><b>Газеты</b></td><td>6,062</td><td>−0,8568</td><td>0,7341</td></tr><tr><td></td><td>8,609</td><td>1,6902</td><td>2,8568</td></tr><tr><td></td><td>7,143</td><td>0,2242</td><td>0,0503</td></tr><tr><td></td><td>6,923</td><td>0,0042</td><td>0</td></tr><tr><td></td><td>5,857</td><td>−1,0618</td><td>1,1274</td></tr><tr><td></td><td></td><td><b>Σ Газеты</b></td><td><b>4,7686</b></td></tr><tr><td><b>Интернет</b></td><td>5,086</td><td>−1,9802</td><td>3,9214</td></tr><tr><td></td><td>8,198</td><td>1,1318</td><td>1,2809</td></tr><tr><td></td><td>7,009</td><td>−0,0572</td><td>0,0033</td></tr><tr><td></td><td>7,972</td><td>0,9058</td><td>0,8204</td></tr><tr><td></td><td></td><td><b>Σ Интернет</b></td><td><b>6,0259</b></td></tr></tbody></table></div><div class="math">\[ SS_W=1{,}2134+4{,}8517+4{,}7686+6{,}0259=16{,}8595 \]</div>
-  <h4>Шаг 6. SS<sub>B</sub> — отклонения средних групп от общего среднего</h4>
-  <div class="math">\[ 6\cdot(7{,}2638-7{,}4948)^2=6\cdot0{,}0534=0{,}3201 \]
-  \[ 6\cdot(8{,}4915-7{,}4948)^2=6\cdot0{,}9934=5{,}9604 \]
-  \[ 5\cdot(6{,}9188-7{,}4948)^2=5\cdot0{,}3318=1{,}6589 \]
-  \[ 4\cdot(7{,}0663-7{,}4948)^2=4\cdot0{,}1837=0{,}7347 \]
-  \[ SS_B=0{,}3201+5{,}9604+1{,}6589+0{,}7347=8{,}674 \]</div>
-  <h4>Шаг 7. Проверка: SS<sub>T</sub></h4>
-  <div class="math">\[ SS_T=SS_B+SS_W=8{,}674+16{,}8595=25{,}5336 \]</div>
-  <h4>Шаг 8. Степени свободы и MS</h4>
+  <h4>Шаг 3. Средние групп и общее среднее</h4>
+  <div class="math">\[ \bar{x}_{\text{ТВ}}=\frac{\sum x}{n}=\frac{6{,}525+7{,}069+7{,}065+7{,}359+7{,}636+7{,}929}{6}=\frac{43{,}583}{6}=7{,}2638 \]
+  \[ \bar{x}_{\text{Радио}}=\frac{\sum x}{n}=\frac{10{,}418+8{,}016+7{,}608+8{,}175+8{,}335+8{,}397}{6}=\frac{50{,}949}{6}=8{,}4915 \]
+  \[ \bar{x}_{\text{Газеты}}=\frac{\sum x}{n}=\frac{6{,}062+8{,}609+7{,}143+6{,}923+5{,}857}{5}=\frac{34{,}594}{5}=6{,}9188 \]
+  \[ \bar{x}_{\text{Интернет}}=\frac{\sum x}{n}=\frac{5{,}086+8{,}198+7{,}009+7{,}972}{4}=\frac{28{,}265}{4}=7{,}0663 \]
+  \[ \bar{x}=\frac{\text{сумма всех}}{N}=\frac{43{,}583+50{,}949+34{,}594+28{,}265}{21}=\frac{157{,}391}{21}=7{,}4948 \]</div>
+  <h4>Шаг 4. SS<sub>W</sub> — внутри групп: формула и подстановка</h4>
+  <div class="math">\[ \begin{aligned}SS_{\text{ТВ}} &= \sum (x-\bar{x}_{\text{ТВ}})^2 \\ &= (6{,}525-7{,}2638)^2+(7{,}069-7{,}2638)^2+(7{,}065-7{,}2638)^2 \\ &\phantom{=}+ (7{,}359-7{,}2638)^2+(7{,}636-7{,}2638)^2+(7{,}929-7{,}2638)^2 \\ &= 0{,}5459+0{,}038+0{,}0395+0{,}0091+0{,}1385+0{,}4424 \\ &= 1{,}2134\end{aligned} \]
+  \[ \begin{aligned}SS_{\text{Радио}} &= \sum (x-\bar{x}_{\text{Радио}})^2 \\ &= (10{,}418-8{,}4915)^2+(8{,}016-8{,}4915)^2+(7{,}608-8{,}4915)^2 \\ &\phantom{=}+ (8{,}175-8{,}4915)^2+(8{,}335-8{,}4915)^2+(8{,}397-8{,}4915)^2 \\ &= 3{,}7114+0{,}2261+0{,}7806+0{,}1002+0{,}0245+0{,}0089 \\ &= 4{,}8517\end{aligned} \]
+  \[ \begin{aligned}SS_{\text{Газеты}} &= \sum (x-\bar{x}_{\text{Газеты}})^2 \\ &= (6{,}062-6{,}9188)^2+(8{,}609-6{,}9188)^2+(7{,}143-6{,}9188)^2 \\ &\phantom{=}+ (6{,}923-6{,}9188)^2+(5{,}857-6{,}9188)^2 \\ &= 0{,}7341+2{,}8568+0{,}0503+0+1{,}1274 \\ &= 4{,}7686\end{aligned} \]
+  \[ \begin{aligned}SS_{\text{Интернет}} &= \sum (x-\bar{x}_{\text{Интернет}})^2 \\ &= (5{,}086-7{,}0663)^2+(8{,}198-7{,}0663)^2+(7{,}009-7{,}0663)^2 \\ &\phantom{=}+ (7{,}972-7{,}0663)^2 \\ &= 3{,}9214+1{,}2809+0{,}0033+0{,}8204 \\ &= 6{,}0259\end{aligned} \]
+  \[ SS_W=SS_{\text{ТВ}}+SS_{\text{Радио}}+SS_{\text{Газеты}}+SS_{\text{Интернет}}=1{,}2134+4{,}8517+4{,}7686+6{,}0259=16{,}8595 \]</div>
+  <h4>Шаг 5. SS<sub>B</sub> — между группами: формула и подстановка</h4>
+  <div class="math">\[ \begin{aligned}SS_B &= \sum n_j(\bar{x}_j-\bar{x})^2 \\ &= 6(7{,}2638-7{,}4948)^2+6(8{,}4915-7{,}4948)^2 \\ &\phantom{=}+ 5(6{,}9188-7{,}4948)^2+4(7{,}0663-7{,}4948)^2 \\ &= 0{,}3201+5{,}9604+1{,}6589+0{,}7347 \\ &= 8{,}674\end{aligned} \]
+  \[ SS_T=SS_B+SS_W=8{,}674+16{,}8595=25{,}5336 \]</div>
+  <h4>Шаг 6. Степени свободы, MS и F: формула и подстановка</h4>
   <div class="math">\[ df_B=k-1=4-1=3\,,\qquad df_W=N-k=21-4=17 \]
-  \[ MS_B=\frac{8{,}674}{3}=2{,}8913\,,\qquad MS_W=\frac{16{,}8595}{17}=0{,}9917 \]</div>
-  <h4>Шаг 9. F</h4>
-  <div class="math">\[ F=\frac{MS_B}{MS_W}=\frac{2{,}8913}{0{,}9917}=2{,}915 \]</div>
-  <h4>Шаг 10. Таблица ANOVA</h4>
-  <div class="tablewrap"><table class="crit"><thead><tr><th>Источник</th><th>SS</th><th>df</th><th>MS</th><th>F</th></tr></thead><tbody><tr><td>Между группами</td><td>8,674</td><td>3</td><td>2,8913</td><td>2,915</td></tr><tr><td>Внутри групп</td><td>16,8595</td><td>17</td><td>0,9917</td><td></td></tr><tr><td>Общее</td><td>25,5336</td><td>20</td><td></td><td></td></tr></tbody></table></div>
-  <h4>Шаг 11. Критическое значение</h4>
-  <p>Таблица Фишера, α = 0,05, df<sub>B</sub> = 3 (столбец), df<sub>W</sub> = 17 (строка):</p><div class="math">\[ F_{\text{кр}}=3{,}2 \]</div>
-  <h4>Шаг 12. Сравнение и вывод</h4>
+  \[ MS_B=\frac{SS_B}{df_B}=\frac{8{,}674}{3}=2{,}8913\,,\qquad MS_W=\frac{SS_W}{df_W}=\frac{16{,}8595}{17}=0{,}9917 \]
+  \[ F=\frac{MS_B}{MS_W}=\frac{2{,}8913}{0{,}9917}=2{,}915 \]</div><div class="tablewrap"><table class="crit"><thead><tr><th>Источник</th><th>SS</th><th>df</th><th>MS</th><th>F</th></tr></thead><tbody><tr><td>Между группами</td><td>8,674</td><td>3</td><td>2,8913</td><td>2,915</td></tr><tr><td>Внутри групп</td><td>16,8595</td><td>17</td><td>0,9917</td><td></td></tr><tr><td>Общее</td><td>25,5336</td><td>20</td><td></td><td></td></tr></tbody></table></div>
+  <h4>Шаг 7. Критическое значение</h4>
+  <p>По таблице Фишера (α = 0,05, df<sub>B</sub> = 3 — столбец, df<sub>W</sub> = 17 — строка):</p><div class="math">\[ F_{\text{кр}}=3{,}2 \]</div>
+  <h4>Шаг 8. Вывод</h4>
   <p class="ok"><b>F = 2,915 &lt; F<sub>кр</sub> = 3,2 → H₀ принимаем.</b><br>Вывод: при α = 0,05 тип рекламы не влияет на объём продаж значимо (p = 0,064; радио в среднем выше, но этого мало). Группы разного размера — поэтому в SS<sub>B</sub> у каждой свой n<sub>j</sub>.</p>
 </section>
 <section class="task" id="p4t3">
   <h2>Практика 4, задача 3. Три препарата от холестерина</h2>
   <p class="cond">group_A = [12, 14, 13, 11, 15], group_B = [15, 16, 14, 17, 13], group_C = [18, 20, 19, 21, 17]. α = 0,05.</p>
-  <h4>Шаг 1. Какой критерий</h4>
-  <p>3 группы, сравниваем средние → <b>one-way ANOVA</b> (t попарно нельзя — растёт ошибка 1-го рода).</p>
+  <h4>Шаг 1. Критерий</h4>
+  <p>3 группы, сравниваем средние → <b>one-way ANOVA</b>. k = 3 групп, N = 15 значений, α = 0,05.</p>
   <h4>Шаг 2. Гипотезы</h4>
   <div class="hyp"><b>H₀:</b><span>μ<sub>A</sub> = μ<sub>B</sub> = μ<sub>C</sub> — препараты одинаково эффективны</span><b>H₁:</b><span>хотя бы одно среднее отличается — хотя бы один препарат отличается</span></div>
-  <h4>Шаг 3. Формулы</h4>
-  <div class="math">\[ SS_W=\sum_j\sum_i (x_{ij}-\bar{x}_j)^2\,,\quad SS_B=\sum_j n_j(\bar{x}_j-\bar{x})^2\,,\quad SS_T=SS_B+SS_W \]
-  \[ df_B=k-1\,,\quad df_W=N-k\,,\quad MS_B=\frac{SS_B}{df_B}\,,\quad MS_W=\frac{SS_W}{df_W}\,,\quad F=\frac{MS_B}{MS_W} \]</div>
-  <h4>Шаг 4. Средние групп и общее среднее (k = 3, N = 15)</h4>
-  <div class="math">\[ \bar{x}_{\text{A}}=\frac{65}{5}=13 \]
-  \[ \bar{x}_{\text{B}}=\frac{75}{5}=15 \]
-  \[ \bar{x}_{\text{C}}=\frac{95}{5}=19 \]
-  \[ \bar{x}=\frac{\text{сумма всех}}{N}=\frac{235}{15}=15{,}667 \]</div>
-  <h4>Шаг 5. SS<sub>W</sub> — отклонения внутри групп (x − x̄ своей группы)</h4>
-  <div class="tablewrap"><table class="crit"><thead><tr><th>Группа</th><th>x</th><th>x − x̄ⱼ</th><th>(x − x̄ⱼ)²</th></tr></thead><tbody><tr><td><b>A</b></td><td>12</td><td>−1</td><td>1</td></tr><tr><td></td><td>14</td><td>1</td><td>1</td></tr><tr><td></td><td>13</td><td>0</td><td>0</td></tr><tr><td></td><td>11</td><td>−2</td><td>4</td></tr><tr><td></td><td>15</td><td>2</td><td>4</td></tr><tr><td></td><td></td><td><b>Σ A</b></td><td><b>10</b></td></tr><tr><td><b>B</b></td><td>15</td><td>0</td><td>0</td></tr><tr><td></td><td>16</td><td>1</td><td>1</td></tr><tr><td></td><td>14</td><td>−1</td><td>1</td></tr><tr><td></td><td>17</td><td>2</td><td>4</td></tr><tr><td></td><td>13</td><td>−2</td><td>4</td></tr><tr><td></td><td></td><td><b>Σ B</b></td><td><b>10</b></td></tr><tr><td><b>C</b></td><td>18</td><td>−1</td><td>1</td></tr><tr><td></td><td>20</td><td>1</td><td>1</td></tr><tr><td></td><td>19</td><td>0</td><td>0</td></tr><tr><td></td><td>21</td><td>2</td><td>4</td></tr><tr><td></td><td>17</td><td>−2</td><td>4</td></tr><tr><td></td><td></td><td><b>Σ C</b></td><td><b>10</b></td></tr></tbody></table></div><div class="math">\[ SS_W=10+10+10=30 \]</div>
-  <h4>Шаг 6. SS<sub>B</sub> — отклонения средних групп от общего среднего</h4>
-  <div class="math">\[ 5\cdot(13-15{,}667)^2=5\cdot7{,}111=35{,}556 \]
-  \[ 5\cdot(15-15{,}667)^2=5\cdot0{,}444=2{,}222 \]
-  \[ 5\cdot(19-15{,}667)^2=5\cdot11{,}111=55{,}556 \]
-  \[ SS_B=35{,}556+2{,}222+55{,}556=93{,}333 \]</div>
-  <h4>Шаг 7. Проверка: SS<sub>T</sub></h4>
-  <div class="math">\[ SS_T=SS_B+SS_W=93{,}333+30=123{,}333 \]</div>
-  <h4>Шаг 8. Степени свободы и MS</h4>
+  <h4>Шаг 3. Средние групп и общее среднее</h4>
+  <div class="math">\[ \bar{x}_{\text{A}}=\frac{\sum x}{n}=\frac{12+14+13+11+15}{5}=\frac{65}{5}=13 \]
+  \[ \bar{x}_{\text{B}}=\frac{\sum x}{n}=\frac{15+16+14+17+13}{5}=\frac{75}{5}=15 \]
+  \[ \bar{x}_{\text{C}}=\frac{\sum x}{n}=\frac{18+20+19+21+17}{5}=\frac{95}{5}=19 \]
+  \[ \bar{x}=\frac{\text{сумма всех}}{N}=\frac{65+75+95}{15}=\frac{235}{15}=15{,}667 \]</div>
+  <h4>Шаг 4. SS<sub>W</sub> — внутри групп: формула и подстановка</h4>
+  <div class="math">\[ \begin{aligned}SS_{\text{A}} &= \sum (x-\bar{x}_{\text{A}})^2 \\ &= (12-13)^2+(14-13)^2+(13-13)^2 \\ &\phantom{=}+ (11-13)^2+(15-13)^2 \\ &= 1+1+0+4+4 \\ &= 10\end{aligned} \]
+  \[ \begin{aligned}SS_{\text{B}} &= \sum (x-\bar{x}_{\text{B}})^2 \\ &= (15-15)^2+(16-15)^2+(14-15)^2 \\ &\phantom{=}+ (17-15)^2+(13-15)^2 \\ &= 0+1+1+4+4 \\ &= 10\end{aligned} \]
+  \[ \begin{aligned}SS_{\text{C}} &= \sum (x-\bar{x}_{\text{C}})^2 \\ &= (18-19)^2+(20-19)^2+(19-19)^2 \\ &\phantom{=}+ (21-19)^2+(17-19)^2 \\ &= 1+1+0+4+4 \\ &= 10\end{aligned} \]
+  \[ SS_W=SS_{\text{A}}+SS_{\text{B}}+SS_{\text{C}}=10+10+10=30 \]</div>
+  <h4>Шаг 5. SS<sub>B</sub> — между группами: формула и подстановка</h4>
+  <div class="math">\[ \begin{aligned}SS_B &= \sum n_j(\bar{x}_j-\bar{x})^2 \\ &= 5(13-15{,}667)^2+5(15-15{,}667)^2 \\ &\phantom{=}+ 5(19-15{,}667)^2 \\ &= 35{,}556+2{,}222+55{,}556 \\ &= 93{,}333\end{aligned} \]
+  \[ SS_T=SS_B+SS_W=93{,}333+30=123{,}333 \]</div>
+  <h4>Шаг 6. Степени свободы, MS и F: формула и подстановка</h4>
   <div class="math">\[ df_B=k-1=3-1=2\,,\qquad df_W=N-k=15-3=12 \]
-  \[ MS_B=\frac{93{,}333}{2}=46{,}667\,,\qquad MS_W=\frac{30}{12}=2{,}5 \]</div>
-  <h4>Шаг 9. F</h4>
-  <div class="math">\[ F=\frac{MS_B}{MS_W}=\frac{46{,}667}{2{,}5}=18{,}667 \]</div>
-  <h4>Шаг 10. Таблица ANOVA</h4>
-  <div class="tablewrap"><table class="crit"><thead><tr><th>Источник</th><th>SS</th><th>df</th><th>MS</th><th>F</th></tr></thead><tbody><tr><td>Между группами</td><td>93,333</td><td>2</td><td>46,667</td><td>18,667</td></tr><tr><td>Внутри групп</td><td>30</td><td>12</td><td>2,5</td><td></td></tr><tr><td>Общее</td><td>123,333</td><td>14</td><td></td><td></td></tr></tbody></table></div>
-  <h4>Шаг 11. Критическое значение</h4>
-  <p>Таблица Фишера, α = 0,05, df<sub>B</sub> = 2 (столбец), df<sub>W</sub> = 12 (строка):</p><div class="math">\[ F_{\text{кр}}=3{,}89 \]</div>
-  <h4>Шаг 12. Сравнение и вывод</h4>
+  \[ MS_B=\frac{SS_B}{df_B}=\frac{93{,}333}{2}=46{,}667\,,\qquad MS_W=\frac{SS_W}{df_W}=\frac{30}{12}=2{,}5 \]
+  \[ F=\frac{MS_B}{MS_W}=\frac{46{,}667}{2{,}5}=18{,}667 \]</div><div class="tablewrap"><table class="crit"><thead><tr><th>Источник</th><th>SS</th><th>df</th><th>MS</th><th>F</th></tr></thead><tbody><tr><td>Между группами</td><td>93,333</td><td>2</td><td>46,667</td><td>18,667</td></tr><tr><td>Внутри групп</td><td>30</td><td>12</td><td>2,5</td><td></td></tr><tr><td>Общее</td><td>123,333</td><td>14</td><td></td><td></td></tr></tbody></table></div>
+  <h4>Шаг 7. Критическое значение</h4>
+  <p>По таблице Фишера (α = 0,05, df<sub>B</sub> = 2 — столбец, df<sub>W</sub> = 12 — строка):</p><div class="math">\[ F_{\text{кр}}=3{,}89 \]</div>
+  <h4>Шаг 8. Вывод</h4>
   <p class="no"><b>F = 18,667 &gt; F<sub>кр</sub> = 3,89 → H₀ отвергаем, принимаем H₁.</b><br>Вывод: препараты различаются по эффективности (C снижает сильнее всех).</p>
   <h4>То же в Python</h4>
 <pre><code class="language-python">from scipy import stats
@@ -154,37 +133,30 @@ print(round(stats.f.ppf(0.95, 2, 12), 3))          # F_кр → 3.885</code></pr
 <section class="task" id="a2t1">
   <h2>Assignment 2, задача 1. Удобрения и урожайность</h2>
   <p class="cond">Урожайность (ц/га). A: 32, 30, 28, 35, 33. B: 40, 42, 38, 41, 39. C: 36, 34, 37, 35, 38. Однофакторный ANOVA, α = 0,05.</p>
-  <h4>Шаг 1. Какой критерий</h4>
-  <p>3 группы, сравниваем средние → <b>one-way ANOVA</b> (t попарно нельзя — растёт ошибка 1-го рода).</p>
+  <h4>Шаг 1. Критерий</h4>
+  <p>3 группы, сравниваем средние → <b>one-way ANOVA</b>. k = 3 групп, N = 15 значений, α = 0,05.</p>
   <h4>Шаг 2. Гипотезы</h4>
   <div class="hyp"><b>H₀:</b><span>μ<sub>A</sub> = μ<sub>B</sub> = μ<sub>C</sub> — тип удобрения не влияет на урожайность</span><b>H₁:</b><span>хотя бы одно среднее отличается — хотя бы одно удобрение даёт другую урожайность</span></div>
-  <h4>Шаг 3. Формулы</h4>
-  <div class="math">\[ SS_W=\sum_j\sum_i (x_{ij}-\bar{x}_j)^2\,,\quad SS_B=\sum_j n_j(\bar{x}_j-\bar{x})^2\,,\quad SS_T=SS_B+SS_W \]
-  \[ df_B=k-1\,,\quad df_W=N-k\,,\quad MS_B=\frac{SS_B}{df_B}\,,\quad MS_W=\frac{SS_W}{df_W}\,,\quad F=\frac{MS_B}{MS_W} \]</div>
-  <h4>Шаг 4. Средние групп и общее среднее (k = 3, N = 15)</h4>
-  <div class="math">\[ \bar{x}_{\text{A}}=\frac{158}{5}=31{,}6 \]
-  \[ \bar{x}_{\text{B}}=\frac{200}{5}=40 \]
-  \[ \bar{x}_{\text{C}}=\frac{180}{5}=36 \]
-  \[ \bar{x}=\frac{\text{сумма всех}}{N}=\frac{538}{15}=35{,}867 \]</div>
-  <h4>Шаг 5. SS<sub>W</sub> — отклонения внутри групп (x − x̄ своей группы)</h4>
-  <div class="tablewrap"><table class="crit"><thead><tr><th>Группа</th><th>x</th><th>x − x̄ⱼ</th><th>(x − x̄ⱼ)²</th></tr></thead><tbody><tr><td><b>A</b></td><td>32</td><td>0,4</td><td>0,16</td></tr><tr><td></td><td>30</td><td>−1,6</td><td>2,56</td></tr><tr><td></td><td>28</td><td>−3,6</td><td>12,96</td></tr><tr><td></td><td>35</td><td>3,4</td><td>11,56</td></tr><tr><td></td><td>33</td><td>1,4</td><td>1,96</td></tr><tr><td></td><td></td><td><b>Σ A</b></td><td><b>29,2</b></td></tr><tr><td><b>B</b></td><td>40</td><td>0</td><td>0</td></tr><tr><td></td><td>42</td><td>2</td><td>4</td></tr><tr><td></td><td>38</td><td>−2</td><td>4</td></tr><tr><td></td><td>41</td><td>1</td><td>1</td></tr><tr><td></td><td>39</td><td>−1</td><td>1</td></tr><tr><td></td><td></td><td><b>Σ B</b></td><td><b>10</b></td></tr><tr><td><b>C</b></td><td>36</td><td>0</td><td>0</td></tr><tr><td></td><td>34</td><td>−2</td><td>4</td></tr><tr><td></td><td>37</td><td>1</td><td>1</td></tr><tr><td></td><td>35</td><td>−1</td><td>1</td></tr><tr><td></td><td>38</td><td>2</td><td>4</td></tr><tr><td></td><td></td><td><b>Σ C</b></td><td><b>10</b></td></tr></tbody></table></div><div class="math">\[ SS_W=29{,}2+10+10=49{,}2 \]</div>
-  <h4>Шаг 6. SS<sub>B</sub> — отклонения средних групп от общего среднего</h4>
-  <div class="math">\[ 5\cdot(31{,}6-35{,}867)^2=5\cdot18{,}204=91{,}022 \]
-  \[ 5\cdot(40-35{,}867)^2=5\cdot17{,}084=85{,}422 \]
-  \[ 5\cdot(36-35{,}867)^2=5\cdot0{,}018=0{,}089 \]
-  \[ SS_B=91{,}022+85{,}422+0{,}089=176{,}533 \]</div>
-  <h4>Шаг 7. Проверка: SS<sub>T</sub></h4>
-  <div class="math">\[ SS_T=SS_B+SS_W=176{,}533+49{,}2=225{,}733 \]</div>
-  <h4>Шаг 8. Степени свободы и MS</h4>
+  <h4>Шаг 3. Средние групп и общее среднее</h4>
+  <div class="math">\[ \bar{x}_{\text{A}}=\frac{\sum x}{n}=\frac{32+30+28+35+33}{5}=\frac{158}{5}=31{,}6 \]
+  \[ \bar{x}_{\text{B}}=\frac{\sum x}{n}=\frac{40+42+38+41+39}{5}=\frac{200}{5}=40 \]
+  \[ \bar{x}_{\text{C}}=\frac{\sum x}{n}=\frac{36+34+37+35+38}{5}=\frac{180}{5}=36 \]
+  \[ \bar{x}=\frac{\text{сумма всех}}{N}=\frac{158+200+180}{15}=\frac{538}{15}=35{,}867 \]</div>
+  <h4>Шаг 4. SS<sub>W</sub> — внутри групп: формула и подстановка</h4>
+  <div class="math">\[ \begin{aligned}SS_{\text{A}} &= \sum (x-\bar{x}_{\text{A}})^2 \\ &= (32-31{,}6)^2+(30-31{,}6)^2+(28-31{,}6)^2 \\ &\phantom{=}+ (35-31{,}6)^2+(33-31{,}6)^2 \\ &= 0{,}16+2{,}56+12{,}96+11{,}56+1{,}96 \\ &= 29{,}2\end{aligned} \]
+  \[ \begin{aligned}SS_{\text{B}} &= \sum (x-\bar{x}_{\text{B}})^2 \\ &= (40-40)^2+(42-40)^2+(38-40)^2 \\ &\phantom{=}+ (41-40)^2+(39-40)^2 \\ &= 0+4+4+1+1 \\ &= 10\end{aligned} \]
+  \[ \begin{aligned}SS_{\text{C}} &= \sum (x-\bar{x}_{\text{C}})^2 \\ &= (36-36)^2+(34-36)^2+(37-36)^2 \\ &\phantom{=}+ (35-36)^2+(38-36)^2 \\ &= 0+4+1+1+4 \\ &= 10\end{aligned} \]
+  \[ SS_W=SS_{\text{A}}+SS_{\text{B}}+SS_{\text{C}}=29{,}2+10+10=49{,}2 \]</div>
+  <h4>Шаг 5. SS<sub>B</sub> — между группами: формула и подстановка</h4>
+  <div class="math">\[ \begin{aligned}SS_B &= \sum n_j(\bar{x}_j-\bar{x})^2 \\ &= 5(31{,}6-35{,}867)^2+5(40-35{,}867)^2 \\ &\phantom{=}+ 5(36-35{,}867)^2 \\ &= 91{,}022+85{,}422+0{,}089 \\ &= 176{,}533\end{aligned} \]
+  \[ SS_T=SS_B+SS_W=176{,}533+49{,}2=225{,}733 \]</div>
+  <h4>Шаг 6. Степени свободы, MS и F: формула и подстановка</h4>
   <div class="math">\[ df_B=k-1=3-1=2\,,\qquad df_W=N-k=15-3=12 \]
-  \[ MS_B=\frac{176{,}533}{2}=88{,}267\,,\qquad MS_W=\frac{49{,}2}{12}=4{,}1 \]</div>
-  <h4>Шаг 9. F</h4>
-  <div class="math">\[ F=\frac{MS_B}{MS_W}=\frac{88{,}267}{4{,}1}=21{,}528 \]</div>
-  <h4>Шаг 10. Таблица ANOVA</h4>
-  <div class="tablewrap"><table class="crit"><thead><tr><th>Источник</th><th>SS</th><th>df</th><th>MS</th><th>F</th></tr></thead><tbody><tr><td>Между группами</td><td>176,533</td><td>2</td><td>88,267</td><td>21,528</td></tr><tr><td>Внутри групп</td><td>49,2</td><td>12</td><td>4,1</td><td></td></tr><tr><td>Общее</td><td>225,733</td><td>14</td><td></td><td></td></tr></tbody></table></div>
-  <h4>Шаг 11. Критическое значение</h4>
-  <p>Таблица Фишера, α = 0,05, df<sub>B</sub> = 2 (столбец), df<sub>W</sub> = 12 (строка):</p><div class="math">\[ F_{\text{кр}}=3{,}89 \]</div>
-  <h4>Шаг 12. Сравнение и вывод</h4>
+  \[ MS_B=\frac{SS_B}{df_B}=\frac{176{,}533}{2}=88{,}267\,,\qquad MS_W=\frac{SS_W}{df_W}=\frac{49{,}2}{12}=4{,}1 \]
+  \[ F=\frac{MS_B}{MS_W}=\frac{88{,}267}{4{,}1}=21{,}528 \]</div><div class="tablewrap"><table class="crit"><thead><tr><th>Источник</th><th>SS</th><th>df</th><th>MS</th><th>F</th></tr></thead><tbody><tr><td>Между группами</td><td>176,533</td><td>2</td><td>88,267</td><td>21,528</td></tr><tr><td>Внутри групп</td><td>49,2</td><td>12</td><td>4,1</td><td></td></tr><tr><td>Общее</td><td>225,733</td><td>14</td><td></td><td></td></tr></tbody></table></div>
+  <h4>Шаг 7. Критическое значение</h4>
+  <p>По таблице Фишера (α = 0,05, df<sub>B</sub> = 2 — столбец, df<sub>W</sub> = 12 — строка):</p><div class="math">\[ F_{\text{кр}}=3{,}89 \]</div>
+  <h4>Шаг 8. Вывод</h4>
   <p class="no"><b>F = 21,528 &gt; F<sub>кр</sub> = 3,89 → H₀ отвергаем, принимаем H₁.</b><br>Вывод: тип удобрения влияет на урожайность (у B она самая высокая).</p>
   <h4>То же в Python</h4>
 <pre><code class="language-python">from scipy import stats
