@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ru" data-lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Практика 4 · 3/3 — ANOVA: препараты — Математика</title>
+<link rel="stylesheet" href="../../_shared/site.css">
+<link rel="stylesheet" href="../math.css">
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"]]},options:{skipHtmlTags:["script","noscript","style","textarea","pre","code"]}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body data-root="../../" data-course="math" data-page="practice/p4-3-anova.html">
+<main>
+
+<div class="phead">
+  <div class="kicker">Практика 4 · 3/3 · One-way ANOVA</div>
+  <h1>Задача 3: три препарата от холестерина</h1>
+  <p class="sub">Вручную и в Python (scipy)</p>
+</div>
+
+<section class="task">
+  <h2>Задача 3. Снижение холестерина</h2>
+  <p class="cond">group_A = [12, 14, 13, 11, 15], group_B = [15, 16, 14, 17, 13], group_C = [18, 20, 19, 21, 17]. α = 0,05.</p>
+  <div class="hyp"><b>H₀:</b><span>μ<sub>A</sub> = μ<sub>B</sub> = μ<sub>C</sub> — препараты одинаково эффективны</span><b>H₁:</b><span>хотя бы один препарат отличается</span></div>
+
+  <h4>Шаг 1. Средние</h4>
+  <div class="math">\[ \bar{x}_A=\frac{65}{5}=13\,,\quad \bar{x}_B=\frac{75}{5}=15\,,\quad \bar{x}_C=\frac{95}{5}=19\,,\qquad \bar{x}=\frac{235}{15}=15{,}667 \]</div>
+
+  <h4>Шаг 2. SS<sub>W</sub></h4>
+  <p>A: отклонения −1, 1, 0, −2, 2 → 1+1+0+4+4 = 10. B: 0, 1, −1, 2, −2 → 10. C: −1, 1, 0, 2, −2 → 10.</p>
+  <div class="math">\[ SS_W=10+10+10=30 \]</div>
+
+  <h4>Шаг 3. SS<sub>B</sub></h4>
+  <div class="math">\[ SS_B=5(13-15{,}667)^2+5(15-15{,}667)^2+5(19-15{,}667)^2=35{,}56+2{,}22+55{,}56=93{,}33 \]</div>
+
+  <h4>Шаг 4. Таблица ANOVA</h4>
+  <div class="tablewrap"><table class="crit">
+    <thead><tr><th>Источник</th><th>SS</th><th>df</th><th>MS</th><th>F</th></tr></thead>
+    <tbody>
+      <tr><th>Между</th><td>93,33</td><td>2</td><td>46,67</td><td>46,67 / 2,5 = 18,67</td></tr>
+      <tr><th>Внутри</th><td>30</td><td>12</td><td>2,5</td><td></td></tr>
+      <tr><th>Общее</th><td>123,33</td><td>14</td><td></td><td></td></tr>
+    </tbody>
+  </table></div>
+  <div class="math">\[ F=18{,}67\,,\qquad F_{\text{кр}}(0{,}05;\,2;\,12)=3{,}89 \]</div>
+  <p class="no"><b>Вывод:</b> 18,67 &gt; 3,89 → H₀ отвергаем. Препараты различаются по эффективности (C снижает сильнее всех).</p>
+
+  <h4>То же в Python</h4>
+<pre><code class="language-python">from scipy import stats
+
+group_A = [12, 14, 13, 11, 15]
+group_B = [15, 16, 14, 17, 13]
+group_C = [18, 20, 19, 21, 17]
+
+F, p = stats.f_oneway(group_A, group_B, group_C)   # one-way ANOVA
+print(round(F, 3), round(p, 5))                    # → 18.667 0.00021
+print(round(stats.f.ppf(0.95, 2, 12), 3))          # F_кр → 3.885</code></pre>
+  <p class="tip">p = 0,00021 &lt; 0,05 → H₀ отвергаем — тот же вывод, что и через F<sub>кр</sub>.</p>
+</section>
+
+<div id="pager"></div>
+</main>
+<script src="../../_shared/sitemap.js"></script>
+<script src="../../_shared/data.js"></script>
+<script src="../../_shared/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ru" data-lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Практика 4 · 2/3 — ANOVA: реклама — Математика</title>
+<link rel="stylesheet" href="../../_shared/site.css">
+<link rel="stylesheet" href="../math.css">
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"]]},options:{skipHtmlTags:["script","noscript","style","textarea","pre","code"]}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body data-root="../../" data-course="math" data-page="practice/p4-2-anova.html">
+<main>
+
+<div class="phead">
+  <div class="kicker">Практика 4 · 2/3 · One-way ANOVA</div>
+  <h1>Задача 1: тип рекламы и продажи</h1>
+  <p class="sub">4 группы разного размера (6, 6, 5, 4) — поэтому в SS<sub>B</sub> у каждой группы свой n<sub>j</sub></p>
+</div>
+
+<section class="task">
+  <h2>Задача 1. Объём продаж и тип рекламы</h2>
+  <p class="cond">Объём продаж по годам. ТВ: 6,525; 7,069; 7,065; 7,359; 7,636; 7,929. Радио: 10,418; 8,016; 7,608; 8,175; 8,335; 8,397. Газеты: 6,062; 8,609; 7,143; 6,923; 5,857. Интернет: 5,086; 8,198; 7,009; 7,972. α = 0,05.</p>
+  <div class="hyp"><b>H₀:</b><span>μ<sub>ТВ</sub> = μ<sub>Радио</sub> = μ<sub>Газеты</sub> = μ<sub>Интернет</sub> — тип рекламы не влияет на продажи</span><b>H₁:</b><span>хотя бы один тип рекламы даёт другой средний объём</span></div>
+
+  <h4>Шаг 1. По группам</h4>
+  <div class="tablewrap"><table class="crit">
+    <thead><tr><th>Группа</th><th>n<sub>j</sub></th><th>Σx</th><th>x̄<sub>j</sub></th><th>Σ(x − x̄<sub>j</sub>)²</th><th>n<sub>j</sub>(x̄<sub>j</sub> − x̄)²</th></tr></thead>
+    <tbody>
+      <tr><th>ТВ</th><td>6</td><td>43,583</td><td>7,264</td><td>1,213</td><td>0,320</td></tr>
+      <tr><th>Радио</th><td>6</td><td>50,949</td><td>8,492</td><td>4,852</td><td>5,960</td></tr>
+      <tr><th>Газеты</th><td>5</td><td>34,594</td><td>6,919</td><td>4,769</td><td>1,659</td></tr>
+      <tr><th>Интернет</th><td>4</td><td>28,265</td><td>7,066</td><td>6,026</td><td>0,735</td></tr>
+      <tr class="hl"><th>Итого</th><td>N = 21</td><td>157,391</td><td>x̄ = 7,495</td><td>SS<sub>W</sub> = 16,860</td><td>SS<sub>B</sub> = 8,674</td></tr>
+    </tbody>
+  </table></div>
+  <div class="math">\[ \bar{x}=\frac{157{,}391}{21}=7{,}495\,,\qquad SS_B=6(7{,}264-7{,}495)^2+6(8{,}492-7{,}495)^2+5(6{,}919-7{,}495)^2+4(7{,}066-7{,}495)^2=8{,}674 \]</div>
+
+  <h4>Шаг 2. Таблица ANOVA</h4>
+  <div class="tablewrap"><table class="crit">
+    <thead><tr><th>Источник</th><th>SS</th><th>df</th><th>MS</th><th>F</th></tr></thead>
+    <tbody>
+      <tr><th>Между</th><td>8,674</td><td>4 − 1 = 3</td><td>2,891</td><td>2,891 / 0,992 = 2,92</td></tr>
+      <tr><th>Внутри</th><td>16,860</td><td>21 − 4 = 17</td><td>0,992</td><td></td></tr>
+      <tr><th>Общее</th><td>25,534</td><td>20</td><td></td><td></td></tr>
+    </tbody>
+  </table></div>
+  <div class="math">\[ F=2{,}92\,,\qquad F_{\text{кр}}(0{,}05;\,3;\,17)=3{,}20 \]</div>
+  <p class="ok"><b>Вывод:</b> 2,92 &lt; 3,20 → H₀ принимаем. При α = 0,05 тип рекламы не влияет на объём продаж значимо (p = 0,064, хотя радио в среднем выше).</p>
+</section>
+
+<div id="pager"></div>
+</main>
+<script src="../../_shared/sitemap.js"></script>
+<script src="../../_shared/data.js"></script>
+<script src="../../_shared/site.js"></script>
+</body>
+</html>

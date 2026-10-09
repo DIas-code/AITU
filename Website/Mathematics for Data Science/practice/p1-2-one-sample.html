@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ru" data-lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Практика 1 · 2/4 — одна выборка — Математика</title>
+<link rel="stylesheet" href="../../_shared/site.css">
+<link rel="stylesheet" href="../math.css">
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"]]},options:{skipHtmlTags:["script","noscript","style","textarea","pre","code"]}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body data-root="../../" data-course="math" data-page="practice/p1-2-one-sample.html">
+<main>
+
+<div class="phead">
+  <div class="kicker">Практика 1 · 2/4 · t-критерий Стьюдента</div>
+  <h1>Одна выборка против нормы</h1>
+  <p class="sub">Задачи 1, 3, 4, 5 — дано x̄, s, n и число, с которым сравниваем</p>
+</div>
+<nav class="chips"><a href="#t1">Задача 1</a><a href="#t3">Задача 3</a><a href="#t4">Задача 4</a><a href="#t5">Задача 5</a></nav>
+
+<section class="task">
+  <h2>Формула для всех задач страницы</h2>
+  <div class="hyp"><b>H₀:</b><span>μ = μ₀ — среднее равно норме</span><b>H₁:</b><span>μ ≠ μ₀ — отличается</span></div>
+  <div class="math">\[ t=\frac{\bar{x}-\mu_0}{s/\sqrt{n}}\,,\qquad df=n-1\,,\qquad |t|>t_{\text{кр}}\ \Rightarrow\ H_0 \text{ отвергаем} \]</div>
+  <p class="tip">Где α не указан, берём α = 0,05.</p>
+</section>
+
+<section class="task" id="t1">
+  <h2>Задача 1. Рост студентов</h2>
+  <p class="cond">x̄ = 174 см, s = 8, n = 25. Средний рост равен 170 см? α = 0,05.</p>
+  <div class="hyp"><b>H₀:</b><span>μ = 170</span><b>H₁:</b><span>μ ≠ 170</span></div>
+  <div class="math">\[ \frac{s}{\sqrt{n}}=\frac{8}{\sqrt{25}}=\frac{8}{5}=1{,}6\,,\qquad t=\frac{174-170}{1{,}6}=2{,}5 \]
+  \[ df=24\,,\qquad t_{\text{кр}}(0{,}05;\,24)=2{,}064 \]</div>
+  <p class="no"><b>Вывод:</b> 2,5 &gt; 2,064 → H₀ отвергаем. Средний рост значимо отличается от 170 см.</p>
+</section>
+
+<section class="task" id="t3">
+  <h2>Задача 3. Гемоглобин</h2>
+  <p class="cond">n = 15, x̄ = 132 г/л, s = 9 г/л. Отличается ли от нормы 130 г/л? α = 0,05.</p>
+  <div class="hyp"><b>H₀:</b><span>μ = 130</span><b>H₁:</b><span>μ ≠ 130</span></div>
+  <div class="math">\[ \frac{9}{\sqrt{15}}=\frac{9}{3{,}873}=2{,}324\,,\qquad t=\frac{132-130}{2{,}324}=0{,}861 \]
+  \[ df=14\,,\qquad t_{\text{кр}}(0{,}05;\,14)=2{,}145 \]</div>
+  <p class="ok"><b>Вывод:</b> 0,861 &lt; 2,145 → H₀ принимаем. Уровень гемоглобина от нормы не отличается.</p>
+</section>
+
+<section class="task" id="t4">
+  <h2>Задача 4. Удовлетворённость студентов</h2>
+  <p class="cond">x̄ = 3,8, s = 0,6, n = 25. Средний балл равен 4,0?</p>
+  <div class="hyp"><b>H₀:</b><span>μ = 4,0</span><b>H₁:</b><span>μ ≠ 4,0</span></div>
+  <div class="math">\[ \frac{0{,}6}{\sqrt{25}}=0{,}12\,,\qquad t=\frac{3{,}8-4{,}0}{0{,}12}=-1{,}667\,,\qquad |t|=1{,}667 \]
+  \[ df=24\,,\qquad t_{\text{кр}}(0{,}05;\,24)=2{,}064 \]</div>
+  <p class="ok"><b>Вывод:</b> 1,667 &lt; 2,064 → H₀ принимаем. Средний балл не отличается от 4,0 значимо.</p>
+</section>
+
+<section class="task" id="t5">
+  <h2>Задача 5. Сахар в крови</h2>
+  <p class="cond">n = 12, x̄ = 5,9 ммоль/л, s = 0,4. Отличается ли от нормы 5,5?</p>
+  <div class="hyp"><b>H₀:</b><span>μ = 5,5</span><b>H₁:</b><span>μ ≠ 5,5</span></div>
+  <div class="math">\[ \frac{0{,}4}{\sqrt{12}}=\frac{0{,}4}{3{,}464}=0{,}1155\,,\qquad t=\frac{5{,}9-5{,}5}{0{,}1155}=3{,}464 \]
+  \[ df=11\,,\qquad t_{\text{кр}}(0{,}05;\,11)=2{,}201 \]</div>
+  <p class="no"><b>Вывод:</b> 3,464 &gt; 2,201 → H₀ отвергаем. Уровень сахара значимо выше нормы.</p>
+</section>
+
+<div id="pager"></div>
+</main>
+<script src="../../_shared/sitemap.js"></script>
+<script src="../../_shared/data.js"></script>
+<script src="../../_shared/site.js"></script>
+</body>
+</html>

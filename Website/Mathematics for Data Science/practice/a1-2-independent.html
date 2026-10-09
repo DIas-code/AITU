@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ru" data-lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Assignment 1 · 2/3 — независимые выборки — Математика</title>
+<link rel="stylesheet" href="../../_shared/site.css">
+<link rel="stylesheet" href="../math.css">
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"]]},options:{skipHtmlTags:["script","noscript","style","textarea","pre","code"]}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body data-root="../../" data-course="math" data-page="practice/a1-2-independent.html">
+<main>
+
+<div class="phead">
+  <div class="kicker">Assignment 1 · 2/3 · t-критерий Стьюдента</div>
+  <h1>Part I, задача 2: спортсмены и не спортсмены</h1>
+  <p class="sub">Независимые выборки, разные n, сырые данные → сначала средние и дисперсии</p>
+</div>
+
+<section class="task">
+  <h2>Задача 2. Время сенсомоторной реакции</h2>
+  <p class="cond">Время реакции (мс). X — 9 спортсменов, Y — 8 не спортсменов. Гипотеза психолога: у спортсменов реакция быстрее. α = 0,05.</p>
+  <div class="hyp"><b>H₀:</b><span>μ<sub>X</sub> = μ<sub>Y</sub> — время реакции не различается</span><b>H₁:</b><span>μ<sub>X</sub> ≠ μ<sub>Y</sub> — различается (у спортсменов меньше)</span></div>
+
+  <h4>Шаг 1. Средние и дисперсии</h4>
+  <div class="tablewrap"><table class="crit">
+    <thead><tr><th>№</th><th>X</th><th>x − x̄</th><th>(x − x̄)²</th><th>Y</th><th>y − ȳ</th><th>(y − ȳ)²</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>504</td><td>−22</td><td>484</td><td>580</td><td>−58</td><td>3364</td></tr>
+      <tr><td>2</td><td>560</td><td>34</td><td>1156</td><td>692</td><td>54</td><td>2916</td></tr>
+      <tr><td>3</td><td>420</td><td>−106</td><td>11236</td><td>700</td><td>62</td><td>3844</td></tr>
+      <tr><td>4</td><td>600</td><td>74</td><td>5476</td><td>621</td><td>−17</td><td>289</td></tr>
+      <tr><td>5</td><td>580</td><td>54</td><td>2916</td><td>640</td><td>2</td><td>4</td></tr>
+      <tr><td>6</td><td>530</td><td>4</td><td>16</td><td>561</td><td>−77</td><td>5929</td></tr>
+      <tr><td>7</td><td>490</td><td>−36</td><td>1296</td><td>680</td><td>42</td><td>1764</td></tr>
+      <tr><td>8</td><td>580</td><td>54</td><td>2916</td><td>630</td><td>−8</td><td>64</td></tr>
+      <tr><td>9</td><td>470</td><td>−56</td><td>3136</td><td>—</td><td></td><td></td></tr>
+      <tr class="hl"><th>Σ</th><th>4734</th><th></th><th>28632</th><th>5104</th><th></th><th>18174</th></tr>
+    </tbody>
+  </table></div>
+  <div class="math">\[ \bar{X}=\frac{4734}{9}=526\,,\qquad S_X^2=\frac{28632}{8}=3579 \qquad\qquad \bar{Y}=\frac{5104}{8}=638\,,\qquad S_Y^2=\frac{18174}{7}=2596{,}3 \]</div>
+
+  <h4>Шаг 2. t-критерий</h4>
+  <div class="math">\[ S_d=\sqrt{\frac{3579}{9}+\frac{2596{,}3}{8}}=\sqrt{397{,}7+324{,}5}=\sqrt{722{,}2}=26{,}87 \]
+  \[ t=\left|\frac{526-638}{26{,}87}\right|=4{,}17\,,\qquad df=9+8-2=15\,,\qquad t_{\text{кр}}(0{,}05;\,15)=2{,}131 \]</div>
+  <p class="no"><b>Вывод:</b> 4,17 &gt; 2,131 → H₀ отвергаем. У спортсменов время реакции значимо меньше (526 против 638 мс), то есть реакция быстрее. Гипотеза психолога подтверждается.</p>
+</section>
+
+<div id="pager"></div>
+</main>
+<script src="../../_shared/sitemap.js"></script>
+<script src="../../_shared/data.js"></script>
+<script src="../../_shared/site.js"></script>
+</body>
+</html>

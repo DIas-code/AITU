@@ -23,6 +23,10 @@
   var h = '<div class="hero"><div><div class="kicker">Applied Data Analytics · 1 курс</div><h1>' + S.term.name + '</h1></div>' +
     '<div class="wkbadge"><b>' + wkTxt + '</b><span>' + (NOW >= 1 && NOW <= S.term.weeks ? D.weekRange(NOW) : '') + ' из ' + S.term.weeks + '</span></div></div>';
 
+  // подготовка к экзамену по математике
+  h += '<div class="card" style="border-left:4px solid #2f5ea8;margin-top:14px"><b><a href="Mathematics%20for%20Data%20Science/practice/exam.html">Подготовка к экзамену по математике →</a></b>' +
+    '<div class="small muted">t Стьюдента, F Фишера, χ² Пирсона, one-way ANOVA: шпаргалка и решённые практики</div></div>';
+
   // ближайшие 14 дней — только напоминания, сдано ли — сайт не знает
   var soon = all.filter(function (x) { var d = D.taskDate(x.t); return d >= today && d - today < 14 * 864e5; });
   h += '<h2>Ближайшие сроки</h2><div class="list">';
