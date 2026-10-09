@@ -1,0 +1,201 @@
+student_id,gender,city,program,year,admission_score,math_score,programming_score,english_score,attendance,assignments,final_score,scholarship,dormitory,admission_date
+ST001,Male,Pavlodar,Software Engineering,4,72,75.0,59.0,80.0,61.0,66,62,No,Yes,2026-03-09
+ST002,Female,Aktobe,IT Management,2,98,72.0,65.0,69.0,82.0,71,66,Yes,Yes,2023-09-20
+ST003,Male,Almaty,Cybersecurity,4,92,68.0,75.0,76.0,82.0,66,66,No,Yes,2026-07-10
+ST004,Male,Astana,Data Science,4,117,99.0,100.0,69.0,100.0,100,98,Yes,No,2023-10-28
+ST005,Female,Astana,IT Management,3,93,84.0,100.0,95.0,69.0,87,96,Yes,No,2023-09-13
+ST006,Male,Astana,IT Management,4,93,85.0,75.0,80.0,80.0,72,84,No,No,2024-11-05
+ST007,Male,Astana,Software Engineering,3,86,82.0,96.0,73.0,100.0,91,83,No,No,2025-11-22
+ST008,Male,Karaganda,IT Management,3,98,91.0,88.0,90.0,88.0,75,89,Yes,Yes,2023-11-12
+ST009,Female,Astana,Data Science,2,96,96.0,86.0,50.0,90.0,78,87,Yes,Yes,2024-07-06
+ST010,Female,Almaty,IT Management,4,103,82.0,85.0,52.0,85.0,79,76,Yes,Yes,2024-06-02
+ST011,Female,Karaganda,Cybersecurity,3,82,70.0,74.0,86.0,87.0,87,80,No,Yes,2024-10-30
+ST012,Male,Shymkent,Cybersecurity,4,83,71.0,75.0,,92.0,76,69,No,No,2026-08-16
+ST013,Male,Astana,Data Science,2,82,83.0,76.0,79.0,76.0,80,80,No,No,2024-08-17
+ST014,Male,Pavlodar,IT Management,4,97,100.0,75.0,,93.0,78,77,Yes,No,2024-04-03
+ST015,Female,Karaganda,Data Science,1,106,89.0,67.0,76.0,70.0,71,75,Yes,Yes,2023-12-29
+ST016,Female,Karaganda,Data Science,1,82,58.0,74.0,100.0,87.0,78,71,No,Yes,2024-03-22
+ST017,Male,Astana,Data Science,3,83,65.0,68.0,86.0,86.0,82,78,No,No,2024-01-10
+ST018,Female,Astana,Cybersecurity,3,92,78.0,71.0,78.0,78.0,71,79,No,No,2025-05-14
+ST019,Male,Aktobe,Data Science,4,85,77.0,77.0,71.0,84.0,68,72,No,No,2024-11-25
+ST020,Male,Almaty,IT Management,2,99,,,71.0,78.0,74,77,Yes,No,2025-02-19
+ST021,Male,Almaty,Cybersecurity,3,61,69.0,75.0,,73.0,71,60,No,No,2026-02-26
+ST022,Female,Almaty,Data Science,3,78,75.0,69.0,79.0,80.0,65,71,No,Yes,2025-05-22
+ST023,Male,Karaganda,Data Science,4,79,88.0,97.0,86.0,73.0,87,86,No,No,2024-02-03
+ST024,Male,Aktobe,Data Science,3,60,62.0,86.0,57.0,87.0,81,70,No,No,2024-10-07
+ST025,Male,Almaty,Cybersecurity,2,76,,78.0,68.0,72.0,92,78,No,Yes,2024-07-27
+ST026,Female,Aktobe,Cybersecurity,4,77,82.0,91.0,62.0,91.0,76,80,No,No,2026-02-20
+ST027,Female,Astana,Data Science,1,86,68.0,86.0,64.0,72.0,80,71,No,Yes,2024-07-21
+ST028,Female,Shymkent,IT Management,4,101,94.0,99.0,77.0,78.0,79,85,Yes,No,2024-01-16
+ST029,Female,Shymkent,Data Science,1,85,83.0,87.0,51.0,78.0,78,82,No,No,2025-11-11
+ST030,Male,Astana,Cybersecurity,2,76,75.0,83.0,83.0,97.0,87,87,No,Yes,2024-12-03
+ST031,Male,Astana,IT Management,4,87,97.0,,85.0,87.0,71,87,No,No,2023-11-29
+ST032,Male,Almaty,Cybersecurity,3,101,85.0,70.0,73.0,82.0,77,79,Yes,Yes,2025-09-20
+ST033,Female,Aktobe,Cybersecurity,4,76,95.0,95.0,46.0,89.0,100,83,No,No,2024-04-05
+ST034,Female,Shymkent,IT Management,3,77,75.0,61.0,64.0,63.0,61,65,No,No,2026-04-07
+ST035,Female,Aktobe,Data Science,3,95,76.0,68.0,91.0,84.0,77,78,Yes,Yes,2026-02-26
+ST036,Female,Pavlodar,Data Science,2,85,82.0,94.0,43.0,100.0,99,84,No,No,2024-09-29
+ST037,Female,Almaty,Data Science,1,96,78.0,87.0,72.0,85.0,83,84,Yes,Yes,2025-04-24
+ST038,Female,Pavlodar,Software Engineering,1,88,77.0,94.0,62.0,85.0,83,79,No,Yes,2025-05-07
+ST039,Female,Astana,Cybersecurity,2,96,91.0,82.0,86.0,89.0,67,84,Yes,No,2025-08-11
+ST040,Male,Astana,Cybersecurity,1,76,,67.0,68.0,93.0,82,79,No,Yes,2023-10-30
+ST041,Female,Pavlodar,IT Management,3,88,78.0,75.0,81.0,64.0,70,62,No,Yes,2024-08-10
+ST042,Male,Pavlodar,Data Science,4,85,91.0,86.0,83.0,67.0,70,85,No,Yes,2024-02-20
+ST043,Male,Astana,Cybersecurity,4,73,86.0,83.0,98.0,86.0,83,74,No,No,2025-09-29
+ST044,Female,Shymkent,Data Science,2,69,86.0,95.0,74.0,77.0,81,82,No,Yes,2023-10-30
+ST045,Male,Shymkent,Software Engineering,4,96,93.0,82.0,81.0,97.0,82,90,Yes,No,2025-03-12
+ST046,Male,Kostanay,Cybersecurity,4,84,93.0,90.0,58.0,81.0,88,83,No,Yes,2025-11-02
+ST047,Female,Shymkent,IT Management,4,76,60.0,57.0,90.0,65.0,54,57,No,No,2026-07-05
+ST048,Female,Almaty,Cybersecurity,2,87,80.0,84.0,67.0,71.0,85,75,No,Yes,2024-06-30
+ST049,Male,Almaty,Data Science,2,102,83.0,81.0,69.0,57.0,62,76,Yes,Yes,2023-08-23
+ST050,Female,Almaty,Cybersecurity,4,61,70.0,65.0,76.0,82.0,68,63,No,Yes,2025-10-28
+ST051,Female,Karaganda,Data Science,1,70,68.0,70.0,57.0,82.0,89,78,No,Yes,2023-08-16
+ST052,Female,Kostanay,IT Management,2,77,76.0,75.0,79.0,80.0,85,78,No,Yes,2023-10-27
+ST053,Male,Almaty,Cybersecurity,1,106,100.0,87.0,88.0,95.0,88,86,Yes,Yes,2026-08-21
+ST054,Male,Astana,Data Science,4,91,84.0,100.0,80.0,96.0,87,88,Yes,No,2026-04-01
+ST055,Male,Astana,Data Science,3,97,92.0,85.0,57.0,82.0,78,76,Yes,No,2025-10-10
+ST056,Male,Karaganda,Data Science,1,74,74.0,73.0,75.0,63.0,70,75,No,Yes,2026-03-01
+ST057,Female,Pavlodar,IT Management,1,75,77.0,54.0,85.0,90.0,71,75,No,Yes,2023-11-06
+ST058,Male,Astana,Software Engineering,3,93,86.0,72.0,53.0,90.0,78,69,No,No,2023-11-21
+ST059,Female,Astana,Cybersecurity,3,89,88.0,81.0,63.0,87.0,82,79,No,No,2024-07-14
+ST060,Female,Shymkent,Cybersecurity,4,95,98.0,81.0,87.0,94.0,83,84,Yes,No,2023-09-10
+ST061,Male,Astana,Software Engineering,2,86,97.0,100.0,79.0,72.0,75,92,Yes,No,2026-04-29
+ST062,Female,Pavlodar,Data Science,4,91,88.0,82.0,81.0,100.0,83,81,No,No,2023-10-16
+ST063,Male,Almaty,IT Management,2,90,90.0,99.0,98.0,74.0,92,98,Yes,No,2025-04-11
+ST064,Male,Astana,Software Engineering,4,97,78.0,79.0,82.0,91.0,73,80,Yes,Yes,2026-03-22
+ST065,Male,Aktobe,Software Engineering,1,98,88.0,84.0,84.0,67.0,75,76,Yes,,2025-11-10
+ST066,Male,Astana,Cybersecurity,1,69,81.0,79.0,100.0,75.0,71,78,No,No,2024-05-02
+ST067,Male,Almaty,Cybersecurity,1,61,76.0,77.0,73.0,99.0,85,78,No,No,2025-01-19
+ST068,Female,Astana,IT Management,2,100,92.0,100.0,66.0,81.0,86,83,Yes,No,2025-04-16
+ST069,Female,Astana,Data Science,4,102,99.0,64.0,81.0,92.0,86,83,Yes,No,2025-12-16
+ST070,Female,Astana,Software Engineering,1,76,81.0,58.0,81.0,86.0,75,69,No,No,2024-12-01
+ST071,Female,Astana,Software Engineering,2,66,82.0,74.0,70.0,83.0,68,66,No,Yes,2024-06-27
+ST072,Female,Astana,Software Engineering,1,89,87.0,83.0,64.0,98.0,91,83,No,No,2026-01-16
+ST073,Male,Astana,Data Science,4,99,86.0,90.0,100.0,82.0,79,80,Yes,No,2026-04-27
+ST074,Female,Shymkent,Data Science,3,110,99.0,95.0,80.0,66.0,77,83,Yes,Yes,2025-02-09
+ST075,Female,Karaganda,Software Engineering,4,94,60.0,64.0,67.0,76.0,73,64,No,Yes,2023-09-15
+ST076,Female,Almaty,Software Engineering,3,84,85.0,93.0,87.0,90.0,85,85,No,No,2025-02-22
+ST077,Female,Almaty,Software Engineering,3,77,45.0,71.0,75.0,88.0,84,80,No,Yes,2026-04-30
+ST078,Male,Almaty,Cybersecurity,4,88,68.0,74.0,73.0,68.0,67,71,No,Yes,2026-08-19
+ST079,Male,Kostanay,Cybersecurity,1,84,85.0,92.0,83.0,77.0,79,85,No,Yes,2024-11-03
+ST080,Male,Kostanay,Software Engineering,4,76,81.0,83.0,60.0,78.0,75,70,No,Yes,2024-01-29
+ST081,Male,Astana,Software Engineering,3,113,87.0,77.0,80.0,80.0,74,77,Yes,Yes,2025-05-12
+ST082,Female,Astana,Data Science,3,109,89.0,92.0,99.0,70.0,89,89,Yes,No,2026-02-24
+ST083,Male,Astana,Software Engineering,2,102,100.0,91.0,82.0,78.0,88,85,Yes,No,2026-07-01
+ST084,Female,Astana,Software Engineering,4,77,73.0,75.0,71.0,77.0,88,81,No,No,2023-10-11
+ST085,Female,Shymkent,Data Science,2,98,100.0,100.0,70.0,92.0,100,89,Yes,Yes,2024-07-03
+ST086,Female,Almaty,Software Engineering,1,96,88.0,56.0,71.0,92.0,65,71,Yes,Yes,2025-01-27
+ST087,Male,Astana,Software Engineering,4,93,90.0,69.0,73.0,83.0,76,75,No,No,2023-12-02
+ST088,Female,Almaty,Data Science,1,103,100.0,77.0,71.0,80.0,69,80,Yes,Yes,2026-04-27
+ST089,Female,Shymkent,Software Engineering,1,96,89.0,80.0,87.0,85.0,75,80,Yes,Yes,2023-12-17
+ST090,Male,Astana,Software Engineering,3,97,79.0,76.0,55.0,76.0,71,71,Yes,Yes,2025-08-24
+ST091,Female,Pavlodar,Cybersecurity,1,96,87.0,66.0,86.0,73.0,63,73,Yes,No,2026-06-02
+ST092,Male,Astana,Cybersecurity,4,92,85.0,71.0,71.0,75.0,66,70,No,No,2025-09-15
+ST093,Female,Aktobe,Cybersecurity,2,67,60.0,59.0,81.0,78.0,68,69,No,No,2025-12-11
+ST094,Female,Astana,Software Engineering,1,89,82.0,100.0,62.0,72.0,77,83,No,,2024-06-03
+ST095,Female,Kostanay,Cybersecurity,4,81,73.0,95.0,92.0,86.0,94,88,Yes,No,2026-02-20
+ST096,Male,Kostanay,Software Engineering,3,73,83.0,76.0,91.0,91.0,75,80,No,Yes,2024-11-22
+ST097,Female,Aktobe,Software Engineering,2,108,95.0,83.0,88.0,68.0,96,90,Yes,Yes,2023-10-22
+ST098,Female,Pavlodar,Cybersecurity,3,109,92.0,73.0,58.0,84.0,74,75,Yes,No,2024-09-26
+ST099,Female,Pavlodar,Software Engineering,3,104,91.0,64.0,86.0,82.0,73,76,Yes,No,2024-09-07
+ST100,Male,Karaganda,Software Engineering,1,91,87.0,82.0,81.0,87.0,73,82,No,Yes,2025-03-17
+ST101,Male,Pavlodar,Cybersecurity,4,104,98.0,78.0,57.0,84.0,91,89,Yes,Yes,2024-06-04
+ST102,Male,Astana,IT Management,2,88,74.0,75.0,76.0,69.0,81,70,No,No,2025-01-10
+ST103,Female,Shymkent,IT Management,3,90,75.0,59.0,80.0,71.0,68,72,No,Yes,2024-12-03
+ST104,Male,Shymkent,Software Engineering,4,75,86.0,74.0,83.0,84.0,68,70,No,Yes,2024-08-12
+ST105,Male,Kostanay,Software Engineering,3,93,82.0,82.0,78.0,94.0,86,85,No,No,2025-09-27
+ST106,Male,Almaty,Cybersecurity,3,89,71.0,78.0,79.0,62.0,64,78,No,Yes,2024-07-19
+ST107,Female,Almaty,Software Engineering,2,72,79.0,83.0,94.0,87.0,93,88,Yes,No,2025-12-14
+ST108,Female,Shymkent,IT Management,1,87,87.0,68.0,91.0,96.0,85,84,No,Yes,2024-05-20
+ST109,Female,Astana,Software Engineering,2,87,69.0,82.0,42.0,82.0,81,71,No,Yes,2026-04-03
+ST110,Male,Astana,Data Science,4,110,98.0,80.0,72.0,90.0,65,81,Yes,No,2024-09-24
+ST111,Female,Almaty,Data Science,3,99,96.0,95.0,74.0,77.0,78,85,Yes,Yes,2023-09-29
+ST112,Female,Almaty,IT Management,2,88,87.0,83.0,55.0,83.0,86,77,No,Yes,2024-01-28
+ST113,Female,Astana,Data Science,4,91,91.0,70.0,77.0,68.0,79,76,No,Yes,2026-01-28
+ST114,Male,Almaty,Software Engineering,4,89,71.0,71.0,91.0,61.0,76,74,No,No,2026-04-11
+ST115,Female,Almaty,Software Engineering,4,86,85.0,86.0,63.0,93.0,75,78,No,No,2024-04-06
+ST116,Male,Almaty,Data Science,2,75,74.0,82.0,80.0,74.0,80,75,No,No,2025-06-15
+ST117,Male,Almaty,Software Engineering,3,86,78.0,76.0,65.0,79.0,84,71,No,Yes,2025-05-15
+ST118,Male,Karaganda,Cybersecurity,3,79,86.0,99.0,68.0,70.0,72,84,No,Yes,2024-01-10
+ST119,Female,Almaty,Data Science,2,73,88.0,94.0,94.0,70.0,82,89,Yes,Yes,2024-12-30
+ST120,Male,Aktobe,IT Management,2,94,100.0,87.0,69.0,82.0,85,87,No,Yes,2025-09-25
+ST121,Male,Aktobe,IT Management,1,93,98.0,97.0,82.0,77.0,83,93,Yes,Yes,2026-07-26
+ST122,Male,Almaty,Software Engineering,2,67,71.0,95.0,54.0,88.0,76,80,No,Yes,2026-03-15
+ST123,Female,Almaty,Data Science,3,87,86.0,100.0,98.0,89.0,89,95,Yes,Yes,2023-12-01
+ST124,Female,Shymkent,Cybersecurity,4,100,97.0,75.0,83.0,87.0,77,84,Yes,Yes,2024-05-05
+ST125,Female,Kostanay,Data Science,4,101,92.0,75.0,74.0,86.0,78,80,Yes,Yes,2024-12-13
+ST126,Male,Karaganda,Software Engineering,1,100,91.0,100.0,83.0,100.0,91,92,Yes,Yes,2024-01-29
+ST127,Female,Pavlodar,IT Management,3,88,91.0,73.0,59.0,73.0,70,83,No,Yes,2025-05-11
+ST128,Female,Shymkent,IT Management,1,78,77.0,63.0,90.0,83.0,72,73,No,Yes,2023-08-24
+ST129,Female,Shymkent,Cybersecurity,3,75,70.0,68.0,72.0,95.0,82,73,No,Yes,2023-12-19
+ST130,Male,Almaty,Software Engineering,2,92,82.0,85.0,74.0,97.0,85,86,No,Yes,2023-10-06
+ST131,Female,Karaganda,Cybersecurity,2,93,92.0,84.0,70.0,70.0,74,80,No,Yes,2024-07-08
+ST132,Male,Astana,Cybersecurity,3,103,92.0,78.0,69.0,81.0,79,74,Yes,No,2025-12-10
+ST133,Male,Karaganda,Software Engineering,2,101,94.0,79.0,84.0,98.0,71,88,Yes,Yes,2024-02-28
+ST134,Female,Kostanay,Cybersecurity,4,86,88.0,76.0,79.0,89.0,84,82,No,Yes,2026-08-17
+ST135,Male,Astana,Data Science,3,73,72.0,65.0,84.0,86.0,74,70,No,No,2024-06-10
+ST136,Female,Shymkent,Data Science,4,84,88.0,100.0,76.0,82.0,89,94,Yes,Yes,2023-10-03
+ST137,Male,Astana,Software Engineering,3,91,88.0,87.0,82.0,80.0,89,88,Yes,No,2024-08-22
+ST138,Male,Karaganda,Data Science,2,86,71.0,84.0,,87.0,70,72,No,No,2025-11-24
+ST139,Male,Astana,Data Science,4,81,93.0,81.0,100.0,81.0,66,90,Yes,Yes,2023-12-11
+ST140,Female,Aktobe,IT Management,2,91,81.0,78.0,57.0,84.0,81,80,No,Yes,2023-11-02
+ST141,Male,Astana,IT Management,3,82,65.0,63.0,91.0,85.0,73,73,No,No,2026-03-17
+ST142,Male,Aktobe,Software Engineering,1,80,70.0,44.0,92.0,77.0,63,72,No,No,2025-06-04
+ST143,Male,Pavlodar,IT Management,1,92,76.0,62.0,66.0,89.0,71,72,No,Yes,2024-08-31
+ST144,Male,Shymkent,IT Management,3,83,81.0,60.0,100.0,,82,80,No,Yes,2025-12-03
+ST145,Female,Pavlodar,Data Science,1,91,83.0,56.0,88.0,66.0,70,68,No,Yes,2026-03-11
+ST146,Female,Pavlodar,Software Engineering,4,91,82.0,67.0,88.0,87.0,79,81,No,Yes,2024-09-17
+ST147,Female,Aktobe,Software Engineering,4,74,81.0,94.0,76.0,76.0,82,86,No,No,2025-04-30
+ST148,Male,Astana,Data Science,3,82,83.0,80.0,73.0,90.0,68,79,No,No,2023-08-27
+ST149,Female,Shymkent,Cybersecurity,3,105,96.0,100.0,73.0,84.0,95,89,Yes,No,2024-07-20
+ST150,Female,Astana,Software Engineering,3,74,79.0,83.0,81.0,92.0,93,86,No,No,2025-06-07
+ST151,Male,Shymkent,Software Engineering,1,63,,85.0,93.0,96.0,91,87,No,Yes,2024-03-21
+ST152,Male,Astana,Data Science,2,66,52.0,54.0,78.0,86.0,63,58,No,No,2026-08-22
+ST153,Female,Shymkent,Data Science,2,88,80.0,85.0,65.0,95.0,91,78,No,No,2026-07-30
+ST154,Male,Shymkent,IT Management,4,88,64.0,78.0,86.0,61.0,77,76,No,No,2024-05-27
+ST155,Female,Almaty,Data Science,1,87,83.0,74.0,87.0,100.0,94,75,No,No,2024-10-29
+ST156,Male,Shymkent,Data Science,2,103,92.0,92.0,84.0,88.0,81,89,Yes,Yes,2024-03-12
+ST157,Female,Pavlodar,Software Engineering,2,56,75.0,82.0,85.0,95.0,84,81,No,Yes,2025-02-25
+ST158,Male,Pavlodar,Software Engineering,1,93,97.0,82.0,73.0,72.0,82,87,No,Yes,2023-12-30
+ST159,Male,Almaty,Software Engineering,1,107,96.0,75.0,65.0,76.0,76,76,Yes,No,2024-10-23
+ST160,Male,Shymkent,Software Engineering,2,74,71.0,61.0,66.0,85.0,64,71,No,Yes,2025-04-23
+ST161,Female,Aktobe,Data Science,1,83,85.0,83.0,56.0,84.0,85,78,No,Yes,2025-06-25
+ST162,Male,Astana,Data Science,1,79,74.0,79.0,79.0,87.0,85,81,No,No,2025-06-08
+ST163,Female,Astana,IT Management,2,77,77.0,69.0,75.0,95.0,80,81,No,No,2024-04-17
+ST164,Female,Astana,Cybersecurity,1,84,90.0,85.0,71.0,,78,78,No,No,2026-01-12
+ST165,Male,Karaganda,Cybersecurity,3,105,88.0,90.0,41.0,94.0,87,86,Yes,Yes,2025-09-22
+ST166,Female,Almaty,Cybersecurity,1,110,100.0,97.0,61.0,84.0,98,86,Yes,Yes,2025-11-30
+ST167,Male,Pavlodar,Cybersecurity,2,84,87.0,100.0,89.0,82.0,82,91,Yes,No,2025-01-16
+ST168,Male,Karaganda,Data Science,2,111,87.0,97.0,68.0,69.0,79,87,Yes,No,2026-05-04
+ST169,Female,Almaty,Software Engineering,4,88,92.0,75.0,80.0,89.0,80,85,No,Yes,2024-10-21
+ST170,Male,Kostanay,Software Engineering,3,109,100.0,100.0,,60.0,87,93,Yes,Yes,2026-01-27
+ST171,Female,Pavlodar,Software Engineering,4,87,84.0,75.0,93.0,90.0,70,78,No,No,2024-03-28
+ST172,Male,Astana,IT Management,2,90,78.0,89.0,74.0,69.0,70,72,No,No,2024-05-16
+ST173,Female,Almaty,Software Engineering,2,92,78.0,79.0,79.0,85.0,66,73,No,Yes,2025-03-23
+ST174,Male,Almaty,Cybersecurity,2,120,96.0,83.0,100.0,83.0,82,91,Yes,Yes,2025-04-24
+ST175,Female,Astana,IT Management,4,98,94.0,67.0,94.0,96.0,71,84,Yes,No,2025-11-22
+ST176,Female,Astana,Software Engineering,4,80,70.0,72.0,72.0,82.0,73,74,No,Yes,2024-07-11
+ST177,Female,Aktobe,IT Management,4,100,94.0,70.0,69.0,77.0,78,73,Yes,No,2026-04-12
+ST178,Male,Almaty,Software Engineering,4,84,70.0,84.0,72.0,,76,80,No,Yes,2024-08-16
+ST179,Male,Almaty,IT Management,3,82,78.0,95.0,82.0,97.0,93,85,No,Yes,2025-03-31
+ST180,Male,Karaganda,Software Engineering,3,99,90.0,76.0,75.0,89.0,78,86,Yes,No,2026-06-17
+ST181,Male,Shymkent,Software Engineering,4,88,100.0,,71.0,80.0,90,100,Yes,No,2025-04-06
+ST182,Male,Aktobe,Software Engineering,2,91,73.0,67.0,94.0,82.0,77,78,No,No,2025-09-11
+ST183,Male,Pavlodar,Data Science,2,88,97.0,81.0,75.0,68.0,70,81,No,Yes,2026-05-22
+ST184,Female,Almaty,Software Engineering,4,92,87.0,91.0,100.0,88.0,86,88,Yes,Yes,2026-08-03
+ST185,Male,Almaty,IT Management,2,93,90.0,84.0,77.0,66.0,83,74,No,Yes,2025-02-20
+ST186,Male,Aktobe,Cybersecurity,1,65,72.0,94.0,97.0,92.0,92,87,No,Yes,2024-11-21
+ST187,Female,Karaganda,Data Science,3,96,92.0,80.0,80.0,85.0,71,77,Yes,Yes,2024-03-21
+ST188,Female,Aktobe,Software Engineering,2,76,75.0,87.0,88.0,100.0,94,82,No,Yes,2025-04-04
+ST189,Male,Astana,Data Science,4,71,87.0,84.0,67.0,73.0,71,85,No,No,2026-06-02
+ST190,Female,Kostanay,Data Science,4,87,79.0,87.0,66.0,83.0,93,84,No,No,2025-02-07
+ST191,Male,Shymkent,IT Management,2,89,94.0,82.0,82.0,100.0,94,91,Yes,No,2024-09-05
+ST192,Female,Astana,Software Engineering,3,80,73.0,75.0,88.0,96.0,84,80,No,Yes,2023-12-12
+ST193,Female,Shymkent,Software Engineering,4,98,88.0,82.0,76.0,77.0,80,80,Yes,Yes,2024-10-21
+ST194,Male,Karaganda,Cybersecurity,3,72,65.0,62.0,61.0,86.0,72,72,No,Yes,2024-05-04
+ST195,Female,Astana,Data Science,1,83,85.0,89.0,60.0,84.0,89,83,No,No,2026-08-06
+ST196,Female,Almaty,Software Engineering,3,81,93.0,93.0,59.0,87.0,85,88,Yes,Yes,2025-03-24
+ST197,Male,Pavlodar,Cybersecurity,3,87,82.0,87.0,55.0,77.0,83,78,No,Yes,2024-01-14
+ST198,Male,Almaty,Cybersecurity,3,91,83.0,98.0,77.0,83.0,94,87,No,No,2023-10-28
+ST199,Female,Almaty,IT Management,1,76,67.0,88.0,90.0,68.0,74,73,No,Yes,2026-03-18
+ST200,Female,Almaty,Cybersecurity,2,97,86.0,78.0,76.0,85.0,76,72,Yes,No,2026-06-16
