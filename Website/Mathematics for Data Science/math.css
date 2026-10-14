@@ -61,3 +61,17 @@ table.crit .hl{background:#fff6e2}
 .ok{background:#e8f3ec;border:1px solid #bcdcc7}
 .no{background:#fdf1e6;border:1px solid #edd2b0}
 .err{background:#fbe9e7;border:1px solid #efc4bf}
+
+/* решённые задачи (practice/) */
+.task{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:18px 22px 20px;margin-bottom:16px}
+.task h2{margin:0 0 10px;font-size:20px}
+.task h4{margin:16px 0 6px;font-size:13px;letter-spacing:.07em;text-transform:uppercase;color:var(--mut)}
+.task p{margin:0 0 8px;line-height:1.55}
+.cond{background:#fbfaf6;border-left:3px solid var(--warm);border-radius:0 8px 8px 0;padding:9px 13px;margin-bottom:6px;font-size:15px}
+.hyp{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;background:var(--acc2);border-radius:10px;padding:10px 14px;font-size:15px}
+.hyp b{color:var(--acc)}
+.task ol{margin:0;padding-left:22px}
+.task li{margin:4px 0;line-height:1.55}
+.task .tablewrap{margin:6px 0 8px}
+.task .ok,.task .no{font-size:15px}
+.tip{font-size:14px;color:var(--mut);margin-top:8px}

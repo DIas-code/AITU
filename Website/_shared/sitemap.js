@@ -47,7 +47,7 @@ window.SITE = {
         { w: 1, topic: 'Введение. Обзор статистических программ', files: ['week1/Lecture 1 Math for Data Science, ADA-M .pptx', 'week1/Practice 1 ADA-M.pdf'] },
         { w: 2, topic: 'F-критерий Фишера. Меры центральной тенденции и разброса', files: ['week2/Lecture 2_Math_Data_Science.pptx', 'week2/Lecture_additional.pptx'] },
         { w: 3, topic: 'Анализ номинальных данных. Хи-квадрат Пирсона, точный тест Фишера', files: ['week3/Lecture 3 ADA_M.pptx', 'week3/Practice 3 ADA_M.pdf'] },
-        { w: 4, topic: 'Дисперсионный анализ. One-way ANOVA, множественные сравнения', files: ['week4/Lecture 4 ADA_M.pptx'] },
+        { w: 4, topic: 'Дисперсионный анализ. One-way ANOVA, множественные сравнения', files: ['week4/Lecture 4 ADA_M.pptx', 'week4/Practice 4.pdf'] },
         { w: 5, topic: 'Корреляционный анализ' },
         { w: 6, topic: 'Регрессионный анализ. Линейная регрессия с одним предиктором' },
         { w: 7, topic: 'Непараметрические методы' },
@@ -58,10 +58,14 @@ window.SITE = {
       pages: [
         { w: 1, href: 'week1/formulas.html', title: 'Формулы', bi: true },
         { w: 1, href: 'week1/lecture.html', title: 'Лекция', bi: true },
+        { w: 1, href: 'practice/t-student.html', title: 'Экзамен: t Стьюдента' },
         { w: 2, href: 'week2/formulas.html', title: 'Формулы', bi: true },
         { w: 2, href: 'week2/lecture.html', title: 'Лекция', bi: true },
+        { w: 2, href: 'practice/fisher.html', title: 'Экзамен: F Фишера' },
         { w: 3, href: 'week3/formulas.html', title: 'Формулы', bi: true },
         { w: 3, href: 'week3/lecture.html', title: 'Лекция', bi: true },
+        { w: 3, href: 'practice/chi-square.html', title: 'Экзамен: χ² Пирсона' },
+        { w: 4, href: 'practice/anova.html', title: 'Экзамен: ANOVA' },
         { w: 0, href: 'reference/calculators.html', title: 'Калькуляторы', bi: true },
         { w: 0, href: 'reference/tables.html', title: 'Таблицы', bi: true }
       ],
