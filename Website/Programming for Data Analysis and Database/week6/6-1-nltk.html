@@ -11,51 +11,89 @@
 <main>
 <div class="phead">
   <div class="kicker">Неделя 6 · Лекция 6.1, часть 1</div>
-  <h1>NLTK: словари, токены, части речи</h1>
-  <p class="sub">Для анализа текста в Python есть NLTK, TextBlob, spaCy, Gensim и <code>TfidfVectorizer</code> из scikit-learn. На этой неделе основная — NLTK. Ей сначала нужно скачать данные: словари и обученные модели.</p>
+  <h1>Как компьютер читает текст: токены, теги, стоп-слова</h1>
+  <p class="sub">Для Python предложение — просто строка символов. Он не знает, где кончается слово, что «students» и «student» — одно и то же, а «the» ничего не значит. NLP (Natural Language Processing, обработка естественного языка) — это набор приёмов, которые разбирают текст на части, чтобы его можно было считать и анализировать.</p>
 </div>
 
 <section class="step">
-  <h2>1. Что скачиваем и зачем</h2>
-  <p class="why">Сама библиотека — только код. Каждый ресурс скачивается один раз, потом лежит на диске.</p>
-  <div class="code"><pre><code class="language-python">!pip install nltk
-import nltk
-
-nltk.download('wordnet')                          # словарь английского: синонимы, леммы
-nltk.download('averaged_perceptron_tagger_eng')   # модель частей речи (POS)
-nltk.download('stopwords')                        # списки стоп-слов для разных языков
-nltk.download('punkt')                            # модель деления на предложения и слова
-nltk.download('punkt_tab')                        # она же в новом формате (нужна новым версиям NLTK)</code></pre></div>
-  <div class="cmp">
-    <div><b>wordnet</b>слова сгруппированы в синсеты (группы синонимов); нужен для лемматизации</div>
-    <div><b>perceptron tagger</b>определяет часть речи каждого слова</div>
-    <div><b>stopwords</b>частые слова без смысла: the, is, a, и, но</div>
-    <div><b>punkt</b>режет текст на предложения и слова</div>
+  <h2>Сначала слова: что как называется</h2>
+  <p class="plain">Все термины этой недели на одном примере — предложение <code>The students quickly finished their difficult assignments.</code></p>
+  <div class="terms">
+    <div><b>Токен</b>Кусочек текста, с которым дальше работаем: обычно слово или знак препинания. Как «кирпичик» текста.<i>'students', 'finished', '.'</i></div>
+    <div><b>Токенизация</b>Разрезать текст на токены. Можно резать на предложения (sentence tokenization) или на слова (word tokenization).<i>"Hi. Bye!" → ['Hi.', 'Bye!']</i></div>
+    <div><b>Часть речи (POS)</b>Какую роль слово играет: существительное, глагол, прилагательное, наречие… POS = Part of Speech.<i>students — сущ., finished — глагол</i></div>
+    <div><b>Тег (POS-тег)</b>Короткий код части речи, который ставит NLTK. Это не слово, а метка-ярлык. Буква в начале — сама часть речи, остальное — уточнение.<i>NNS = сущ. во мн. ч., VBD = глагол в прошедшем</i></div>
+    <div><b>Стоп-слово</b>Очень частое служебное слово, которое почти не несёт смысла: артикли, предлоги, местоимения, «быть». Их выкидывают, чтобы они не забивали подсчёты.<i>the, is, a, their, и, но, как</i></div>
+    <div><b>Лемма</b>Словарная (начальная) форма слова — как его записали бы в словаре. Приводим к ней, чтобы разные формы считались одним словом.<i>students → student, finished → finish</i></div>
+    <div><b>Синоним и синсет</b>Синонимы — слова с одним значением. Синсет (synset = synonym set) — группа синонимов для одного значения слова в словаре WordNet.<i>car, auto, automobile, motorcar</i></div>
+    <div><b>Корпус / ресурс</b>Готовые данные, которые NLTK скачивает отдельно: словари, списки слов, обученные модели. Без них функции не работают.<i>stopwords, wordnet, punkt</i></div>
   </div>
 </section>
 
 <section class="step">
-  <h2>2. WordNet: значения слова</h2>
-  <p class="why"><code>synsets("car")</code> — все значения слова «car». У каждого есть определение и иногда пример. Печатаем только те, где пример есть.</p>
+  <h2>Весь путь на одном предложении</h2>
+  <p class="plain">Так выглядит подготовка текста. На этой странице — шаги 1–3, леммы и очистка — на следующей.</p>
+  <div class="flow">
+    <div class="fs"><b>Исходный текст<small>просто строка</small></b><div class="live-code" style="margin:0">"The students quickly finished their difficult assignments."</div></div>
+    <div class="arrow">↓ word_tokenize</div>
+    <div class="fs"><b>1. Токены<small>режем на слова и знаки</small></b><div class="toks"><span>The</span><span>students</span><span>quickly</span><span>finished</span><span>their</span><span>difficult</span><span>assignments</span><span>.</span></div></div>
+    <div class="arrow">↓ pos_tag</div>
+    <div class="fs"><b>2. Теги<small>часть речи каждого токена</small></b><div class="toks"><span>The<small>DT</small></span><span>students<small>NNS</small></span><span>quickly<small>RB</small></span><span>finished<small>VBD</small></span><span>their<small>PRP$</small></span><span>difficult<small>JJ</small></span><span>assignments<small>NNS</small></span><span>.<small>.</small></span></div></div>
+    <div class="arrow">↓ убрать стоп-слова и знаки</div>
+    <div class="fs"><b>3. Без мусора<small>the и their — стоп-слова</small></b><div class="toks"><span class="out">The</span><span>students</span><span>quickly</span><span>finished</span><span class="out">their</span><span>difficult</span><span>assignments</span><span class="out punct">.</span></div></div>
+    <div class="arrow">↓ lemmatize (следующая страница)</div>
+    <div class="fs"><b>4. Леммы<small>начальная форма</small></b><div class="toks"><span>student</span><span>quickly</span><span>finish</span><span>difficult</span><span>assignment</span></div></div>
+  </div>
+  <p class="res">Было 8 токенов — осталось 5 значимых слов в начальной форме. С такими словами уже можно считать частоты, искать ключевые слова, определять тональность.</p>
+</section>
+
+<section class="step">
+  <h2>1. Установить NLTK и скачать ресурсы</h2>
+  <p class="plain"><b>Что это.</b> NLTK (Natural Language Toolkit) — самая известная библиотека Python для работы с текстом. Есть и другие: TextBlob, spaCy, Gensim, <code>TfidfVectorizer</code> из scikit-learn — они будут дальше.</p>
+  <p class="why"><b>Зачем download.</b> <code>pip install nltk</code> ставит только код. Словари и обученные модели весят много, поэтому скачиваются отдельно командой <code>nltk.download(...)</code> — один раз, потом лежат на диске. Если забыть, будет ошибка <code>Resource ... not found</code>.</p>
+  <div class="code"><pre><code class="language-python">!pip install nltk
+import nltk
+
+nltk.download('wordnet')                          # словарь английского языка
+nltk.download('averaged_perceptron_tagger_eng')   # модель, которая ставит теги
+nltk.download('stopwords')                        # списки стоп-слов
+nltk.download('punkt')                            # модель, которая режет на предложения и слова
+nltk.download('punkt_tab')                        # она же в новом формате</code></pre></div>
+  <div class="cmp">
+    <div><b>wordnet</b>Большой словарь английского. Слова сгруппированы по значениям (синсеты). Нужен, чтобы находить синонимы и лемму слова.</div>
+    <div><b>perceptron tagger</b>Обученная модель (перцептрон — простая нейросеть). Смотрит на слово и соседей и угадывает часть речи.</div>
+    <div><b>stopwords</b>Готовые списки стоп-слов для разных языков: английский, русский, казахский и др.</div>
+    <div><b>punkt</b>Модель, которая знает, где кончается предложение: что точка в «3.5» или «Dr.» — не конец.</div>
+  </div>
+</section>
+
+<section class="step">
+  <h2>2. WordNet: значения и синонимы слова</h2>
+  <p class="plain"><b>Что это.</b> У одного слова бывает несколько значений: «car» — это и машина, и вагон поезда, и кабина лифта. WordNet хранит каждое значение отдельно — это и есть синсет. У синсета есть определение, примеры и список синонимов.</p>
+  <p class="why"><b>Как читать код.</b> <code>synsets("car")</code> — все значения слова (их 5). Цикл идёт по ним, и если у значения есть пример (<code>syn.examples()</code> не пустой), печатает определение и пример.</p>
   <div class="code"><pre><code class="language-python">from nltk.corpus import wordnet
 
-syns = wordnet.synsets("car")
+syns = wordnet.synsets("car")        # 5 значений: car.n.01 … cable_car.n.01
 for syn in syns:
     if syn.examples():
         print("Definition:", syn.definition())
         print("Examples:", syn.examples())
 # Definition: a motor vehicle with four wheels; usually propelled by an internal combustion engine
 # Examples: ['he needs a car to get to work']
-# … ещё 3 значения: вагон поезда, кабина лифта, cable car</code></pre></div>
+# … дальше вагон поезда, кабина лифта, cable car
+
+syns[0].lemma_names()   # ['car', 'auto', 'automobile', 'machine', 'motorcar'] — синонимы</code></pre></div>
+  <p class="res"><b>Как читать <code>car.n.01</code>:</b> слово <code>car</code>, часть речи <code>n</code> (noun — существительное), значение номер <code>01</code>.</p>
 </section>
 
 <section class="step">
-  <h2>3. Токенизация: предложения и слова</h2>
-  <p class="why"><code>sent_tokenize</code> режет на предложения, <code>word_tokenize</code> — на слова. Знаки препинания становятся отдельными токенами. <code>don't</code> делится на <code>do</code> + <code>n't</code>.</p>
+  <h2>3. Токенизация: разрезать текст</h2>
+  <p class="plain"><b>Что это.</b> Разбить текст на предложения (<code>sent_tokenize</code>) или на слова (<code>word_tokenize</code>). Результат — список строк.</p>
+  <p class="why"><b>Почему не просто <code>split()</code>.</b> <code>"easy!".split()</code> оставит знак приклеенным к слову, и «easy!» и «easy» посчитаются разными словами. <code>word_tokenize</code> отделяет знаки в отдельные токены, понимает сокращения (<code>don't</code> → <code>do</code> + <code>n't</code>) и не режет числа вроде <code>3.5</code>.</p>
   <div class="code"><pre><code class="language-python">from nltk.tokenize import sent_tokenize, word_tokenize
 
 text = "Hello world. NLTK makes text processing easy!"
-sent_tokenize(text)   # ['Hello world.', 'NLTK makes text processing easy!']
+sent_tokenize(text)   # ['Hello world.', 'NLTK makes text processing easy!']        — 2 предложения
 word_tokenize(text)   # ['Hello', 'world', '.', 'NLTK', 'makes', 'text', 'processing', 'easy', '!']
 
 word_tokenize("Don't stop! It's 3.5 km, isn't it?")
@@ -63,42 +101,68 @@ word_tokenize("Don't stop! It's 3.5 km, isn't it?")
 </section>
 
 <section class="step">
-  <h2>4. Части речи: pos_tag</h2>
-  <p class="why">На вход — <b>список</b> токенов (даже если слово одно), на выход — пары (слово, тег). Тег нужен, чтобы лемматизация работала правильно: <code>running</code>-глагол → <code>run</code>.</p>
+  <h2>4. Части речи: pos_tag ставит теги</h2>
+  <p class="plain"><b>Что это.</b> Для каждого токена определить часть речи. NLTK пишет её не словом, а коротким кодом — <b>тегом</b>. Теги взяты из стандартного набора Penn Treebank, их около 36, но нужны в основном эти:</p>
+  <div class="tw2"><table class="tbl">
+    <thead><tr><th>тег</th><th style="text-align:left">что значит</th><th style="text-align:left">пример</th></tr></thead>
+    <tbody>
+      <tr><td><code>NN</code></td><td style="text-align:left">существительное, ед. число</td><td style="text-align:left">library, text</td></tr>
+      <tr><td><code>NNS</code></td><td style="text-align:left">существительное, мн. число (S = plural)</td><td style="text-align:left">students, streets</td></tr>
+      <tr><td><code>NNP</code></td><td style="text-align:left">имя собственное (P = proper)</td><td style="text-align:left">NLTK, Astana</td></tr>
+      <tr><td><code>VB</code></td><td style="text-align:left">глагол, начальная форма</td><td style="text-align:left">run, be</td></tr>
+      <tr><td><code>VBD</code></td><td style="text-align:left">глагол, прошедшее время (D = past)</td><td style="text-align:left">finished, was</td></tr>
+      <tr><td><code>VBG</code></td><td style="text-align:left">глагол на -ing</td><td style="text-align:left">running</td></tr>
+      <tr><td><code>VBZ</code></td><td style="text-align:left">глагол, он/она/оно сейчас</td><td style="text-align:left">is, makes</td></tr>
+      <tr><td><code>JJ</code></td><td style="text-align:left">прилагательное</td><td style="text-align:left">great, difficult</td></tr>
+      <tr><td><code>RB</code></td><td style="text-align:left">наречие</td><td style="text-align:left">quickly, soon</td></tr>
+      <tr><td><code>DT</code></td><td style="text-align:left">артикль / определитель</td><td style="text-align:left">the, a</td></tr>
+      <tr><td><code>IN</code></td><td style="text-align:left">предлог или союз</td><td style="text-align:left">for, in, because</td></tr>
+      <tr><td><code>PRP</code>, <code>PRP$</code></td><td style="text-align:left">местоимение / притяжательное</td><td style="text-align:left">he, I / their, our</td></tr>
+    </tbody>
+  </table></div>
+  <p class="why"><b>Как запомнить:</b> важна первая буква — <b>N</b> существительное, <b>V</b> глагол, <b>J</b> прилагательное, <b>R</b> наречие. <b>Зачем теги:</b> чтобы правильно найти лемму (на следующей странице). «leaves» как существительное → leaf (лист), как глагол → leave (уходить).<br><b>Важно:</b> <code>pos_tag</code> принимает <b>список</b> токенов, а не строку — поэтому сначала <code>word_tokenize</code>.</p>
   <div class="code"><pre><code class="language-python">text = nltk.word_tokenize("NLTK is a great library for text processing.")
 nltk.pos_tag(text)
 # [('NLTK', 'NNP'), ('is', 'VBZ'), ('a', 'DT'), ('great', 'JJ'), ('library', 'NN'),
 #  ('for', 'IN'), ('text', 'NN'), ('processing', 'NN'), ('.', '.')]</code></pre></div>
+  <div class="res">Читаем результат: каждая пара — <code>(слово, тег)</code>.
+    <ul><li><code>('NLTK', 'NNP')</code> — имя собственное (название библиотеки)</li>
+    <li><code>('is', 'VBZ')</code> — глагол «быть», он/она/оно</li>
+    <li><code>('great', 'JJ')</code> — прилагательное</li>
+    <li><code>('.', '.')</code> — у знаков препинания тег — сам знак</li></ul></div>
 </section>
 
 <section class="demo">
   <h2>Попробуй: разбор предложения</h2>
-  <p>Выбери предложение. Под каждым словом — тег от <code>nltk.pos_tag</code> (посчитано настоящим NLTK). Наведи на тег — расшифровка.</p>
+  <p>Выбери предложение. Под каждым словом — тег от <code>nltk.pos_tag</code> (посчитано настоящим NLTK). Цвет — часть речи: синий сущ., красный глагол, зелёный прилаг., оранжевый наречие. Наведи на слово — расшифровка.</p>
   <div class="pick-list" id="posList"></div>
   <div class="toks" id="posOut" style="margin-top:12px"></div>
   <div class="tw2"><table class="tbl" id="posLegend"></table></div>
 </section>
 
 <section class="step">
-  <h2>5. Стоп-слова</h2>
-  <p class="why">Список английских стоп-слов NLTK — 198 слов (русских 151, казахских 324). Делаем <code>set</code> — проверка «есть ли слово» в множестве мгновенная. Список в нижнем регистре, поэтому сравниваем <code>w.lower()</code>.</p>
+  <h2>5. Стоп-слова: выкинуть «мусор»</h2>
+  <p class="plain"><b>Что это.</b> Стоп-слова — самые частые слова языка, которые нужны для грамматики, но почти не говорят, <b>о чём</b> текст: <code>the, a, is, of, their, и, в, не</code>. Если посчитать частоты слов в любой статье, наверху всегда будут они — а это бесполезно.</p>
+  <p class="why"><b>Как работает.</b> У NLTK есть готовый список: английский — 198 слов, русский — 151, казахский — 324. Превращаем список в <code>set</code> (множество) — проверка «есть ли слово» в множестве мгновенная. Слова в списке маленькими буквами, поэтому сравниваем <code>w.lower()</code>: иначе «The» не узнается.<br><b>Осторожно:</b> в списке есть <code>not</code> и <code>no</code>. Для анализа тональности их выкидывать нельзя — «not good» превратится в «good».</p>
   <div class="code"><pre><code class="language-python">from nltk.corpus import stopwords
 
-stop_words = set(stopwords.words('english'))
+stop_words = set(stopwords.words('english'))      # 198 слов
 words = ["this", "is", "a", "sample", "sentence"]
 filtered = [w for w in words if w.lower() not in stop_words]
-print(filtered)   # ['sample', 'sentence']
+print(filtered)   # ['sample', 'sentence'] — остались только слова со смыслом
 
-# наоборот — найти сами стоп-слова в токенах из шага 4
+# наоборот: какие стоп-слова были в предложении из шага 4
 [w for w in text if w.lower() in stop_words]   # ['is', 'a', 'for']
 
-stopwords.words('russian')    # 151 слово
+stopwords.words('russian')    # 151 слово: и, в, во, не, что, он, на, я …
 stopwords.words('kazakh')     # 324 слова</code></pre></div>
+  <p class="res"><b>Как читать</b> <code>[w for w in words if w.lower() not in stop_words]</code>: «пройди по каждому слову <code>w</code> и оставь его, если его нет в списке стоп-слов». Это list comprehension — короткая запись цикла с условием.</p>
 </section>
 
 <section class="step">
   <h2>6. Свой список стоп-слов</h2>
-  <p class="why">Если готового списка нет или он не подходит — пишем свой <code>set</code>. Тут текст делится простым <code>split()</code>, поэтому знаки остаются приклеенными к словам (<code>көрсетеді.</code>).</p>
+  <p class="plain"><b>Зачем.</b> Готовый список может не подойти: например, в отзывах о курсах слово «course» есть везде и ничего не различает — его можно добавить. Или для языка нет хорошего списка. Тогда пишем свой <code>set</code>.</p>
+  <p class="why">Здесь текст режется простым <code>split()</code> (по пробелам), поэтому знаки остались приклеенными: <code>сөйлем,</code> и <code>көрсетеді.</code>. Слова <code>Бұл</code>, <code>және</code>, <code>ол</code> выкинуты — они в списке.</p>
   <div class="code"><pre><code class="language-python">kazakh_stop_words = set(['және', 'мен', 'не', 'бір', 'ол', 'бұл', 'соң', 'болды',
                          'үшін', 'сол', 'қалай', 'барлық', 'қашан', 'қайда',
                          'сондай', 'осы', 'менің'])
@@ -127,7 +191,7 @@ text3 = "Бұл қазақ тіліндегі сөйлем, және ол сто
     NN: 'существительное, ед. ч.', NNS: 'существительное, мн. ч.', NNP: 'имя собственное',
     VB: 'глагол, начальная форма', VBD: 'глагол, прошедшее время', VBG: 'глагол на -ing',
     VBP: 'глагол, настоящее (не 3-е лицо)', VBZ: 'глагол, 3-е лицо ед. ч.',
-    JJ: 'прилагательное', RB: 'наречие', RBS: 'наречие, превосходная степень',
+    JJ: 'прилагательное', RB: 'наречие', RBS: 'наречие, превосходная степень (most)',
     DT: 'артикль / определитель', IN: 'предлог или союз', TO: 'частица to',
     PRP: 'личное местоимение', 'PRP$': 'притяжательное местоимение', '.': 'знак препинания'
   };
@@ -145,10 +209,10 @@ text3 = "Бұл қазақ тіліндегі сөйлем, және ол сто
       var c = C[p[1][0]] || '#6d7378';
       return '<span title="' + LIVE.esc(T[p[1]] || p[1]) + '" style="border-color:' + c + '">' + LIVE.esc(p[0]) + '<small style="color:' + c + '">' + LIVE.esc(p[1]) + '</small></span>';
     }).join('');
-    document.getElementById('posLegend').innerHTML = '<thead><tr><th>тег</th><th>что значит</th><th>для лемматизатора</th></tr></thead><tbody>' +
+    document.getElementById('posLegend').innerHTML = '<thead><tr><th>тег</th><th style="text-align:left">что значит</th><th style="text-align:left">слова в предложении</th></tr></thead><tbody>' +
       Object.keys(used).map(function (t) {
-        var w = { N: "'n' сущ.", V: "'v' глагол", J: "'a' прилаг.", R: "'r' наречие" }[t[0]] || "'n' (по умолчанию)";
-        return '<tr><td><code>' + LIVE.esc(t) + '</code></td><td style="text-align:left">' + (T[t] || '') + '</td><td style="text-align:left">' + w + '</td></tr>';
+        var ws = S[s].filter(function (p) { return p[1] === t; }).map(function (p) { return p[0]; }).join(', ');
+        return '<tr><td><code>' + LIVE.esc(t) + '</code></td><td style="text-align:left">' + (T[t] || '') + '</td><td style="text-align:left">' + LIVE.esc(ws) + '</td></tr>';
       }).join('') + '</tbody>';
   }
   show(Object.keys(S)[0]);

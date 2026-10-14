@@ -74,4 +74,24 @@ mark.m{background:#fde8a6;border-radius:3px;padding:0 1px}
 .cmp div{background:#fff;border:1px solid var(--line);border-radius:11px;padding:10px 13px;font-size:14px}
 .cmp b{display:block;font-family:Consolas,monospace;font-size:14px;color:var(--c,#2c7a57)}
 
+/* словарик терминов */
+.terms{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin:10px 0 0}
+.terms div{background:#fff;border:1px solid var(--line);border-left:4px solid var(--c,#2c7a57);border-radius:10px;padding:10px 13px;font-size:14.5px}
+.terms b{display:block;font-size:15.5px;margin-bottom:2px}
+.terms i{display:block;font-style:normal;font-size:13px;color:var(--mut);margin-top:5px;font-family:Consolas,monospace}
+
+/* конвейер на одном предложении */
+.flow{display:flex;flex-direction:column;gap:4px;margin:10px 0 0}
+.flow .fs{display:grid;grid-template-columns:170px 1fr;gap:10px;align-items:start;background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 12px}
+.flow .fs > b{font-size:13.5px}
+.flow .fs > b small{display:block;font-weight:400;color:var(--mut);font-size:12px}
+.flow .arrow{text-align:center;color:var(--mut);font-size:13px;line-height:1}
+.flow .toks{margin:0}
+@media (max-width:640px){ .flow .fs{grid-template-columns:1fr} }
+
+.plain{font-size:15px;margin:0 0 8px}
+.plain b{color:var(--c,#2c7a57)}
+.res{font-size:14.5px;margin:10px 0 0;padding:9px 13px;background:#fbfaf6;border:1px dashed var(--line);border-radius:10px}
+.res ul{margin:4px 0 0;padding-left:20px}
+
 @media print{ .demo{display:none} }
