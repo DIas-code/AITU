@@ -60,7 +60,7 @@ Website/<Курс>/weekN/*.html      страницы уроков
 ## Отложено
 
 - **Переименовать папки** в полные названия курсов: `Math` → `Mathematics for Data Science`, `Programing for data analysis` → `Programming for Data Analysis and Database`, `Prof english` → `Foreign Language (Professional) C1`, `pedagogy` → `Pedagogy of Higher Education`. 27.09 не вышло: папки держали VS Code (Jupyter) и PowerPoint. После переименования поменять только `materials` в `sitemap.js`.
-- **Кандидаты на удаление (ждут команды Диаса):** корневой `site/` (старый Astro), `Programing for data analysis/site/` + `build.py` + `commands_data.py` (старый генератор), в `Math/`: `build_site.py`, `content.py`, `index.html`, `week*-formulas.html`, `week*-lecture.html`, `calculators.html`, `tables.html`, `assets/`, `_old-index.html`, `_extracted/`.
+- **Кандидаты на удаление (ждут команды Диаса):** корневой `site/` (старый Astro), `Programing for data analysis/site/` (старый сайт; `build.py` и `commands_data.py` Диас удалил 14.10), в `Math/`: `build_site.py`, `content.py`, `index.html`, `week*-formulas.html`, `week*-lecture.html`, `calculators.html`, `tables.html`, `assets/`, `_old-index.html`, `_extracted/`.
   В `Math/_old-index.html` есть разделы, которых нет в новом сайте: шпаргалка, дерево выбора критерия, разборы Assignment 1 и Practice 1, список источников. Перед удалением спросить, нужны ли они.
 - Напоминания о дедлайнах в почту / Telegram — Диас хочет, но позже.
-- Справочник функций из старого PDA-сайта (`commands_data.py`, страница commands.html) в новый сайт не перенесён.
+- Справочник функций из старого PDA-сайта (страница commands.html) в новый сайт не перенесён; исходник `commands_data.py` удалён 14.10, остался в истории git.
