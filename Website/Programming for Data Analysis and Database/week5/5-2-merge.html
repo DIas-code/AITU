@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5.2 Объединение таблиц и данные для ML — Программирование</title>
+<link rel="stylesheet" href="../../_shared/site.css">
+<link rel="stylesheet" href="../live.css">
+</head>
+<body data-root="../../" data-course="prog" data-page="week5/5-2-merge.html">
+<main>
+<div class="phead">
+  <div class="kicker">Неделя 5 · Лекция 4.3, часть 2</div>
+  <h1>merge, join, concat и подготовка X, y</h1>
+  <p class="sub">Данные часто лежат в нескольких таблицах. Сначала их соединяем, потом делим на признаки и ответ для модели scikit-learn.</p>
+</div>
+
+<section class="step">
+  <h2>1. merge() — соединить по общему ключу</h2>
+  <p class="why">Вторая таблица — статус студента. <code>on="student_id"</code> — по какому столбцу искать пары. <code>how</code> решает, что делать со строками без пары. В таблице статусов есть <code>ST201</code>, которого нет в <code>df_clean</code>.</p>
+  <div class="code"><pre><code class="language-python">student_status = pd.DataFrame({
+    "student_id": ["ST001", "ST002", "ST003", "ST004", "ST005", "ST201"],
+    "status": ["Active", "Active", "Exchange", "Active", "Academic Leave", "Exchange"]
+})
+
+merged_df = pd.merge(df_clean, student_status, on="student_id", how="inner")
+# inner → 5 строк   (только те, кто есть в обеих)
+# left  → 200 строк (все из df_clean, у 195 status = NaN)
+# right → 6 строк   (все статусы; у ST201 все баллы NaN)
+# outer → 201 строка (всё из обеих)</code></pre></div>
+</section>
+
+<section class="demo">
+  <h2>Попробуй: четыре вида merge</h2>
+  <p>Слева — кусочек <code>df_clean</code> (6 студентов из 200), справа — <code>student_status</code>. Переключай <code>how</code>: зелёным — нашлась пара, красным — пары нет, вместо значения <code>NaN</code>.</p>
+  <div class="ctl"><span class="seg" id="mHow">
+    <button data-v="inner" class="on">inner</button><button data-v="left">left</button><button data-v="right">right</button><button data-v="outer">outer</button>
+  </span></div>
+  <div class="live-code" id="mCode"></div>
+  <div class="tw2" id="mOut"></div>
+</section>
+
+<section class="step">
+  <h2>2. Ключи называются по-разному</h2>
+  <p class="why">Если в одной таблице <code>student_id</code>, а в другой <code>student_code</code> — указываем оба: <code>left_on</code> и <code>right_on</code>. В результате останутся оба столбца.</p>
+  <div class="code"><pre><code class="language-python">student_status = pd.DataFrame({
+    "student_code": ["ST001", "ST002", "ST003"],
+    "status": ["Active", "Active", "Exchange"]
+})
+
+merged_df = pd.merge(df_clean, student_status,
+                     left_on="student_id", right_on="student_code", how="right")</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>3. join() — соединить по индексу</h2>
+  <p class="why">То же, что merge, но пары ищутся по <b>индексу</b>. Поэтому сначала делаем ключ индексом через <code>set_index</code>.</p>
+  <div class="code"><pre><code class="language-python">status = student_status.set_index("student_code")
+students = df_clean.set_index("student_id")
+
+joined_df = students.join(status, how="left")</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>4. concat() — склеить строки или столбцы</h2>
+  <p class="why">concat ничего не ищет — просто ставит таблицы рядом. <code>axis=0</code> — одна под другой, <code>axis=1</code> — бок о бок. <code>ignore_index=True</code> — новая нумерация 0…199 вместо старой.</p>
+  <div class="code"><pre><code class="language-python">students_part1 = df_clean.iloc[:100]          # (100, 15)
+students_part2 = df_clean.iloc[100:]          # (100, 15)
+
+students_all = pd.concat([students_part1, students_part2], axis=0)   # (200, 15)
+students_all = pd.concat([students_part1, students_part2], ignore_index=True)
+
+student_info   = df_clean[["student_id", "gender", "program"]]
+student_scores = df_clean[["math_score", "programming_score", "final_score"]]
+combined_df = pd.concat([student_info, student_scores], axis=1)      # (200, 6)</code></pre></div>
+  <div class="cmp">
+    <div><b>merge()</b>связать по ключевому столбцу</div>
+    <div><b>join()</b>связать по индексу</div>
+    <div><b>concat(axis=0)</b>добавить строки</div>
+    <div><b>concat(axis=1)</b>добавить столбцы</div>
+  </div>
+</section>
+
+<section class="step">
+  <h2>5. Признаки X и ответ y</h2>
+  <p class="why">Задача: по учебным показателям предсказать <code>final_score</code>. <code>X</code> — то, что модель видит (таблица), <code>y</code> — то, что она должна угадать (один столбец).</p>
+  <div class="code"><pre><code class="language-python">features = ["admission_score", "math_score", "programming_score",
+            "english_score", "attendance", "assignments"]
+
+X = df_clean[features]          # (200, 6)
+y = df_clean["final_score"]     # (200,)</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>6. train_test_split</h2>
+  <p class="why">Модель учится на одной части, проверяется на другой, которую не видела. <code>test_size=0.2</code> — 20% в тест. <code>random_state=42</code> — одно и то же перемешивание при каждом запуске.</p>
+  <div class="code"><pre><code class="language-python">from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+# X_train (160, 6) · X_test (40, 6) · y_train (160,) · y_test (40,)</code></pre></div>
+  <div class="ctl" style="margin-top:12px">
+    <label>test_size <input type="range" id="ts" min="0.1" max="0.5" step="0.05" value="0.2"><output id="tsv">0.2</output></label>
+  </div>
+  <div class="chart short" id="tsChart" style="height:120px"></div>
+</section>
+
+<section class="step">
+  <h2>7. Несбалансированные классы и stratify</h2>
+  <p class="why">Классов «нет стипендии» больше, чем «есть»: 62.5% против 37.5%. При случайном делении в тест может попасть другая доля. <code>stratify=y</code> сохраняет пропорцию и в train, и в test. Нужен в задачах классификации. При сильном дисбалансе высокая accuracy ещё не значит, что модель хорошая.</p>
+  <div class="code"><pre><code class="language-python">df_clean["scholarship"].value_counts()                  # No 125 · Yes 75
+df_clean["scholarship"].value_counts(normalize=True).mul(100).round(2)   # 62.5 · 37.5
+
+X = df_clean[["math_score", "programming_score", "english_score",
+              "attendance", "assignments"]]
+y = df_clean["scholarship"]
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+y_test.value_counts(normalize=True)   # No 0.625 · Yes 0.375 — как во всей таблице
+# без stratify тот же random_state дал бы в тесте No 0.6 · Yes 0.4</code></pre></div>
+  <div class="chart short" id="balChart"></div>
+</section>
+
+<div id="pager"></div>
+</main>
+<script src="../../_shared/sitemap.js"></script>
+<script src="../../_shared/data.js"></script>
+<script src="../../_shared/site.js"></script>
+<script src="students.js"></script>
+<script src="../live.js"></script>
+<script>
+(function () {
+  var L = LIVE, D = L.students();
+  // ── merge на маленьких таблицах ──
+  var left = D.slice(0, 6).map(function (r) { return { student_id: r.student_id, program: r.program, final_score: r.final_score }; });
+  var right = [['ST001', 'Active'], ['ST002', 'Active'], ['ST003', 'Exchange'], ['ST004', 'Active'], ['ST005', 'Academic Leave'], ['ST201', 'Exchange']]
+    .map(function (p) { return { student_id: p[0], status: p[1] }; });
+  var full = { inner: 5, left: 200, right: 6, outer: 201 };
+
+  function merge(how) {
+    var out = [], used = {};
+    if (how !== 'right') left.forEach(function (l) {
+      var r = right.filter(function (x) { return x.student_id === l.student_id; })[0];
+      if (r) used[r.student_id] = 1;
+      if (r || how !== 'inner') out.push({ id: l.student_id, program: l.program, final_score: l.final_score, status: r ? r.status : null, hit: !!r });
+    });
+    if (how === 'right') right.forEach(function (r) {
+      var l = left.filter(function (x) { return x.student_id === r.student_id; })[0];
+      out.push({ id: r.student_id, program: l ? l.program : null, final_score: l ? l.final_score : null, status: r.status, hit: !!l });
+    });
+    if (how === 'outer') right.forEach(function (r) {
+      if (!used[r.student_id]) out.push({ id: r.student_id, program: null, final_score: null, status: r.status, hit: false });
+    });
+    if (how === 'outer') out.sort(function (a, b) { return a.id < b.id ? -1 : 1; });
+    return out;
+  }
+  function cell(v) { return v === null ? '<td class="nan">NaN</td>' : '<td>' + L.esc(v) + '</td>'; }
+  function showMerge(how) {
+    document.getElementById('mCode').textContent = 'pd.merge(df_clean, student_status, on="student_id", how="' + how + '")   # на всей таблице: ' + full[how] + ' строк';
+    var rows = merge(how);
+    var h = '<table class="tbl"><thead><tr><th>student_id</th><th>program</th><th>final_score</th><th>status</th></tr></thead><tbody>';
+    rows.forEach(function (r) { h += '<tr class="' + (r.hit ? 'hit' : 'miss') + '"><td>' + r.id + '</td>' + cell(r.program) + cell(r.final_score) + cell(r.status) + '</tr>'; });
+    document.getElementById('mOut').innerHTML = h + '</tbody></table><p class="cap">Результат на этих 6 строках: ' + rows.length + '.</p>';
+  }
+  L.seg('mHow', showMerge);
+  showMerge('inner');
+
+  // ── test_size ──
+  var ts = document.getElementById('ts');
+  function showSplit() {
+    var t = +ts.value, nTest = Math.ceil(t * 200), nTrain = 200 - nTest; // так считает scikit-learn
+    document.getElementById('tsv').textContent = t.toFixed(2);
+    L.draw('tsChart', [
+      { type: 'bar', orientation: 'h', y: [''], x: [nTrain], name: 'train', text: ['train ' + nTrain], textposition: 'inside', marker: { color: '#2c7a57' } },
+      { type: 'bar', orientation: 'h', y: [''], x: [nTest], name: 'test', text: ['test ' + nTest], textposition: 'inside', marker: { color: '#e0802f' } }
+    ], { barmode: 'stack', showlegend: false, margin: { l: 10, r: 10, t: 10, b: 26 }, xaxis: { range: [0, 200] } }, { displayModeBar: false });
+  }
+  ts.oninput = showSplit;
+  L.whenVisible('tsChart', showSplit);
+
+  // ── баланс классов (числа проверены запуском) ──
+  L.whenVisible('balChart', function () {
+    var parts = ['весь y', 'test без stratify', 'test со stratify'];
+    L.draw('balChart', [
+      { type: 'bar', name: 'No', x: parts, y: [62.5, 60, 62.5], text: ['62.5%', '60%', '62.5%'], textposition: 'inside', marker: { color: '#8a94a0' } },
+      { type: 'bar', name: 'Yes', x: parts, y: [37.5, 40, 37.5], text: ['37.5%', '40%', '37.5%'], textposition: 'inside', marker: { color: '#2c7a57' } }
+    ], { title: 'Доля классов scholarship, %', barmode: 'stack', yaxis: { range: [0, 100] }, legend: { y: -0.18 } });
+  });
+})();
+</script>
+</body>
+</html>

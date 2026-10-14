@@ -20,7 +20,7 @@
   function taskWhen(t) {
     if (t.w > S.term.weeks && !t.due) return 'сессия 16–28.11';
     var d = taskDate(t), day = WD[new Date(+d + 5 * 3600e3).getUTCDay()];
-    if (t.due) return 'до ' + fmt(new Date(t.due + 'T12:00:00')) + ' (' + day + ')' + (t.time ? ', ' + t.time : '') + ' · Moodle';
+    if (t.due) return 'до ' + fmt(new Date(t.due + 'T12:00:00')) + ' (' + day + ')' + (t.time ? ', ' + t.time : '') + (t.moodle ? ' · Moodle' : (t.dueSrc ? ' · ' + t.dueSrc : ''));
     return '≈ до ' + fmt(d) + ' (' + day + ') · по силлабусу';
   }
   // Напоминание вместо статуса: сдано ли — сайт не знает, он только считает время до срока.

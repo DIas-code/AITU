@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4.4 Pandas: новые столбцы, масштаб, кодирование — Программирование</title>
+<link rel="stylesheet" href="../../_shared/site.css">
+<link rel="stylesheet" href="../live.css">
+</head>
+<body data-root="../../" data-course="prog" data-page="week4/4-4-features.html">
+<main>
+<div class="phead">
+  <div class="kicker">Неделя 4 · Лекция 4.2, часть 2</div>
+  <h1>Новые столбцы, масштабирование, кодирование</h1>
+  <p class="sub">Последний шаг перед машинным обучением: посчитать новые признаки, привести числа к одному масштабу, превратить текст в числа.</p>
+</div>
+
+<section class="step">
+  <h2>1. Новый столбец из других</h2>
+  <p class="why">Арифметика со столбцами идёт сразу по всем строкам. То же короче: <code>mean(axis=1)</code> — среднее <b>по строке</b>, отдельно для каждого студента (<code>axis=0</code> было бы по столбцу).</p>
+  <div class="code"><pre><code class="language-python">df_clean["average_score"] = (
+    df_clean["math_score"] + df_clean["programming_score"] + df_clean["english_score"]
+) / 3
+# ST001: (75 + 59 + 80) / 3 = 71.33
+
+df_clean["average_score_1"] = df_clean[
+    ["math_score", "programming_score", "english_score"]
+].mean(axis=1)                     # то же самое</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>2. apply — своя функция на каждое значение</h2>
+  <p class="why">Пишем обычную функцию для одного числа, <code>apply</code> вызывает её для каждой строки столбца. Условия проверяются сверху вниз: 92 подходит под первое (≥ 90) и дальше не идёт.</p>
+  <div class="code"><pre><code class="language-python">def performance_level(score):
+    if score &gt;= 90:
+        return "Excellent"
+    elif score &gt;= 75:
+        return "Good"
+    elif score &gt;= 60:
+        return "Satisfactory"
+    else:
+        return "Low"
+
+df_clean["performance_level"] = df_clean["final_score"].apply(performance_level)
+df_clean["performance_level"].value_counts()
+# Good 133 · Satisfactory 49 · Excellent 16 · Low 2</code></pre></div>
+  <div class="ctl" style="margin-top:12px">
+    <label>Excellent ≥ <input type="number" id="t1" value="90" style="width:58px"></label>
+    <label>Good ≥ <input type="number" id="t2" value="75" style="width:58px"></label>
+    <label>Satisfactory ≥ <input type="number" id="t3" value="60" style="width:58px"></label>
+  </div>
+  <div class="chart short" id="plChart"></div>
+</section>
+
+<section class="step">
+  <h2>3. Переименовать столбцы</h2>
+  <div class="code"><pre><code class="language-python">df_clean.rename(columns={"student_id": "student_code",
+                         "final_score": "final_grade",
+                         "admission_date": "enrollment_date"}, inplace=True)</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>4. Масштабирование: StandardScaler и MinMaxScaler</h2>
+  <p class="why">Баллы поступления до 120, посещаемость до 100 — у признаков разные масштабы, и многие модели решат, что большие числа важнее. <b>StandardScaler</b>: z = (x − среднее) / std → среднее 0, разброс 1. <b>MinMaxScaler</b>: (x − min) / (max − min) → всё от 0 до 1. Результат — массив NumPy, поэтому заворачиваем в DataFrame; исходный <code>df_clean</code> не меняется.</p>
+  <div class="code"><pre><code class="language-python">from sklearn.preprocessing import StandardScaler, MinMaxScaler
+
+features = ["admission_score", "math_score", "programming_score",
+            "english_score", "attendance", "assignments"]
+
+standard_scaler = StandardScaler()
+standardized_data = standard_scaler.fit_transform(df_clean[features])
+df_standardized = pd.DataFrame(standardized_data, columns=features)
+# ST001 attendance: -2.207 — сильно ниже среднего
+
+minmax_scaler = MinMaxScaler()
+df_normalized = pd.DataFrame(minmax_scaler.fit_transform(df_clean[features]),
+                             columns=features)
+df_normalized.min()   # все 0
+df_normalized.max()   # все 1</code></pre></div>
+</section>
+
+<section class="demo">
+  <h2>Попробуй: один столбец в трёх масштабах</h2>
+  <p>Форма распределения не меняется — меняются только числа на оси. Наведи на точку: видно, как один и тот же студент выглядит в каждой шкале.</p>
+  <div class="ctl"><label>признак <select id="scCol"><option>admission_score</option><option>math_score</option><option>programming_score</option><option>english_score</option><option selected>attendance</option><option>assignments</option></select></label></div>
+  <div class="tw2" id="scTbl"></div>
+  <div class="chart" id="scChart"></div>
+</section>
+
+<section class="step">
+  <h2>5. Текст → числа: LabelEncoder и OneHotEncoder</h2>
+  <p class="why"><b>LabelEncoder</b> — каждой категории номер по алфавиту: No → 0, Yes → 1. Годится для «да/нет». Для программ номера 0–3 создали бы ложный порядок («Software Engineering больше Cybersecurity»), поэтому <b>OneHotEncoder</b>: по столбцу на каждую категорию, 1 там, где студент. <code>sparse_output=False</code> — вернуть обычный массив, а не экономную разреженную матрицу.</p>
+  <div class="code"><pre><code class="language-python">from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+
+label_encoder = LabelEncoder()
+df_clean["scholarship_encoded"] = label_encoder.fit_transform(df_clean["scholarship"])
+label_encoder.classes_          # ['No', 'Yes'] → 0, 1
+
+onehot_encoder = OneHotEncoder(sparse_output=False)
+program_encoded = onehot_encoder.fit_transform(df_clean[["program"]])   # двойные скобки: нужна таблица
+onehot_encoder.get_feature_names_out(["program"])
+# ['program_Cybersecurity', 'program_Data Science', 'program_IT Management', 'program_Software Engineering']
+
+program_encoded_df = pd.DataFrame(program_encoded,
+                                  columns=onehot_encoder.get_feature_names_out(["program"]),
+                                  index=df_clean.index)</code></pre></div>
+  <div class="tw2" id="ohe"></div>
+</section>
+
+<div id="pager"></div>
+</main>
+<script src="../../_shared/sitemap.js"></script>
+<script src="../../_shared/data.js"></script>
+<script src="../../_shared/site.js"></script>
+<script src="../week5/students.js"></script>
+<script src="../live.js"></script>
+<script>
+(function () {
+  var L = LIVE, D = L.students();
+  // apply с порогами
+  var t1 = document.getElementById('t1'), t2 = document.getElementById('t2'), t3 = document.getElementById('t3');
+  function pl() {
+    var a = +t1.value, b = +t2.value, c = +t3.value, names = ['Excellent', 'Good', 'Satisfactory', 'Low'], n = [0, 0, 0, 0];
+    D.forEach(function (r) { var s = r.final_score; n[s >= a ? 0 : s >= b ? 1 : s >= c ? 2 : 3]++; });
+    L.draw('plChart', [{ type: 'bar', x: names, y: n, text: n, textposition: 'outside', cliponaxis: false, marker: { color: ['#2c7a57', '#2f6fb5', '#e0802f', '#c8463c'] } }],
+      { title: 'performance_level.value_counts()', margin: { t: 40, b: 40 } });
+  }
+  [t1, t2, t3].forEach(function (e) { e.oninput = pl; });
+  L.whenVisible('plChart', pl);
+
+  // масштабы
+  var scCol = document.getElementById('scCol');
+  function sc() {
+    var c = scCol.value, x = L.col(D, c), m = L.AGG.mean(x), n = x.length;
+    var sd = Math.sqrt(x.reduce(function (s, v) { return s + (v - m) * (v - m); }, 0) / n); // StandardScaler: std с ddof=0
+    var mn = Math.min.apply(null, x), mx = Math.max.apply(null, x);
+    var z = x.map(function (v) { return (v - m) / sd; }), u = x.map(function (v) { return (v - mn) / (mx - mn); });
+    var ids = L.col(D, 'student_id');
+    document.getElementById('scTbl').innerHTML = '<table class="tbl"><thead><tr><th>' + c + '</th><th>исходный</th><th>StandardScaler</th><th>MinMaxScaler</th></tr></thead><tbody>' +
+      [0, 1, 2].map(function (k) { return '<tr><td>' + ids[k] + '</td><td>' + x[k] + '</td><td>' + z[k].toFixed(3) + '</td><td>' + u[k].toFixed(3) + '</td></tr>'; }).join('') +
+      '<tr><td>min … max</td><td>' + mn + ' … ' + mx + '</td><td>' + Math.min.apply(null, z).toFixed(2) + ' … ' + Math.max.apply(null, z).toFixed(2) + '</td><td>0 … 1</td></tr></tbody></table>';
+    function row(vals, name, color, axis) {
+      return { type: 'box', x: vals, name: name, boxpoints: 'all', jitter: .6, pointpos: 0, fillcolor: 'rgba(0,0,0,0)', line: { width: 1, color: color },
+        marker: { color: color, size: 5, opacity: .65 }, xaxis: axis, yaxis: axis.replace('x', 'y'), text: ids, hovertemplate: '%{text}: %{x:.3f}<extra>' + name + '</extra>' };
+    }
+    L.draw('scChart', [row(x, 'исходный', '#8a94a0', 'x'), row(z, 'StandardScaler', '#2f6fb5', 'x2'), row(u, 'MinMaxScaler', '#2c7a57', 'x3')],
+      { grid: { rows: 3, columns: 1, pattern: 'independent', ygap: 0.45 }, showlegend: false, margin: { l: 110, t: 20, b: 30 },
+        yaxis: { automargin: true }, yaxis2: { automargin: true }, yaxis3: { automargin: true } });
+  }
+  scCol.onchange = sc;
+  L.whenVisible('scChart', sc);
+
+  // one-hot для первых 5 студентов
+  var P = L.PROG;
+  document.getElementById('ohe').innerHTML = '<table class="tbl"><thead><tr><th>student_id</th><th>program</th><th>scholarship → enc</th>' + P.map(function (p) { return '<th>program_' + p + '</th>'; }).join('') + '</tr></thead><tbody>' +
+    D.slice(0, 5).map(function (r) {
+      return '<tr><td>' + r.student_id + '</td><td>' + r.program + '</td><td>' + r.scholarship + ' → ' + (r.scholarship === 'Yes' ? 1 : 0) + '</td>' +
+        P.map(function (p) { return '<td' + (p === r.program ? ' style="background:#eef7f1;font-weight:700"' : ' style="color:#b9b2a6"') + '>' + (p === r.program ? '1.0' : '0.0') + '</td>'; }).join('') + '</tr>';
+    }).join('') + '</tbody></table>';
+})();
+</script>
+</body>
+</html>

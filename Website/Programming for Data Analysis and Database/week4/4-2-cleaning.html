@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4.2 Pandas: очистка данных — Программирование</title>
+<link rel="stylesheet" href="../../_shared/site.css">
+<link rel="stylesheet" href="../live.css">
+</head>
+<body data-root="../../" data-course="prog" data-page="week4/4-2-cleaning.html">
+<main>
+<div class="phead">
+  <div class="kicker">Неделя 4 · Лекция 4.1, часть 2</div>
+  <h1>Очистка: пропуски, дубликаты, типы, проверки</h1>
+  <p class="sub">Нашли 17 пропусков — теперь решаем, что с ними делать. Работаем на копии, исходный <code>df</code> не трогаем. В конце сохраняем чистую таблицу в <code>University Students 2026 New.csv</code> — её используют все следующие лекции.</p>
+</div>
+
+<section class="step">
+  <h2>1. Копия и удаление строк с пропусками</h2>
+  <p class="why"><code>copy()</code> — отдельная таблица: правки не попадут в <code>df</code>. <code>dropna()</code> выкидывает строку, если в ней пусто <b>хоть где-то</b> — теряем 16 студентов. <code>subset=[...]</code> — смотреть только на эти столбцы. <code>inplace=True</code> — изменить саму таблицу вместо <code>df_clean = …</code>.</p>
+  <div class="code"><pre><code class="language-python">df_clean = df.copy()
+
+df_clean.dropna().shape                          # (184, 15) — минус 16 строк
+df_clean = df_clean.dropna()                     # то же, что
+df_clean.dropna(inplace=True)
+
+df_clean = df.copy()
+df_clean = df_clean.dropna(subset=["math_score"])   # (196, 15) — убраны только те, где нет math</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>2. Заполнить: 0, среднее или медиана</h2>
+  <p class="why">Ноль — плохая идея для оценок: будто студент получил 0, среднее падает с 83.13 до 81.47. Среднее чувствительно к выбросам (одна очень низкая оценка тянет его вниз), медиана — нет. Поэтому для баллов обычно берут медиану.</p>
+  <div class="code"><pre><code class="language-python">df_clean = df.copy()
+df_clean["math_score"] = df_clean["math_score"].fillna(0)            # mean → 81.47
+
+mean_english = df_clean["english_score"].mean()                       # 76.28
+df_clean["english_score"] = df_clean["english_score"].fillna(mean_english)
+
+df_clean["programming_score"] = df_clean["programming_score"].fillna(
+    df_clean["programming_score"].median())                           # 81.0
+
+# так в итоге: медиана для всех баллов
+df_clean = df.copy()
+for column in ["math_score", "programming_score", "english_score", "attendance"]:
+    df_clean[column] = df_clean[column].fillna(df_clean[column].median())</code></pre></div>
+</section>
+
+<section class="demo">
+  <h2>Попробуй: что будет со столбцом</h2>
+  <p>Выбери столбец и способ. Оранжевые точки — значения, которые подставил pandas. В таблице — как изменились среднее, медиана и число строк.</p>
+  <div class="ctl">
+    <label>столбец <select id="fCol"><option>math_score</option><option>programming_score</option><option>english_score</option><option>attendance</option></select></label>
+    <span class="seg" id="fHow"><button data-v="drop">dropna</button><button data-v="zero">fillna(0)</button><button data-v="mean">fillna(mean)</button><button data-v="median" class="on">fillna(median)</button></span>
+  </div>
+  <div class="live-code" id="fCode"></div>
+  <div class="tw2" id="fTbl"></div>
+  <div class="chart short" id="fChart"></div>
+</section>
+
+<section class="step">
+  <h2>3. Пропуски в категориях — мода</h2>
+  <p class="why">У текста нет среднего (<code>mean()</code> на <code>dormitory</code> выдаст ошибку). Берём моду — самое частое значение. <code>mode()</code> возвращает Series (мод может быть несколько), поэтому <code>[0]</code>.</p>
+  <div class="code"><pre><code class="language-python">df_clean["dormitory"].mode()        # 0    Yes
+df_clean["dormitory"] = df_clean["dormitory"].fillna(df_clean["dormitory"].mode()[0])
+
+df_clean.isna().sum().sum()         # 0 — пропусков не осталось</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>4. Дубликаты</h2>
+  <div class="code"><pre><code class="language-python">df_clean.duplicated().sum()                  # 0
+df_clean = df_clean.drop_duplicates()        # или drop_duplicates(inplace=True)</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>5. Типы: дата, целые числа, категории</h2>
+  <p class="why">Дата из файла — просто текст. <code>pd.to_datetime</code> делает её датой, и через <code>.dt</code> можно достать год, месяц, день. После <code>fillna</code> баллы остались <code>float64</code> (75.0) — <code>astype(int)</code> делает их целыми. Тип <code>category</code> — для столбцов с несколькими повторяющимися значениями: меньше памяти.</p>
+  <div class="code"><pre><code class="language-python">df_clean["admission_date"] = pd.to_datetime(df_clean["admission_date"])
+df_clean["admission_date"].dt.year      # 2026, 2023, 2026, …
+df_clean["admission_date"].dt.month     # 3, 9, 7, …
+
+columns = ["math_score", "programming_score", "english_score", "attendance"]
+df_clean[columns] = df_clean[columns].astype(int)
+
+categorical_columns = ["gender", "city", "program", "scholarship", "dormitory"]
+df_clean[categorical_columns] = df_clean[categorical_columns].astype("category")</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>6. Проверки диапазонов и допустимых значений</h2>
+  <p class="why"><code>between(0, 100)</code> проверяет каждое значение, <code>all()</code> — что условие верно для всех строк. <code>isin([...])</code> — что значение из разрешённого списка. В ноутбуке для стипендии написано <code>["Yes", "Nan"]</code> — это опечатка, получится False. Правильно <code>["Yes", "No"]</code>.</p>
+  <div class="code"><pre><code class="language-python">df_clean["attendance"].min(), df_clean["attendance"].max()   # 57, 100
+df_clean["attendance"].between(0, 100).all()                # True
+df_clean["final_score"].between(0, 100).all()               # True
+
+df_clean["gender"].isin(["Male", "Female"]).all()           # True
+df_clean["scholarship"].isin(["Yes", "No"]).all()           # True</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>7. Итог и сохранение</h2>
+  <div class="code"><pre><code class="language-python">print("Original shape:", df.shape)                          # (200, 15)
+print("Cleaned shape:", df_clean.shape)                     # (200, 15) — строки не теряли
+print("Original missing values:", df.isna().sum().sum())    # 17
+print("Cleaned missing values:", df_clean.isna().sum().sum())   # 0
+
+df_clean.to_csv("University Students 2026 New.csv", index=False)</code></pre></div>
+</section>
+
+<div id="pager"></div>
+</main>
+<script src="../../_shared/sitemap.js"></script>
+<script src="../../_shared/data.js"></script>
+<script src="../../_shared/site.js"></script>
+<script src="students-raw.js"></script>
+<script src="../live.js"></script>
+<script>
+(function () {
+  var L = LIVE, C = RAW_COLS, R = RAW, fCol = document.getElementById('fCol'), how = 'median';
+  function run() {
+    var c = fCol.value, i = C.indexOf(c), v = R.map(function (r) { return r[i]; });
+    var have = v.filter(function (x) { return x !== null; });
+    var fill = { zero: 0, mean: L.AGG.mean(have), median: L.AGG.median(have) }[how];
+    var after = how === 'drop' ? have : v.map(function (x) { return x === null ? fill : x; });
+    document.getElementById('fCode').textContent = how === 'drop'
+      ? 'df_clean = df.dropna(subset=["' + c + '"])'
+      : 'df_clean["' + c + '"] = df_clean["' + c + '"].fillna(' + (how === 'zero' ? '0' : 'df_clean["' + c + '"].' + how + '()') + ')' + (how !== 'zero' ? '   # = ' + L.fmt(fill, 3) : '');
+    var f = function (x) { return L.fmt(x, 3); };
+    document.getElementById('fTbl').innerHTML = '<table class="tbl"><thead><tr><th></th><th>строк</th><th>пропусков</th><th>mean</th><th>median</th></tr></thead><tbody>' +
+      '<tr><td>до</td><td>200</td><td>' + (200 - have.length) + '</td><td>' + f(L.AGG.mean(have)) + '</td><td>' + f(L.AGG.median(have)) + '</td></tr>' +
+      '<tr class="hit"><td>после</td><td>' + after.length + '</td><td>0</td><td>' + f(L.AGG.mean(after)) + '</td><td>' + f(L.AGG.median(after)) + '</td></tr></tbody></table>';
+    var filledIdx = [];
+    v.forEach(function (x, k) { if (x === null) filledIdx.push(k); });
+    var tr = [{ type: 'box', x: have, name: 'есть', boxpoints: 'all', jitter: 0.6, pointpos: 0, fillcolor: 'rgba(0,0,0,0)', line: { width: 0 }, marker: { color: '#8a94a0', size: 5, opacity: .6 }, hoverinfo: 'x' }];
+    if (how !== 'drop') tr.push({ type: 'scatter', mode: 'markers', x: filledIdx.map(function () { return fill; }), y: filledIdx.map(function () { return 'есть'; }), name: 'подставлено',
+      marker: { color: '#e0802f', size: 13, symbol: 'diamond', line: { color: '#fff', width: 1.5 } }, text: filledIdx.map(function (k) { return R[k][0]; }), hovertemplate: '%{text}: %{x}<extra>подставлено</extra>' });
+    L.draw('fChart', tr, { title: c + ', пропусков: ' + (200 - have.length), showlegend: false, yaxis: { showticklabels: false }, xaxis: { title: c }, margin: { t: 40, l: 20 } });
+  }
+  fCol.onchange = run;
+  L.seg('fHow', function (v) { how = v; run(); });
+  L.whenVisible('fChart', run);
+})();
+</script>
+</body>
+</html>

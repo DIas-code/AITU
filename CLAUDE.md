@@ -22,6 +22,7 @@ Website/<Курс>/weekN/*.html      страницы уроков
 Курсы (id → страницы → материалы):
 - `math` → `Website/Mathematics for Data Science/` → `Math/`. Страницы `weekN/formulas.html`, `weekN/lecture.html`, `reference/calculators.html`, `reference/tables.html`; свой CSS `math.css`, `reference/calc.js`. Двуязычные RU/EN (`<span lang="ru">`/`<span lang="en">`, в sitemap `bi: true`), формулы через MathJax.
 - `prog` → `Website/Programming for Data Analysis and Database/` → `Programing for data analysis/` (там неделя 3 — папка `Week3`).
+  Недели 4–6 «живые»: `live.css` + `live.js` (Plotly.js с jsdelivr, грузится лениво), данные — `week4/students-raw.js` (исходный .txt с пропусками), `week5/students.js` (копия CSV из `Week4/`), `week6/article.js` (предрасчёт NLTK/sumy). Всё, что нельзя честно посчитать в браузере (pos_tag, леммы, VADER, sumy), — предрасчитано в Python и вписано в страницу.
 - `eng` → `Website/Foreign Language (Professional) C1/` → `Prof english/`. Пока только страница курса + ссылки на готовые HTML (`extras`).
 - `ped` → `Website/Pedagogy of Higher Education/` → `pedagogy/`. Пока только страница курса.
 - `Orientation/` — оставлен как есть, ссылки с главной (`orientation.dir: '../Orientation/'`).

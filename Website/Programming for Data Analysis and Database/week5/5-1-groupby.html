@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5.1 Группировка и корреляция — Программирование</title>
+<link rel="stylesheet" href="../../_shared/site.css">
+<link rel="stylesheet" href="../live.css">
+</head>
+<body data-root="../../" data-course="prog" data-page="week5/5-1-groupby.html">
+<main>
+<div class="phead">
+  <div class="kicker">Неделя 5 · Лекция 4.3, часть 1</div>
+  <h1>Группировка, сводные таблицы, корреляция</h1>
+  <p class="sub">Таблица <code>University Students 2026 New.csv</code>: 200 студентов, 4 программы. Вопрос: у какой программы баллы выше и что сильнее всего связано с итоговой оценкой.</p>
+</div>
+
+<section class="step">
+  <h2>1. Split → Apply → Combine</h2>
+  <p class="why"><code>groupby("program")</code> только <b>делит</b> строки на группы — сам по себе ничего не считает. Считать начинает функция после него: взяли столбец, применили <code>mean()</code> к каждой группе, собрали в один результат.</p>
+  <div class="code"><pre><code class="language-python">import pandas as pd
+df_clean = pd.read_csv("University Students 2026 New.csv")
+
+df_clean.groupby("program")                       # объект группировки, ещё без расчёта
+df_clean.groupby("program")["final_score"].mean()
+# Cybersecurity 79.06 · Data Science 80.41 · IT Management 78.59 · Software Engineering 80.03</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>2. count() или size()</h2>
+  <p class="why"><code>count()</code> считает <b>непустые</b> значения выбранного столбца, <code>size()</code> — все строки группы. Здесь пропусков в <code>student_id</code> нет, поэтому числа совпадают. Разница появится, если в столбце есть <code>NaN</code>.</p>
+  <div class="code"><pre><code class="language-python">df_clean.groupby("program")["student_id"].count()
+df_clean.groupby("program").size()
+# оба: Cybersecurity 47 · Data Science 54 · IT Management 37 · Software Engineering 62
+
+df_clean.groupby("program")["final_score"].min()      # также .max(), .median()</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>3. Несколько столбцов и agg()</h2>
+  <p class="why">Список столбцов в <code>[[...]]</code> — одна функция для всех. <code>agg([...])</code> — много функций за раз. <code>agg({...})</code> — своя функция для каждого столбца.</p>
+  <div class="code"><pre><code class="language-python">df_clean.groupby("program")[
+    ["math_score", "programming_score", "english_score", "final_score"]
+].mean()
+
+df_clean.groupby("program")["final_score"].agg(
+    ["count", "mean", "median", "min", "max", "std"]
+)
+# IT Management: count 37, mean 78.59, std 9.10 — самый большой разброс
+
+df_clean.groupby("program").agg({
+    "student_id": "count",
+    "admission_score": "mean",
+    "attendance": "mean",
+    "final_score": ["mean", "min", "max"]
+})</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>4. Группировка по двум признакам и сортировка</h2>
+  <p class="why">Список ключей → группа на каждую пару значений (программа × пол, программа × курс). <code>as_index=False</code> оставляет <code>program</code> обычным столбцом — тогда по результату удобно сортировать.</p>
+  <div class="code"><pre><code class="language-python">df_clean.groupby(["program", "gender"])["final_score"].mean()
+df_clean.groupby(["program", "year"])["final_score"].mean()
+
+df_clean.groupby("program", as_index=False)["final_score"].mean() \
+        .sort_values("final_score", ascending=False)
+# Data Science 80.41 → Software Engineering 80.03 → Cybersecurity 79.06 → IT Management 78.59
+
+df_clean.groupby(["program", "scholarship"]).size()   # сколько со стипендией в каждой программе
+# Data Science: No 30, Yes 24</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>5. pivot_table — сводная таблица как в Excel</h2>
+  <p class="why">То же, что <code>groupby</code> по двум ключам, но второй ключ разворачивается в столбцы: строки — программы, столбцы — курс, в ячейках — среднее.</p>
+  <div class="code"><pre><code class="language-python">pd.pivot_table(df_clean, values="final_score",
+               index="program", columns="year", aggfunc="mean")
+# Data Science: 77.0 · 80.5 · 79.2 · 84.2  (1–4 курс)
+
+pd.pivot_table(df_clean, values=["attendance", "final_score"],
+               index="program", columns="year", aggfunc="mean")   # два показателя сразу</code></pre></div>
+</section>
+
+<section class="demo">
+  <h2>Попробуй: собери groupby сам</h2>
+  <p>Выбери, по чему группировать, какой столбец и какую функцию. Ниже — строка pandas, результат и график. Считается прямо в браузере по тем же 200 строкам.</p>
+  <div class="ctl">
+    <label>по <select id="gBy">
+      <option value="program">program</option><option value="gender">gender</option>
+      <option value="year">year</option><option value="scholarship">scholarship</option>
+      <option value="program,gender">program + gender</option><option value="program,year">program + year</option>
+    </select></label>
+    <label>столбец <select id="gCol"></select></label>
+    <label>функция <select id="gFn">
+      <option>mean</option><option>median</option><option>min</option><option>max</option><option>std</option><option>count</option><option>size</option>
+    </select></label>
+  </div>
+  <div class="live-code" id="gCode"></div>
+  <div class="tw2" id="gTbl"></div>
+  <div class="chart short" id="gChart"></div>
+</section>
+
+<section class="step">
+  <h2>6. Корреляция</h2>
+  <p class="why">Коэффициент Пирсона от −1 до 1: плюс — растут вместе, минус — одно растёт, другое падает, около 0 — линейной связи нет. <code>.corr()</code> на таблице даёт матрицу «каждый с каждым». Корреляция ≠ причина.</p>
+  <div class="code"><pre><code class="language-python">df_clean["attendance"].corr(df_clean["final_score"])   # 0.249 — слабая связь
+
+numeric_columns = ["admission_score", "math_score", "programming_score",
+                   "english_score", "attendance", "assignments", "final_score"]
+correlation_matrix = df_clean[numeric_columns].corr()
+
+correlation_matrix["final_score"].sort_values(ascending=False)
+# programming 0.678 · assignments 0.618 · math 0.590 · admission 0.306
+# attendance 0.249 · english 0.165</code></pre></div>
+</section>
+
+<section class="demo">
+  <h2>Попробуй: с чем связан признак</h2>
+  <p>Выбери признак — столбики покажут его корреляцию со всеми остальными (то же, что <code>correlation_matrix["…"].sort_values()</code>).</p>
+  <div class="ctl"><label>признак <select id="cCol"></select></label></div>
+  <div class="chart short" id="cChart"></div>
+</section>
+
+<div id="pager"></div>
+</main>
+<script src="../../_shared/sitemap.js"></script>
+<script src="../../_shared/data.js"></script>
+<script src="../../_shared/site.js"></script>
+<script src="students.js"></script>
+<script src="../live.js"></script>
+<script>
+(function () {
+  var L = LIVE, D = L.students();
+  var gBy = document.getElementById('gBy'), gCol = document.getElementById('gCol'), gFn = document.getElementById('gFn');
+  L.NUM.concat(['student_id']).forEach(function (c) { gCol.add(new Option(c, c)); });
+  gCol.value = 'final_score';
+
+  function runGroup() {
+    if (gCol.value === 'student_id' && gFn.value !== 'size') gFn.value = 'count'; // у текста есть только count
+    var keys = gBy.value.split(','), c = gCol.value, f = gFn.value;
+    var groups = L.groupBy(D, keys);
+    var vals = groups.map(function (g) {
+      return f === 'size' ? g.rows.length : L.AGG[f](L.col(g.rows, c));
+    });
+    var by = keys.length > 1 ? '[' + keys.map(function (k) { return '"' + k + '"'; }).join(', ') + ']' : '"' + keys[0] + '"';
+    document.getElementById('gCode').textContent = f === 'size'
+      ? 'df_clean.groupby(' + by + ').size()'
+      : 'df_clean.groupby(' + by + ')["' + c + '"].' + f + '()';
+    var h = '<table class="tbl"><thead><tr>' + keys.map(function (k) { return '<th>' + k + '</th>'; }).join('') +
+      '<th>' + (f === 'size' ? 'size' : c) + '</th></tr></thead><tbody>';
+    groups.forEach(function (g, i) {
+      h += '<tr>' + g.key.map(function (k) { return '<td>' + L.esc(k) + '</td>'; }).join('') + '<td>' + L.fmt(vals[i]) + '</td></tr>';
+    });
+    document.getElementById('gTbl').innerHTML = h + '</tbody></table>';
+
+    var traces;
+    if (keys.length === 1) {
+      traces = [{ type: 'bar', x: groups.map(function (g) { return String(g.key[0]); }), y: vals,
+        text: vals.map(function (v) { return L.fmt(v); }), textposition: 'outside', cliponaxis: false }];
+    } else { // второй ключ — цветом
+      var second = L.uniq(groups.map(function (g) { return g.key[1]; }));
+      traces = second.map(function (s) {
+        var gg = groups.filter(function (g) { return g.key[1] === s; });
+        return { type: 'bar', name: keys[1] + '=' + s, x: gg.map(function (g) { return g.key[0]; }),
+          y: gg.map(function (g) { return vals[groups.indexOf(g)]; }) };
+      });
+    }
+    var ys = vals.filter(function (v) { return v === v; });
+    var lo = (f === 'count' || f === 'size' || f === 'std') ? 0 : Math.min.apply(null, ys) * 0.95;
+    L.draw('gChart', traces, { title: document.getElementById('gCode').textContent, barmode: 'group',
+      yaxis: { range: [lo, Math.max.apply(null, ys) * 1.06] }, margin: { t: 40, b: 40 }, legend: { y: -0.25 } });
+  }
+  [gBy, gCol, gFn].forEach(function (s) { s.onchange = runGroup; });
+  runGroup();
+
+  var cCol = document.getElementById('cCol');
+  L.NUM.forEach(function (c) { cCol.add(new Option(c, c)); });
+  cCol.value = 'final_score';
+  function runCorr() {
+    var t = cCol.value, y = L.col(D, t);
+    var pairs = L.NUM.filter(function (c) { return c !== t; }).map(function (c) { return [c, L.corr(L.col(D, c), y)]; })
+      .sort(function (a, b) { return a[1] - b[1]; });
+    L.draw('cChart', [{ type: 'bar', orientation: 'h', y: pairs.map(function (p) { return p[0]; }), x: pairs.map(function (p) { return p[1]; }),
+      text: pairs.map(function (p) { return p[1].toFixed(3); }), textposition: 'outside', cliponaxis: false,
+      marker: { color: pairs.map(function (p) { return p[1] >= 0 ? '#2c7a57' : '#c8463c'; }) } }],
+      { title: 'Корреляция с ' + t, xaxis: { range: [-1, 1], zeroline: true }, margin: { l: 130, t: 40, b: 36 } });
+  }
+  cCol.onchange = runCorr;
+  L.whenVisible('cChart', runCorr);
+})();
+</script>
+</body>
+</html>

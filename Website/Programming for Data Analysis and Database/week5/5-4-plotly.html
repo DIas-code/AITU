@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5.4 Plotly: основные графики — Программирование</title>
+<link rel="stylesheet" href="../../_shared/site.css">
+<link rel="stylesheet" href="../live.css">
+</head>
+<body data-root="../../" data-course="prog" data-page="week5/5-4-plotly.html">
+<main>
+<div class="phead">
+  <div class="kicker">Неделя 5 · Лекция 4.5, часть 1</div>
+  <h1>Plotly: интерактивные графики</h1>
+  <p class="sub">В отличие от Matplotlib, график Plotly живой: наводишь мышь — видно значение, колёсиком — зум, клик по легенде — скрыть группу. Здесь графики настоящие — тот же Plotly, те же данные. Потрогай их.</p>
+</div>
+
+<section class="step">
+  <h2>1. Подключение</h2>
+  <p class="why"><code>plotly.express</code> (<code>px</code>) — график одной строкой из DataFrame. <code>graph_objects</code> (<code>go</code>) — ручная сборка, когда нужно больше контроля (будет в части 2). Каждый график: <code>fig = px.…(…)</code> → по желанию <code>fig.update_layout(…)</code> → <code>fig.show()</code>.</p>
+  <div class="code"><pre><code class="language-python">%pip install -U plotly
+
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+
+df_clean = pd.read_csv("University Students 2026 New.csv")</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>2. Круговая диаграмма</h2>
+  <p class="why"><code>value_counts()</code> даёт количество по программам, <code>reset_index()</code> превращает его в таблицу из двух столбцов. <code>hole=0.3</code> — дырка в центре (donut). <code>textinfo="percent+label"</code> — подпись и процент на секторе.</p>
+  <div class="code"><pre><code class="language-python">program_counts = df_clean["program"].value_counts().reset_index()
+program_counts.columns = ["program", "students"]
+
+fig = px.pie(program_counts, names="program", values="students",
+             title="Distribution of Students by Program", hole=0.3)
+fig.update_traces(textinfo="percent+label")
+fig.show()
+# Software Engineering 62 · Data Science 54 · Cybersecurity 47 · IT Management 37</code></pre></div>
+  <div class="chart" id="p1"></div>
+</section>
+
+<section class="step">
+  <h2>3. Тепловая карта корреляций</h2>
+  <p class="why"><code>px.imshow</code> рисует матрицу. <code>text_auto=".2f"</code> — числа в клетках, <code>RdBu_r</code> — красный для +, синий для −. <code>zmin=-1, zmax=1</code> — шкала всегда от −1 до 1, чтобы цвета не обманывали.</p>
+  <div class="code"><pre><code class="language-python">numeric_columns = ["admission_score", "math_score", "programming_score",
+                   "english_score", "attendance", "assignments", "final_score"]
+corr_matrix = df_clean[numeric_columns].corr()
+
+fig = px.imshow(corr_matrix, text_auto=".2f", color_continuous_scale="RdBu_r",
+                zmin=-1, zmax=1, aspect="auto",
+                title="Correlation Matrix of Student Performance")
+fig.update_layout(width=950, height=650)
+fig.show()</code></pre></div>
+  <div class="chart tall" id="p2"></div>
+</section>
+
+<section class="step">
+  <h2>4. Scatter с подсказками</h2>
+  <p class="why"><code>color="program"</code> — цвет по программе. <code>hover_data</code> — что ещё показать при наведении. <code>labels</code> — человеческие названия осей. Наведи на точку — увидишь <code>student_id</code> и курс.</p>
+  <div class="code"><pre><code class="language-python">fig = px.scatter(df_clean, x="attendance", y="final_score", color="program",
+                 hover_data=["student_id", "year"],
+                 title="Attendance vs Final Score",
+                 labels={"attendance": "Attendance (%)", "final_score": "Final Score",
+                         "program": "Academic Program"})
+fig.show()</code></pre></div>
+  <div class="chart" id="p3"></div>
+</section>
+
+<section class="step">
+  <h2>5. 3D scatter</h2>
+  <p class="why">Третья ось <code>z</code>. Мышью можно вращать. <code>hover_name</code> — заголовок подсказки (тут номер студента).</p>
+  <div class="code"><pre><code class="language-python">fig = px.scatter_3d(df_clean, x="math_score", y="programming_score", z="final_score",
+                    color="program", hover_name="student_id",
+                    title="3D Student Performance Analysis")
+fig.show()</code></pre></div>
+  <div class="chart tall" id="p4"></div>
+</section>
+
+<section class="step">
+  <h2>6. Линия по годам</h2>
+  <p class="why">Год из даты, затем <code>groupby</code> по году и программе. <code>agg(avg_score=("final_score", "mean"))</code> — посчитать среднее и сразу назвать столбец <code>avg_score</code>. <code>dtick=1</code> — подписи оси X через каждый год, без 2023.5.</p>
+  <div class="code"><pre><code class="language-python">df_clean["admission_date"] = pd.to_datetime(df_clean["admission_date"])
+df_clean["admission_year"] = df_clean["admission_date"].dt.year
+
+yearly_scores = (df_clean
+    .groupby(["admission_year", "program"], as_index=False)
+    .agg(avg_score=("final_score", "mean")))
+
+fig = px.line(yearly_scores, x="admission_year", y="avg_score", color="program",
+              markers=True, title="Average Final Score by Admission Year")
+fig.update_xaxes(dtick=1)
+fig.show()</code></pre></div>
+  <div class="chart" id="p5"></div>
+</section>
+
+<section class="step">
+  <h2>7. Гистограмма с наложением</h2>
+  <p class="why"><code>nbins=15</code> — желаемое число интервалов. <code>barmode="overlay"</code> — гистограммы программ поверх друг друга, <code>opacity=0.65</code> — полупрозрачно, чтобы видеть все. Кликни программу в легенде — она спрячется.</p>
+  <div class="code"><pre><code class="language-python">fig = px.histogram(df_clean, x="final_score", nbins=15, color="program",
+                   barmode="overlay", opacity=0.65,
+                   title="Distribution of Final Scores")
+fig.update_layout(xaxis_title="Final Score", yaxis_title="Number of Students")
+fig.show()</code></pre></div>
+  <div class="chart" id="p6"></div>
+</section>
+
+<section class="step">
+  <h2>8. Boxplot</h2>
+  <p class="why">Наведи на ящик — Plotly сам покажет min, q1, медиану, q3, max. <code>showlegend=False</code> — легенда лишняя, программы и так подписаны по оси X. <code>points="all"</code> (в ноутбуке закомментировано) добавил бы все точки.</p>
+  <div class="code"><pre><code class="language-python">fig = px.box(df_clean, x="program", y="final_score", color="program",
+             title="Final Score Distribution by Program")
+fig.update_layout(showlegend=False)
+fig.show()</code></pre></div>
+  <div class="chart" id="p7"></div>
+</section>
+
+<div id="pager"></div>
+</main>
+<script src="../../_shared/sitemap.js"></script>
+<script src="../../_shared/data.js"></script>
+<script src="../../_shared/site.js"></script>
+<script src="students.js"></script>
+<script src="../live.js"></script>
+<script>
+(function () {
+  var L = LIVE, D = L.students(), P = L.PROG;
+  var COL = { 'Cybersecurity': '#2f6fb5', 'Data Science': '#e0802f', 'IT Management': '#2c9a68', 'Software Engineering': '#c8463c' };
+  function by(p) { return D.filter(function (r) { return r.program === p; }); }
+  var order = P.slice().sort(function (a, b) { return by(b).length - by(a).length; }); // как value_counts()
+
+  L.whenVisible('p1', function () {
+    L.draw('p1', [{ type: 'pie', labels: order, values: order.map(function (p) { return by(p).length; }), hole: 0.3,
+      textinfo: 'percent+label', marker: { colors: order.map(function (p) { return COL[p]; }) }, sort: false }],
+      { title: 'Distribution of Students by Program', showlegend: false });
+  });
+
+  L.whenVisible('p2', function () {
+    var N = L.NUM, z = N.map(function (a) { return N.map(function (b) { return L.corr(L.col(D, a), L.col(D, b)); }); });
+    L.draw('p2', [{ type: 'heatmap', x: N, y: N, z: z, zmin: -1, zmax: 1, colorscale: 'RdBu', reversescale: true,
+      text: z.map(function (r) { return r.map(function (v) { return v.toFixed(2); }); }), texttemplate: '%{text}' }],
+      { title: 'Correlation Matrix of Student Performance', margin: { l: 130, b: 120 }, yaxis: { autorange: 'reversed' } });
+  });
+
+  L.whenVisible('p3', function () {
+    L.draw('p3', P.map(function (p) {
+      var d = by(p);
+      return { type: 'scatter', mode: 'markers', name: p, x: L.col(d, 'attendance'), y: L.col(d, 'final_score'),
+        customdata: d.map(function (r) { return [r.student_id, r.year]; }), marker: { color: COL[p], size: 8 },
+        hovertemplate: 'Academic Program=' + p + '<br>Attendance (%)=%{x}<br>Final Score=%{y}<br>student_id=%{customdata[0]}<br>year=%{customdata[1]}<extra></extra>' };
+    }), { title: 'Attendance vs Final Score', xaxis: { title: 'Attendance (%)' }, yaxis: { title: 'Final Score' } });
+  });
+
+  L.whenVisible('p4', function () {
+    L.draw('p4', P.map(function (p) {
+      var d = by(p);
+      return { type: 'scatter3d', mode: 'markers', name: p, x: L.col(d, 'math_score'), y: L.col(d, 'programming_score'), z: L.col(d, 'final_score'),
+        text: L.col(d, 'student_id'), hovertemplate: '<b>%{text}</b><br>Math=%{x}<br>Programming=%{y}<br>Final=%{z}<extra></extra>', marker: { color: COL[p], size: 4 } };
+    }), { title: '3D Student Performance Analysis', margin: { l: 0, r: 0, b: 0, t: 44 },
+      scene: { xaxis: { title: 'Math Score' }, yaxis: { title: 'Programming Score' }, zaxis: { title: 'Final Score' } }, legend: { y: 0 } });
+  });
+
+  L.whenVisible('p5', function () {
+    var yrs = L.uniq(D.map(function (r) { return +r.admission_date.slice(0, 4); }));
+    L.draw('p5', P.map(function (p) {
+      var xs = [], ys = [];
+      yrs.forEach(function (yy) {
+        var d = by(p).filter(function (r) { return +r.admission_date.slice(0, 4) === yy; });
+        if (d.length) { xs.push(yy); ys.push(L.AGG.mean(L.col(d, 'final_score'))); }
+      });
+      return { type: 'scatter', mode: 'lines+markers', name: p, x: xs, y: ys, line: { color: COL[p] } };
+    }), { title: 'Average Final Score by Admission Year', xaxis: { title: 'Admission Year', dtick: 1 }, yaxis: { title: 'Average Final Score' } });
+  });
+
+  L.whenVisible('p6', function () {
+    L.draw('p6', P.map(function (p) {
+      return { type: 'histogram', name: p, x: L.col(by(p), 'final_score'), nbinsx: 15, opacity: 0.65, marker: { color: COL[p] } };
+    }), { title: 'Distribution of Final Scores', barmode: 'overlay', xaxis: { title: 'Final Score' }, yaxis: { title: 'Number of Students' } });
+  });
+
+  L.whenVisible('p7', function () {
+    L.draw('p7', P.map(function (p) {
+      return { type: 'box', name: p, y: L.col(by(p), 'final_score'), marker: { color: COL[p] } };
+    }), { title: 'Final Score Distribution by Program', showlegend: false, yaxis: { title: 'Final Score' } });
+  });
+})();
+</script>
+</body>
+</html>

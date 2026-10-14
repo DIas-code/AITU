@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5.5 Plotly: анимация и сложные графики — Программирование</title>
+<link rel="stylesheet" href="../../_shared/site.css">
+<link rel="stylesheet" href="../live.css">
+</head>
+<body data-root="../../" data-course="prog" data-page="week5/5-5-plotly-advanced.html">
+<main>
+<div class="phead">
+  <div class="kicker">Неделя 5 · Лекция 4.5, часть 2</div>
+  <h1>Plotly: анимация, иерархии, многомерные данные</h1>
+  <p class="sub">Графики, которых нет в Matplotlib «из коробки»: кадры по годам, вложенные круги и прямоугольники, параллельные координаты, выпадающее меню. Все графики ниже живые.</p>
+</div>
+
+<section class="step">
+  <h2>1. Анимация по курсу обучения</h2>
+  <p class="why">Сначала считаем студентов по (курс, программа). Если в каком-то курсе программы нет, строки не будет и столбик «прыгнет» — поэтому <code>MultiIndex.from_product</code> строит все пары, а <code>reindex(..., fill_value=0)</code> дописывает недостающие нулями. <code>animation_frame="year"</code> — один кадр на курс, внизу ползунок и ▶. <code>range_y</code> фиксирует ось, чтобы она не менялась между кадрами.</p>
+  <div class="code"><pre><code class="language-python">animation_data = (df_clean
+    .groupby(["year", "program"], as_index=False)
+    .agg(students=("student_id", "count")))
+
+programs = sorted(df_clean["program"].unique())
+years = sorted(df_clean["year"].unique())
+complete_index = pd.MultiIndex.from_product([years, programs], names=["year", "program"])
+
+animation_data = (animation_data
+    .set_index(["year", "program"])
+    .reindex(complete_index, fill_value=0)
+    .reset_index())
+
+fig = px.bar(animation_data, x="program", y="students", color="program",
+             animation_frame="year",
+             range_y=[0, animation_data["students"].max() * 1.15],
+             title="Student Distribution by Year of Study")
+fig.update_layout(showlegend=False)
+fig.update_xaxes(categoryorder="array", categoryarray=programs)
+fig.show()</code></pre></div>
+  <div class="chart tall" id="a1"></div>
+</section>
+
+<section class="step">
+  <h2>2. Сохранить живой график в HTML</h2>
+  <p class="why">Файл открывается в браузере без Python, зум и подсказки работают. Удобно отправить преподавателю или вставить в отчёт проекта.</p>
+  <div class="code"><pre><code class="language-python">fig.write_html("Student_Visualization.html")</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>3. Sunburst и Treemap — иерархия</h2>
+  <p class="why"><code>path</code> — уровни вложенности сверху вниз: программа → курс → стипендия. Plotly сам считает, сколько строк в каждой ветке. Sunburst — кольца, Treemap — вложенные прямоугольники, площадь = количество. Кликни на сектор — провалишься внутрь, клик в центр — назад.</p>
+  <div class="code"><pre><code class="language-python">fig = px.sunburst(df_clean, path=["program", "year", "scholarship"],
+                  title="Student Distribution by Program, Year and Scholarship")
+fig.show()
+
+fig = px.treemap(df_clean, path=["program", "year", "gender"],
+                 title="Student Distribution by Program, Year and Gender")
+fig.show()</code></pre></div>
+  <div class="ctl"><span class="seg" id="hs"><button data-v="sunburst" class="on">sunburst</button><button data-v="treemap">treemap</button></span></div>
+  <div class="chart tall" id="a2"></div>
+</section>
+
+<section class="step">
+  <h2>4. Violin со всеми точками</h2>
+  <p class="why">Violin = boxplot + форма плотности. <code>box=True</code> — ящик внутри, <code>points="all"</code> — каждый студент точкой рядом.</p>
+  <div class="code"><pre><code class="language-python">fig = px.violin(df_clean, x="program", y="final_score", color="program",
+                box=True, points="all",
+                title="Final Score Distribution by Program")
+fig.show()</code></pre></div>
+  <div class="chart tall" id="a3"></div>
+</section>
+
+<section class="step">
+  <h2>5. Параллельные координаты</h2>
+  <p class="why">Каждая линия — один студент, каждая вертикальная ось — признак. Цвет — итоговый балл. <b>Протяни мышью по оси</b> (например, по <code>final_score</code> сверху) — останутся только эти студенты, и видно, какие у них остальные баллы.</p>
+  <div class="code"><pre><code class="language-python">fig = px.parallel_coordinates(
+    df_clean,
+    dimensions=["math_score", "programming_score", "english_score",
+                "attendance", "final_score"],
+    color="final_score", color_continuous_scale="Viridis",
+    title="Multidimensional Student Performance Analysis")
+fig.show()</code></pre></div>
+  <div class="chart tall" id="a4"></div>
+</section>
+
+<section class="step">
+  <h2>6. Scatter Matrix</h2>
+  <p class="why">Scatter для каждой пары выбранных признаков — быстро увидеть, что с чем связано. <code>diagonal_visible=False</code> убирает бесполезную диагональ «признак сам с собой». Выдели область на одном графике — эти же точки подсветятся на остальных.</p>
+  <div class="code"><pre><code class="language-python">fig = px.scatter_matrix(df_clean,
+    dimensions=["math_score", "programming_score", "attendance", "final_score"],
+    color="program", title="Scatter Matrix of Student Performance")
+fig.update_traces(diagonal_visible=False)
+fig.show()</code></pre></div>
+  <div class="chart tall" id="a5"></div>
+</section>
+
+<section class="step">
+  <h2>7. Выпадающее меню (graph_objects)</h2>
+  <p class="why">Добавляем 4 набора столбиков (по одному на показатель), видим только первый: <code>visible=(i == 0)</code>. Кнопка меню передаёт список <code>visible</code>, где <code>True</code> только у выбранного. Код выполнять заново не нужно — переключает сам график. Меню — в левом верхнем углу графика.</p>
+  <div class="code"><pre><code class="language-python">metrics = ["math_score", "programming_score", "english_score", "final_score"]
+fig = go.Figure()
+
+for i, metric in enumerate(metrics):
+    avg = df_clean.groupby("program")[metric].mean()
+    fig.add_trace(go.Bar(x=avg.index, y=avg.values, name=metric, visible=(i == 0)))
+
+fig.update_layout(
+    title="Average Student Scores by Program",
+    updatemenus=[dict(
+        buttons=[dict(label=metric, method="update",
+                      args=[{"visible": [j == i for j in range(len(metrics))]}])
+                 for i, metric in enumerate(metrics)],
+        direction="down")])
+fig.show()</code></pre></div>
+  <div class="chart" id="a6"></div>
+</section>
+
+<div id="pager"></div>
+</main>
+<script src="../../_shared/sitemap.js"></script>
+<script src="../../_shared/data.js"></script>
+<script src="../../_shared/site.js"></script>
+<script src="students.js"></script>
+<script src="../live.js"></script>
+<script>
+(function () {
+  var L = LIVE, D = L.students(), P = L.PROG;
+  var COL = { 'Cybersecurity': '#2f6fb5', 'Data Science': '#e0802f', 'IT Management': '#2c9a68', 'Software Engineering': '#c8463c' };
+  function by(p) { return D.filter(function (r) { return r.program === p; }); }
+
+  // 1. анимация
+  L.whenVisible('a1', function () {
+    var years = L.uniq(D.map(function (r) { return r.year; }));
+    var cnt = years.map(function (y) { return P.map(function (p) { return by(p).filter(function (r) { return r.year === y; }).length; }); });
+    var max = Math.max.apply(null, [].concat.apply([], cnt));
+    function bar(i) { return { type: 'bar', x: P, y: cnt[i], marker: { color: P.map(function (p) { return COL[p]; }) }, text: cnt[i], textposition: 'outside' }; }
+    var frames = years.map(function (y, i) { return { name: String(y), data: [bar(i)] }; });
+    L.load(function (Pl) {
+      var el = document.getElementById('a1'); el.innerHTML = '';
+      Pl.newPlot(el, [bar(0)], {
+        title: { text: 'Student Distribution by Year of Study', x: 0.02, xanchor: 'left', font: { size: 14.5 } },
+        font: { family: 'Segoe UI, Inter, system-ui, Arial, sans-serif', size: 12.5 },
+        yaxis: { range: [0, max * 1.15], title: 'Number of Students' }, xaxis: { title: 'Academic Program' },
+        margin: { l: 56, r: 18, t: 44, b: 120 }, showlegend: false,
+        updatemenus: [{ type: 'buttons', showactive: false, x: 0, y: -0.32, xanchor: 'left', yanchor: 'top', direction: 'left',
+          buttons: [{ label: '▶', method: 'animate', args: [null, { frame: { duration: 900, redraw: true }, transition: { duration: 400 }, fromcurrent: true }] },
+                    { label: '❚❚', method: 'animate', args: [[null], { mode: 'immediate', frame: { duration: 0 } }] }] }],
+        sliders: [{ x: 0.12, len: 0.88, y: -0.28, yanchor: 'top', currentvalue: { prefix: 'Year of Study = ' },
+          steps: years.map(function (y) { return { label: String(y), method: 'animate', args: [[String(y)], { mode: 'immediate', frame: { duration: 400, redraw: true }, transition: { duration: 300 } }] }; }) }]
+      }, { responsive: true, displaylogo: false }).then(function () { Pl.addFrames(el, frames); });
+    });
+  });
+
+  // 3. sunburst / treemap
+  function hier(path) {
+    var ids = [], labels = [], parents = [], values = [], seen = {};
+    D.forEach(function (r) {
+      var id = '';
+      path.forEach(function (c, k) {
+        var pid = id; id = id + (id ? '/' : '') + r[c];
+        if (!seen[id]) { seen[id] = ids.length; ids.push(id); labels.push(String(r[c])); parents.push(pid); values.push(0); }
+        values[seen[id]]++;
+      });
+    });
+    return { ids: ids, labels: labels, parents: parents, values: values, branchvalues: 'total' };
+  }
+  function a2(v) {
+    var path = v === 'sunburst' ? ['program', 'year', 'scholarship'] : ['program', 'year', 'gender'];
+    var t = hier(path); t.type = v;
+    if (v === 'treemap') t.textinfo = 'label+value';
+    L.draw('a2', [t], { title: 'Student Distribution by Program, Year and ' + (v === 'sunburst' ? 'Scholarship' : 'Gender'), margin: { l: 10, r: 10, t: 44, b: 10 },
+      colorway: ['#2f6fb5', '#e0802f', '#2c9a68', '#c8463c'] });
+  }
+  L.seg('hs', a2); L.whenVisible('a2', function () { a2('sunburst'); });
+
+  // 4. violin
+  L.whenVisible('a3', function () {
+    L.draw('a3', P.map(function (p) {
+      return { type: 'violin', name: p, x: by(p).map(function () { return p; }), y: L.col(by(p), 'final_score'), box: { visible: true }, points: 'all',
+        line: { color: COL[p] }, marker: { color: COL[p], size: 4 }, jitter: 0.3, pointpos: -1.4 };
+    }), { title: 'Final Score Distribution by Program', violinmode: 'overlay', legend: { y: -0.15 } });
+  });
+
+  // 5. parallel coordinates
+  L.whenVisible('a4', function () {
+    var dims = ['math_score', 'programming_score', 'english_score', 'attendance', 'final_score'];
+    L.draw('a4', [{ type: 'parcoords', line: { color: L.col(D, 'final_score'), colorscale: 'Viridis', showscale: true },
+      dimensions: dims.map(function (d) { return { label: d, values: L.col(D, d) }; }) }],
+      { title: 'Multidimensional Student Performance Analysis', margin: { l: 60, r: 60, t: 80, b: 30 } });
+  });
+
+  // 6. scatter matrix
+  L.whenVisible('a5', function () {
+    var dims = ['math_score', 'programming_score', 'attendance', 'final_score'];
+    L.draw('a5', P.map(function (p) {
+      return { type: 'splom', name: p, diagonal: { visible: false }, dimensions: dims.map(function (d) { return { label: d, values: L.col(by(p), d) }; }),
+        marker: { color: COL[p], size: 4, opacity: .75 } };
+    }), { title: 'Scatter Matrix of Student Performance', dragmode: 'select', margin: { l: 70, b: 70 } });
+  });
+
+  // 7. dropdown
+  L.whenVisible('a6', function () {
+    var metrics = ['math_score', 'programming_score', 'english_score', 'final_score'];
+    var tr = metrics.map(function (m, i) {
+      var y = P.map(function (p) { return L.AGG.mean(L.col(by(p), m)); });
+      return { type: 'bar', x: P, y: y, name: m, visible: i === 0, text: y.map(function (v) { return v.toFixed(1); }), textposition: 'outside', cliponaxis: false };
+    });
+    L.draw('a6', tr, { title: { text: 'Average Student Scores by Program', x: 0.5, xanchor: 'center' }, xaxis: { title: 'Program' }, yaxis: { title: 'Average Score', range: [0, 95] }, showlegend: false,
+      margin: { t: 60 },
+      updatemenus: [{ direction: 'down', x: 0, xanchor: 'left', y: 1.18, yanchor: 'top',
+        buttons: metrics.map(function (m, i) { return { label: m, method: 'update', args: [{ visible: metrics.map(function (_, j) { return j === i; }) }] }; }) }] });
+  });
+})();
+</script>
+</body>
+</html>

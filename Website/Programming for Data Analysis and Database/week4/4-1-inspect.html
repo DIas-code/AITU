@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4.1 Pandas: первый осмотр данных — Программирование</title>
+<link rel="stylesheet" href="../../_shared/site.css">
+<link rel="stylesheet" href="../live.css">
+</head>
+<body data-root="../../" data-course="prog" data-page="week4/4-1-inspect.html">
+<main>
+<div class="phead">
+  <div class="kicker">Неделя 4 · Лекция 4.1, часть 1</div>
+  <h1>Pandas: загрузить и осмотреть таблицу</h1>
+  <p class="sub">Файл <code>University Students 2026.txt</code>: 200 студентов, 15 столбцов. Прежде чем что-то менять, смотрим: какого размера, какие типы, где пропуски и дубликаты. На этом шаге данные не меняются.</p>
+</div>
+
+<section class="step">
+  <h2>1. Прочитать файл и сохранить в CSV</h2>
+  <p class="why">Внутри .txt — те же строки через запятую, поэтому его читает <code>read_csv</code>. <code>to_csv(..., index=False)</code> — не записывать номер строки 0…199 отдельным столбцом.</p>
+  <div class="code"><pre><code class="language-python">import pandas as pd
+
+df = pd.read_csv("University Students 2026.txt")
+df.to_csv("University Students 2026.csv", index=False)
+
+df = pd.read_csv("University Students 2026.csv")
+df.head()     # первые 5 строк;  df.tail() — последние 5</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>2. Размер и устройство таблицы</h2>
+  <p class="why"><code>shape</code> — (строки, столбцы), <code>size</code> — всего ячеек. <code>dtypes</code> — тип каждого столбца: числа с пропусками становятся <code>float64</code>, текст — <code>object</code>. <code>info()</code> показывает всё сразу, включая непустые значения.</p>
+  <div class="code"><pre><code class="language-python">df.shape                     # (200, 15)
+rows, columns = df.shape     # распаковать в две переменные
+df.size                      # 3000 = 200 × 15
+
+df.columns.tolist()          # ['student_id', 'gender', 'city', 'program', 'year', …]
+df.index                     # RangeIndex(start=0, stop=200, step=1)
+df.dtypes                    # year int64 · math_score float64 · program object …
+df.info()                    # типы + сколько непустых в каждом столбце
+
+df.memory_usage(deep=True)          # байты на столбец; deep=True честно считает строки
+df.memory_usage(deep=True).sum()</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>3. Статистика и категории</h2>
+  <p class="why"><code>describe()</code> — для числовых: count, mean, std, min, 25%, медиана (50%), 75%, max. Уже тут видно пропуски: у <code>math_score</code> count 196, а не 200. <code>include="all"</code> добавляет для текста unique, top (самое частое) и freq.</p>
+  <div class="code"><pre><code class="language-python">df.describe()                # math_score: count 196, mean 83.13, 50% 84.5
+df.describe(include="all")   # city: unique 7, top Astana, freq 56
+
+df.nunique()                 # сколько разных значений в каждом столбце
+df["program"].unique()       # сами значения
+df["program"].value_counts() # Software Engineering 62 · Data Science 54 · Cybersecurity 47 · IT Management 37
+df["program"].value_counts(normalize=True).mul(100).round(2)   # 31.0 · 27.0 · 23.5 · 18.5 (%)</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>4. Пропуски</h2>
+  <p class="why"><code>isna()</code> даёт таблицу True/False. True = 1, поэтому <code>sum()</code> — число пропусков, <code>mean()</code> — их доля. Первая <code>sum()</code> — по столбцам, вторая — по всей таблице.</p>
+  <div class="code"><pre><code class="language-python">df.isna().sum()            # math 4 · programming 3 · english 5 · attendance 3 · dormitory 2
+df.isna().sum().sum()      # 17
+df.isna().mean().mul(100).round(2)   # math_score 2.0 % …
+df.notna().sum()           # наоборот: сколько заполнено</code></pre></div>
+  <div class="chart" id="naMap"></div>
+  <p class="cap">Карта пропусков: строка — студент, столбец — признак, красная клетка — <code>NaN</code>.</p>
+</section>
+
+<section class="step">
+  <h2>5. Дубликаты и уникальность ID</h2>
+  <p class="why"><code>duplicated()</code> — True, если строка повторяет одну из предыдущих. <code>keep=False</code> помечает все копии, а не только вторую. Здесь повторов нет, и каждый <code>student_id</code> уникален.</p>
+  <div class="code"><pre><code class="language-python">df.duplicated().sum()                          # 0
+df[df.duplicated(keep=False)]                  # все строки-повторы (тут пусто)
+df[df["student_id"].duplicated(keep=False)]    # повторы только по ID
+df["student_id"].is_unique                     # True
+
+df["final_score"].agg(["min", "max"])          # 57 и 100 — в пределах 0…100</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>6. Сводная таблица качества</h2>
+  <p class="why">Собираем главные проверки в одну таблицу — по столбцу на проверку. Сразу видно проблемные признаки. <code>value_counts(dropna=False)</code> считает и <code>NaN</code> как отдельную категорию.</p>
+  <div class="code"><pre><code class="language-python">for column in ["gender", "city", "program", "year", "scholarship", "dormitory"]:
+    print(f"\n--- {column} ---")
+    print(df[column].value_counts(dropna=False))   # dormitory: Yes 107 · No 91 · NaN 2
+
+data_quality = pd.DataFrame({
+    "Data Type": df.dtypes,
+    "Non-Null": df.notna().sum(),
+    "Missing": df.isna().sum(),
+    "Missing %": (df.isna().mean() * 100).round(2),
+    "Unique": df.nunique()
+})</code></pre></div>
+</section>
+
+<section class="demo">
+  <h2>Попробуй: data_quality по настоящим данным</h2>
+  <p>Таблица посчитана в браузере по исходному файлу. Нажми на строку — справа появится <code>value_counts(dropna=False)</code> этого столбца.</p>
+  <div class="tw2" id="dq"></div>
+  <div class="live-code" id="vcCode"></div>
+  <div class="chart short" id="vc"></div>
+</section>
+
+<div id="pager"></div>
+</main>
+<script src="../../_shared/sitemap.js"></script>
+<script src="../../_shared/data.js"></script>
+<script src="../../_shared/site.js"></script>
+<script src="students-raw.js"></script>
+<script src="../live.js"></script>
+<script>
+(function () {
+  var L = LIVE, C = RAW_COLS, R = RAW, esc = L.esc;
+  function colv(i) { return R.map(function (r) { return r[i]; }); }
+  function dtype(i) {
+    var v = colv(i).filter(function (x) { return x !== null; });
+    if (typeof v[0] === 'string') return 'object';
+    var hasNull = colv(i).some(function (x) { return x === null; });
+    return (hasNull || v.some(function (x) { return !Number.isInteger(x); })) ? 'float64' : 'int64';
+  }
+  var h = '<table class="tbl"><thead><tr><th>столбец</th><th>Data Type</th><th>Non-Null</th><th>Missing</th><th>Missing %</th><th>Unique</th></tr></thead><tbody>';
+  C.forEach(function (c, i) {
+    var v = colv(i), miss = v.filter(function (x) { return x === null; }).length;
+    var uniq = L.uniq(v.filter(function (x) { return x !== null; })).length;
+    h += '<tr data-i="' + i + '" style="cursor:pointer" class="' + (miss ? 'miss' : '') + '"><td>' + c + '</td><td>' + dtype(i) + '</td><td>' + (200 - miss) + '</td><td>' + miss + '</td><td>' + (miss / 2).toFixed(2) + '</td><td>' + uniq + '</td></tr>';
+  });
+  var dq = document.getElementById('dq');
+  dq.innerHTML = h + '</tbody></table>';
+  function vc(i) {
+    var cnt = {};
+    colv(i).forEach(function (x) { var k = x === null ? 'NaN' : String(x); cnt[k] = (cnt[k] || 0) + 1; });
+    var ks = Object.keys(cnt).sort(function (a, b) { return cnt[b] - cnt[a]; }).slice(0, 15);
+    document.getElementById('vcCode').textContent = 'df["' + C[i] + '"].value_counts(dropna=False)' + (Object.keys(cnt).length > 15 ? '   # показаны первые 15 из ' + Object.keys(cnt).length : '');
+    L.draw('vc', [{ type: 'bar', x: ks, y: ks.map(function (k) { return cnt[k]; }), text: ks.map(function (k) { return cnt[k]; }), textposition: 'outside', cliponaxis: false,
+      marker: { color: ks.map(function (k) { return k === 'NaN' ? '#c8463c' : '#2c7a57'; }) } }],
+      { title: C[i], xaxis: { type: 'category' }, margin: { t: 40, b: 60 } });
+    dq.querySelectorAll('tr').forEach(function (tr) { tr.style.outline = tr.getAttribute('data-i') == i ? '2px solid #2c7a57' : ''; });
+  }
+  dq.addEventListener('click', function (e) { var tr = e.target.closest('tr[data-i]'); if (tr) vc(+tr.getAttribute('data-i')); });
+  L.whenVisible('vc', function () { vc(C.indexOf('dormitory')); });
+
+  L.whenVisible('naMap', function () {
+    var z = R.map(function (r) { return r.map(function (x) { return x === null ? 1 : 0; }); });
+    L.draw('naMap', [{ type: 'heatmap', z: z, x: C, y: R.map(function (r) { return r[0]; }), colorscale: [[0, '#eef3ef'], [1, '#c8463c']], showscale: false,
+      hovertemplate: '%{y} · %{x}: %{customdata}<extra></extra>', customdata: z.map(function (r) { return r.map(function (v) { return v ? 'NaN' : 'есть'; }); }) }],
+      { title: 'df.isna() — 17 пропусков из 3000 ячеек', margin: { l: 60, b: 110 }, yaxis: { autorange: 'reversed', showticklabels: false, title: '200 студентов' } });
+  });
+})();
+</script>
+</body>
+</html>

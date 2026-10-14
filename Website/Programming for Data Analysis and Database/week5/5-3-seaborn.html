@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5.3 Seaborn — Программирование</title>
+<link rel="stylesheet" href="../../_shared/site.css">
+<link rel="stylesheet" href="../live.css">
+</head>
+<body data-root="../../" data-course="prog" data-page="week5/5-3-seaborn.html">
+<main>
+<div class="phead">
+  <div class="kicker">Неделя 5 · Лекция 4.4</div>
+  <h1>Визуализация: Matplotlib + Seaborn</h1>
+  <p class="sub">Какой график выбрать под вопрос. Seaborn рисует по DataFrame: <code>data=</code> — таблица, <code>x=</code>, <code>y=</code>, <code>hue=</code> — названия столбцов. Matplotlib (<code>plt.</code>) — размер, подписи, показ.</p>
+</div>
+
+<p class="small muted">Графики под кодом нарисованы прямо на странице по тем же 200 студентам (через Plotly, поэтому можно навести мышь). В Jupyter seaborn выглядит чуть иначе, но смысл тот же.</p>
+
+<section class="step">
+  <h2>1. Каркас любого графика</h2>
+  <p class="why">Всегда одинаково: создать фигуру нужного размера → нарисовать seaborn-функцией → подписать → показать. <code>tight_layout()</code> убирает наезд подписей.</p>
+  <div class="code"><pre><code class="language-python">import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+df_clean = pd.read_csv("University Students 2026 New.csv")
+
+plt.figure(figsize=(10, 6))            # ширина, высота в дюймах
+# sns.какой_то_plot(data=df_clean, x=..., y=...)
+plt.title("…"); plt.xlabel("…"); plt.ylabel("…")
+plt.xticks(rotation=30)                # повернуть подписи по оси X
+plt.tight_layout()
+plt.show()</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>2. Сравнить категории: barplot и countplot</h2>
+  <p class="why"><code>barplot</code> — высота столбика = значение (тут посчитанное заранее среднее). <code>countplot</code> — сам считает, сколько строк в каждой категории; <code>hue="gender"</code> делит каждый столбик по полу.</p>
+  <div class="code"><pre><code class="language-python">average_score = df_clean.groupby("program", as_index=False)["final_score"].mean()
+sns.barplot(data=average_score, x="program", y="final_score")
+
+sns.countplot(data=df_clean, x="program", hue="gender")</code></pre></div>
+  <div class="ctl"><span class="seg" id="s1"><button data-v="bar" class="on">barplot</button><button data-v="count">countplot</button></span></div>
+  <div class="chart" id="c1"></div>
+</section>
+
+<section class="step">
+  <h2>3. Связь двух чисел: scatterplot и regplot</h2>
+  <p class="why">Точка = студент. <code>regplot</code> добавляет линию регрессии — видно общий наклон. <code>hue</code> — цвет по категории, <code>style</code> — форма точки по второй категории.</p>
+  <div class="code"><pre><code class="language-python">sns.scatterplot(data=df_clean, x="attendance", y="final_score")
+sns.regplot(data=df_clean, x="attendance", y="final_score")      # + линия
+
+sns.scatterplot(data=df_clean, x="final_score", y="english_score",
+                hue="program", style="gender")</code></pre></div>
+  <div class="ctl"><span class="seg" id="s2"><button data-v="scatter" class="on">scatterplot</button><button data-v="reg">regplot</button><button data-v="hue">hue + style</button></span></div>
+  <div class="chart" id="c2"></div>
+</section>
+
+<section class="step">
+  <h2>4. Динамика по годам: lineplot</h2>
+  <p class="why">Из даты берём год (<code>.dt.year</code>), сводной таблицей получаем «год × программа → среднее», и <code>lineplot</code> рисует по линии на каждый столбец таблицы.</p>
+  <div class="code"><pre><code class="language-python">df_clean["admission_date"] = pd.to_datetime(df_clean["admission_date"])
+df_clean["admission_year"] = df_clean["admission_date"].dt.year
+
+data_pivot = df_clean.pivot_table(index="admission_year", columns="program",
+                                  values="final_score", aggfunc="mean")
+sns.lineplot(data=data_pivot, marker="o")</code></pre></div>
+  <div class="chart" id="c3"></div>
+</section>
+
+<section class="step">
+  <h2>5. Распределение по группам: box, violin, strip, swarm, boxen</h2>
+  <p class="why"><b>boxplot</b> — медиана, квартили, «усы» и выбросы. <b>violinplot</b> — то же + форма плотности (где студентов больше). <b>stripplot</b> — все точки, <code>jitter=True</code> слегка раздвигает их. <b>swarmplot</b> — раскладывает точки без наложения (на больших данных медленный). <b>boxenplot</b> — boxplot с подробными «хвостами», для больших выборок.</p>
+  <div class="code"><pre><code class="language-python">sns.boxplot(data=df_clean, x="program", y="final_score")
+sns.violinplot(data=df_clean, x="program", y="final_score", inner="quartile")
+sns.stripplot(data=df_clean, x="program", y="final_score", jitter=True)
+sns.swarmplot(data=df_clean, x="program", y="final_score")
+sns.boxenplot(data=df_clean, x="program", y="final_score")</code></pre></div>
+  <div class="ctl"><span class="seg" id="s4"><button data-v="box" class="on">box</button><button data-v="violin">violin</button><button data-v="strip">strip</button></span></div>
+  <div class="chart" id="c4"></div>
+</section>
+
+<section class="step">
+  <h2>6. Одна числовая колонка: histplot + KDE</h2>
+  <p class="why">Гистограмма делит значения на интервалы (<code>bins</code>) и считает, сколько попало в каждый. <code>kde=True</code> — гладкая кривая плотности: высоко — значений много, несколько горбов — возможно, несколько групп.</p>
+  <div class="code"><pre><code class="language-python">sns.histplot(data=df_clean, x="final_score", bins=15)
+sns.histplot(data=df_clean, x="programming_score", kde=True)</code></pre></div>
+  <div class="ctl">
+    <label>столбец <select id="hCol"><option>final_score</option><option>programming_score</option><option>math_score</option><option>english_score</option><option>attendance</option></select></label>
+    <label>bins <input type="range" id="hBins" min="4" max="40" value="15"><output id="hBv">15</output></label>
+    <label><input type="checkbox" id="hKde" checked> kde=True</label>
+  </div>
+  <div class="chart" id="c5"></div>
+</section>
+
+<section class="step">
+  <h2>7. Корреляции одним взглядом: heatmap</h2>
+  <p class="why">На вход — матрица <code>.corr()</code>. <code>annot=True</code> пишет числа в клетках, <code>fmt=".2f"</code> — два знака после запятой.</p>
+  <div class="code"><pre><code class="language-python">numeric_columns = ["admission_score", "math_score", "programming_score",
+                   "english_score", "attendance", "assignments", "final_score"]
+correlation_matrix = df_clean[numeric_columns].corr()
+
+sns.heatmap(correlation_matrix, annot=True, fmt=".2f")</code></pre></div>
+  <div class="chart tall" id="c6"></div>
+</section>
+
+<section class="step">
+  <h2>8. Axes-level и figure-level, pairplot</h2>
+  <p class="why"><b>Axes-level</b> (<code>scatterplot</code>, <code>histplot</code>, <code>boxplot</code>) рисуют в одну ось <code>ax</code>. <b>Figure-level</b> (<code>relplot</code>, <code>displot</code>, <code>catplot</code>) сами создают фигуру и умеют разбивать её на панели: <code>col="gender"</code> — отдельный график на каждое значение. <code>height</code> — высота панели в дюймах, <code>aspect</code> — ширина / высота. <code>pairplot</code> — scatter для каждой пары числовых столбцов.</p>
+  <div class="code"><pre><code class="language-python">fig, ax = plt.subplots(figsize=(6, 4))                        # axes-level
+sns.scatterplot(data=df_clean, x="programming_score", y="final_score", hue="program", ax=ax)
+
+g = sns.relplot(data=df_clean, x="programming_score", y="final_score",
+                hue="program", col="gender")                  # figure-level: 2 панели
+g.fig.suptitle("Faceting по полу", y=1.02)                    # y=1.02 — чуть выше графиков
+
+sns.displot(data=df_clean, x="programming_score", col="program",
+            kde=True, height=3, aspect=1.1)
+
+sns.pairplot(df_clean, hue="program", corner=True, diag_kind="kde")   # corner — только нижний треугольник</code></pre></div>
+  <div class="chart tall" id="c7"></div>
+  <p class="cap">Матрица рассеяния по четырём столбцам — похоже на pairplot (без диагонали).</p>
+</section>
+
+<div id="pager"></div>
+</main>
+<script src="../../_shared/sitemap.js"></script>
+<script src="../../_shared/data.js"></script>
+<script src="../../_shared/site.js"></script>
+<script src="students.js"></script>
+<script src="../live.js"></script>
+<script>
+(function () {
+  var L = LIVE, D = L.students(), P = L.PROG;
+  var COL = { 'Cybersecurity': '#2f6fb5', 'Data Science': '#e0802f', 'IT Management': '#2c9a68', 'Software Engineering': '#c8463c' };
+  function by(p) { return D.filter(function (r) { return r.program === p; }); }
+
+  // 2. bar / count
+  function c1(v) {
+    if (v === 'bar') {
+      var m = P.map(function (p) { return L.AGG.mean(L.col(by(p), 'final_score')); });
+      L.draw('c1', [{ type: 'bar', x: P, y: m, text: m.map(function (x) { return x.toFixed(2); }), textposition: 'outside', cliponaxis: false }],
+        { title: 'Average Final Score by Program', yaxis: { range: [0, 90] } });
+    } else {
+      L.draw('c1', ['Female', 'Male'].map(function (g) {
+        return { type: 'bar', name: g, x: P, y: P.map(function (p) { return by(p).filter(function (r) { return r.gender === g; }).length; }) };
+      }), { title: 'Distribution of students across programs', barmode: 'group' });
+    }
+  }
+  L.seg('s1', c1); L.whenVisible('c1', function () { c1('bar'); });
+
+  // 3. scatter / reg / hue
+  function c2(v) {
+    var x = L.col(D, 'attendance'), y = L.col(D, 'final_score');
+    if (v === 'hue') {
+      var mk = { Female: 'circle', Male: 'x' };
+      var tr = [];
+      P.forEach(function (p) { ['Female', 'Male'].forEach(function (g) {
+        var d = by(p).filter(function (r) { return r.gender === g; });
+        tr.push({ type: 'scatter', mode: 'markers', name: p + ', ' + g, legendgroup: p, x: L.col(d, 'final_score'), y: L.col(d, 'english_score'),
+          marker: { color: COL[p], symbol: mk[g], size: 7, opacity: .8 } });
+      }); });
+      return L.draw('c2', tr, { title: 'final_score vs english_score (hue=program, style=gender)', xaxis: { title: 'final_score' }, yaxis: { title: 'english_score' }, legend: { y: -0.3, font: { size: 11 } } });
+    }
+    var tr2 = [{ type: 'scatter', mode: 'markers', x: x, y: y, name: 'студенты', marker: { size: 7, opacity: .75 } }];
+    if (v === 'reg') {
+      var f = L.linfit(x, y), a = Math.min.apply(null, x), b = Math.max.apply(null, x);
+      tr2.push({ type: 'scatter', mode: 'lines', x: [a, b], y: [f.a + f.b * a, f.a + f.b * b], name: 'регрессия', line: { width: 3, color: '#c8463c' } });
+    }
+    L.draw('c2', tr2, { title: 'Attendance vs Final Score', showlegend: v === 'reg', xaxis: { title: 'Attendance (%)' }, yaxis: { title: 'Final Score' } });
+  }
+  L.seg('s2', c2); L.whenVisible('c2', function () { c2('scatter'); });
+
+  // 4. lineplot по году поступления
+  L.whenVisible('c3', function () {
+    var yrs = L.uniq(D.map(function (r) { return +r.admission_date.slice(0, 4); }));
+    L.draw('c3', P.map(function (p) {
+      return { type: 'scatter', mode: 'lines+markers', name: p, line: { color: COL[p] }, x: yrs,
+        y: yrs.map(function (yy) { var d = by(p).filter(function (r) { return +r.admission_date.slice(0, 4) === yy; }); return d.length ? L.AGG.mean(L.col(d, 'final_score')) : null; }) };
+    }), { title: 'Average Final Score by Admission Year and Program', xaxis: { title: 'Admission Year', dtick: 1 }, yaxis: { title: 'Average Final Score' } });
+  });
+
+  // 5. box / violin / strip
+  function c4(v) {
+    var tr = P.map(function (p) {
+      var t = { name: p, x: by(p).map(function () { return p; }), y: L.col(by(p), 'final_score'), marker: { color: COL[p] }, line: { color: COL[p] } };
+      if (v === 'box') { t.type = 'box'; t.boxpoints = 'outliers'; }
+      if (v === 'violin') { t.type = 'violin'; t.box = { visible: true }; t.meanline = { visible: false }; t.points = false; }
+      if (v === 'strip') { t.type = 'box'; t.boxpoints = 'all'; t.jitter = 0.5; t.pointpos = 0; t.fillcolor = 'rgba(0,0,0,0)'; t.line = { width: 0 }; t.marker.size = 6; t.marker.opacity = .7; }
+      return t;
+    });
+    L.draw('c4', tr, { title: 'Final Score Distribution by Program', showlegend: false, yaxis: { title: 'Final Score' } });
+  }
+  L.seg('s4', c4); L.whenVisible('c4', function () { c4('box'); });
+
+  // 6. гистограмма + KDE (полоса Скотта, как в seaborn по умолчанию)
+  var hCol = document.getElementById('hCol'), hBins = document.getElementById('hBins'), hKde = document.getElementById('hKde');
+  function c5() {
+    var c = hCol.value, x = L.col(D, c), n = x.length, bins = +hBins.value;
+    document.getElementById('hBv').textContent = bins;
+    var lo = Math.min.apply(null, x), hi = Math.max.apply(null, x), w = (hi - lo) / bins;
+    var tr = [{ type: 'histogram', x: x, xbins: { start: lo, end: hi + 1e-9, size: w }, name: 'count', marker: { color: '#2f6fb5', line: { color: '#fff', width: 1 } }, opacity: .85 }];
+    if (hKde.checked) {
+      var h = L.AGG.std(x) * Math.pow(n, -0.2), xs = [], ys = [];
+      for (var i = 0; i <= 200; i++) {
+        var t = lo - 3 * h + (hi - lo + 6 * h) * i / 200, s = 0;
+        x.forEach(function (v) { var z = (t - v) / h; s += Math.exp(-z * z / 2); });
+        xs.push(t); ys.push(s / (n * h * Math.sqrt(2 * Math.PI)) * n * w); // плотность → в масштабе счётчиков
+      }
+      tr.push({ type: 'scatter', mode: 'lines', x: xs, y: ys, name: 'KDE', line: { color: '#c8463c', width: 3 } });
+    }
+    L.draw('c5', tr, { title: 'histplot(x="' + c + '", bins=' + bins + (hKde.checked ? ', kde=True' : '') + ')', showlegend: false, xaxis: { title: c }, yaxis: { title: 'Count' }, bargap: 0 });
+  }
+  [hCol, hBins, hKde].forEach(function (e) { e.oninput = c5; e.onchange = c5; });
+  L.whenVisible('c5', c5);
+
+  // 7. heatmap
+  L.whenVisible('c6', function () {
+    var N = L.NUM, z = N.map(function (a) { return N.map(function (b) { return L.corr(L.col(D, a), L.col(D, b)); }); });
+    L.draw('c6', [{ type: 'heatmap', x: N, y: N, z: z, zmin: -1, zmax: 1, colorscale: 'RdBu', reversescale: true,
+      text: z.map(function (r) { return r.map(function (v) { return v.toFixed(2); }); }), texttemplate: '%{text}', hovertemplate: '%{y} × %{x}: %{z:.3f}<extra></extra>' }],
+      { title: 'Correlation Matrix of Student Performance Features', margin: { l: 130, b: 120 }, yaxis: { autorange: 'reversed' } });
+  });
+
+  // 8. pairplot-подобная матрица
+  L.whenVisible('c7', function () {
+    var dims = ['math_score', 'programming_score', 'attendance', 'final_score'];
+    L.draw('c7', P.map(function (p) {
+      return { type: 'splom', name: p, showupperhalf: false, diagonal: { visible: false },
+        dimensions: dims.map(function (d) { return { label: d.replace('_score', ''), values: L.col(by(p), d) }; }),
+        marker: { color: COL[p], size: 4, opacity: .7 } };
+    }), { title: 'pairplot(hue="program", corner=True)', margin: { l: 60, b: 60 } });
+  });
+})();
+</script>
+</body>
+</html>

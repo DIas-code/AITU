@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>6.2 Очистка текста, лемматизация, стемминг — Программирование</title>
+<link rel="stylesheet" href="../../_shared/site.css">
+<link rel="stylesheet" href="../live.css">
+</head>
+<body data-root="../../" data-course="prog" data-page="week6/6-2-cleaning.html">
+<main>
+<div class="phead">
+  <div class="kicker">Неделя 6 · Лекция 6.1, часть 2</div>
+  <h1>Очистка текста: regex → токены → стоп-слова → леммы</h1>
+  <p class="sub">Перед анализом текст готовят по шагам: убрать знаки и числа, нижний регистр, разбить на слова, выкинуть стоп-слова, привести слова к начальной форме.</p>
+</div>
+
+<section class="step">
+  <h2>1. re.sub — убрать знаки препинания</h2>
+  <p class="why">Регулярное выражение — шаблон поиска. <code>[...]</code> — набор символов, <code>^</code> внутри — «НЕ», <code>\w</code> — буква / цифра / <code>_</code>, <code>\s</code> — пробел, таб, перенос. Значит <code>[^\w\s]</code> — всё, что не буква и не пробел, то есть знаки. <code>r''</code> — «сырая» строка, чтобы <code>\</code> не съел Python.</p>
+  <div class="code"><pre><code class="language-python">import re
+
+text = "Life, believe, is not a dream.\n So dark as sages say;\n Oft a little morning rain \n Foretells a pleasant day!"
+text1 = re.sub(r'[^\w\s]', '', text)
+# 'Life believe is not a dream\n So dark as sages say\n Oft a little morning rain \n Foretells a pleasant day'
+
+re.findall(r'sa', text, re.I)                  # ['sa', 'sa', 'sa']  — re.I: без учёта регистра
+re.sub(r'sa', '*' * 2, text, flags=re.I)       # '… So dark as **ges **y; … plea**nt day!'</code></pre></div>
+</section>
+
+<section class="demo">
+  <h2>Попробуй: регулярные выражения</h2>
+  <p>Шаблон как в Python: <code>\w</code> здесь понимает и кириллицу, как в <code>re</code>. Жёлтым — что найдёт <code>re.findall</code>, ниже — результат <code>re.sub</code>.</p>
+  <div class="ctl">
+    <label>шаблон <input type="text" id="rxP" value="[^\w\s]" style="width:160px;font-family:Consolas,monospace"></label>
+    <label>замена <input type="text" id="rxR" value="" style="width:70px;font-family:Consolas,monospace"></label>
+    <label><input type="checkbox" id="rxI"> re.I</label>
+    <span class="seg" id="rxEx"><button data-v="[^\w\s]">[^\w\s]</button><button data-v="sa">sa</button><button data-v="\d+">\d+</button><button data-v="\s+">\s+</button><button data-v="\b\w{5,}\b">\b\w{5,}\b</button></span>
+  </div>
+  <textarea class="txt" id="rxT">Life, believe, is not a dream.
+ So dark as sages say;
+ Oft a little morning rain
+ Foretells a pleasant day! Лекция 6, 2026 год.</textarea>
+  <div class="stage"><b>findall → <span id="rxN"></span></b><div class="article" id="rxHi" style="max-height:none;white-space:pre-wrap"></div></div>
+  <div class="stage"><b>re.sub(шаблон, замена, text)</b><div class="live-code" id="rxOut"></div></div>
+</section>
+
+<section class="step">
+  <h2>2. То же циклом (и почему regex удобнее)</h2>
+  <p class="why">Перебираем каждый символ и каждый знак из списка, совпал — <code>replace</code> на пустоту. Работает, но два вложенных цикла. Regex делает то же одной строкой. Обратите внимание: <code>&amp;</code> убран, а двойной пробел остался.</p>
+  <div class="code"><pre><code class="language-python">inp_str = "Hello? Folks, we are here to learn &amp; improve!@!"
+marks = "!()-[]{};?@#$%:'\,./^&amp;;*_"
+
+opt_str = inp_str
+for x in inp_str:
+    for i in marks:
+        if x == i:
+            opt_str = opt_str.replace(x, "")
+# 'Hello Folks we are here to learn  improve'
+
+re.sub(r"[!()\[\]{};?@#$%:'\\,./^&amp;;*_]", '', inp_str)   # тот же результат</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>3. Конвейер: нижний регистр → токены → только буквы → без стоп-слов</h2>
+  <p class="why">Стоп-слова NLTK записаны маленькими буквами. Если не сделать <code>lower()</code>, <code>So</code> не выкинется (а <code>so</code> — да). <code>isalpha()</code> оставляет только токены из букв — так уходят знаки.</p>
+  <div class="code"><pre><code class="language-python">from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+
+# без lower(): знаки и "So" остались
+[w for w in word_tokenize(text) if not w in stopwords.words('english')]
+# ['Life', ',', 'believe', ',', 'dream', '.', 'So', 'dark', 'sages', 'say', ';', 'Oft', …]
+
+text = text.lower()
+words = word_tokenize(text)
+words = [word for word in words if word.isalpha()]
+stop_words = set(stopwords.words('english'))
+words = [word for word in words if word not in stop_words]
+# ['life', 'believe', 'dream', 'dark', 'sages', 'say', 'oft', 'little',
+#  'morning', 'rain', 'foretells', 'pleasant', 'day']</code></pre></div>
+</section>
+
+<section class="demo">
+  <h2>Попробуй: конвейер очистки</h2>
+  <p>Вставь любой английский текст и включай шаги. Зачёркнутое — выброшено. Стоп-слова — настоящий список NLTK (198 слов). Токенизация упрощённая (по словам и знакам), <code>word_tokenize</code> почти такой же.</p>
+  <textarea class="txt" id="ppT">Life, believe, is not a dream.
+ So dark as sages say;
+ Oft a little morning rain
+ Foretells a pleasant day!</textarea>
+  <div class="ctl">
+    <label><input type="checkbox" id="ppL" checked> .lower()</label>
+    <label><input type="checkbox" id="ppA" checked> isalpha()</label>
+    <label><input type="checkbox" id="ppS" checked> без стоп-слов</label>
+  </div>
+  <div class="toks" id="ppOut"></div>
+  <p class="cap" id="ppN"></p>
+</section>
+
+<section class="step">
+  <h2>4. Лемматизация</h2>
+  <p class="why">Лемма — словарная форма: <code>sages → sage</code>. Без подсказки лемматизатор считает каждое слово существительным, поэтому <code>foretells</code> не изменился. Нужна часть речи: <code>pos_tag</code> даёт теги <code>JJ / VB… / RB / NN…</code>, а <code>lemmatize</code> ждёт <code>'a' / 'v' / 'r' / 'n'</code>. <code>tag_map</code> переводит первую букву тега. <code>defaultdict</code> — словарь, который для незнакомого ключа сам вернёт значение по умолчанию (тут — существительное) вместо <code>KeyError</code>.</p>
+  <div class="code"><pre><code class="language-python">from nltk.stem import WordNetLemmatizer
+lemmatizer = WordNetLemmatizer()
+' '.join([lemmatizer.lemmatize(w) for w in words])
+# 'life believe dream dark sage say oft little morning rain foretells pleasant day'
+
+from nltk.corpus import wordnet as wn
+from nltk import word_tokenize, pos_tag
+from collections import defaultdict
+
+tag_map = defaultdict(lambda: wn.NOUN)   # всё незнакомое → существительное
+tag_map['J'] = wn.ADJ
+tag_map['V'] = wn.VERB
+tag_map['R'] = wn.ADV
+
+text = "Yesterday he was in the most beautiful buildings on our streets."
+for w, tag in pos_tag(word_tokenize(text)):
+    print(w, "=>", lemmatizer.lemmatize(w, tag_map[tag[0]]), "=>", tag)
+# was => be (VBD) · buildings => building (NNS) · streets => street (NNS)</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>5. Стемминг против лемматизации</h2>
+  <p class="why">Стеммер (Porter) просто отрезает окончания — быстро, но получаются не-слова: <code>studi</code>, <code>beauti</code>. Лемматизатор смотрит в словарь и возвращает настоящее слово, если знает часть речи. Для признаков ML лемматизация обычно лучше.</p>
+  <div class="code"><pre><code class="language-python">from nltk.stem import PorterStemmer
+
+ps = PorterStemmer()
+for w in ["program", "programs", "programmer", "programming", "programmers"]:
+    print(w, " : ", ps.stem(w))
+# program · program · programm · program · programm</code></pre></div>
+  <div class="ctl"><label>подсказка части речи для лемматизатора
+    <span class="seg" id="stPos"><button data-v="n" class="on">нет ('n')</button><button data-v="v">'v' глагол</button><button data-v="a">'a' прилаг.</button></span></label></div>
+  <div class="tw2" id="stTbl"></div>
+</section>
+
+<div id="pager"></div>
+</main>
+<script src="../../_shared/sitemap.js"></script>
+<script src="../../_shared/data.js"></script>
+<script src="../../_shared/site.js"></script>
+<script src="../live.js"></script>
+<script>
+(function () {
+  var esc = LIVE.esc;
+
+  // ── regex: \w и \d в Python понимают Юникод, в JS — только латиницу, поэтому подменяем ──
+  function pyToJs(p) {
+    var out = '', inCls = false;
+    for (var i = 0; i < p.length; i++) {
+      var ch = p[i];
+      if (ch === '\\' && i + 1 < p.length) {
+        var n = p[i + 1]; i++;
+        if (n === 'w') out += inCls ? '\\p{L}\\p{N}_' : '[\\p{L}\\p{N}_]';
+        else if (n === 'W') out += inCls ? '\\P{L}' : '[^\\p{L}\\p{N}_]';
+        else if (n === 'd') out += '\\p{Nd}';
+        else if (n === 'b') out += inCls ? '\\b' : '(?:(?<=[\\p{L}\\p{N}_])(?![\\p{L}\\p{N}_])|(?<![\\p{L}\\p{N}_])(?=[\\p{L}\\p{N}_]))';
+        else out += '\\' + n;
+        continue;
+      }
+      if (ch === '[' && !inCls) inCls = true; else if (ch === ']' && inCls) inCls = false;
+      out += ch;
+    }
+    return out;
+  }
+  var rxP = document.getElementById('rxP'), rxR = document.getElementById('rxR'), rxI = document.getElementById('rxI'), rxT = document.getElementById('rxT');
+  function rx() {
+    var re, txt = rxT.value;
+    try { re = new RegExp(pyToJs(rxP.value), 'gu' + (rxI.checked ? 'i' : '')); }
+    catch (e) { document.getElementById('rxN').textContent = 'ошибка в шаблоне'; return; }
+    var h = '', last = 0, n = 0, m, found = [];
+    if (rxP.value) while ((m = re.exec(txt)) !== null) {
+      if (m[0] === '') { re.lastIndex++; continue; }
+      h += esc(txt.slice(last, m.index)) + '<mark class="m">' + esc(m[0]).replace(/\n/g, '↵\n') + '</mark>';
+      last = m.index + m[0].length; n++; if (found.length < 12) found.push(m[0]);
+    }
+    h += esc(txt.slice(last));
+    document.getElementById('rxHi').innerHTML = h;
+    document.getElementById('rxN').textContent = n + ' совпад. ' + (n ? JSON.stringify(found).replace(/"/g, "'") + (n > 12 ? ' …' : '') : '');
+    document.getElementById('rxOut').textContent = rxP.value ? txt.replace(re, rxR.value) : txt;
+  }
+  [rxP, rxR, rxI, rxT].forEach(function (e) { e.oninput = rx; e.onchange = rx; });
+  LIVE.seg('rxEx', function (v) { rxP.value = v; rxR.value = v === 'sa' ? '**' : (v === '\\s+' ? ' ' : (v === '\\d+' ? '#' : '')); rxI.checked = v === 'sa'; rx(); });
+  rx();
+
+  // ── конвейер: стоп-слова NLTK english (198) ──
+  var SW = new Set(["a","about","above","after","again","against","ain","all","am","an","and","any","are","aren","aren't","as","at","be","because","been","before","being","below","between","both","but","by","can","couldn","couldn't","d","did","didn","didn't","do","does","doesn","doesn't","doing","don","don't","down","during","each","few","for","from","further","had","hadn","hadn't","has","hasn","hasn't","have","haven","haven't","having","he","he'd","he'll","he's","her","here","hers","herself","him","himself","his","how","i","i'd","i'll","i'm","i've","if","in","into","is","isn","isn't","it","it'd","it'll","it's","its","itself","just","ll","m","ma","me","mightn","mightn't","more","most","mustn","mustn't","my","myself","needn","needn't","no","nor","not","now","o","of","off","on","once","only","or","other","our","ours","ourselves","out","over","own","re","s","same","shan","shan't","she","she'd","she'll","she's","should","should've","shouldn","shouldn't","so","some","such","t","than","that","that'll","the","their","theirs","them","themselves","then","there","these","they","they'd","they'll","they're","they've","this","those","through","to","too","under","until","up","ve","very","was","wasn","wasn't","we","we'd","we'll","we're","we've","were","weren","weren't","what","when","where","which","while","who","whom","why","will","with","won","won't","wouldn","wouldn't","y","you","you'd","you'll","you're","you've","your","yours","yourself","yourselves"]);
+  var ppT = document.getElementById('ppT'), ppL = document.getElementById('ppL'), ppA = document.getElementById('ppA'), ppS = document.getElementById('ppS');
+  function pp() {
+    var t = ppL.checked ? ppT.value.toLowerCase() : ppT.value;
+    var toks = t.match(/[\p{L}\p{N}_]+(?:[.,][\p{N}]+)*|n't|'[a-z]+|[^\s\p{L}\p{N}_]/giu) || [];
+    var kept = 0;
+    document.getElementById('ppOut').innerHTML = toks.map(function (w) {
+      var alpha = /^\p{L}+$/u.test(w), cls = '';
+      if (ppA.checked && !alpha) cls = 'out punct';
+      else if (ppS.checked && SW.has(w)) cls = 'out';
+      if (!cls) kept++;
+      return '<span class="' + cls + '">' + esc(w) + '</span>';
+    }).join('');
+    document.getElementById('ppN').textContent = 'Токенов: ' + toks.length + ' → осталось ' + kept + '.' + (!ppL.checked && ppS.checked ? ' Без lower() слова с большой буквы (So, The) мимо стоп-листа.' : '');
+  }
+  [ppT, ppL, ppA, ppS].forEach(function (e) { e.oninput = pp; e.onchange = pp; });
+  pp();
+
+  // ── стемминг / лемма (посчитано в NLTK): слово, Porter, lemma('n'), lemma('v'), lemma('a') ──
+  var ST = [["program","program","program","program","program"],["programs","program","program","program","programs"],["programmer","programm","programmer","programmer","programmer"],["programming","program","programming","program","programming"],["running","run","running","run","running"],["ran","ran","ran","run","ran"],["studies","studi","study","study","studies"],["studying","studi","studying","study","studying"],["better","better","better","better","good"],["feet","feet","foot","feet","feet"],["was","wa","wa","be","was"],["leaves","leav","leaf","leave","leaves"],["beautiful","beauti","beautiful","beautiful","beautiful"],["happily","happili","happily","happily","happily"],["foretells","foretel","foretells","foretell","foretells"],["geese","gees","goose","geese","geese"]];
+  function st(pos) {
+    var k = { n: 2, v: 3, a: 4 }[pos];
+    var h = '<table class="tbl"><thead><tr><th>слово</th><th>ps.stem(w)</th><th>lemmatize(w' + (pos === 'n' ? '' : ", '" + pos + "'") + ')</th></tr></thead><tbody>';
+    ST.forEach(function (r) {
+      h += '<tr><td>' + r[0] + '</td><td' + (r[1] !== r[0] ? ' style="color:#b3402e"' : '') + '>' + r[1] + '</td><td' + (r[k] !== r[0] ? ' style="color:#2c7a57;font-weight:600"' : '') + '>' + r[k] + '</td></tr>';
+    });
+    document.getElementById('stTbl').innerHTML = h + '</tbody></table>';
+  }
+  LIVE.seg('stPos', st); st('n');
+})();
+</script>
+</body>
+</html>

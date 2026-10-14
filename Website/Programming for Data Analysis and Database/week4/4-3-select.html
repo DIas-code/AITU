@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4.3 Pandas: выбор и фильтрация — Программирование</title>
+<link rel="stylesheet" href="../../_shared/site.css">
+<link rel="stylesheet" href="../live.css">
+</head>
+<body data-root="../../" data-course="prog" data-page="week4/4-3-select.html">
+<main>
+<div class="phead">
+  <div class="kicker">Неделя 4 · Лекция 4.2, часть 1</div>
+  <h1>Выбор столбцов и строк, фильтры</h1>
+  <p class="sub">Берём чистую таблицу <code>University Students 2026 New.csv</code> и достаём из неё нужное: по названию, по позиции, по условию.</p>
+</div>
+
+<section class="step">
+  <h2>1. Столбцы</h2>
+  <p class="why">Одни скобки и одно имя — получаем <code>Series</code> (один столбец). Двойные скобки — список имён, получаем <code>DataFrame</code>, даже если имя одно.</p>
+  <div class="code"><pre><code class="language-python">import pandas as pd
+df_clean = pd.read_csv("University Students 2026 New.csv")
+
+type(df_clean["program"])      # Series
+type(df_clean[["program"]])    # DataFrame
+df_clean[["student_id", "program", "final_score"]]
+
+df_clean[0:5]                  # строки 0…4 срезом (5 строк)</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>2. loc — по меткам, iloc — по позициям</h2>
+  <p class="why"><code>loc</code> берёт по названию индекса и столбца, и конец диапазона <b>включается</b>: <code>loc[0:5]</code> — 6 строк. <code>iloc</code> берёт по номеру позиции, как обычный срез Python: конец <b>не включается</b>, <code>iloc[0:5]</code> — 5 строк. Столбцы в <code>iloc</code> тоже номерами.</p>
+  <div class="code"><pre><code class="language-python">df_clean.loc[0]                                         # строка с индексом 0
+df_clean.loc[0:5]                                       # 6 строк: 0…5 включительно
+df_clean.loc[0:5, ["student_id", "program", "final_score"]]
+df_clean.loc[0:5, "student_id":"math_score"]            # столбцы от … до … включительно (7 шт.)
+
+df_clean.iloc[0]
+df_clean.iloc[1:5]                                      # 4 строки: 1, 2, 3, 4
+df_clean.iloc[0:5, 0:3]                                 # student_id, gender, city
+df_clean.iloc[0:5, [0, 3]]                              # student_id, program
+
+df_clean.loc[0, "final_score"]                          # 62 — одна ячейка по меткам
+df_clean.iloc[0, 11]                                    # 62 — она же по позиции (столбец №11)</code></pre></div>
+  <div class="ctl" style="margin-top:12px">
+    <span class="seg" id="li"><button data-v="loc" class="on">loc[a:b]</button><button data-v="iloc">iloc[a:b]</button></span>
+    <label>a <input type="number" id="la" value="0" min="0" max="10" style="width:60px"></label>
+    <label>b <input type="number" id="lb" value="5" min="0" max="10" style="width:60px"></label>
+  </div>
+  <div class="toks" id="liOut"></div>
+  <p class="cap" id="liN"></p>
+</section>
+
+<section class="step">
+  <h2>3. Фильтр по условию — логическая маска</h2>
+  <p class="why">Сравнение со столбцом даёт Series из True/False на каждую строку — это маска. Подставляем её в <code>[ ]</code> — остаются строки с True. Несколько условий: <code>&amp;</code> — И, <code>|</code> — ИЛИ, <code>~</code> — НЕ. Каждое условие обязательно в скобках.</p>
+  <div class="code"><pre><code class="language-python">high_score = df_clean["final_score"] &gt; 85          # маска: 47 × True
+df_clean.loc[high_score, ["student_id", "final_score"]]
+
+df_clean[df_clean["program"] == "Data Science"]    # 54 строки
+df_clean[df_clean["program"] != "Data Science"]    # 146
+
+df_clean[(df_clean["program"] == "Data Science") &amp; (df_clean["final_score"] &gt; 85)]   # 12
+df_clean[(df_clean["program"] == "Data Science") | (df_clean["program"] == "Cybersecurity")]   # 101
+df_clean[~(df_clean["program"] == "Data Science")]                                    # 146
+
+df_clean[(df_clean["program"] == "Data Science") &amp;
+         (df_clean["attendance"] &gt;= 80) &amp;
+         (df_clean["final_score"] &gt; 85)]                                              # 8</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>4. isin и between — короче</h2>
+  <p class="why"><code>isin([...])</code> заменяет цепочку <code>==</code> через <code>|</code>. <code>between(80, 90)</code> заменяет <code>&gt;= 80 &amp; &lt;= 90</code> (границы включены).</p>
+  <div class="code"><pre><code class="language-python">df_clean[df_clean["program"].isin(["Data Science", "Cybersecurity"])]     # 101
+df_clean[~df_clean["program"].isin(["Data Science", "Cybersecurity"])]    # 99
+df_clean[df_clean["final_score"].between(80, 90)]                         # 94
+
+df_clean[df_clean["program"].isin(["Data Science", "Software Engineering"])
+         &amp; df_clean["final_score"].between(80, 90)]                       # 61</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>5. Сортировка</h2>
+  <p class="why">Сначала фильтр, потом <code>sort_values</code>. По двум столбцам — список, и для каждого своё направление.</p>
+  <div class="code"><pre><code class="language-python">df_clean[df_clean["final_score"] &gt;= 85].sort_values("final_score", ascending=False)
+# ST181 100 · ST063 98 · ST004 98 …
+
+df_clean.sort_values(["program", "final_score"], ascending=[True, False])
+# программы по алфавиту, внутри — баллы от большего к меньшему</code></pre></div>
+</section>
+
+<section class="demo">
+  <h2>Попробуй: собери фильтр</h2>
+  <p>Отметь программы, задай диапазон балла и минимальную посещаемость. Получишь код pandas и результат по всем 200 студентам.</p>
+  <div class="ctl" id="fp"></div>
+  <div class="ctl">
+    <label>final_score от <input type="number" id="f1" value="80" min="0" max="100" style="width:64px"></label>
+    <label>до <input type="number" id="f2" value="90" min="0" max="100" style="width:64px"></label>
+    <label>attendance ≥ <input type="range" id="fa" min="0" max="100" value="0"><output id="fav">0</output></label>
+    <label><input type="checkbox" id="fs" checked> сортировать по final_score ↓</label>
+  </div>
+  <div class="live-code" id="fCode"></div>
+  <p class="cap" id="fN"></p>
+  <div class="tw2" id="fOut"></div>
+</section>
+
+<div id="pager"></div>
+</main>
+<script src="../../_shared/sitemap.js"></script>
+<script src="../../_shared/data.js"></script>
+<script src="../../_shared/site.js"></script>
+<script src="../week5/students.js"></script>
+<script src="../live.js"></script>
+<script>
+(function () {
+  var L = LIVE, D = L.students(), esc = L.esc;
+  // loc / iloc
+  var mode = 'loc', la = document.getElementById('la'), lb = document.getElementById('lb');
+  function li() {
+    var a = +la.value, b = +lb.value, out = '';
+    for (var k = 0; k <= 11; k++) {
+      var inn = k >= a && (mode === 'loc' ? k <= b : k < b);
+      out += '<span class="' + (inn ? '' : 'out') + '"' + (inn ? ' style="border-color:#2c7a57;background:#eef7f1"' : '') + '>' + k + '<small>' + D[k].student_id + '</small></span>';
+    }
+    document.getElementById('liOut').innerHTML = out;
+    var n = Math.max(0, mode === 'loc' ? b - a + 1 : b - a);
+    document.getElementById('liN').textContent = 'df_clean.' + mode + '[' + a + ':' + b + '] → ' + n + ' строк' + (mode === 'loc' ? ' (конец ' + b + ' включён)' : ' (конец ' + b + ' не включён)');
+  }
+  L.seg('li', function (v) { mode = v; li(); });
+  la.oninput = li; lb.oninput = li; li();
+
+  // фильтр
+  var fp = document.getElementById('fp');
+  L.PROG.forEach(function (p) { fp.insertAdjacentHTML('beforeend', '<label><input type="checkbox" value="' + p + '" ' + (p === 'Data Science' || p === 'Software Engineering' ? 'checked' : '') + '> ' + p + '</label>'); });
+  var f1 = document.getElementById('f1'), f2 = document.getElementById('f2'), fa = document.getElementById('fa'), fs = document.getElementById('fs');
+  function run() {
+    var ps = [].slice.call(fp.querySelectorAll('input:checked')).map(function (x) { return x.value; });
+    var a = +f1.value, b = +f2.value, at = +fa.value;
+    document.getElementById('fav').textContent = at;
+    var conds = [];
+    if (ps.length && ps.length < 4) conds.push('df_clean["program"].isin([' + ps.map(function (p) { return '"' + p + '"'; }).join(', ') + '])');
+    conds.push('df_clean["final_score"].between(' + a + ', ' + b + ')');
+    if (at > 0) conds.push('(df_clean["attendance"] >= ' + at + ')');
+    var code = 'df_clean[\n    ' + conds.join('\n    & ') + '\n]' + (fs.checked ? '.sort_values("final_score", ascending=False)' : '');
+    document.getElementById('fCode').textContent = code;
+    var res = D.filter(function (r) { return ps.indexOf(r.program) >= 0 && r.final_score >= a && r.final_score <= b && r.attendance >= at; });
+    if (fs.checked) res = res.slice().sort(function (x, y) { return y.final_score - x.final_score; }); // устойчивая сортировка
+    document.getElementById('fN').textContent = 'Найдено строк: ' + res.length + (res.length > 10 ? ' (показаны первые 10)' : '');
+    var cols = ['student_id', 'program', 'attendance', 'final_score'];
+    document.getElementById('fOut').innerHTML = res.length ? '<table class="tbl"><thead><tr><th>index</th>' + cols.map(function (c) { return '<th>' + c + '</th>'; }).join('') + '</tr></thead><tbody>' +
+      res.slice(0, 10).map(function (r) { return '<tr><td>' + D.indexOf(r) + '</td>' + cols.map(function (c) { return '<td>' + esc(r[c]) + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table>' : '';
+  }
+  [fp, f1, f2, fa, fs].forEach(function (e) { e.addEventListener('input', run); e.addEventListener('change', run); });
+  run();
+})();
+</script>
+</body>
+</html>

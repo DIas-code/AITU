@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>6.4 Тональность текста — Программирование</title>
+<link rel="stylesheet" href="../../_shared/site.css">
+<link rel="stylesheet" href="../live.css">
+</head>
+<body data-root="../../" data-course="prog" data-page="week6/6-4-sentiment.html">
+<main>
+<div class="phead">
+  <div class="kicker">Неделя 6 · Лекция 6.3</div>
+  <h1>Тональность текста: позитив, негатив, нейтрально</h1>
+  <p class="sub">Три готовых словаря (TextBlob, VADER в двух видах) и один свой классификатор (TF-IDF + SVM). Это прямая подготовка к Assignment 3, задание 1.</p>
+</div>
+
+<section class="step">
+  <h2>1. TextBlob: polarity</h2>
+  <p class="why"><code>TextBlob(text).sentiment.polarity</code> — число от −1 (очень негативно) до 1 (очень позитивно), 0 — нейтрально. Порог ±0.01 превращает число в метку. TextBlob понимает только английский: для русского — spaCy (<code>ru_core_news_sm</code>) или Polyglot, для казахского — Stanza.</p>
+  <div class="code"><pre><code class="language-python">!pip install textblob
+!python -m textblob.download_corpora      # словари TextBlob
+from textblob import TextBlob
+
+def determine_sentiment(text):
+    text_analysis = TextBlob(text)
+    if text_analysis.sentiment.polarity &gt; 0.01:
+        return "Positive"
+    elif text_analysis.sentiment.polarity &lt; -0.01:
+        return "Negative"
+    else:
+        return "Neutral"
+
+sentence = input("Enter a sentence for analysis: ")
+print(f"Sentence sentiment: {determine_sentiment(sentence)}")
+# "I love this course!" → polarity 0.625 → Positive</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>2. VADER (vaderSentiment + spaCy)</h2>
+  <p class="why">VADER — словарь, сделанный для соцсетей: учитывает сленг, эмодзи, КАПС, «!!!», усилители («very») и отрицания («not»). Главное число — <code>compound</code> от −1 до 1, порог ±0.05. spaCy в этом коде только загружает модель и разбирает текст — на результат он не влияет, считает VADER.</p>
+  <div class="code"><pre><code class="language-python">!pip install spacy vaderSentiment
+import spacy
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+
+nlp = spacy.load("en_core_web_sm")       # английская модель spaCy
+analyzer = SentimentIntensityAnalyzer()
+
+def determine_sentiment(text):
+    doc = nlp(text)
+    sentiment = analyzer.polarity_scores(text)
+    if sentiment['compound'] &gt;= 0.05:
+        return "Positive"
+    elif sentiment['compound'] &lt;= -0.05:
+        return "Negative"
+    else:
+        return "Neutral"</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>3. VADER внутри NLTK</h2>
+  <p class="why">Тот же VADER, встроен в NLTK — нужен только <code>vader_lexicon</code>. <code>polarity_scores</code> возвращает 4 числа: <code>neg</code>, <code>neu</code>, <code>pos</code> — доли (в сумме ≈ 1) и <code>compound</code> — итог. Версия в NLTK чуть старее: эмодзи не понимает, поэтому на «GREAT!!! 😀» compound 0.772, а у vaderSentiment 0.849.</p>
+  <div class="code"><pre><code class="language-python">import nltk
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+nltk.download('vader_lexicon')
+
+analyzer = SentimentIntensityAnalyzer()
+analyzer.polarity_scores("I love this course!")
+# {'neg': 0.0, 'neu': 0.308, 'pos': 0.692, 'compound': 0.6696}</code></pre></div>
+</section>
+
+<section class="demo">
+  <h2>Попробуй: три анализатора на одних фразах</h2>
+  <p>Выбери фразу — увидишь ответы всех трёх (посчитаны настоящими библиотеками). Двигай порог VADER и смотри, как меняется метка.</p>
+  <div class="pick-list" id="sl"></div>
+  <div class="ctl" style="margin-top:12px"><label>порог VADER ± <input type="range" id="th" min="0" max="0.6" step="0.01" value="0.05"><output id="thv">0.05</output></label></div>
+  <div class="scores" id="sc"></div>
+  <p class="cap" id="note"></p>
+</section>
+
+<section class="step">
+  <h2>4. Свой классификатор: TF-IDF + SVM</h2>
+  <p class="why"><code>TfidfVectorizer</code> превращает каждый текст в вектор чисел: вес слова растёт, если оно частое в этом тексте, и падает, если встречается во многих текстах. Сам тональность не знает — нужна модель, обученная на размеченных примерах (1 — позитив, 0 — негатив). Тут SVM с линейным ядром. В ноутбуке 30 фраз, <code>test_size=0.2</code> → в тест попадает 6.</p>
+  <div class="code"><pre><code class="language-python">from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn import svm
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, classification_report
+
+data = [("I love this product, it's amazing!", 1),
+        ("I had an awful experience.", 0),
+        # … всего 30 фраз: 15 позитивных, 15 негативных
+       ]
+texts  = [item[0] for item in data]
+labels = [item[1] for item in data]
+
+vectorizer = TfidfVectorizer()
+X = vectorizer.fit_transform(texts)          # (30, 105): 30 фраз × 105 разных слов
+
+X_train, X_test, y_train, y_test = train_test_split(X, labels, test_size=0.2, random_state=42)
+
+model = svm.SVC(kernel='linear')
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+
+accuracy_score(y_test, y_pred)               # 0.667 → "Model accuracy: 66.67%"
+print(classification_report(y_test, y_pred))
+# класс 0: precision 0.60, recall 1.00 · класс 1: precision 1.00, recall 0.33
+
+new_text_vectorized = vectorizer.transform(["The product exceeded all my expectations"])
+model.predict(new_text_vectorized)           # [1] → Positive (эта фраза была в обучении)</code></pre></div>
+  <p class="why">Почему всего 67%: 24 фразы на обучение — очень мало, модель видит лишь сотню слов. Из 3 позитивных в тесте угадала 1 (recall 0.33). <code>random_state=42</code> — фиксирует перемешивание, чтобы результат повторялся; 42 — шутка из «Автостопом по галактике», можно любое число. Для Assignment 3 нужно ≥ 3000 текстов и Logistic Regression или Naive Bayes.</p>
+</section>
+
+<div id="pager"></div>
+</main>
+<script src="../../_shared/sitemap.js"></script>
+<script src="../../_shared/data.js"></script>
+<script src="../../_shared/site.js"></script>
+<script src="../live.js"></script>
+<script>
+(function () {
+  // фраза, TextBlob polarity, NLTK neg, neu, pos, compound, vaderSentiment compound — посчитано в Python
+  var R = [["I love this course!", 0.625, 0.0, 0.308, 0.692, 0.6696, 0.6696], ["The lecture was boring.", -1.0, 0.434, 0.566, 0.0, -0.3182, -0.3182], ["The lecture is on Monday.", 0.0, 0.0, 1.0, 0.0, 0.0, 0.0], ["The food was not bad.", 0.35, 0.0, 0.584, 0.416, 0.431, 0.431], ["This is GREAT!!! 😀", 1.0, 0.0, 0.259, 0.741, 0.7723, 0.8485], ["I am not happy with the results.", -0.4, 0.375, 0.625, 0.0, -0.4585, -0.4585], ["The movie was good, but the ending was terrible.", -0.15, 0.317, 0.534, 0.149, -0.4939, -0.4939], ["Мне очень понравилось!", 0.0, 0.0, 1.0, 0.0, 0.0, 0.0]];
+  var NOTE = [
+    'Все три согласны: явный позитив.',
+    'TextBlob ставит максимум негатива (−1), VADER мягче (−0.32).',
+    'Факт без эмоций — везде 0, нейтрально.',
+    'Отрицание: «not bad» — все трое поняли, что это скорее хорошо.',
+    'КАПС, «!!!» и эмодзи усиливают VADER; NLTK-версия эмодзи не знает.',
+    'Отрицание «not happy» — негатив у всех.',
+    'После «but» важнее вторая часть — VADER это учитывает (−0.49).',
+    'По-русски все три ничего не видят: 0 → Neutral. Словари только английские.'
+  ];
+  var cur = 0, th = document.getElementById('th'), list = document.getElementById('sl');
+  R.forEach(function (r, i) {
+    var b = document.createElement('button'); b.textContent = r[0]; if (!i) b.className = 'on';
+    b.onclick = function () { cur = i; list.querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); }); show(); };
+    list.appendChild(b);
+  });
+  // метка ровно как в коде: TextBlob — строго больше / меньше порога, VADER — >= / <=
+  function card(name, v, t, extra) {
+    var vader = name.indexOf('VADER') >= 0 || name.indexOf('vader') >= 0;
+    var l = (vader ? v >= t : v > t) ? ['pos', 'Positive'] : ((vader ? v <= -t : v < -t) ? ['neg', 'Negative'] : ['neu', 'Neutral']);
+    return '<div class="card"><h3>' + name + '</h3><div class="num">' + v.toFixed(4).replace(/0+$/, '').replace(/\.$/, '') + '</div>' +
+      '<div class="meter"><i style="left:' + ((v + 1) / 2 * 100) + '%"></i><span class="th" style="left:' + ((1 - t) / 2 * 100) + '%"></span><span class="th" style="left:' + ((1 + t) / 2 * 100) + '%"></span></div>' +
+      '<span class="lab ' + l[0] + '">' + l[1] + '</span>' + (extra || '') + '</div>';
+  }
+  function show() {
+    var r = R[cur], t = +th.value;
+    document.getElementById('thv').textContent = t.toFixed(2);
+    document.getElementById('sc').innerHTML =
+      card('TextBlob · polarity', r[1], 0.01, '<p class="cap">порог ±0.01</p>') +
+      card('NLTK VADER · compound', r[5], t, '<p class="cap">neg ' + r[2] + ' · neu ' + r[3] + ' · pos ' + r[4] + '</p>') +
+      card('vaderSentiment · compound', r[6], t, '<p class="cap">порог ±' + t.toFixed(2) + '</p>');
+    document.getElementById('note').textContent = NOTE[cur];
+  }
+  th.oninput = show;
+  show();
+})();
+</script>
+</body>
+</html>

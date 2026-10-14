@@ -1,0 +1,77 @@
+/* Живые блоки Programming (недели 5–6): графики Plotly и «попробуй сам».
+   Подключается только на страницах, где есть интерактив. */
+
+.chart{width:100%;height:360px;margin:12px 0 0;border:1px solid var(--line);border-radius:11px;background:#fff;overflow:hidden}
+.chart.tall{height:470px}
+.chart.short{height:280px}
+.chart .wait{display:flex;height:100%;align-items:center;justify-content:center;color:var(--mut);font-size:13.5px;padding:0 16px;text-align:center}
+.cap{font-size:12.5px;color:var(--mut);margin:5px 2px 0}
+
+/* блок «Попробуй» */
+.demo{background:#f3f8f5;border:1px solid #cfe3d8;border-radius:15px;padding:16px 20px 18px;margin:0 0 14px}
+.demo h2{margin:0 0 6px;font-size:18px;display:flex;align-items:center;gap:9px}
+.demo h2::before{content:"▶";font-size:11px;color:#fff;background:var(--c,#2c7a57);border-radius:50%;
+  width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;padding-left:2px}
+.demo p{margin:0 0 10px;font-size:14.5px}
+.ctl{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin:8px 0}
+.ctl label{font-size:13px;color:var(--mut);font-weight:600;display:flex;align-items:center;gap:6px}
+.ctl select,.ctl input[type=text],.ctl input[type=number]{font:inherit;font-size:14px;padding:5px 8px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+.ctl input[type=range]{accent-color:var(--c,#2c7a57)}
+.ctl output{font:13px Consolas,monospace;color:var(--ink);min-width:2.5em}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:#fff}
+.seg button{font:inherit;font-size:13.5px;font-weight:600;border:0;background:none;padding:6px 12px;cursor:pointer;color:var(--mut);border-left:1px solid var(--line)}
+.seg button:first-child{border-left:0}
+.seg button.on{background:var(--c,#2c7a57);color:#fff}
+textarea.txt{width:100%;min-height:86px;font:14px/1.5 Consolas,monospace;padding:9px 11px;border:1px solid var(--line);border-radius:10px;resize:vertical;background:#fff}
+
+/* живой код: строка pandas, которую собрали контролы */
+.live-code{font:13.5px/1.5 Consolas,monospace;background:var(--code);border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin:8px 0;white-space:pre-wrap;word-break:break-word}
+
+/* маленькие таблицы результата */
+.tw2{overflow-x:auto;margin:8px 0 0}
+table.tbl{border-collapse:collapse;font-size:13.5px;background:#fff;border:1px solid var(--line);border-radius:9px;min-width:280px}
+table.tbl th,table.tbl td{padding:5px 10px;border-top:1px solid var(--soft);text-align:right;white-space:nowrap}
+table.tbl th:first-child,table.tbl td:first-child{text-align:left}
+table.tbl thead th{background:#faf9f6;font-size:12px;color:var(--mut);border-top:0}
+table.tbl td.nan{color:#b3402e;font-style:italic}
+table.tbl tr.hit td{background:#eef7f1}
+table.tbl tr.miss td{background:#fdf3f0}
+
+/* токены NLP */
+.toks{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0 0}
+.toks span{font:13px Consolas,monospace;background:#fff;border:1px solid var(--line);border-radius:6px;padding:2px 7px}
+.toks span.out{text-decoration:line-through;color:#b9b2a6;background:#f6f4ef}
+.toks span.punct{color:#b3402e}
+.toks small{font:11px "Segoe UI",sans-serif;color:var(--mut);margin-left:4px}
+.stage{margin:10px 0 0}
+.stage b{font-size:12.5px;color:var(--mut);letter-spacing:.04em;text-transform:uppercase;display:block}
+mark.m{background:#fde8a6;border-radius:3px;padding:0 1px}
+
+/* текст статьи с подсветкой выбранных предложений */
+.article{background:#fff;border:1px solid var(--line);border-radius:11px;padding:12px 15px;font-size:14px;line-height:1.65;max-height:340px;overflow:auto}
+.article span{border-radius:4px;transition:background .2s}
+.article span.pick{background:#cfeedd;box-shadow:0 0 0 2px #cfeedd}
+
+/* шкала тональности */
+.meter{position:relative;height:12px;border-radius:7px;background:linear-gradient(90deg,#d9644f,#ece8df 50%,#3f9a6c);margin:14px 0 4px}
+.meter i{position:absolute;top:-5px;width:4px;height:22px;background:var(--ink);border-radius:2px;transform:translateX(-2px);transition:left .25s}
+.meter .th{position:absolute;top:-3px;bottom:-3px;width:0;border-left:2px dashed #555}
+.lab{display:inline-block;font-weight:700;font-size:13px;border-radius:6px;padding:2px 9px}
+.lab.pos{background:var(--okbg);color:var(--ok)}
+.lab.neg{background:var(--latebg);color:var(--late)}
+.lab.neu{background:var(--soft);color:var(--mut)}
+.pick-list{display:flex;flex-direction:column;gap:5px}
+.pick-list button{font:inherit;font-size:14px;text-align:left;border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 11px;cursor:pointer}
+.pick-list button:hover{border-color:var(--c,#2c7a57)}
+.pick-list button.on{border-color:var(--c,#2c7a57);box-shadow:inset 3px 0 0 var(--c,#2c7a57)}
+.scores{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:10px}
+.scores .card{margin:0;padding:12px 15px}
+.scores h3{margin:0 0 4px;font-size:14px}
+.scores .num{font:600 22px Consolas,monospace}
+
+/* сравнение: таблица «что выбрать» */
+.cmp{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin:10px 0 0}
+.cmp div{background:#fff;border:1px solid var(--line);border-radius:11px;padding:10px 13px;font-size:14px}
+.cmp b{display:block;font-family:Consolas,monospace;font-size:14px;color:var(--c,#2c7a57)}
+
+@media print{ .demo{display:none} }

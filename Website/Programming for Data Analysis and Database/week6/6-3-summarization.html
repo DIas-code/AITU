@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>6.3 Автоматическое реферирование — Программирование</title>
+<link rel="stylesheet" href="../../_shared/site.css">
+<link rel="stylesheet" href="../live.css">
+</head>
+<body data-root="../../" data-course="prog" data-page="week6/6-3-summarization.html">
+<main>
+<div class="phead">
+  <div class="kicker">Неделя 6 · Лекция 6.2</div>
+  <h1>Автоматическое реферирование статьи</h1>
+  <p class="sub">Из статьи <code>article2.txt</code> (поиск плагиата в мелодиях, 36 предложений) выбрать 2–5 самых важных. Сначала вручную — частоты и биграммы, потом готовой библиотекой <code>sumy</code>.</p>
+</div>
+
+<section class="step">
+  <h2>1. Предобработка всей статьи</h2>
+  <p class="why">Как на прошлой странице: токены → без стоп-слов → лемма по части речи → нижний регистр → предложения → без знаков. <code>get_wordnet_pos</code> — то же сопоставление тегов, но функцией: первая буква тега → <code>'a' / 'n' / 'v' / 'r'</code>, иначе существительное.</p>
+  <div class="code"><pre><code class="language-python">import nltk, string
+from nltk import word_tokenize, sent_tokenize
+from nltk.corpus import wordnet, stopwords
+from nltk.stem import WordNetLemmatizer
+
+with open('article2.txt', encoding='utf8') as file:
+    text = file.read()
+
+def get_wordnet_pos(word):
+    tag = nltk.pos_tag([word])[0][1][0].upper()
+    tag_dict = {"J": wordnet.ADJ, "N": wordnet.NOUN, "V": wordnet.VERB, "R": wordnet.ADV}
+    return tag_dict.get(tag, wordnet.NOUN)
+
+text_list = word_tokenize(text)
+stop_words = stopwords.words('english')
+text_list = [word for word in text_list if word not in stop_words]
+
+lemma_function = WordNetLemmatizer()
+text1 = ' '.join([lemma_function.lemmatize(w, get_wordnet_pos(w)) for w in text_list])
+text1 = text1.lower()
+
+text_sent = sent_tokenize(text1)              # 36 предложений
+for p in string.punctuation:                  # убрать знаки в каждом предложении
+    for i in range(len(text_sent)):
+        text_sent[i] = text_sent[i].replace(p, '')
+
+preprocessed_text = ' '.join(text_sent)</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>2. Самые частые слова</h2>
+  <p class="why"><code>FreqDist</code> из NLTK и <code>Counter</code> из Python делают одно: считают, сколько раз встретилось каждое слово. <code>most_common(n)</code> — топ-n. Частые слова и есть тема статьи.</p>
+  <div class="code"><pre><code class="language-python">from nltk.probability import FreqDist
+from collections import Counter
+
+word_preprocessed_text = word_tokenize(preprocessed_text)
+
+fdist = FreqDist(word_preprocessed_text)
+[word for word, freq in fdist.most_common(6)]
+# ['melody', 'search', 'similarity', 'plagiarism', 'system', 'similar']
+
+Counter(word_preprocessed_text).most_common(10)
+# [('melody', 28), ('search', 14), ('similarity', 10), ('plagiarism', 9), ('system', 8), …]</code></pre></div>
+  <div class="ctl"><label>топ <input type="range" id="tN" min="5" max="15" value="10"><output id="tNv">10</output></label></div>
+  <div class="chart short" id="topChart"></div>
+</section>
+
+<section class="step">
+  <h2>3. Биграммы и условная вероятность</h2>
+  <p class="why">Биграмма — пара соседних слов. Вероятность, что после слова A идёт B: <code>P(B | A) = count(A, B) / count(A, …)</code>. Пример: <code>plagiarism</code> встречается первым в 9 парах, из них 6 раз — <code>plagiarism detection</code>, значит P = 6/9 = 0.667.</p>
+  <div class="code"><pre><code class="language-python">from nltk.util import ngrams
+
+bigrams = list(ngrams(word_preprocessed_text, 2))
+frequency = Counter(bigrams)                                  # сколько раз каждая пара
+first_word_count = Counter([bigram[0] for bigram in bigrams]) # сколько раз слово стоит первым
+
+conditional_probabilities = {
+    bigram: count / first_word_count[bigram[0]]
+    for bigram, count in frequency.items()
+}
+# ('plagiarism', 'detection'): 0.667 · ('melody', 'sequence'): 0.25 · ('melody', 'search'): 0.143</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>4. Оценка предложений</h2>
+  <p class="why">Вероятность предложения = произведение вероятностей его биграмм. Сортируем, берём первые 5. <b>Важно:</b> в ноутбуке <code>append</code> стоит внутри цикла по биграммам — получается 429 чисел вместо 36, и они не совпадают с предложениями. Правильно — один <code>append</code> на предложение, после внутреннего цикла (код ниже уже исправлен). И ещё: произведение чисел меньше 1 тем меньше, чем длиннее предложение, — поэтому метод любит короткие предложения («This paper is organized as follows.»).</p>
+  <div class="code"><pre><code class="language-python">sentences_probability = []
+for i in range(len(text_sent)):
+    sentence_bigrams = list(ngrams(word_tokenize(text_sent[i]), 2))
+    sentence_probability = 1.0
+    for bigram in sentence_bigrams:
+        if bigram in conditional_probabilities:
+            sentence_probability *= conditional_probabilities[bigram]
+    sentences_probability.append(sentence_probability)   # ← после цикла, не внутри
+
+the_dict = {text: probability
+            for text, probability in zip(sent_tokenize(text), sentences_probability)}
+the_dict = sorted(the_dict.items(), key=lambda pair: pair[1], reverse=True)
+
+for i, j in the_dict[:5]:
+    print(i)
+# 1. Without realizing it, any composers may be involved in diverse plagiarism disputes.  (0.222)
+# 2. This paper is organized as follows.  (0.167)</code></pre></div>
+</section>
+
+<section class="step">
+  <h2>5. sumy: TextRank, Luhn, LSA</h2>
+  <p class="why">Готовые алгоритмы, вторым аргументом — сколько предложений оставить. <b>TextRank</b> — как PageRank: предложение важно, если похоже на много других. <b>Luhn</b> — ищет предложения, где плотно стоят значимые частые слова. <b>LSA</b> — раскладывает матрицу «слова × предложения» (SVD) на скрытые темы и берёт по предложению на тему.</p>
+  <div class="code"><pre><code class="language-python">!pip install sumy
+from sumy.parsers.plaintext import PlaintextParser
+from sumy.nlp.tokenizers import Tokenizer
+from sumy.summarizers.text_rank import TextRankSummarizer
+from sumy.summarizers.luhn import LuhnSummarizer
+from sumy.summarizers.lsa import LsaSummarizer
+
+parser = PlaintextParser.from_string(text, Tokenizer("english"))
+
+summarizer = TextRankSummarizer()
+summary = summarizer(parser.document, 2)       # 2 предложения
+text_summary = ""
+for sentence in summary:
+    text_summary += str(sentence)
+
+for sentence in LuhnSummarizer()(parser.document, 2):
+    print(sentence)
+
+lsa_summary = "".join(str(s) for s in LsaSummarizer()(parser.document, 2))</code></pre></div>
+</section>
+
+<section class="demo">
+  <h2>Попробуй: какие предложения выберет каждый метод</h2>
+  <p>Выбери метод и сколько предложений оставить — они подсветятся в статье. Результаты посчитаны настоящими NLTK и sumy.</p>
+  <div class="ctl">
+    <span class="seg" id="sm"><button data-v="bigram" class="on">биграммы</button><button data-v="textrank">TextRank</button><button data-v="luhn">Luhn</button><button data-v="lsa">LSA</button></span>
+    <label>предложений <input type="range" id="sk" min="1" max="5" value="2"><output id="skv">2</output></label>
+  </div>
+  <ol id="sPick" style="font-size:14.5px;margin:6px 0 10px;padding-left:22px"></ol>
+  <div class="article" id="art"></div>
+</section>
+
+<div id="pager"></div>
+</main>
+<script src="../../_shared/sitemap.js"></script>
+<script src="../../_shared/data.js"></script>
+<script src="../../_shared/site.js"></script>
+<script src="article.js"></script>
+<script src="../live.js"></script>
+<script>
+(function () {
+  var A = window.ARTICLE, esc = LIVE.esc;
+  var tN = document.getElementById('tN');
+  function top() {
+    var n = +tN.value, t = A.top.slice(0, n).reverse();
+    document.getElementById('tNv').textContent = n;
+    LIVE.draw('topChart', [{ type: 'bar', orientation: 'h', y: t.map(function (x) { return x[0]; }), x: t.map(function (x) { return x[1]; }),
+      text: t.map(function (x) { return x[1]; }), textposition: 'outside', cliponaxis: false, marker: { color: '#2c7a57' } }],
+      { title: 'Counter(word_preprocessed_text).most_common(' + n + ')', margin: { l: 90, t: 40, b: 30 } });
+  }
+  tN.oninput = top;
+  LIVE.whenVisible('topChart', top);
+
+  var art = document.getElementById('art');
+  art.innerHTML = A.sents.map(function (s, i) { return '<span data-i="' + i + '">' + esc(s) + '</span> '; }).join('');
+  var method = 'bigram', sk = document.getElementById('sk');
+  function pick() {
+    var k = +sk.value, idx;
+    document.getElementById('skv').textContent = k;
+    if (method === 'bigram') {
+      idx = A.scores.map(function (v, i) { return i; }).sort(function (a, b) { return A.scores[b] - A.scores[a]; }).slice(0, k);
+    } else idx = A[method][k];
+    art.querySelectorAll('span').forEach(function (s) { s.classList.toggle('pick', idx.indexOf(+s.getAttribute('data-i')) >= 0); });
+    document.getElementById('sPick').innerHTML = idx.map(function (i) {
+      return '<li>' + esc(A.sents[i]) + (method === 'bigram' ? ' <span class="muted small">(P = ' + A.scores[i].toPrecision(3) + ')</span>' : '') + '</li>';
+    }).join('');
+    var first = art.querySelector('span.pick');
+    if (first) art.scrollTop = first.offsetTop - art.offsetTop - 20;
+  }
+  LIVE.seg('sm', function (v) { method = v; pick(); });
+  sk.oninput = pick;
+  pick();
+})();
+</script>
+</body>
+</html>
