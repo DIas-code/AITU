@@ -16,6 +16,21 @@
 </div>
 
 <section class="step">
+  <h2>Сначала слова: что как называется</h2>
+  <div class="terms">
+    <div><b>Pandas</b>Библиотека Python для таблиц — как Excel, только командами. Принято импортировать как <code>pd</code>.<i>import pandas as pd</i></div>
+    <div><b>DataFrame</b>Таблица целиком: строки и столбцы с названиями. Обычно называют <code>df</code>.<i>df — 200 строк × 15 столбцов</i></div>
+    <div><b>Series</b>Один столбец таблицы (или одна строка): значения + их номера.<i>df["program"]</i></div>
+    <div><b>Строка и столбец</b>Строка — один объект (студент). Столбец — один признак у всех (балл по математике).<i>строка ST001, столбец math_score</i></div>
+    <div><b>Индекс</b>Номера (метки) строк слева. По умолчанию 0, 1, 2… — не путать с <code>student_id</code>.<i>0 … 199</i></div>
+    <div><b>Тип данных (dtype)</b>Что лежит в столбце. <code>int64</code> — целые числа, <code>float64</code> — дробные, <code>object</code> — текст.<i>year int64, city object</i></div>
+    <div><b>Пропуск (NaN)</b>Пустая ячейка: значения нет. NaN = Not a Number. Pandas пишет так любой пропуск.<i>math_score у 4 студентов — NaN</i></div>
+    <div><b>Дубликат</b>Строка, которая полностью повторяет другую. Обычно это ошибка при сборе данных.<i>одного студента записали дважды</i></div>
+    <div><b>CSV</b>Текстовый файл-таблица: одна строка = одна запись, значения через запятую.<i>ST001,Male,Pavlodar,…</i></div>
+  </div>
+</section>
+
+<section class="step">
   <h2>1. Прочитать файл и сохранить в CSV</h2>
   <p class="why">Внутри .txt — те же строки через запятую, поэтому его читает <code>read_csv</code>. <code>to_csv(..., index=False)</code> — не записывать номер строки 0…199 отдельным столбцом.</p>
   <div class="code"><pre><code class="language-python">import pandas as pd
@@ -45,6 +60,12 @@ df.memory_usage(deep=True).sum()</code></pre></div>
 
 <section class="step">
   <h2>3. Статистика и категории</h2>
+  <div class="res">Что значат строки <code>describe()</code>:
+    <ul><li><b>count</b> — сколько заполненных значений; <b>mean</b> — среднее арифметическое</li>
+    <li><b>std</b> — стандартное отклонение: насколько в среднем значения отходят от среднего. Маленькое — все похожи, большое — разброс</li>
+    <li><b>min / max</b> — самое маленькое и самое большое</li>
+    <li><b>25% / 50% / 75%</b> — квартили. 50% = <b>медиана</b>: половина студентов ниже, половина выше. 25% — четверть ниже этого числа, 75% — три четверти ниже</li></ul>
+    <b>Категориальный признак</b> — столбец с несколькими вариантами текста (program, city, gender): его не усредняют, а считают, сколько раз встречается каждый вариант.</div>
   <p class="why"><code>describe()</code> — для числовых: count, mean, std, min, 25%, медиана (50%), 75%, max. Уже тут видно пропуски: у <code>math_score</code> count 196, а не 200. <code>include="all"</code> добавляет для текста unique, top (самое частое) и freq.</p>
   <div class="code"><pre><code class="language-python">df.describe()                # math_score: count 196, mean 83.13, 50% 84.5
 df.describe(include="all")   # city: unique 7, top Astana, freq 56

@@ -16,6 +16,20 @@
 </div>
 
 <section class="step">
+  <h2>Сначала слова: что как называется</h2>
+  <div class="terms">
+    <div><b>Интерактивный график</b>График, который реагирует на мышь: подсказка при наведении, зум, перетаскивание, скрытие групп кликом по легенде.<i>Plotly — да, Matplotlib — нет</i></div>
+    <div><b>plotly.express (px)</b>Быстрый способ: одна функция = готовый график из DataFrame.<i>px.scatter(df, x=…, y=…)</i></div>
+    <div><b>fig</b>Объект-график. Его создают, настраивают и показывают <code>fig.show()</code>.<i>fig = px.pie(…)</i></div>
+    <div><b>trace</b>Один набор данных на графике: одна линия, одна группа точек, одни столбики.<i>4 программы = 4 trace</i></div>
+    <div><b>layout</b>Всё вокруг данных: заголовок, подписи осей, размер, легенда. Меняется через <code>fig.update_layout(...)</code>.<i>width=950, height=650</i></div>
+    <div><b>hover (подсказка)</b>Окошко со значениями, когда наводишь мышь на точку.<i>hover_data=["student_id"]</i></div>
+    <div><b>Легенда</b>Список цветов с подписями: какой цвет — какая группа. В Plotly клик по ней скрывает группу.<i>Academic Program</i></div>
+    <div><b>Тепловая карта</b>Таблица, где число в клетке показано цветом: чем сильнее, тем ярче.<i>px.imshow(corr_matrix)</i></div>
+  </div>
+</section>
+
+<section class="step">
   <h2>1. Подключение</h2>
   <p class="why"><code>plotly.express</code> (<code>px</code>) — график одной строкой из DataFrame. <code>graph_objects</code> (<code>go</code>) — ручная сборка, когда нужно больше контроля (будет в части 2). Каждый график: <code>fig = px.…(…)</code> → по желанию <code>fig.update_layout(…)</code> → <code>fig.show()</code>.</p>
   <div class="code"><pre><code class="language-python">%pip install -U plotly
