@@ -15,7 +15,7 @@ CREATE SCHEMA IF NOT EXISTS museum_schema;
 
 CREATE TABLE IF NOT EXISTS museum_schema.category (
     category_id SERIAL PRIMARY KEY,
-    "name" VARCHAR(50) UNIQUE NOT NULL
+    category VARCHAR(50) UNIQUE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS museum_schema.art (
@@ -225,7 +225,7 @@ ADD CONSTRAINT unique_exhibition_visitor UNIQUE (exhibition_id, visitor_id);
 --Inserting object
 --CATEGORY
 WITH new_categories AS (
-    SELECT 'Painting' AS "name"
+    SELECT 'Painting' AS category
     UNION ALL
     SELECT 'Artifacts'
     UNION ALL
@@ -245,15 +245,15 @@ WITH new_categories AS (
     UNION ALL
     SELECT 'Textiles'
 ), inserted_categories AS (
-    INSERT INTO museum_schema.category ("name")
-    SELECT "name"
+    INSERT INTO museum_schema.category (category)
+    SELECT category
     FROM new_categories nc
     WHERE NOT EXISTS (
         SELECT 1
         FROM museum_schema.category c
-        WHERE c."name" = nc."name"
+        WHERE c.category = nc.category
     )
-    RETURNING category_id, "name"
+    RETURNING category_id, category
 ) SELECT * FROM inserted_categories;
 
 -- SELECT * FROM museum_schema.category c ;
@@ -261,48 +261,48 @@ WITH new_categories AS (
 -- ART
 WITH new_art AS (
     SELECT 'Impression, Sunrise' AS "name",
-    (SELECT category_id FROM museum_schema.category WHERE lower("name")='painting') AS category_id,
+    (SELECT category_id FROM museum_schema.category WHERE lower(category)='painting') AS category_id,
     1872 AS creation_year, 63.0 AS width_cm, 48.0 AS height_cm, 50000000000.00 AS insurance_value_kzt,
     'Impression, Sunrise captures a quiet morning in the port of Le Havre.' AS description
     UNION ALL
     SELECT 'The Starry Night',
-    (SELECT category_id FROM museum_schema.category WHERE lower("name")='painting'),
+    (SELECT category_id FROM museum_schema.category WHERE lower(category)='painting'),
     1889, 92.1, 73.7, 50000000000.00, 'A famous painting by Vincent van Gogh'
     UNION ALL
     SELECT 'The Big Wave off Kanagawa',
-    (SELECT category_id FROM museum_schema.category WHERE lower("name")='painting'),
+    (SELECT category_id FROM museum_schema.category WHERE lower(category)='painting'),
     1831, 37.8, 25.7, 1500000000.00, 'A story of a never-ending process in life where once we have conquered our fear and get what we want, we will be met again with other vicious waves, other bigger problems, and difficulties.'
     UNION ALL
     SELECT 'Altyn Adam',
-    (SELECT category_id FROM museum_schema.category WHERE lower("name")='artifacts'),
+    (SELECT category_id FROM museum_schema.category WHERE lower(category)='artifacts'),
     1969, 60.0, 185.0, 20000000000.00, 'Founded in Kazakhstan'
     UNION ALL
     SELECT 'The Pinner Qing Dynasty Vase',
-    (SELECT category_id FROM museum_schema.category WHERE lower("name")='antiques'),
+    (SELECT category_id FROM museum_schema.category WHERE lower(category)='antiques'),
     1700, 30.0, 40.0, 40000000000.00, 'Very Expensive, sold for 80 million dollars'
     UNION ALL
     SELECT 'Leonardo da Vinci’s Codex Leicester',
-    (SELECT category_id FROM museum_schema.category WHERE lower("name")='manuscripts'),
+    (SELECT category_id FROM museum_schema.category WHERE lower(category)='manuscripts'),
     1510, 22.0, 29.0, 15000000000.00, 'Leonardo da Vinci’s Codex Leicester, a collection of scientific writings and sketches, is another highly valued antique.'
     UNION ALL
     SELECT 'Almond Blossoms',
-    (SELECT category_id FROM museum_schema.category WHERE lower("name")='painting'),
+    (SELECT category_id FROM museum_schema.category WHERE lower(category)='painting'),
     1890, 92.4, 73.5, 40000000000.00, 'In Van Gogh''s personal symbolism, these flowers represented hope, renewal, and the cycle of life.'
     UNION ALL
     SELECT 'Girl with a Pearl Earring',
-    (SELECT category_id FROM museum_schema.category WHERE lower("name")='painting'),
+    (SELECT category_id FROM museum_schema.category WHERE lower(category)='painting'),
     1665, 39.0, 44.5, 45000000000.00, 'Tronie of a girl with a large pearl earring by Johannes Vermeer.'
     UNION ALL
     SELECT 'The Persistence of Memory',
-    (SELECT category_id FROM museum_schema.category WHERE lower("name")='modern art'),
+    (SELECT category_id FROM museum_schema.category WHERE lower(category)='modern art'),
     1931, 33.0, 24.0, 30000000000.00, 'Surrealist painting with melting clocks by Salvador Dali.'
     UNION ALL
     SELECT 'The Thinker',
-    (SELECT category_id FROM museum_schema.category WHERE lower("name")='sculpture'),
+    (SELECT category_id FROM museum_schema.category WHERE lower(category)='sculpture'),
     1904, 98.0, 186.0, 7000000000.00, 'Bronze sculpture by Auguste Rodin.'
     UNION ALL
     SELECT 'Composition VIII',
-    (SELECT category_id FROM museum_schema.category WHERE lower("name")='modern art'),
+    (SELECT category_id FROM museum_schema.category WHERE lower(category)='modern art'),
     1923, 201.0, 140.0, 25000000000.00, 'Abstract painting by Wassily Kandinsky.'
 ), inserted_art AS (
     INSERT INTO museum_schema.art (name, category_id, creation_year, width_cm, height_cm, insurance_value_kzt, description)
@@ -815,7 +815,7 @@ SELECT
     e.event_date AS exhibition_date,
     EXTRACT(QUARTER FROM e.event_date) AS quarter,
     a."name" AS art_name,
-    c."name" AS category_name,
+    c.category AS category_name,
     ar.full_name AS artist_name,
     v.full_name AS visitor_name
 FROM
@@ -887,7 +887,7 @@ SELECT current_user;
 SELECT art_id, "name", category_id, creation_year, width_cm, height_cm, insurance_value_kzt, description FROM museum_schema.art;
 SELECT art_artist_id, art_id, artist_id FROM museum_schema.art_artist;
 SELECT artist_id, "name", surname, full_name, date_of_birth, description FROM museum_schema.artist;
---SELECT category_id, "name" FROM museum_schema.category;
+--SELECT category_id, category FROM museum_schema.category;
 --SELECT employee_id, "name", surname, full_name, "role", date_of_birth, personal_id FROM museum_schema.employee;
 --SELECT employee_exhibition_id, exhibition_id, employee_id FROM museum_schema.employee_exhibition;
 --SELECT exhibition_id, theme, "type", event_date FROM museum_schema.exhibition;
@@ -897,3 +897,4 @@ SELECT artist_id, "name", surname, full_name, date_of_birth, description FROM mu
 --SELECT visitor_id, "name", surname, full_name, personal_id FROM museum_schema.visitor;
 
 RESET ROLE;
+

@@ -24,7 +24,7 @@ ORDER BY
 -- 4. Выведи билеты дороже 2000 тенге: тема выставки, дата, цена билета.
 --    Сначала самые дорогие.
 SELECT
-	DISTINCT e.theme,
+	e.theme,
 	e.event_date,
 	ev.ticket_price_kzt
 FROM
@@ -36,7 +36,7 @@ WHERE
 ORDER BY
 	ev.ticket_price_kzt DESC;
 -- 5. Выведи произведения категорий Painting и Modern Art вместе с их авторами.
-SELECT a."name" AS art_name, c.category, a2."name" AS artist_name FROM museum_schema.category c 
+SELECT a."name" AS art_name, c.category, a2.full_name AS artist_name FROM museum_schema.category c 
 JOIN museum_schema.art a ON a.category_id = c.category_id 
 JOIN museum_schema.art_artist aa ON a.art_id = aa.art_id
 JOIN museum_schema.artist a2 ON aa.artist_id = a2.artist_id
@@ -54,17 +54,18 @@ WHERE lower(e2."type") = 'offline';
 SELECT e.theme, e.event_date, count(ev.exhibition_visitor_id) AS cnt_visitors, 
 sum(ev.ticket_price_kzt) AS revenue
 FROM museum_schema.exhibition e 
-JOIN museum_schema.exhibition_visitor ev ON e.exhibition_id = ev.exhibition_id 
+LEFT JOIN museum_schema.exhibition_visitor ev ON e.exhibition_id = ev.exhibition_id 
 GROUP BY e.exhibition_id;
 
--- 8. Для каждой категории выведи, сколько раз её произведения попадали на выставки,
---    и самую высокую страховую стоимость в ней.
-SELECT c.category, count(ei.exhibition_inventory_id ) AS cnt_exhibiton, max(a.insurance_value_kzt ) AS max_insurance_kzt
-FROM museum_schema.category c 
-JOIN museum_schema.art a ON a.category_id = c.category_id 
+-- 8. Выведи категории, произведения которых попадали на выставки больше одного раза:
+--    сколько раз попадали и самая высокая страховая стоимость в категории.
+SELECT c.category, count(ei.exhibition_inventory_id) AS cnt_exhibition, max(a.insurance_value_kzt) AS max_insurance_kzt
+FROM museum_schema.category c
+JOIN museum_schema.art a ON a.category_id = c.category_id
 JOIN museum_schema.inventory i ON a.art_id = i.art_id
 JOIN museum_schema.exhibition_inventory ei ON i.inventory_id = ei.inventory_id
-GROUP BY c.category_id;
+GROUP BY c.category_id
+HAVING count(ei.exhibition_inventory_id) > 1;
 
 -- 9. Выведи художников, у которых в музее больше одного произведения: имя и количество работ.
 SELECT a.full_name AS artist, count(i.inventory_id) AS cnt_art_museum  FROM museum_schema.artist a 
@@ -76,11 +77,34 @@ HAVING count(i.inventory_id) > 1;
 
 -- 10. Выведи выставки, на которых работали минимум 2 сотрудника:
 --     тема, дата, тип, число сотрудников.
-
-
+SELECT e.theme , e."type" , e.event_date, count(ee.employee_id) AS emp_qty FROM museum_schema.exhibition e 
+JOIN museum_schema.employee_exhibition ee ON e.exhibition_id = ee.exhibition_id 
+GROUP BY e.exhibition_id
+HAVING count(ee.employee_id ) >=2;
 -- 11. Подними на 10% страховую стоимость произведений, которые хотя бы раз были
 --     на офлайн-выставке.
+SELECT DISTINCT a.art_id, a.insurance_value_kzt FROM museum_schema.art a JOIN museum_schema.inventory i ON i.art_id = a.art_id 
+JOIN museum_schema.exhibition_inventory ei ON ei.inventory_id = i.inventory_id 
+JOIN museum_schema.exhibition e ON e.exhibition_id = ei.exhibition_id 
+WHERE lower(e."type") = 'offline';
 
+UPDATE museum_schema.art a2 SET insurance_value_kzt = insurance_value_kzt * 1.1
+WHERE EXISTS (SELECT 1 FROM museum_schema.art a JOIN museum_schema.inventory i ON i.art_id = a.art_id 
+JOIN museum_schema.exhibition_inventory ei ON ei.inventory_id = i.inventory_id 
+JOIN museum_schema.exhibition e ON e.exhibition_id = ei.exhibition_id 
+WHERE lower(e."type") = 'offline' AND a2.art_id = a.art_id);
 
--- 12. Удали выставки, у которых нет ни посетителей, ни экспонатов, ни сотрудников.
+-- 12. Удали категории, в которых нет ни одного произведения.
+SELECT
+c.category, a."name" 
+FROM
+museum_schema.category c
+LEFT JOIN museum_schema.art a ON
+c.category_id = a.category_id 
+WHERE a."name" IS NULL 
+;
 
+DELETE FROM museum_schema.category c
+WHERE NOT  EXISTS(SELECT 1
+FROM museum_schema.art a
+WHERE a.category_id = c.category_id );
