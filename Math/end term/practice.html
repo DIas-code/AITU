@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Endterm — задачи для практики</title>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']]},chtml:{scale:1.02}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+<header><div class="wrap">
+  <div class="eyebrow">Mathematics for Data Science · Endterm</div>
+  <h1>Задачи для практики</h1>
+  <p>Те же четыре темы на новых числах + задачи с листа в клетку. Сначала реши сам на бумаге, потом открой решение и сверь каждую таблицу.</p>
+  <nav class="tabs">
+    <a href="solutions.html">Печатный вариант</a>
+    <a class="on" href="practice.html">Задачи для практики</a>
+    <a href="formulas.html">Формулы и таблицы</a>
+  </nav>
+</div></header>
+
+<main>
+
+<div class="toc">
+  <a href="#p1"><b>Практика 1</b>Манн–Уитни</a>
+  <a href="#p2"><b>Практика 2</b>Уилкоксон</a>
+  <a href="#p3"><b>Практика 3</b>Лаплас</a>
+  <a href="#p4"><b>Практика 4</b>Фурье</a>
+  <a href="#p5"><b>Лист в клетку · 3</b>Лаплас</a>
+  <a href="#p6"><b>Лист в клетку · 4</b>Фурье</a>
+</div>
+
+<div class="hint"><b>Порядок для любой задачи на тест:</b> H₀ и H₁ → таблица рангов → суммы (с проверкой) → статистика → сравнение с критическим значением → вывод словами.</div>
+
+<!-- ============ P1 ============ -->
+<article class="task" id="p1">
+  <div class="task-head">
+    <div class="num">1</div>
+    <div><h2>Манн–Уитни</h2><div class="sub">Две независимые группы, по 5 наблюдений</div></div>
+    <span class="marks">тренировка</span>
+  </div>
+  <div class="task-body">
+    <div class="cond">
+      <div class="lbl">Условие</div>
+      Проверить при \(\alpha = 0{,}05\) (двусторонний тест), различаются ли распределения групп.
+    </div>
+    <div class="tw"><table class="data">
+      <tr><th>Группа</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr>
+      <tr><td class="l"><span class="A">A</span> \(n_1 = 5\)</td><td>12</td><td>14</td><td>13</td><td>15</td><td>14</td></tr>
+      <tr><td class="l"><span class="B">B</span> \(n_2 = 5\)</td><td>9</td><td>11</td><td>10</td><td>12</td><td>11</td></tr>
+    </table></div>
+    <p><b>Найти:</b> общий ранжированный ряд, \(R_A,\ R_B,\ U_A,\ U_B,\ U\), сравнить с \(U_{кр}\).</p>
+
+    <details class="sol"><summary>Показать решение</summary><div class="in">
+      <h3><span class="st">1</span>Общий ранжированный ряд</h3>
+      <div class="tw"><table>
+        <thead><tr><th>Значение</th><th>Группа</th><th>Место</th><th>Ранг</th><th class="l">Как получен</th></tr></thead>
+        <tbody>
+        <tr><td>9</td><td><span class="B">B</span></td><td>1</td><td>1</td><td class="l"></td></tr>
+        <tr><td>10</td><td><span class="B">B</span></td><td>2</td><td>2</td><td class="l"></td></tr>
+        <tr><td>11</td><td><span class="B">B</span></td><td>3</td><td class="tie">3,5</td><td class="l" rowspan="2">(3 + 4) / 2</td></tr>
+        <tr><td>11</td><td><span class="B">B</span></td><td>4</td><td class="tie">3,5</td></tr>
+        <tr><td>12</td><td><span class="A">A</span></td><td>5</td><td class="tie">5,5</td><td class="l" rowspan="2">(5 + 6) / 2</td></tr>
+        <tr><td>12</td><td><span class="B">B</span></td><td>6</td><td class="tie">5,5</td></tr>
+        <tr><td>13</td><td><span class="A">A</span></td><td>7</td><td>7</td><td class="l"></td></tr>
+        <tr><td>14</td><td><span class="A">A</span></td><td>8</td><td class="tie">8,5</td><td class="l" rowspan="2">(8 + 9) / 2</td></tr>
+        <tr><td>14</td><td><span class="A">A</span></td><td>9</td><td class="tie">8,5</td></tr>
+        <tr><td>15</td><td><span class="A">A</span></td><td>10</td><td>10</td><td class="l"></td></tr>
+        </tbody>
+      </table></div>
+
+      <h3><span class="st">2</span>Суммы рангов</h3>
+      <div class="tw"><table>
+        <tr><th class="l">Группа</th><th colspan="5">Ранги (в порядке данных)</th><th>R</th></tr>
+        <tr><td class="l"><span class="A">A</span></td><td>5,5</td><td>8,5</td><td>7</td><td>10</td><td>8,5</td><td><b>39,5</b></td></tr>
+        <tr><td class="l"><span class="B">B</span></td><td>1</td><td>3,5</td><td>2</td><td>5,5</td><td>3,5</td><td><b>15,5</b></td></tr>
+      </table></div>
+      <p class="note">Проверка: \(39{,}5 + 15{,}5 = 55 = \frac{10\cdot11}{2}\) ✓</p>
+
+      <h3><span class="st">3</span>Статистики U</h3>
+      <div class="f">\[U_A = 25 + 15 - 39{,}5 = 0{,}5 \qquad U_B = 25 + 15 - 15{,}5 = 24{,}5\]</div>
+      <div class="stats">
+        <div class="stat"><span>U_A</span><strong>0,5</strong></div>
+        <div class="stat"><span>U_B</span><strong>24,5</strong></div>
+        <div class="stat key"><span>U = min</span><strong>0,5</strong></div>
+        <div class="stat"><span>U_кр (5; 5)</span><strong>2</strong></div>
+      </div>
+      <div class="compare">\(U = 0{,}5\) <span class="op">≤</span> \(U_{кр} = 2\) &nbsp;→&nbsp; <b>H₀ отвергаем</b></div>
+      <div class="answer"><b>Вывод</b>Различие значимо: почти все значения группы A выше значений группы B.</div>
+    </div></details>
+  </div>
+</article>
+
+<!-- ============ P2 ============ -->
+<article class="task" id="p2">
+  <div class="task-head">
+    <div class="num">2</div>
+    <div><h2>Уилкоксон</h2><div class="sub">8 пар «до / после»</div></div>
+    <span class="marks">тренировка</span>
+  </div>
+  <div class="task-body">
+    <div class="cond">
+      <div class="lbl">Условие</div>
+      Проверить при \(\alpha = 0{,}05\), изменился ли показатель после вмешательства.
+    </div>
+    <div class="tw"><table class="data">
+      <tr><th>Субъект</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr>
+      <tr><td class="l">До</td><td>20</td><td>18</td><td>22</td><td>19</td><td>21</td><td>23</td><td>17</td><td>24</td></tr>
+      <tr><td class="l">После</td><td>18</td><td>17</td><td>19</td><td>18</td><td>19</td><td>21</td><td>17</td><td>20</td></tr>
+    </table></div>
+    <p><b>Найти:</b> \(d = \text{До} - \text{После}\), ранги \(|d|\), \(T^+,\ T^-,\ T\), сравнить с \(T_{кр}\).</p>
+
+    <details class="sol"><summary>Показать решение</summary><div class="in">
+      <h3><span class="st">1</span>Разности и ранги</h3>
+      <div class="tw"><table>
+        <thead><tr><th>№</th><th>До</th><th>После</th><th>d</th><th>|d|</th><th>Ранг |d|</th><th>Ранг со знаком</th></tr></thead>
+        <tbody>
+        <tr><td>1</td><td>20</td><td>18</td><td>+2</td><td>2</td><td>4</td><td><span class="pos">+4</span></td></tr>
+        <tr><td>2</td><td>18</td><td>17</td><td>+1</td><td>1</td><td>1,5</td><td><span class="pos">+1,5</span></td></tr>
+        <tr><td>3</td><td>22</td><td>19</td><td>+3</td><td>3</td><td>6</td><td><span class="pos">+6</span></td></tr>
+        <tr><td>4</td><td>19</td><td>18</td><td>+1</td><td>1</td><td>1,5</td><td><span class="pos">+1,5</span></td></tr>
+        <tr><td>5</td><td>21</td><td>19</td><td>+2</td><td>2</td><td>4</td><td><span class="pos">+4</span></td></tr>
+        <tr><td>6</td><td>23</td><td>21</td><td>+2</td><td>2</td><td>4</td><td><span class="pos">+4</span></td></tr>
+        <tr class="x"><td>7</td><td>17</td><td>17</td><td>0</td><td>—</td><td>—</td><td class="note">исключена</td></tr>
+        <tr><td>8</td><td>24</td><td>20</td><td>+4</td><td>4</td><td>7</td><td><span class="pos">+7</span></td></tr>
+        </tbody>
+      </table></div>
+      <div class="tw"><table>
+        <tr><th>|d|</th><th>Сколько</th><th>Места</th><th>Ранг</th></tr>
+        <tr><td>1</td><td>2</td><td>1 – 2</td><td class="tie">1,5</td></tr>
+        <tr><td>2</td><td>3</td><td>3 – 5</td><td class="tie">4</td></tr>
+        <tr><td>3</td><td>1</td><td>6</td><td>6</td></tr>
+        <tr><td>4</td><td>1</td><td>7</td><td>7</td></tr>
+      </table></div>
+
+      <h3><span class="st">2</span>Суммы и сравнение</h3>
+      <div class="stats">
+        <div class="stat"><span>n (без нулей)</span><strong>7</strong></div>
+        <div class="stat"><span>T⁺</span><strong>28</strong></div>
+        <div class="stat"><span>T⁻</span><strong>0</strong></div>
+        <div class="stat key"><span>T = min</span><strong>0</strong></div>
+        <div class="stat"><span>T_кр (n = 7)</span><strong>2</strong></div>
+      </div>
+      <p class="note">Проверка: \(28 + 0 = 28 = \frac{7\cdot8}{2}\) ✓</p>
+      <div class="compare">\(T = 0\) <span class="op">≤</span> \(T_{кр} = 2\) &nbsp;→&nbsp; <b>H₀ отвергаем</b></div>
+      <div class="answer"><b>Вывод</b>Изменение значимо: у всех семи субъектов с ненулевой разностью показатель снизился.</div>
+    </div></details>
+  </div>
+</article>
+
+<!-- ============ P3 ============ -->
+<article class="task" id="p3">
+  <div class="task-head">
+    <div class="num">3</div>
+    <div><h2>Лаплас</h2><div class="sub">Сдвиг по s и произведение sin·cos</div></div>
+    <span class="marks">тренировка</span>
+  </div>
+  <div class="task-body">
+    <div class="cond">
+      <div class="lbl">Условие</div>
+      1) \(\mathcal{L}\,[e^{-2t}\cos 4t]\) &nbsp;&nbsp; 2) \(\mathcal{L}\,[\sin 3t\cdot\cos t]\)
+    </div>
+    <p><b>Подсказка:</b> формулы 6, 10 и тригонометрическая 1: \(2\sin A\cos B = \sin(A+B) + \sin(A-B)\).</p>
+
+    <details class="sol"><summary>Показать решение</summary><div class="in">
+      <h4>1) \(\mathcal{L}\,[e^{-2t}\cos 4t]\)</h4>
+      <div class="tw"><table>
+        <tr><th>Шаг</th><th class="l">Что делаем</th><th class="l">Результат</th></tr>
+        <tr><td>1</td><td class="l">Вид \(e^{-at}\cos bt\) (формула 10)</td><td class="l">\(a = 2,\ b = 4\)</td></tr>
+        <tr><td>2</td><td class="l">Подставляем</td><td class="l">\(\dfrac{s+2}{(s+2)^2+16}\)</td></tr>
+        <tr><td>3</td><td class="l">Раскрываем знаменатель</td><td class="l">\(s^2+4s+20\)</td></tr>
+      </table></div>
+      <div class="answer"><b>Ответ 1</b>\(\dfrac{s+2}{(s+2)^2+16} = \dfrac{s+2}{s^2+4s+20},\quad s > -2\)</div>
+
+      <div class="part">
+      <h4>2) \(\mathcal{L}\,[\sin 3t\cdot\cos t]\)</h4>
+      <div class="tw"><table>
+        <tr><th>Шаг</th><th class="l">Что делаем</th><th class="l">Результат</th></tr>
+        <tr><td>1</td><td class="l">Триг. 1, \(A = 3t,\ B = t\)</td><td class="l">\(\sin 3t\cos t = \tfrac12[\sin 4t + \sin 2t]\)</td></tr>
+        <tr><td>2</td><td class="l">Формула 6 для каждого слагаемого</td><td class="l">\(\tfrac12\left[\dfrac{4}{s^2+16} + \dfrac{2}{s^2+4}\right]\)</td></tr>
+        <tr><td>3</td><td class="l">Общий знаменатель</td><td class="l">\(\tfrac12\cdot\dfrac{4(s^2+4) + 2(s^2+16)}{(s^2+4)(s^2+16)} = \dfrac{3(s^2+8)}{(s^2+4)(s^2+16)}\)</td></tr>
+      </table></div>
+      <div class="answer"><b>Ответ 2</b>\(\dfrac12\left[\dfrac{4}{s^2+16}+\dfrac{2}{s^2+4}\right] = \dfrac{3(s^2+8)}{(s^2+4)(s^2+16)},\quad s > 0\)</div>
+      </div>
+    </div></details>
+  </div>
+</article>
+
+<!-- ============ P4 ============ -->
+<article class="task" id="p4">
+  <div class="task-head">
+    <div class="num">4</div>
+    <div><h2>Фурье</h2><div class="sub">Та же схема, другая средняя часть</div></div>
+    <span class="marks">тренировка</span>
+  </div>
+  <div class="task-body">
+    <div class="cond">
+      <div class="lbl">Условие</div>
+      Найти ряд Фурье и его сумму, \(L = 1\):
+      \[f(x) = \begin{cases} 0, & -1 < x < -\tfrac12 \\ x + 2, & -\tfrac12 \le x \le \tfrac12 \\ 0, & \tfrac12 < x < 1 \end{cases}\]
+    </div>
+    <p><b>Найти:</b> \(a_0,\ a_n,\ b_n\), ряд, \(S(x)\) в точках скачка.</p>
+
+    <details class="sol"><summary>Показать решение</summary><div class="in">
+      <h3><span class="st">1</span>Коэффициенты</h3>
+      <div class="tw"><table>
+        <tr><th>Коэф.</th><th class="l">Что остаётся</th><th class="l">Результат</th></tr>
+        <tr><td>\(a_0\)</td><td class="l">\(\int_{-1/2}^{1/2}(x+2)\,dx = 0 + 2\cdot1\)</td><td class="l">\(a_0 = 2,\ \ \frac{a_0}{2} = 1\)</td></tr>
+        <tr><td>\(a_n\)</td><td class="l">\(2\int_{-1/2}^{1/2}\cos n\pi x\,dx\)</td><td class="l">\(a_n = \dfrac{4\sin(n\pi/2)}{n\pi}\)</td></tr>
+        <tr><td>\(b_n\)</td><td class="l">\(2\int_{0}^{1/2}x\sin n\pi x\,dx\) — как в печатном варианте</td><td class="l">\(b_n = -\dfrac{\cos(n\pi/2)}{n\pi} + \dfrac{2\sin(n\pi/2)}{n^2\pi^2}\)</td></tr>
+      </table></div>
+      <div class="tw"><table>
+        <tr><th>n</th><th>\(a_n\)</th><th>≈</th><th>\(b_n\)</th><th>≈</th></tr>
+        <tr><td>1</td><td>\(\frac4\pi\)</td><td>1,273</td><td>\(\frac{2}{\pi^2}\)</td><td>0,203</td></tr>
+        <tr><td>2</td><td>0</td><td>0</td><td>\(\frac{1}{2\pi}\)</td><td>0,159</td></tr>
+        <tr><td>3</td><td>\(-\frac{4}{3\pi}\)</td><td>−0,424</td><td>\(-\frac{2}{9\pi^2}\)</td><td>−0,023</td></tr>
+        <tr><td>4</td><td>0</td><td>0</td><td>\(-\frac{1}{4\pi}\)</td><td>−0,080</td></tr>
+      </table></div>
+      <div class="answer"><b>Ряд</b>\[f(x) \sim 1 + \sum_{n=1}^{\infty}\left[\frac{4\sin\frac{n\pi}{2}}{n\pi}\cos n\pi x + \left(\frac{2\sin\frac{n\pi}{2}}{n^2\pi^2} - \frac{\cos\frac{n\pi}{2}}{n\pi}\right)\sin n\pi x\right]\]</div>
+
+      <h3><span class="st">2</span>Сумма ряда</h3>
+      <div class="tw"><table>
+        <tr><th class="l">x</th><th>Слева</th><th>Справа</th><th>S(x)</th></tr>
+        <tr><td class="l">\(x = -\tfrac12\)</td><td>0</td><td>\(\tfrac32\)</td><td class="tie"><b>\(\tfrac34\)</b></td></tr>
+        <tr><td class="l">\(-\tfrac12 < x < \tfrac12\)</td><td colspan="2" class="x">непрерывна</td><td>\(x + 2\)</td></tr>
+        <tr><td class="l">\(x = \tfrac12\)</td><td>\(\tfrac52\)</td><td>0</td><td class="tie"><b>\(\tfrac54\)</b></td></tr>
+        <tr><td class="l">остальные x</td><td colspan="2" class="x">непрерывна</td><td>0</td></tr>
+      </table></div>
+    </div></details>
+  </div>
+</article>
+
+<div class="group-title">С листа в клетку — задачи 3 и 4</div>
+
+<!-- ============ P5 ============ -->
+<article class="task" id="p5">
+  <div class="task-head">
+    <div class="num">3</div>
+    <div><h2>Лаплас — лист в клетку</h2><div class="sub">Осторожно: в пункте 2 появляется отрицательный угол</div></div>
+    <span class="marks">25 баллов</span>
+  </div>
+  <div class="task-body">
+    <div class="cond">
+      <div class="lbl">Условие</div>
+      1) \(\mathcal{L}\,[e^{-5t}\cos 2t]\) &nbsp;&nbsp; 2) \(\mathcal{L}\,[\sin 2t\cdot\cos 5t]\)
+    </div>
+
+    <details class="sol"><summary>Показать решение</summary><div class="in">
+      <h4>1) \(\mathcal{L}\,[e^{-5t}\cos 2t]\)</h4>
+      <div class="tw"><table>
+        <tr><th>Шаг</th><th class="l">Что делаем</th><th class="l">Результат</th></tr>
+        <tr><td>1</td><td class="l">Вид \(e^{-at}\cos bt\) (формула 10)</td><td class="l">\(a = 5,\ b = 2\)</td></tr>
+        <tr><td>2</td><td class="l">Подставляем</td><td class="l">\(\dfrac{s+5}{(s+5)^2+4}\)</td></tr>
+        <tr><td>3</td><td class="l">Раскрываем знаменатель</td><td class="l">\(s^2+10s+29\)</td></tr>
+      </table></div>
+      <div class="answer"><b>Ответ 1</b>\(\dfrac{s+5}{(s+5)^2+4} = \dfrac{s+5}{s^2+10s+29},\quad s > -5\)</div>
+
+      <div class="part">
+      <h4>2) \(\mathcal{L}\,[\sin 2t\cdot\cos 5t]\)</h4>
+      <div class="tw"><table>
+        <tr><th>Шаг</th><th class="l">Что делаем</th><th class="l">Результат</th></tr>
+        <tr><td>1</td><td class="l">Триг. 1, \(A = 2t,\ B = 5t\)</td><td class="l">\(\tfrac12[\sin 7t + \sin(-3t)]\)</td></tr>
+        <tr><td>2</td><td class="l">Синус нечётный: \(\sin(-3t) = -\sin 3t\)</td><td class="l">\(\tfrac12[\sin 7t - \sin 3t]\)</td></tr>
+        <tr><td>3</td><td class="l">Формула 6 для каждого слагаемого</td><td class="l">\(\tfrac12\left[\dfrac{7}{s^2+49} - \dfrac{3}{s^2+9}\right]\)</td></tr>
+        <tr><td>4</td><td class="l">Общий знаменатель</td><td class="l">\(\tfrac12\cdot\dfrac{7(s^2+9) - 3(s^2+49)}{(s^2+9)(s^2+49)} = \dfrac{2(s^2-21)}{(s^2+9)(s^2+49)}\)</td></tr>
+      </table></div>
+      <div class="answer"><b>Ответ 2</b>\(\dfrac12\left[\dfrac{7}{s^2+49}-\dfrac{3}{s^2+9}\right] = \dfrac{2(s^2-21)}{(s^2+9)(s^2+49)},\quad s > 0\)</div>
+      <p class="note">Типичная ошибка — оставить \(+\sin 3t\). Если взять \(A = 5t,\ B = 2t\) с формулой триг. 2 — получится то же самое.</p>
+      </div>
+    </div></details>
+  </div>
+</article>
+
+<!-- ============ P6 ============ -->
+<article class="task" id="p6">
+  <div class="task-head">
+    <div class="num">4</div>
+    <div><h2>Фурье — лист в клетку</h2><div class="sub">f(x) = x − 1 в середине</div></div>
+    <span class="marks">25 баллов</span>
+  </div>
+  <div class="task-body">
+    <div class="cond">
+      <div class="lbl">Условие</div>
+      Найти ряд Фурье и его сумму, \(L = 1\):
+      \[f(x) = \begin{cases} 0, & -1 < x < -\tfrac12 \\ x - 1, & -\tfrac12 < x < \tfrac12 \\ 0, & \tfrac12 < x < 1 \end{cases}\]
+    </div>
+
+    <details class="sol"><summary>Показать решение</summary><div class="in">
+      <h3><span class="st">1</span>Коэффициенты</h3>
+      <div class="tw"><table>
+        <tr><th>Коэф.</th><th class="l">Что остаётся</th><th class="l">Результат</th></tr>
+        <tr><td>\(a_0\)</td><td class="l">\(\int_{-1/2}^{1/2}(x-1)\,dx = 0 - 1\)</td><td class="l">\(a_0 = -1,\ \ \frac{a_0}{2} = -\frac12\)</td></tr>
+        <tr><td>\(a_n\)</td><td class="l">\(-\int_{-1/2}^{1/2}\cos n\pi x\,dx\)</td><td class="l">\(a_n = -\dfrac{2\sin(n\pi/2)}{n\pi}\)</td></tr>
+        <tr><td>\(b_n\)</td><td class="l">\(2\int_{0}^{1/2}x\sin n\pi x\,dx\) — не зависит от константы</td><td class="l">\(b_n = -\dfrac{\cos(n\pi/2)}{n\pi} + \dfrac{2\sin(n\pi/2)}{n^2\pi^2}\)</td></tr>
+      </table></div>
+      <div class="tw"><table>
+        <tr><th>n</th><th>\(a_n\)</th><th>≈</th><th>\(b_n\)</th><th>≈</th></tr>
+        <tr><td>1</td><td>\(-\frac2\pi\)</td><td>−0,637</td><td>\(\frac{2}{\pi^2}\)</td><td>0,203</td></tr>
+        <tr><td>2</td><td>0</td><td>0</td><td>\(\frac{1}{2\pi}\)</td><td>0,159</td></tr>
+        <tr><td>3</td><td>\(\frac{2}{3\pi}\)</td><td>0,212</td><td>\(-\frac{2}{9\pi^2}\)</td><td>−0,023</td></tr>
+        <tr><td>4</td><td>0</td><td>0</td><td>\(-\frac{1}{4\pi}\)</td><td>−0,080</td></tr>
+      </table></div>
+      <div class="answer"><b>Ряд</b>\[f(x) \sim -\frac12 + \sum_{n=1}^{\infty}\left[-\frac{2\sin\frac{n\pi}{2}}{n\pi}\cos n\pi x + \left(\frac{2\sin\frac{n\pi}{2}}{n^2\pi^2} - \frac{\cos\frac{n\pi}{2}}{n\pi}\right)\sin n\pi x\right]\]</div>
+
+      <h3><span class="st">2</span>Сумма ряда</h3>
+      <div class="tw"><table>
+        <tr><th class="l">x</th><th>Слева</th><th>Справа</th><th>S(x)</th></tr>
+        <tr><td class="l">\(x = -\tfrac12\)</td><td>0</td><td>\(-\tfrac32\)</td><td class="tie"><b>\(-\tfrac34\)</b></td></tr>
+        <tr><td class="l">\(-\tfrac12 < x < \tfrac12\)</td><td colspan="2" class="x">непрерывна</td><td>\(x - 1\)</td></tr>
+        <tr><td class="l">\(x = \tfrac12\)</td><td>\(-\tfrac12\)</td><td>0</td><td class="tie"><b>\(-\tfrac14\)</b></td></tr>
+        <tr><td class="l">остальные x</td><td colspan="2" class="x">непрерывна</td><td>0</td></tr>
+      </table></div>
+      <div class="hint"><b>Заметь:</b> во всех трёх Фурье-задачах \(b_n\) одинаковый — он идёт только от \(x\). Меняется лишь константа: она даёт \(a_0\) и \(a_n = c\cdot\frac{2\sin(n\pi/2)}{n\pi}\).</div>
+    </div></details>
+  </div>
+</article>
+
+</main>
+<footer>Mathematics for Data Science · Endterm · формулы — MathJax (нужен интернет)</footer>
+</body>
+</html>

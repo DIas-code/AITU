@@ -1,0 +1,118 @@
+/* Endterm Math — общий стиль двух страниц */
+:root{
+  --ink:#16213a; --muted:#5b6b7e; --line:#dfe6ee; --bg:#f3f6fa; --card:#fff;
+  --navy:#1f3b63; --navy-2:#2e5a8c;
+  --a:#2563eb; --a-bg:#e8f0fe;          /* группа A / плюс */
+  --b:#c2410c; --b-bg:#fdeee4;          /* группа B / минус */
+  --ok:#15803d; --ok-bg:#e9f7ee; --ok-line:#bfe4cb;
+  --warn-bg:#fff7e6; --warn-line:#f1dcaa;
+  --hl:#fff1a8;
+  font-family:Inter,"Segoe UI",system-ui,Arial,sans-serif; color:var(--ink); background:var(--bg);
+}
+*{box-sizing:border-box}
+body{margin:0;line-height:1.6;font-size:15.5px}
+
+/* шапка */
+header{background:linear-gradient(120deg,#13284a,var(--navy-2));color:#fff;padding:40px 20px 0}
+.wrap{max-width:980px;margin:0 auto}
+.eyebrow{letter-spacing:.16em;text-transform:uppercase;color:#9fd9e0;font-size:12px;font-weight:800}
+header h1{font-size:clamp(26px,4vw,40px);margin:6px 0 6px}
+header p{color:#d5e4f3;max-width:700px;margin:0 0 22px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tabs a{color:#d5e4f3;text-decoration:none;font-weight:700;padding:10px 16px;border-radius:10px 10px 0 0}
+.tabs a:hover{background:#ffffff1a}
+.tabs a.on{background:var(--bg);color:var(--navy)}
+
+main{max-width:980px;margin:0 auto;padding:22px 20px 60px}
+
+/* оглавление */
+.toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:6px 0 10px}
+.toc a{display:block;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;text-decoration:none;color:var(--ink)}
+.toc a:hover{border-color:var(--navy-2)}
+.toc b{display:block;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+
+/* карточка задачи */
+.task{background:var(--card);border:1px solid var(--line);border-radius:16px;margin:26px 0;overflow:hidden;box-shadow:0 6px 20px #1e3c590d}
+.task-head{display:flex;align-items:center;gap:14px;padding:16px 22px;background:#f7fafc;border-bottom:1px solid var(--line)}
+.num{flex:none;width:40px;height:40px;border-radius:12px;background:var(--navy);color:#fff;display:grid;place-items:center;font-weight:800;font-size:18px}
+.task-head h2{margin:0;font-size:21px;line-height:1.25}
+.task-head .sub{color:var(--muted);font-size:13.5px}
+.marks{margin-left:auto;flex:none;font-size:12.5px;font-weight:700;color:var(--navy);background:#e6eef8;padding:4px 10px;border-radius:20px}
+.task-body{padding:6px 22px 22px}
+
+h3{font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--navy-2);margin:24px 0 10px;display:flex;align-items:center;gap:8px}
+h3 .st{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#e6eef8;color:var(--navy);font-size:12.5px;letter-spacing:0}
+h4{margin:20px 0 8px;font-size:16px}
+p{margin:8px 0}
+
+/* условие */
+.cond{background:#f8fafc;border:1px solid var(--line);border-left:4px solid var(--navy-2);border-radius:10px;padding:12px 16px;margin:14px 0}
+.cond .lbl{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+
+/* таблицы */
+.tw{overflow-x:auto;margin:10px 0;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:14.5px;font-variant-numeric:tabular-nums}
+th,td{padding:7px 11px;text-align:center;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:#eef3f9;color:var(--navy);font-weight:700;font-size:13px}
+tr:last-child td{border-bottom:0}
+td.l,th.l{text-align:left;white-space:normal}
+tbody tr:nth-child(even) td{background:#fafcfe}
+table.data th:first-child{text-align:left}
+tr.sum td{background:#eef3f9!important;font-weight:800}
+td.x{color:#9aa6b2}
+tr.x td{color:#9aa6b2;text-decoration:line-through}
+tr.x td:last-child{text-decoration:none}
+
+/* метки групп/знаков */
+.A,.B,.pos,.neg{display:inline-block;min-width:26px;padding:1px 8px;border-radius:6px;font-weight:700}
+.A,.pos{background:var(--a-bg);color:var(--a)}
+.B,.neg{background:var(--b-bg);color:var(--b)}
+td.tie{background:var(--hl)!important}
+
+/* формулы, гипотезы, итоги */
+.f{background:#f1f6fb;border-radius:10px;padding:10px 16px;margin:10px 0;overflow-x:auto}
+.hyp{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.hyp div{border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+.hyp b{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:12px 0}
+.stat{border:1px solid var(--line);border-radius:12px;padding:10px 14px;background:#fbfcfe}
+.stat span{display:block;font-size:12px;color:var(--muted);font-weight:700}
+.stat strong{font-size:21px}
+.stat.key{border-color:var(--navy-2);background:#eef4fb}
+.compare{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#f7f9fc;border:1px dashed #b9c7d8;border-radius:12px;padding:12px 16px;margin:12px 0;font-size:17px}
+.compare .op{font-size:24px;font-weight:800;color:var(--navy)}
+.answer{background:var(--ok-bg);border:1px solid var(--ok-line);border-radius:12px;padding:12px 16px;margin:16px 0 4px}
+.answer.no{background:var(--warn-bg);border-color:var(--warn-line)}
+.answer b:first-child{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+.note{font-size:13.5px;color:var(--muted)}
+.hint{background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:10px;padding:10px 14px;margin:10px 0;font-size:14.5px}
+
+/* скрытое решение (практика) */
+details.sol{margin-top:16px;border:1px solid var(--line);border-radius:12px;background:#fbfcfe}
+details.sol>summary{cursor:pointer;font-weight:800;padding:12px 16px;color:var(--navy);list-style:none}
+details.sol>summary::before{content:"▸ ";}
+details.sol[open]>summary::before{content:"▾ ";}
+details.sol>.in{padding:0 16px 14px;border-top:1px solid var(--line)}
+
+.part{border-top:1px dashed var(--line);margin-top:18px;padding-top:4px}
+.group-title{margin:40px 0 0;font-size:13px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+
+footer{text-align:center;color:var(--muted);padding:10px 20px 30px;font-size:13px}
+
+@media (max-width:600px){.hyp{grid-template-columns:1fr}.task-head{flex-wrap:wrap}.marks{margin-left:54px}}
+@media print{
+  body{background:#fff;font-size:12.5px}
+  header{background:#fff;color:var(--ink);padding:0 0 8px}header p{color:#333}.eyebrow{color:#555}
+  .tabs,.toc,footer{display:none}
+  main{padding:0}
+  .task{box-shadow:none;break-inside:auto;margin:14px 0}
+  .tw,.answer,.compare,.stats{break-inside:avoid}
+  details.sol>summary{display:none}
+}
+
+/* таблицы критических значений */
+table.crit th,table.crit td{padding:5px 7px;font-size:13px}
+table.crit tr>th:first-child{background:#eef3f9;position:sticky;left:0}
+table.crit td.hit{background:var(--hl)!important;font-weight:800}
+table.crit tr:hover td{background:#f1f6fb}
+table.fx td{padding:10px 12px}

@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Endterm — формулы и таблицы</title>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']]},chtml:{scale:1.02}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+<header><div class="wrap">
+  <div class="eyebrow">Mathematics for Data Science · Endterm</div>
+  <h1>Формулы и таблицы</h1>
+  <p>Всё, что надо знать наизусть или иметь под рукой: формулы тестов, таблицы критических значений (в лекции их нет), таблица Лапласа, тригонометрия, Фурье.</p>
+  <nav class="tabs">
+    <a href="solutions.html">Печатный вариант</a>
+    <a href="practice.html">Задачи для практики</a>
+    <a class="on" href="formulas.html">Формулы и таблицы</a>
+  </nav>
+</div></header>
+
+<main>
+
+<div class="toc">
+  <a href="#mw"><b>1</b>Манн–Уитни + таблица U<sub>кр</sub></a>
+  <a href="#w"><b>2</b>Уилкоксон + таблица T<sub>кр</sub></a>
+  <a href="#lap"><b>3</b>Лаплас</a>
+  <a href="#trig"><b>4</b>Тригонометрия</a>
+  <a href="#four"><b>5</b>Фурье</a>
+</div>
+
+<!-- ============ MANN-WHITNEY ============ -->
+<article class="task" id="mw">
+  <div class="task-head">
+    <div class="num">1</div>
+    <div><h2>Манн–Уитни</h2><div class="sub">Две независимые группы</div></div>
+  </div>
+  <div class="task-body">
+    <h3>Формулы</h3>
+    <div class="tw"><table>
+      <tr><th class="l">Что</th><th class="l">Формула</th></tr>
+      <tr><td class="l">Ранги</td><td class="l">Все значения обеих групп по возрастанию: 1, 2, 3, … Одинаковые — средний ранг их мест</td></tr>
+      <tr><td class="l">U для группы 1</td><td class="l">\(U_1 = n_1 n_2 + \dfrac{n_1(n_1+1)}{2} - R_1\)</td></tr>
+      <tr><td class="l">U для группы 2</td><td class="l">\(U_2 = n_1 n_2 + \dfrac{n_2(n_2+1)}{2} - R_2\)</td></tr>
+      <tr><td class="l">Статистика</td><td class="l">\(U = \min(U_1,\ U_2)\)</td></tr>
+      <tr><td class="l">Проверка 1</td><td class="l">\(R_1 + R_2 = \dfrac{N(N+1)}{2},\quad N = n_1 + n_2\)</td></tr>
+      <tr><td class="l">Проверка 2</td><td class="l">\(U_1 + U_2 = n_1 n_2\)</td></tr>
+      <tr><td class="l">Решение</td><td class="l">\(U \le U_{кр}\) → H₀ <b>отвергаем</b> (различие есть) &nbsp;·&nbsp; \(U > U_{кр}\) → H₀ не отвергаем</td></tr>
+    </table></div>
+
+    <h3>Таблица U<sub>кр</sub> · α = 0,05, двусторонний</h3>
+    <p>Строка — размер одной группы, столбец — другой (таблица симметрична). «—» — при таких маленьких выборках значимость недостижима. Жёлтым — значения из задач: (9; 7) → 12, (5; 5) → 2, (6; 6) → 5 (пример из лекции).</p>
+<div class="tw"><table class="crit"><tr><th>n₁ \ n₂</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th><th>17</th><th>18</th><th>19</th><th>20</th></tr>
+<tr><th>2</th><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><th>3</th><td>—</td><td>—</td><td>—</td><td>0</td><td>1</td><td>1</td><td>2</td><td>2</td><td>3</td><td>3</td><td>4</td><td>4</td><td>5</td><td>5</td><td>6</td><td>6</td><td>7</td><td>7</td><td>8</td></tr>
+<tr><th>4</th><td>—</td><td>—</td><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td><td>11</td><td>12</td><td>13</td><td>14</td></tr>
+<tr><th>5</th><td>—</td><td>0</td><td>1</td><td class="hit">2</td><td>3</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>11</td><td>12</td><td>13</td><td>14</td><td>15</td><td>17</td><td>18</td><td>19</td><td>20</td></tr>
+<tr><th>6</th><td>—</td><td>1</td><td>2</td><td>3</td><td class="hit">5</td><td>6</td><td>8</td><td>10</td><td>11</td><td>13</td><td>14</td><td>16</td><td>17</td><td>19</td><td>21</td><td>22</td><td>24</td><td>25</td><td>27</td></tr>
+<tr><th>7</th><td>—</td><td>1</td><td>3</td><td>5</td><td>6</td><td>8</td><td>10</td><td class="hit">12</td><td>14</td><td>16</td><td>18</td><td>20</td><td>22</td><td>24</td><td>26</td><td>28</td><td>30</td><td>32</td><td>34</td></tr>
+<tr><th>8</th><td>0</td><td>2</td><td>4</td><td>6</td><td>8</td><td>10</td><td>13</td><td>15</td><td>17</td><td>19</td><td>22</td><td>24</td><td>26</td><td>29</td><td>31</td><td>34</td><td>36</td><td>38</td><td>41</td></tr>
+<tr><th>9</th><td>0</td><td>2</td><td>4</td><td>7</td><td>10</td><td class="hit">12</td><td>15</td><td>17</td><td>20</td><td>23</td><td>26</td><td>28</td><td>31</td><td>34</td><td>37</td><td>39</td><td>42</td><td>45</td><td>48</td></tr>
+<tr><th>10</th><td>0</td><td>3</td><td>5</td><td>8</td><td>11</td><td>14</td><td>17</td><td>20</td><td>23</td><td>26</td><td>29</td><td>33</td><td>36</td><td>39</td><td>42</td><td>45</td><td>48</td><td>52</td><td>55</td></tr>
+<tr><th>11</th><td>0</td><td>3</td><td>6</td><td>9</td><td>13</td><td>16</td><td>19</td><td>23</td><td>26</td><td>30</td><td>33</td><td>37</td><td>40</td><td>44</td><td>47</td><td>51</td><td>55</td><td>58</td><td>62</td></tr>
+<tr><th>12</th><td>1</td><td>4</td><td>7</td><td>11</td><td>14</td><td>18</td><td>22</td><td>26</td><td>29</td><td>33</td><td>37</td><td>41</td><td>45</td><td>49</td><td>53</td><td>57</td><td>61</td><td>65</td><td>69</td></tr>
+<tr><th>13</th><td>1</td><td>4</td><td>8</td><td>12</td><td>16</td><td>20</td><td>24</td><td>28</td><td>33</td><td>37</td><td>41</td><td>45</td><td>50</td><td>54</td><td>59</td><td>63</td><td>67</td><td>72</td><td>76</td></tr>
+<tr><th>14</th><td>1</td><td>5</td><td>9</td><td>13</td><td>17</td><td>22</td><td>26</td><td>31</td><td>36</td><td>40</td><td>45</td><td>50</td><td>55</td><td>59</td><td>64</td><td>69</td><td>74</td><td>78</td><td>83</td></tr>
+<tr><th>15</th><td>1</td><td>5</td><td>10</td><td>14</td><td>19</td><td>24</td><td>29</td><td>34</td><td>39</td><td>44</td><td>49</td><td>54</td><td>59</td><td>64</td><td>70</td><td>75</td><td>80</td><td>85</td><td>90</td></tr>
+<tr><th>16</th><td>1</td><td>6</td><td>11</td><td>15</td><td>21</td><td>26</td><td>31</td><td>37</td><td>42</td><td>47</td><td>53</td><td>59</td><td>64</td><td>70</td><td>75</td><td>81</td><td>86</td><td>92</td><td>98</td></tr>
+<tr><th>17</th><td>2</td><td>6</td><td>11</td><td>17</td><td>22</td><td>28</td><td>34</td><td>39</td><td>45</td><td>51</td><td>57</td><td>63</td><td>69</td><td>75</td><td>81</td><td>87</td><td>93</td><td>99</td><td>105</td></tr>
+<tr><th>18</th><td>2</td><td>7</td><td>12</td><td>18</td><td>24</td><td>30</td><td>36</td><td>42</td><td>48</td><td>55</td><td>61</td><td>67</td><td>74</td><td>80</td><td>86</td><td>93</td><td>99</td><td>106</td><td>112</td></tr>
+<tr><th>19</th><td>2</td><td>7</td><td>13</td><td>19</td><td>25</td><td>32</td><td>38</td><td>45</td><td>52</td><td>58</td><td>65</td><td>72</td><td>78</td><td>85</td><td>92</td><td>99</td><td>106</td><td>113</td><td>119</td></tr>
+<tr><th>20</th><td>2</td><td>8</td><td>14</td><td>20</td><td>27</td><td>34</td><td>41</td><td>48</td><td>55</td><td>62</td><td>69</td><td>76</td><td>83</td><td>90</td><td>98</td><td>105</td><td>112</td><td>119</td><td>127</td></tr>
+</table></div>
+    <p class="note">Посчитано точно (полный перебор распределения U), совпадает со стандартными таблицами.</p>
+  </div>
+</article>
+
+<!-- ============ WILCOXON ============ -->
+<article class="task" id="w">
+  <div class="task-head">
+    <div class="num">2</div>
+    <div><h2>Уилкоксон</h2><div class="sub">Парные измерения (до / после)</div></div>
+  </div>
+  <div class="task-body">
+    <h3>Формулы</h3>
+    <div class="tw"><table>
+      <tr><th class="l">Что</th><th class="l">Формула</th></tr>
+      <tr><td class="l">Разность</td><td class="l">\(d_i = \text{Before}_i - \text{After}_i\); пары с \(d = 0\) выбрасываем, \(n\) уменьшается</td></tr>
+      <tr><td class="l">Ранги</td><td class="l">Ранжируем \(|d_i|\) по возрастанию (одинаковые — средний ранг), потом возвращаем знак \(d_i\)</td></tr>
+      <tr><td class="l">T⁺</td><td class="l">\(T^+ = \sum\) рангов, где \(d_i > 0\)</td></tr>
+      <tr><td class="l">T⁻</td><td class="l">\(T^- = \sum\) рангов, где \(d_i < 0\)</td></tr>
+      <tr><td class="l">Статистика</td><td class="l">\(T = \min(T^+,\ T^-)\)</td></tr>
+      <tr><td class="l">Проверка</td><td class="l">\(T^+ + T^- = \dfrac{n(n+1)}{2}\)</td></tr>
+      <tr><td class="l">Решение</td><td class="l">\(T \le T_{кр}\) → H₀ <b>отвергаем</b> (изменение есть) &nbsp;·&nbsp; \(T > T_{кр}\) → H₀ не отвергаем</td></tr>
+    </table></div>
+
+    <h3>Таблица T<sub>кр</sub> · α = 0,05, двусторонний</h3>
+    <p>n — число пар <b>без нулевых разностей</b>. При n ≤ 5 значимость недостижима. Жёлтым — из задач: n = 11 → 10, n = 7 → 2, n = 6 → 0 (пример из лекции).</p>
+<div class="tw"><table class="crit">
+<tr><th>n</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th><th>17</th><th>18</th></tr>
+<tr><th>T<sub>кр</sub></th><td class=hit>0</td><td class=hit>2</td><td>3</td><td>5</td><td>8</td><td class=hit>10</td><td>13</td><td>17</td><td>21</td><td>25</td><td>29</td><td>34</td><td>40</td></tr>
+<tr><th>n</th><th>19</th><th>20</th><th>21</th><th>22</th><th>23</th><th>24</th><th>25</th><th>26</th><th>27</th><th>28</th><th>29</th><th>30</th></tr>
+<tr><th>T<sub>кр</sub></th><td>46</td><td>52</td><td>58</td><td>65</td><td>73</td><td>81</td><td>89</td><td>98</td><td>107</td><td>116</td><td>126</td><td>137</td></tr>
+</table></div>
+  </div>
+</article>
+
+<!-- ============ LAPLACE ============ -->
+<article class="task" id="lap">
+  <div class="task-head">
+    <div class="num">3</div>
+    <div><h2>Преобразование Лапласа</h2><div class="sub">Таблица из лекции + свойства</div></div>
+  </div>
+  <div class="task-body">
+    <div class="f">\[F(s) = \mathcal{L}[f(t)] = \int_0^{\infty} e^{-st} f(t)\,dt\]</div>
+    <div class="tw"><table class="fx">
+      <tr><th>№</th><th class="l">Формула</th><th>№</th><th class="l">Формула</th></tr>
+      <tr><td>1</td><td class="l">\(\mathcal{L}[a] = \dfrac{a}{s}\)</td><td>6</td><td class="l">\(\mathcal{L}[\sin at] = \dfrac{a}{s^2+a^2}\)</td></tr>
+      <tr><td>2</td><td class="l">\(\mathcal{L}[t] = \dfrac{1}{s^2}\)</td><td>7</td><td class="l">\(\mathcal{L}[\cos at] = \dfrac{s}{s^2+a^2}\)</td></tr>
+      <tr><td>3</td><td class="l">\(\mathcal{L}[t^n] = \dfrac{n!}{s^{n+1}}\)</td><td>8</td><td class="l">\(\mathcal{L}[t\,e^{-at}] = \dfrac{1}{(s+a)^2}\)</td></tr>
+      <tr><td>4</td><td class="l">\(\mathcal{L}[e^{-at}] = \dfrac{1}{s+a}\)</td><td>9</td><td class="l">\(\mathcal{L}[e^{-at}\sin bt] = \dfrac{b}{(s+a)^2+b^2}\)</td></tr>
+      <tr><td>5</td><td class="l">\(\mathcal{L}[e^{at}] = \dfrac{1}{s-a}\)</td><td>10</td><td class="l">\(\mathcal{L}[e^{-at}\cos bt] = \dfrac{s+a}{(s+a)^2+b^2}\)</td></tr>
+    </table></div>
+    <div class="tw"><table>
+      <tr><th class="l">Свойство</th><th class="l">Формула</th><th class="l">Как пользоваться</th></tr>
+      <tr><td class="l">Линейность</td><td class="l">\(\mathcal{L}[af + bg] = a\,\mathcal{L}[f] + b\,\mathcal{L}[g]\)</td><td class="l">Сумму — по слагаемым, числа выносим</td></tr>
+      <tr><td class="l">Сдвиг по s</td><td class="l">\(\mathcal{L}[e^{-at}f(t)] = F(s+a)\)</td><td class="l">Множитель \(e^{-at}\) → везде \(s\) заменить на \(s+a\)</td></tr>
+      <tr><td class="l">Произведение sin/cos</td><td class="l">—</td><td class="l">Сначала в сумму по тригонометрии (ниже), потом формулы 6, 7</td></tr>
+    </table></div>
+  </div>
+</article>
+
+<!-- ============ TRIG ============ -->
+<article class="task" id="trig">
+  <div class="task-head">
+    <div class="num">4</div>
+    <div><h2>Тригонометрические формулы</h2><div class="sub">Нужны для Лапласа от произведения</div></div>
+  </div>
+  <div class="task-body">
+    <h3>Произведение → сумма (главные для экзамена)</h3>
+    <div class="tw"><table class="fx">
+      <tr><th>№</th><th class="l">Формула</th><th class="l">Когда</th></tr>
+      <tr><td>1</td><td class="l">\(2\sin A\cos B = \sin(A+B) + \sin(A-B)\)</td><td class="l">sin · cos</td></tr>
+      <tr><td>2</td><td class="l">\(2\cos A\sin B = \sin(A+B) - \sin(A-B)\)</td><td class="l">cos · sin</td></tr>
+      <tr><td>3</td><td class="l">\(2\cos A\cos B = \cos(A+B) + \cos(A-B)\)</td><td class="l">cos · cos</td></tr>
+      <tr><td>4</td><td class="l">\(2\sin A\sin B = \cos(A-B) - \cos(A+B)\)</td><td class="l">sin · sin</td></tr>
+    </table></div>
+    <div class="hint"><b>Знаки:</b> \(\sin(-x) = -\sin x\) (нечётный), \(\cos(-x) = \cos x\) (чётный). Пример: \(\sin 2t\cos 5t = \tfrac12[\sin 7t + \sin(-3t)] = \tfrac12[\sin 7t - \sin 3t]\).</div>
+
+    <h3>Остальные из лекции</h3>
+    <div class="tw"><table class="fx">
+      <tr><th>№</th><th class="l">Формула</th><th>№</th><th class="l">Формула</th></tr>
+      <tr><td>5</td><td class="l">\(\sin^2 A = \dfrac{1-\cos 2A}{2}\)</td><td>9</td><td class="l">\(\sin(A+B) = \sin A\cos B + \cos A\sin B\)</td></tr>
+      <tr><td>6</td><td class="l">\(\cos^2 A = \dfrac{1+\cos 2A}{2}\)</td><td>10</td><td class="l">\(\sin(A-B) = \sin A\cos B - \cos A\sin B\)</td></tr>
+      <tr><td>7</td><td class="l">\(\sin 3A = 3\sin A - 4\sin^3 A\)</td><td>11</td><td class="l">\(\cos(A-B) = \cos A\cos B + \sin A\sin B\)</td></tr>
+      <tr><td>8</td><td class="l">\(\cos 3A = 4\cos^3 A - 3\cos A\)</td><td>12</td><td class="l">\(\cos(A+B) = \cos A\cos B - \sin A\sin B\)</td></tr>
+    </table></div>
+  </div>
+</article>
+
+<!-- ============ FOURIER ============ -->
+<article class="task" id="four">
+  <div class="task-head">
+    <div class="num">5</div>
+    <div><h2>Ряд Фурье</h2><div class="sub">Период 2L, отрезок [−L, L]</div></div>
+  </div>
+  <div class="task-body">
+    <div class="f">\[f(x) \sim \frac{a_0}{2} + \sum_{n=1}^{\infty}\left(a_n\cos\frac{n\pi x}{L} + b_n\sin\frac{n\pi x}{L}\right)\]
+    \[a_0 = \frac1L\int_{-L}^{L} f(x)\,dx \qquad a_n = \frac1L\int_{-L}^{L} f(x)\cos\frac{n\pi x}{L}\,dx \qquad b_n = \frac1L\int_{-L}^{L} f(x)\sin\frac{n\pi x}{L}\,dx\]</div>
+
+    <h3>Что ещё понадобится</h3>
+    <div class="tw"><table>
+      <tr><th class="l">Что</th><th class="l">Формула</th></tr>
+      <tr><td class="l">Чётная / нечётная</td><td class="l">На \([-c;c]\): нечётная (\(x,\ \sin kx,\ x\cos kx\)) даёт \(\int = 0\); чётная (\(1,\ \cos kx,\ x\sin kx\)) — \(\int = 2\int_0^c\)</td></tr>
+      <tr><td class="l">\(\int\cos kx\,dx\)</td><td class="l">\(\dfrac{\sin kx}{k}\)</td></tr>
+      <tr><td class="l">\(\int\sin kx\,dx\)</td><td class="l">\(-\dfrac{\cos kx}{k}\)</td></tr>
+      <tr><td class="l">\(\int x\sin kx\,dx\)</td><td class="l">\(-\dfrac{x\cos kx}{k} + \dfrac{\sin kx}{k^2}\) &nbsp;(по частям)</td></tr>
+      <tr><td class="l">\(\int x\cos kx\,dx\)</td><td class="l">\(\dfrac{x\sin kx}{k} + \dfrac{\cos kx}{k^2}\) &nbsp;(по частям)</td></tr>
+      <tr><td class="l">По частям</td><td class="l">\(\int u\,dv = uv - \int v\,du\)</td></tr>
+      <tr><td class="l">Целые кратные π</td><td class="l">\(\sin n\pi = 0,\qquad \cos n\pi = (-1)^n\)</td></tr>
+      <tr><td class="l">Сумма ряда</td><td class="l">Где f непрерывна — \(S(x) = f(x)\); в точке скачка — \(S(x_0) = \dfrac{f(x_0-0) + f(x_0+0)}{2}\); на концах \(\pm L\) — \(\dfrac{f(-L+0) + f(L-0)}{2}\)</td></tr>
+    </table></div>
+
+    <h3>Значения при n π / 2 (для задач со скачком в ±½)</h3>
+    <div class="tw"><table>
+      <tr><th>n</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th class="l">Правило</th></tr>
+      <tr><th>\(\sin\frac{n\pi}{2}\)</th><td>1</td><td>0</td><td>−1</td><td>0</td><td>1</td><td>0</td><td class="l">повтор каждые 4</td></tr>
+      <tr><th>\(\cos\frac{n\pi}{2}\)</th><td>0</td><td>−1</td><td>0</td><td>1</td><td>0</td><td>−1</td><td class="l">повтор каждые 4</td></tr>
+      <tr><th>\(\cos n\pi\)</th><td>−1</td><td>1</td><td>−1</td><td>1</td><td>−1</td><td>1</td><td class="l">\((-1)^n\)</td></tr>
+    </table></div>
+
+    <div class="hint"><b>Шаблон экзаменационной задачи</b> (L = 1, \(f = x + c\) на \([-\tfrac12;\tfrac12]\), иначе 0):
+      \(a_0 = c,\quad a_n = \dfrac{2c\sin(n\pi/2)}{n\pi},\quad b_n = -\dfrac{\cos(n\pi/2)}{n\pi} + \dfrac{2\sin(n\pi/2)}{n^2\pi^2}\).
+      Сумма в скачках: \(S(-\tfrac12) = \dfrac{c - \frac12}{2},\ \ S(\tfrac12) = \dfrac{c + \frac12}{2}\). Проверено на c = −3, −1, 2.</div>
+  </div>
+</article>
+
+</main>
+<footer>Mathematics for Data Science · Endterm · формулы — MathJax (нужен интернет)</footer>
+</body>
+</html>

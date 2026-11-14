@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Endterm — решения печатного варианта</title>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']]},chtml:{scale:1.02}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+<header><div class="wrap">
+  <div class="eyebrow">Mathematics for Data Science · Endterm</div>
+  <h1>Решения печатного варианта</h1>
+  <p>Лист A4: Манн–Уитни, Уилкоксон, Лаплас, Фурье — по 25 баллов. Решено тем же способом, что в лекции: ранги → статистика → сравнение с критическим значением из таблицы.</p>
+  <nav class="tabs">
+    <a class="on" href="solutions.html">Печатный вариант</a>
+    <a href="practice.html">Задачи для практики</a>
+    <a href="formulas.html">Формулы и таблицы</a>
+  </nav>
+</div></header>
+
+<main>
+
+<div class="toc">
+  <a href="#t1"><b>Task 1</b>Манн–Уитни</a>
+  <a href="#t2"><b>Task 2</b>Уилкоксон</a>
+  <a href="#t3"><b>Task 3</b>Преобразование Лапласа</a>
+  <a href="#t4"><b>Task 4</b>Ряд Фурье</a>
+</div>
+
+<!-- ============ TASK 1 ============ -->
+<article class="task" id="t1">
+  <div class="task-head">
+    <div class="num">1</div>
+    <div><h2>Тест Манна–Уитни</h2><div class="sub">Две независимые группы</div></div>
+    <span class="marks">25 баллов</span>
+  </div>
+  <div class="task-body">
+
+    <div class="cond">
+      <div class="lbl">Условие</div>
+      Концентрация метаболита в плазме (ммоль/л). <span class="A">A</span> — новый режим лечения, <span class="B">B</span> — стандартное лечение. Есть ли значимое различие в распределениях при \(\alpha = 0{,}05\)?
+    </div>
+    <div class="tw"><table class="data">
+      <tr><th>Группа</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th></tr>
+      <tr><td class="l"><span class="A">A</span> \(n_1 = 9\)</td><td>5,2</td><td>4,8</td><td>5,0</td><td>5,1</td><td>4,9</td><td>5,0</td><td>5,3</td><td>4,7</td><td>5,0</td></tr>
+      <tr><td class="l"><span class="B">B</span> \(n_2 = 7\)</td><td>4,6</td><td>4,9</td><td>4,8</td><td>4,7</td><td>4,5</td><td>4,9</td><td>4,8</td><td class="x">—</td><td class="x">—</td></tr>
+    </table></div>
+
+    <h3><span class="st">0</span>Гипотезы</h3>
+    <div class="hyp">
+      <div><b>H₀</b>Распределения в группах A и B одинаковы</div>
+      <div><b>H₁</b>Распределения различаются (двусторонний тест)</div>
+    </div>
+
+    <h3><span class="st">1</span>Общий ранжированный ряд</h3>
+    <p>Все 16 значений выстраиваем по возрастанию. Одинаковые значения получают <b>средний</b> ранг своих мест (выделены жёлтым).</p>
+    <div class="tw"><table>
+      <thead><tr><th>Значение</th><th>Группа</th><th>Место</th><th>Ранг</th><th class="l">Как получен</th></tr></thead>
+      <tbody>
+      <tr><td>4,5</td><td><span class="B">B</span></td><td>1</td><td>1</td><td class="l"></td></tr>
+      <tr><td>4,6</td><td><span class="B">B</span></td><td>2</td><td>2</td><td class="l"></td></tr>
+      <tr><td>4,7</td><td><span class="A">A</span></td><td>3</td><td class="tie">3,5</td><td class="l" rowspan="2">(3 + 4) / 2 = 3,5</td></tr>
+      <tr><td>4,7</td><td><span class="B">B</span></td><td>4</td><td class="tie">3,5</td></tr>
+      <tr><td>4,8</td><td><span class="A">A</span></td><td>5</td><td class="tie">6</td><td class="l" rowspan="3">(5 + 6 + 7) / 3 = 6</td></tr>
+      <tr><td>4,8</td><td><span class="B">B</span></td><td>6</td><td class="tie">6</td></tr>
+      <tr><td>4,8</td><td><span class="B">B</span></td><td>7</td><td class="tie">6</td></tr>
+      <tr><td>4,9</td><td><span class="A">A</span></td><td>8</td><td class="tie">9</td><td class="l" rowspan="3">(8 + 9 + 10) / 3 = 9</td></tr>
+      <tr><td>4,9</td><td><span class="B">B</span></td><td>9</td><td class="tie">9</td></tr>
+      <tr><td>4,9</td><td><span class="B">B</span></td><td>10</td><td class="tie">9</td></tr>
+      <tr><td>5,0</td><td><span class="A">A</span></td><td>11</td><td class="tie">12</td><td class="l" rowspan="3">(11 + 12 + 13) / 3 = 12</td></tr>
+      <tr><td>5,0</td><td><span class="A">A</span></td><td>12</td><td class="tie">12</td></tr>
+      <tr><td>5,0</td><td><span class="A">A</span></td><td>13</td><td class="tie">12</td></tr>
+      <tr><td>5,1</td><td><span class="A">A</span></td><td>14</td><td>14</td><td class="l"></td></tr>
+      <tr><td>5,2</td><td><span class="A">A</span></td><td>15</td><td>15</td><td class="l"></td></tr>
+      <tr><td>5,3</td><td><span class="A">A</span></td><td>16</td><td>16</td><td class="l"></td></tr>
+      </tbody>
+    </table></div>
+
+    <h3><span class="st">2</span>Суммы рангов по группам</h3>
+    <div class="tw"><table>
+      <tr><th class="l">Группа</th><th colspan="9">Ранги</th><th>Сумма R</th></tr>
+      <tr><td class="l"><span class="A">A</span></td><td>15</td><td>6</td><td>12</td><td>14</td><td>9</td><td>12</td><td>16</td><td>3,5</td><td>12</td><td><b>99,5</b></td></tr>
+      <tr><td class="l"><span class="B">B</span></td><td>2</td><td>9</td><td>6</td><td>3,5</td><td>1</td><td>9</td><td>6</td><td class="x">—</td><td class="x">—</td><td><b>36,5</b></td></tr>
+    </table></div>
+    <p class="note">Проверка: \(R_A + R_B = 99{,}5 + 36{,}5 = 136 = \dfrac{16\cdot17}{2}\) ✓</p>
+
+    <h3><span class="st">3</span>Статистики U</h3>
+    <div class="f">\[U_A = n_1 n_2 + \frac{n_1(n_1+1)}{2} - R_A = 63 + 45 - 99{,}5 = 8{,}5\]
+    \[U_B = n_1 n_2 + \frac{n_2(n_2+1)}{2} - R_B = 63 + 28 - 36{,}5 = 54{,}5\]</div>
+    <p class="note">Проверка: \(U_A + U_B = 8{,}5 + 54{,}5 = 63 = n_1 n_2\) ✓</p>
+
+    <div class="stats">
+      <div class="stat"><span>R_A</span><strong>99,5</strong></div>
+      <div class="stat"><span>R_B</span><strong>36,5</strong></div>
+      <div class="stat"><span>U_A</span><strong>8,5</strong></div>
+      <div class="stat"><span>U_B</span><strong>54,5</strong></div>
+      <div class="stat key"><span>U = min</span><strong>8,5</strong></div>
+    </div>
+
+    <h3><span class="st">4</span>Сравнение с таблицей</h3>
+    <p>Критическое значение Манна–Уитни для \(n_1 = 9,\ n_2 = 7,\ \alpha = 0{,}05\) (двусторонний): \(U_{кр} = 12\).</p>
+    <div class="compare">\(U = 8{,}5\) <span class="op">≤</span> \(U_{кр} = 12\) &nbsp;→&nbsp; <b>H₀ отвергаем</b></div>
+
+    <div class="answer"><b>Вывод</b>При α = 0,05 различие между группами статистически значимо. В группе A значения в целом выше (сумма рангов 99,5 против 36,5).</div>
+  </div>
+</article>
+
+<!-- ============ TASK 2 ============ -->
+<article class="task" id="t2">
+  <div class="task-head">
+    <div class="num">2</div>
+    <div><h2>Тест Уилкоксона</h2><div class="sub">Парные измерения до и после</div></div>
+    <span class="marks">25 баллов</span>
+  </div>
+  <div class="task-body">
+
+    <div class="cond">
+      <div class="lbl">Условие</div>
+      Уровень биомаркера до и после вмешательства у 12 субъектов. \(\alpha = 0{,}05\).
+    </div>
+    <div class="tw"><table class="data">
+      <tr><th>Субъект</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th></tr>
+      <tr><td class="l">До</td><td>10,2</td><td>9,8</td><td>10,0</td><td>10,1</td><td>9,9</td><td>10,3</td><td>9,7</td><td>10,0</td><td>10,4</td><td>10,1</td><td>9,8</td><td>10,2</td></tr>
+      <tr><td class="l">После</td><td>10,1</td><td>9,7</td><td>10,0</td><td>10,2</td><td>9,8</td><td>10,1</td><td>9,9</td><td>10,1</td><td>10,3</td><td>10,0</td><td>9,9</td><td>10,0</td></tr>
+    </table></div>
+
+    <h3><span class="st">0</span>Гипотезы</h3>
+    <div class="hyp">
+      <div><b>H₀</b>Вмешательство не меняет уровень (медиана разностей = 0)</div>
+      <div><b>H₁</b>Уровень меняется (двусторонний тест)</div>
+    </div>
+
+    <h3><span class="st">1</span>Разности, ранги, знаки</h3>
+    <p>\(d_i = \text{До}_i - \text{После}_i\). Пара с \(d = 0\) выбрасывается → остаётся \(n = 11\). Ранжируем \(|d|\), потом возвращаем знак.</p>
+    <div class="tw"><table>
+      <thead><tr><th>№</th><th>До</th><th>После</th><th>d</th><th>|d|</th><th>Ранг |d|</th><th>Ранг со знаком</th></tr></thead>
+      <tbody>
+      <tr><td>1</td><td>10,2</td><td>10,1</td><td>+0,1</td><td>0,1</td><td>4,5</td><td><span class="pos">+4,5</span></td></tr>
+      <tr><td>2</td><td>9,8</td><td>9,7</td><td>+0,1</td><td>0,1</td><td>4,5</td><td><span class="pos">+4,5</span></td></tr>
+      <tr class="x"><td>3</td><td>10,0</td><td>10,0</td><td>0</td><td>—</td><td>—</td><td class="note">исключена</td></tr>
+      <tr><td>4</td><td>10,1</td><td>10,2</td><td>−0,1</td><td>0,1</td><td>4,5</td><td><span class="neg">−4,5</span></td></tr>
+      <tr><td>5</td><td>9,9</td><td>9,8</td><td>+0,1</td><td>0,1</td><td>4,5</td><td><span class="pos">+4,5</span></td></tr>
+      <tr><td>6</td><td>10,3</td><td>10,1</td><td>+0,2</td><td>0,2</td><td>10</td><td><span class="pos">+10</span></td></tr>
+      <tr><td>7</td><td>9,7</td><td>9,9</td><td>−0,2</td><td>0,2</td><td>10</td><td><span class="neg">−10</span></td></tr>
+      <tr><td>8</td><td>10,0</td><td>10,1</td><td>−0,1</td><td>0,1</td><td>4,5</td><td><span class="neg">−4,5</span></td></tr>
+      <tr><td>9</td><td>10,4</td><td>10,3</td><td>+0,1</td><td>0,1</td><td>4,5</td><td><span class="pos">+4,5</span></td></tr>
+      <tr><td>10</td><td>10,1</td><td>10,0</td><td>+0,1</td><td>0,1</td><td>4,5</td><td><span class="pos">+4,5</span></td></tr>
+      <tr><td>11</td><td>9,8</td><td>9,9</td><td>−0,1</td><td>0,1</td><td>4,5</td><td><span class="neg">−4,5</span></td></tr>
+      <tr><td>12</td><td>10,2</td><td>10,0</td><td>+0,2</td><td>0,2</td><td>10</td><td><span class="pos">+10</span></td></tr>
+      </tbody>
+    </table></div>
+
+    <h4>Откуда ранги 4,5 и 10</h4>
+    <div class="tw"><table>
+      <tr><th>|d|</th><th>Сколько раз</th><th>Места</th><th>Средний ранг</th></tr>
+      <tr><td>0,1</td><td>8</td><td>1 – 8</td><td class="tie">(1 + … + 8) / 8 = 4,5</td></tr>
+      <tr><td>0,2</td><td>3</td><td>9 – 11</td><td class="tie">(9 + 10 + 11) / 3 = 10</td></tr>
+    </table></div>
+
+    <h3><span class="st">2</span>Суммы T⁺ и T⁻</h3>
+    <div class="tw"><table>
+      <tr><th class="l">Знак</th><th class="l">Пары</th><th class="l">Ранги</th><th>Сумма</th></tr>
+      <tr><td class="l"><span class="pos">+</span></td><td class="l">1, 2, 5, 6, 9, 10, 12</td><td class="l">4,5 + 4,5 + 4,5 + 10 + 4,5 + 4,5 + 10</td><td><b>T⁺ = 42,5</b></td></tr>
+      <tr><td class="l"><span class="neg">−</span></td><td class="l">4, 7, 8, 11</td><td class="l">4,5 + 10 + 4,5 + 4,5</td><td><b>T⁻ = 23,5</b></td></tr>
+    </table></div>
+    <p class="note">Проверка: \(T^+ + T^- = 42{,}5 + 23{,}5 = 66 = \dfrac{11\cdot12}{2}\) ✓</p>
+
+    <div class="stats">
+      <div class="stat"><span>n (без нулей)</span><strong>11</strong></div>
+      <div class="stat"><span>T⁺</span><strong>42,5</strong></div>
+      <div class="stat"><span>T⁻</span><strong>23,5</strong></div>
+      <div class="stat key"><span>T = min</span><strong>23,5</strong></div>
+    </div>
+
+    <h3><span class="st">3</span>Сравнение с таблицей</h3>
+    <p>Критическое значение Уилкоксона для \(n = 11,\ \alpha = 0{,}05\) (двусторонний): \(T_{кр} = 10\).</p>
+    <div class="compare">\(T = 23{,}5\) <span class="op">&gt;</span> \(T_{кр} = 10\) &nbsp;→&nbsp; <b>H₀ не отвергаем</b></div>
+
+    <div class="answer no"><b>Вывод</b>При α = 0,05 значимого изменения уровня биомаркера после вмешательства нет: положительные и отрицательные сдвиги почти уравновешены.</div>
+  </div>
+</article>
+
+<!-- ============ TASK 3 ============ -->
+<article class="task" id="t3">
+  <div class="task-head">
+    <div class="num">3</div>
+    <div><h2>Преобразование Лапласа</h2><div class="sub">По таблице изображений</div></div>
+    <span class="marks">25 баллов</span>
+  </div>
+  <div class="task-body">
+
+    <div class="cond">
+      <div class="lbl">Условие</div>
+      1) \(\mathcal{L}\,[e^{-3t}\sin 2t]\) &nbsp;&nbsp; 2) \(\mathcal{L}\,[\cos 3t\cdot\cos 2t]\)
+    </div>
+
+    <h3>Что понадобится из таблицы</h3>
+    <div class="tw"><table>
+      <tr><th>№ в лекции</th><th class="l">Формула</th></tr>
+      <tr><td>7</td><td class="l">\(\mathcal{L}[\cos at] = \dfrac{s}{s^2+a^2}\)</td></tr>
+      <tr><td>9</td><td class="l">\(\mathcal{L}[e^{-at}\sin bt] = \dfrac{b}{(s+a)^2+b^2}\)</td></tr>
+      <tr><td>триг. 3</td><td class="l">\(2\cos A\cos B = \cos(A+B) + \cos(A-B)\)</td></tr>
+    </table></div>
+
+    <h4>1) \(\mathcal{L}\,[e^{-3t}\sin 2t]\)</h4>
+    <div class="tw"><table>
+      <tr><th>Шаг</th><th class="l">Что делаем</th><th class="l">Результат</th></tr>
+      <tr><td>1</td><td class="l">Узнаём вид \(e^{-at}\sin bt\)</td><td class="l">\(a = 3,\ b = 2\)</td></tr>
+      <tr><td>2</td><td class="l">Подставляем в формулу 9</td><td class="l">\(\dfrac{2}{(s+3)^2+2^2}\)</td></tr>
+      <tr><td>3</td><td class="l">Раскрываем знаменатель</td><td class="l">\((s+3)^2 + 4 = s^2+6s+13\)</td></tr>
+    </table></div>
+    <div class="answer"><b>Ответ 1</b>\(\mathcal{L}[e^{-3t}\sin 2t] = \dfrac{2}{(s+3)^2+4} = \dfrac{2}{s^2+6s+13},\quad s > -3\)</div>
+
+    <div class="part">
+    <h4>2) \(\mathcal{L}\,[\cos 3t\cdot\cos 2t]\)</h4>
+    <div class="tw"><table>
+      <tr><th>Шаг</th><th class="l">Что делаем</th><th class="l">Результат</th></tr>
+      <tr><td>1</td><td class="l">Произведение → сумма (триг. 3), \(A = 3t,\ B = 2t\)</td><td class="l">\(\cos 3t\cos 2t = \tfrac12[\cos 5t + \cos t]\)</td></tr>
+      <tr><td>2</td><td class="l">Линейность: каждое слагаемое по формуле 7</td><td class="l">\(\tfrac12\left[\dfrac{s}{s^2+25} + \dfrac{s}{s^2+1}\right]\)</td></tr>
+      <tr><td>3</td><td class="l">Общий знаменатель</td><td class="l">\(\tfrac12\cdot\dfrac{s(s^2+1)+s(s^2+25)}{(s^2+1)(s^2+25)} = \dfrac{s(s^2+13)}{(s^2+1)(s^2+25)}\)</td></tr>
+    </table></div>
+    <div class="answer"><b>Ответ 2</b>\(\mathcal{L}[\cos 3t\cos 2t] = \dfrac12\left[\dfrac{s}{s^2+1}+\dfrac{s}{s^2+25}\right] = \dfrac{s(s^2+13)}{(s^2+1)(s^2+25)},\quad s > 0\)</div>
+    </div>
+  </div>
+</article>
+
+<!-- ============ TASK 4 ============ -->
+<article class="task" id="t4">
+  <div class="task-head">
+    <div class="num">4</div>
+    <div><h2>Ряд Фурье</h2><div class="sub">Кусочная функция, L = 1</div></div>
+    <span class="marks">25 баллов</span>
+  </div>
+  <div class="task-body">
+
+    <div class="cond">
+      <div class="lbl">Условие</div>
+      Найти ряд Фурье функции и его сумму, \(L = 1\):
+      \[f(x) = \begin{cases} 0, & -1 < x < -\tfrac12 \\ x - 3, & -\tfrac12 \le x \le \tfrac12 \\ 0, & \tfrac12 < x < 1 \end{cases}\]
+    </div>
+
+    <h3><span class="st">0</span>Формулы (L = 1)</h3>
+    <div class="f">\[f(x) \sim \frac{a_0}{2} + \sum_{n=1}^{\infty}\bigl(a_n\cos n\pi x + b_n\sin n\pi x\bigr)\]
+    \[a_0 = \int_{-1}^{1} f(x)\,dx,\qquad a_n = \int_{-1}^{1} f(x)\cos n\pi x\,dx,\qquad b_n = \int_{-1}^{1} f(x)\sin n\pi x\,dx\]</div>
+    <div class="hint"><b>Приём.</b> Вне \([-\tfrac12;\tfrac12]\) функция равна 0 — интегрируем только там. Делим \(x - 3\) на нечётную часть \(x\) и чётную \(-3\): на симметричном отрезке нечётная функция даёт интеграл 0.</div>
+
+    <h3><span class="st">1</span>Коэффициенты</h3>
+    <div class="tw"><table>
+      <tr><th>Коэф.</th><th class="l">Что остаётся</th><th class="l">Результат</th></tr>
+      <tr><td>\(a_0\)</td><td class="l">\(\int_{-1/2}^{1/2}(x-3)\,dx = 0 - 3\cdot1\)</td><td class="l">\(a_0 = -3,\ \ \frac{a_0}{2} = -\frac32\)</td></tr>
+      <tr><td>\(a_n\)</td><td class="l">\(x\cos n\pi x\) нечётная → 0; остаётся \(-3\int_{-1/2}^{1/2}\cos n\pi x\,dx\)</td><td class="l">\(a_n = -\dfrac{6\sin(n\pi/2)}{n\pi}\)</td></tr>
+      <tr><td>\(b_n\)</td><td class="l">\(-3\sin n\pi x\) нечётная → 0; остаётся \(2\int_{0}^{1/2}x\sin n\pi x\,dx\) (по частям)</td><td class="l">\(b_n = -\dfrac{\cos(n\pi/2)}{n\pi} + \dfrac{2\sin(n\pi/2)}{n^2\pi^2}\)</td></tr>
+    </table></div>
+    <p class="note">По частям: \(\int x\sin kx\,dx = -\dfrac{x\cos kx}{k} + \dfrac{\sin kx}{k^2}\), здесь \(k = n\pi\), пределы \(0\) и \(\tfrac12\), результат умножаем на 2.</p>
+
+    <h3><span class="st">2</span>Первые члены</h3>
+    <div class="tw"><table>
+      <tr><th>n</th><th>\(\sin\frac{n\pi}{2}\)</th><th>\(\cos\frac{n\pi}{2}\)</th><th>\(a_n\)</th><th>≈</th><th>\(b_n\)</th><th>≈</th></tr>
+      <tr><td>1</td><td>1</td><td>0</td><td>\(-\frac{6}{\pi}\)</td><td>−1,910</td><td>\(\frac{2}{\pi^2}\)</td><td>0,203</td></tr>
+      <tr><td>2</td><td>0</td><td>−1</td><td>0</td><td>0</td><td>\(\frac{1}{2\pi}\)</td><td>0,159</td></tr>
+      <tr><td>3</td><td>−1</td><td>0</td><td>\(\frac{2}{\pi}\)</td><td>0,637</td><td>\(-\frac{2}{9\pi^2}\)</td><td>−0,023</td></tr>
+      <tr><td>4</td><td>0</td><td>1</td><td>0</td><td>0</td><td>\(-\frac{1}{4\pi}\)</td><td>−0,080</td></tr>
+    </table></div>
+
+    <h3><span class="st">3</span>Ряд</h3>
+    <div class="answer"><b>Ряд Фурье</b>
+      \[f(x) \sim -\frac32 + \sum_{n=1}^{\infty}\left[-\frac{6\sin\frac{n\pi}{2}}{n\pi}\cos n\pi x + \left(\frac{2\sin\frac{n\pi}{2}}{n^2\pi^2} - \frac{\cos\frac{n\pi}{2}}{n\pi}\right)\sin n\pi x\right]\]
+      \[= -\frac32 - \frac6\pi\cos\pi x + \frac{2}{\pi^2}\sin\pi x + \frac{1}{2\pi}\sin 2\pi x + \frac2\pi\cos 3\pi x - \frac{2}{9\pi^2}\sin 3\pi x - \dots\]
+    </div>
+
+    <h3><span class="st">4</span>Сумма ряда S(x)</h3>
+    <p>Где функция непрерывна — \(S(x) = f(x)\). В точке скачка — среднее пределов слева и справа: \(S(x_0) = \frac{f(x_0-0)+f(x_0+0)}{2}\).</p>
+    <div class="tw"><table>
+      <tr><th class="l">x</th><th>Слева</th><th>Справа</th><th>S(x)</th></tr>
+      <tr><td class="l">\(-1 < x < -\tfrac12\)</td><td colspan="2" class="x">непрерывна</td><td>0</td></tr>
+      <tr><td class="l">\(x = -\tfrac12\) (скачок)</td><td>0</td><td>\(-\tfrac12 - 3 = -\tfrac72\)</td><td class="tie"><b>\(-\tfrac74\)</b></td></tr>
+      <tr><td class="l">\(-\tfrac12 < x < \tfrac12\)</td><td colspan="2" class="x">непрерывна</td><td>\(x - 3\)</td></tr>
+      <tr><td class="l">\(x = \tfrac12\) (скачок)</td><td>\(\tfrac12 - 3 = -\tfrac52\)</td><td>0</td><td class="tie"><b>\(-\tfrac54\)</b></td></tr>
+      <tr><td class="l">\(\tfrac12 < x < 1\)</td><td colspan="2" class="x">непрерывна</td><td>0</td></tr>
+      <tr><td class="l">\(x = \pm1\)</td><td>0</td><td>0</td><td>0</td></tr>
+    </table></div>
+    <p class="note">Дальше всё повторяется с периодом 2. Проверено численно: сумма 60 членов при x = ½ даёт ≈ −1,25, при x = −½ ≈ −1,75.</p>
+  </div>
+</article>
+
+</main>
+<footer>Mathematics for Data Science · Endterm · формулы — MathJax (нужен интернет)</footer>
+</body>
+</html>
