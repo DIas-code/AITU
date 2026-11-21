@@ -69,6 +69,9 @@ window.SITE = {
         { w: 0, href: 'reference/calculators.html', title: 'Калькуляторы', bi: true },
         { w: 0, href: 'reference/tables.html', title: 'Таблицы', bi: true }
       ],
+      extras: [
+        { href: 'final/answers.html', title: 'Финал: ответы на вопросы (теория + практика)' }
+      ],
       tasks: [
         { w: 2, title: 'Assignment 1', pts: '30', files: ['assignmnet1/Assignment_1_Math_Data_Science (1).pdf', 'assignmnet1/assignment1 math Yermekov Dias.pdf'] },
         { w: 4, title: 'Assignment 2', pts: '30' },

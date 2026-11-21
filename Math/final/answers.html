@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Конспект финала по Math</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']]},chtml:{scale:1.03}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+<style>
+/* Тетрадный лист: клетка, поля, рукописные заголовки, формулы в рамке */
+:root{
+  --ink:#1b2440; --muted:#5f6b80; --paper:#fdfdfb; --bg:#eef1f5; --line:#dde3ec;
+  --cell:#e3ebf6; --pen:#2b3fa0; --mark:#c2410c; --hl:#fff1a8; --margin:#e8a0a0;
+  --c1:#2563eb; --c2:#c2410c; --c3:#15803d; --c4:#7c3aed; --grid:#e6ecf2; --ok:#15803d;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ink:#e2e8f2; --muted:#9aa7ba; --paper:#171d27; --bg:#10151d; --line:#2a3443;
+  --cell:#1d2531; --pen:#9db0ff; --mark:#fb923c; --hl:#4a3f12; --margin:#7a3b3b;
+  --c1:#60a5fa; --c2:#fb923c; --c3:#4ade80; --c4:#c4a5ff; --grid:#253142; --ok:#4ade80; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --ink:#e2e8f2; --muted:#9aa7ba; --paper:#171d27; --bg:#10151d; --line:#2a3443;
+  --cell:#1d2531; --pen:#9db0ff; --mark:#fb923c; --hl:#4a3f12; --margin:#7a3b3b;
+  --c1:#60a5fa; --c2:#fb923c; --c3:#4ade80; --c4:#c4a5ff; --grid:#253142; --ok:#4ade80; color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 Inter,"Segoe UI",system-ui,Arial,sans-serif}
+a{color:var(--pen)}
+.wrap{max-width:860px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header{padding-block:32px 4px}
+header .hand{font-family:Caveat,"Segoe Print",cursive;font-weight:700;font-size:22px;color:var(--pen)}
+header h1{margin:0;font-size:clamp(28px,4.5vw,40px);line-height:1.15;text-wrap:balance}
+header p{color:var(--muted);margin:6px 0 0}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px}
+nav.toc a{font-size:13.5px;text-decoration:none;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:3px 11px}
+nav.toc a b{color:var(--pen)}
+nav.toc a:hover,nav.toc a:focus-visible{border-color:var(--pen)}
+main{padding-block:6px 44px}
+.part{font-family:Caveat,cursive;font-size:30px;font-weight:700;color:var(--pen);margin:30px 0 0}
+.q{position:relative;margin:20px 0;border-radius:6px;background-color:var(--paper);
+   background-image:linear-gradient(var(--cell) 1px,transparent 1px),linear-gradient(90deg,var(--cell) 1px,transparent 1px);
+   background-size:22px 22px;box-shadow:0 2px 0 var(--line),0 10px 26px #1e3c5914;padding:22px 26px 20px 46px;scroll-margin-top:12px}
+.q::before{content:"";position:absolute;left:30px;top:0;bottom:0;width:2px;background:var(--margin);opacity:.7}
+.q h2{margin:0;font-family:Caveat,cursive;font-size:32px;line-height:1.1;color:var(--pen);text-wrap:balance}
+.q h2 small{display:block;font-family:Inter,"Segoe UI",sans-serif;font-size:13px;color:var(--muted);font-weight:500;margin-top:4px}
+.q h3{font-family:Caveat,cursive;font-size:24px;color:var(--pen);margin:16px 0 2px;font-weight:700}
+p{margin:6px 0}
+ol.pts{list-style:none;counter-reset:p;padding:0;margin:10px 0}
+ol.pts>li{counter-increment:p;position:relative;padding-left:34px;margin:8px 0}
+ol.pts>li::before{content:counter(p) ")";position:absolute;left:0;top:-3px;font-family:Caveat,cursive;font-size:23px;color:var(--pen);font-weight:700}
+ol.pts.c2{counter-reset:p 1} ol.pts.c4{counter-reset:p 3} ol.pts.c5{counter-reset:p 4}
+u.k{text-decoration:underline;text-decoration-color:var(--mark);text-decoration-thickness:2px;text-underline-offset:4px;font-weight:600}
+mark{background:var(--hl);color:inherit;padding:0 3px;border-radius:3px}
+.boxw{border:2px solid var(--pen);border-radius:6px;padding:0 6px}
+.f{margin:8px 0;overflow-x:auto;overflow-y:hidden}
+.fb{border:2px solid var(--pen);border-radius:10px;background:var(--paper);padding:4px 16px;margin:12px auto;overflow-x:auto;overflow-y:hidden;width:fit-content;max-width:100%}
+.thus{font-weight:600}
+.thus::before{content:"⇒ ";color:var(--mark)}
+.idea{border-left:3px solid var(--mark);padding:4px 0 4px 12px;margin:10px 0;background:linear-gradient(90deg,var(--hl),transparent 70%)}
+.src{font-size:13px;color:var(--muted);margin-top:12px}
+figure{margin:12px 0;text-align:center}
+figure svg{width:100%;max-width:600px;height:auto;display:block;margin:0 auto;background:var(--paper);border-radius:8px}
+figcaption{font-size:13px;color:var(--muted);margin-top:2px}
+.legend{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:18px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
+/* практика: схема дано → H → формула → крит → сравнение → вывод */
+dl.sch{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:4px 14px;margin:10px 0 4px}
+dl.sch dt{font-family:Caveat,cursive;font-size:21px;font-weight:700;color:var(--pen);line-height:1.5}
+dl.sch dd{margin:0;min-width:0}
+.res{font-weight:700;color:var(--ok)}
+.tw{overflow-x:auto;margin:6px 0}
+table{border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums;background:var(--paper)}
+th,td{padding:4px 9px;text-align:center;border:1px solid var(--line)}
+th{color:var(--pen)}
+footer{color:var(--muted);font-size:13px;text-align:center;padding-block:0 28px}
+@media (max-width:600px){.q{padding:18px 14px 16px 30px}.q::before{left:18px}ol.pts>li{padding-left:28px}dl.sch{grid-template-columns:1fr;gap:0}dl.sch dd{margin-bottom:6px}}
+</style>
+</head>
+<body>
+
+<header class="wrap">
+  <div class="hand">Mathematics for Data Science · Final Exam</div>
+  <h1>Конспект ответов на вопросы финала</h1>
+  <p>Part 1 — 10 теоретических вопросов, Part 2 — схемы решения задач. По лекциям 1–10.</p>
+  <nav class="toc">
+    <a href="#q1"><b>1</b> Нормальное</a><a href="#q2"><b>2</b> F-тест</a><a href="#q3"><b>3</b> t-тест</a><a href="#q4"><b>4</b> χ²</a><a href="#q5"><b>5</b> ANOVA</a><a href="#q6"><b>6</b> Манн–Уитни, Уилкоксон</a><a href="#q7"><b>7</b> Лаплас</a><a href="#q8"><b>8</b> Фурье: sin</a><a href="#q9"><b>9</b> Фурье: cos</a><a href="#q10"><b>10</b> Теплопроводность</a><a href="#part2"><b>II</b> Практика</a>
+  </nav>
+</header>
+
+<main class="wrap">
+<div class="part">Part 1 — теоретическая часть</div>
+
+<!-- ================= 1 ================= -->
+<section class="q" id="q1">
+  <h2>1. Нормальное распределение<small>Normal distribution · Gaussian function, graph and formula</small></h2>
+  <ol class="pts">
+    <li><u class="k">Нормальное распределение</u> — распределение, при котором большинство значений находится около среднего, чем дальше от среднего — тем реже значение встречается, и распределение симметрично относительно среднего.</li>
+    <li>Плотность задаётся <u class="k">функцией Гаусса</u>:
+      <div class="fb">\[ f(x)=\frac{1}{\sigma\sqrt{2\pi}}\,e^{-\frac{(x-\mu)^2}{2\sigma^2}} \]</div>
+      \(\mu\) — среднее (центр графика), \(\sigma\) — стандартное отклонение (ширина графика), \(\sigma^2\) — дисперсия. Записывают \(X\sim N(\mu,\sigma^2)\).</li>
+    <li>График — <mark>«колокол»</mark> с максимумом в точке \(x=\mu\). Малое \(\sigma\) — узкий высокий колокол, большое \(\sigma\) — широкий и плоский. Площадь под всей кривой равна 1.</li>
+  </ol>
+  <figure>
+    <svg id="g-normal" viewBox="0 0 640 280" role="img" aria-label="Нормальная кривая с зонами μ±σ, μ±2σ, μ±3σ"></svg>
+    <figcaption>В пределах \(\mu\pm\sigma\) — 68 % значений, \(\mu\pm2\sigma\) — 95 %, \(\mu\pm3\sigma\) — 99,7 %.</figcaption>
+  </figure>
+  <ol class="pts c4">
+    <li><u class="k">Стандартизация:</u> \(Z=\dfrac{X-\mu}{\sigma}\sim N(0,1)\) — стандартное нормальное распределение (\(\mu=0,\ \sigma=1\)).</li>
+  </ol>
+  <div class="src">Лекция 1.</div>
+</section>
+
+<!-- ================= 2 ================= -->
+<section class="q" id="q2">
+  <h2>2. Критерий Фишера–Снедекора (F-тест)<small>Fisher–Snedecor F-test</small></h2>
+  <ol class="pts">
+    <li>Заданы две выборки \(X_n=(x_1,x_2,\dots,x_n),\ x_i\in\mathbb R\) и \(Y_m=(y_1,y_2,\dots,y_m),\ y_i\in\mathbb R\).
+      Обозначим через \(\sigma_1^2,\ \sigma_2^2\) — <u class="k">истинные дисперсии</u> совокупностей, из которых взяты \(X_n\) и \(Y_m\); \(S_1^2,\ S_2^2\) — их <u class="k">выборочные оценки</u>:
+      <div class="f">\[ S_1^2=\frac{1}{n-1}\sum_{i=1}^{n}(x_i-\bar x)^2,\qquad S_2^2=\frac{1}{m-1}\sum_{i=1}^{m}(y_i-\bar y)^2 \]</div>
+      \(\bar x,\ \bar y\) — выборочные средние.</li>
+    <li>Предполагается, что выборки являются <u class="k">нормальными</u> и независимыми. Степени свободы: \(df_1=n-1,\ df_2=m-1\).</li>
+    <li>Гипотезы (про <i>истинные</i> дисперсии):
+      <div class="f">\[ H_0:\ \sigma_1^2=\sigma_2^2;\qquad H_1:\ \sigma_1^2\ne\sigma_2^2\ \ (\text{двусторонняя})\quad\text{или}\quad H_1:\ \sigma_1^2&gt;\sigma_2^2\ \ (\text{односторонняя}) \]</div></li>
+    <li>Статистика Фишера (считается по <i>выборочным</i> дисперсиям):
+      <div class="fb">\[ F=\frac{S_1^2}{S_2^2},\qquad df_1=n-1\ (\text{числитель}),\quad df_2=m-1\ (\text{знаменатель}) \]</div></li>
+    <li>Критическое значение — по таблице Фишера: столбец \(df_1\) (числитель), строка \(df_2\) (знаменатель).
+      <ul>
+        <li><b>Односторонняя</b> \(H_1:\sigma_1^2&gt;\sigma_2^2\): \(F=S_1^2/S_2^2\), \(F_{кр}\) — для уровня \(\alpha\) (таблица 0,05).</li>
+        <li><b>Двусторонняя</b> \(H_1:\sigma_1^2\ne\sigma_2^2\): бо́льшую выборочную дисперсию ставим в числитель (тогда \(F\ge1\), а \(df_1\) — той выборки, что в числителе), \(F_{кр}\) — для уровня \(\alpha/2\) (при \(\alpha=0{,}05\) — таблица 0,025).</li>
+      </ul></li>
+    <li class="thus">\(F\ge F_{кр}\) — \(H_0\) отвергаем, дисперсии различаются значимо. \(F&lt;F_{кр}\) — \(H_0\) не отвергаем.</li>
+  </ol>
+  <div class="src">Лекция 2.</div>
+</section>
+
+<!-- ================= 3 ================= -->
+<section class="q" id="q3">
+  <h2>3. t-критерий Стьюдента<small>Student's t-test · definition, independent and dependent samples</small></h2>
+  <ol class="pts">
+    <li><u class="k">t-критерий Стьюдента</u> — параметрический критерий, который сравнивает <u class="k">наблюдаемую разницу</u> средних со <u class="k">случайной вариабельностью</u>:
+      <div class="fb">\[ t=\frac{\text{наблюдаемая разница}}{\text{стандартная ошибка}} \]</div></li>
+    <li>Если \(X\sim N(\mu,\sigma^2)\), то \(Z=\dfrac{\bar X-\mu}{\sigma/\sqrt n}\sim N(0,1)\). Но в реальном исследовании истинное \(\sigma\) <u class="k">неизвестно</u>, есть только выборочное \(S\). Поэтому используем
+      \[ t=\frac{\bar X-\mu_0}{S/\sqrt n}. \]
+      Так появляется <u class="k">t-распределение</u>: \(S\) — это <span class="boxw">оценка</span> \(\sigma\), а не истинное значение.</li>
+    <li>t-распределение похоже на нормальное, но имеет <u class="k">более тяжёлые хвосты</u>; при увеличении объёма выборки оно приближается к нормальному.</li>
+  </ol>
+  <figure>
+    <svg id="g-t" viewBox="0 0 640 220" role="img" aria-label="t-распределение и стандартное нормальное"></svg>
+    <div class="legend"><span><i style="background:var(--c1)"></i>N(0, 1)</span><span><i style="background:var(--c2)"></i>t, df = 3</span></div>
+  </figure>
+  <h3>Независимые выборки (две разные группы)</h3>
+  <div class="fb">\[ t=\frac{|\bar x_1-\bar x_2|}{S_p\sqrt{\dfrac{1}{n_1}+\dfrac{1}{n_2}}},\qquad S_p^2=\frac{(n_1-1)S_1^2+(n_2-1)S_2^2}{n_1+n_2-2},\qquad df=n_1+n_2-2 \]</div>
+  <p>\(\bar x_1,\bar x_2\) — средние групп, \(S_1^2,S_2^2\) — выборочные дисперсии, \(n_1,n_2\) — объёмы, \(S_p^2\) — <u class="k">общая (объединённая) оценка дисперсии</u>. Условие: нормальность и равные дисперсии (проверяют F-критерием).</p>
+  <p>При \(n_1=n_2\) знаменатель совпадает с формулой лекции \(\sqrt{S_1^2/n_1+S_2^2/n_2}\).</p>
+  <h3>Зависимые выборки (одни и те же объекты до/после)</h3>
+  <div class="fb">\[ d_i=x_i-y_i,\qquad t=\frac{\bar d}{S_d/\sqrt n},\qquad S_d=\sqrt{\frac{\sum(d_i-\bar d)^2}{n-1}},\qquad df=n-1 \]</div>
+  <p>\(n\) — число пар, \(\bar d\) — средняя разность, \(S_d\) — стандартное отклонение разностей.</p>
+  <p class="thus">\(|t|\ge t_{кр}(\alpha,df)\) — \(H_0\) отвергаем, средние различаются; \(|t|&lt;t_{кр}\) — \(H_0\) не отвергаем.</p>
+  <div class="src">Лекции 1–2, записи.</div>
+</section>
+
+<!-- ================= 4 ================= -->
+<section class="q" id="q4">
+  <h2>4. Распределение хи-квадрат Пирсона<small>Pearson's chi-square distribution · definition, shape, properties</small></h2>
+  <ol class="pts">
+    <li><u class="k">Распределение хи-квадрат с n степенями свободы</u> — распределение суммы квадратов n независимых стандартных нормальных величин:
+      <div class="fb">\[ \chi^2_n=Z_1^2+Z_2^2+\dots+Z_n^2,\qquad Z_i\sim N(0,1) \]</div>
+      \(n\) — число степеней свободы (сколько квадратов сложили).</li>
+  </ol>
+  <h3>Форма</h3>
+  <figure>
+    <svg id="g-chi" viewBox="0 0 640 250" role="img" aria-label="Плотности хи-квадрат при df 1, 2, 4, 8"></svg>
+    <div class="legend"><span><i style="background:var(--c1)"></i>df = 1</span><span><i style="background:var(--c2)"></i>df = 2</span><span><i style="background:var(--c3)"></i>df = 4</span><span><i style="background:var(--c4)"></i>df = 8</span></div>
+  </figure>
+  <p>Значения только \(x\ge0\); кривая <u class="k">несимметрична</u>, скошена вправо. С ростом n горб сдвигается вправо и кривая становится похожей на нормальную.</p>
+  <h3>Свойства</h3>
+  <div class="fb">\[ E(\chi^2_n)=n,\qquad D(\chi^2_n)=2n \]</div>
+  <div class="src">Лекция 3.</div>
+</section>
+
+<!-- ================= 5 ================= -->
+<section class="q" id="q5">
+  <h2>5. Дисперсионный анализ. One-way ANOVA<small>Dispersion analysis · one-way analysis of variance</small></h2>
+  <ol class="pts">
+    <li><u class="k">Однофакторный дисперсионный анализ</u> сравнивает средние <u class="k">трёх и более</u> независимых групп (один фактор — например, способ кормления 4 групп тигров).</li>
+    <li>Условия: \(X_{ij}\sim N(\mu_i,\sigma^2)\) — наблюдения нормальны, дисперсия во всех группах одинакова, группы независимы. \(m\) — число групп, \(N\) — всего наблюдений, \(n_i\) — размер группы \(i\).</li>
+    <li>Гипотезы: \(H_0:\ \mu_1=\mu_2=\dots=\mu_m\); \(H_1:\) не все средние равны.</li>
+    <li>Разброс делим на две части (\(\bar X_i\) — среднее группы, \(\bar X\) — общее среднее):
+      <div class="f">\[ SS_B=\sum_{i} n_i(\bar X_i-\bar X)^2\ \ (\text{между группами}),\qquad SS_W=\sum_i\sum_j(X_{ij}-\bar X_i)^2\ \ (\text{внутри групп}) \]</div></li>
+    <li>Оба среднего квадрата вычисляются всегда: \(MS_B=SS_B/(m-1)\), \(MS_W=SS_W/(N-m)\). При \(H_0\) оба оценивают одну и ту же дисперсию \(\sigma^2\), и \(F\approx1\). Если средние различаются, \(MS_B\) обычно больше \(MS_W\). Поэтому сравнивают
+      <div class="fb">\[ F=\frac{MS_B}{MS_W}=\frac{SS_B/(m-1)}{SS_W/(N-m)},\qquad df_1=m-1,\ df_2=N-m \]</div></li>
+    <li class="thus">\(F\ge F_{кр}(\alpha;\,m-1;\,N-m)\) — \(H_0\) отвергаем: хотя бы два средних различаются. Иначе \(H_0\) не отвергаем.</li>
+  </ol>
+  <div class="src">Лекция 4.</div>
+</section>
+
+<!-- ================= 6 ================= -->
+<section class="q" id="q6">
+  <h2>6. Непараметрические методы<small>Nonparametric methods · Mann–Whitney U-test, Wilcoxon test</small></h2>
+  <ol class="pts">
+    <li><u class="k">Непараметрические методы</u> применяют, когда распределение не нормальное или данные порядковые. Они не используют \(\mu\) и \(\sigma\), а работают с <mark>рангами</mark> — номерами значений в упорядоченном ряду.</li>
+  </ol>
+  <h3>U-критерий Манна–Уитни — две независимые группы</h3>
+  <ol class="pts">
+    <li>Ранжируем все значения обеих групп вместе от меньшего к большему. Одинаковые значения получают средний ранг.</li>
+    <li>\(R_1,R_2\) — суммы рангов групп, \(n_1,n_2\) — объёмы:
+      <div class="fb">\[ U_1=n_1n_2+\frac{n_1(n_1+1)}{2}-R_1,\qquad U_2=n_1n_2+\frac{n_2(n_2+1)}{2}-R_2,\qquad U=\min(U_1,U_2) \]</div>
+      Проверка: \(U_1+U_2=n_1n_2\).</li>
+    <li class="thus">\(U\le U_{кр}\) — \(H_0\) отвергаем (различие есть); \(U&gt;U_{кр}\) — \(H_0\) не отвергаем.</li>
+  </ol>
+  <h3>T-критерий Уилкоксона — две связанные выборки (до/после)</h3>
+  <ol class="pts">
+    <li>Считаем разности в парах \(d_i\), нулевые разности исключаем (n уменьшается).</li>
+    <li>Ранжируем модули \(|d_i|\), каждому рангу возвращаем знак разности.</li>
+    <li>\(T^+\) — сумма рангов положительных разностей, \(T^-\) — отрицательных:
+      <div class="fb">\[ T=\min(T^+,T^-),\qquad T^++T^-=\frac{n(n+1)}{2} \]</div></li>
+    <li class="thus">\(T\le T_{кр}\) — \(H_0\) отвергаем; \(T&gt;T_{кр}\) — \(H_0\) не отвергаем.</li>
+  </ol>
+  <div class="src">Лекция 7.</div>
+</section>
+
+<!-- ================= 7 ================= -->
+<section class="q" id="q7">
+  <h2>7. Преобразование Лапласа<small>The Laplace transforms · definition and some examples</small></h2>
+  <ol class="pts">
+    <li>Пусть \(f(t)\) определена при \(t\ge0\), \(s\) — параметр. Если интеграл существует, то
+      <div class="fb">\[ \mathcal L[f(t)]=F(s)=\int_0^{\infty}e^{-st}f(t)\,dt \]</div>
+      называется <u class="k">преобразованием Лапласа</u>: функция \(f(t)\) переходит в функцию \(F(s)\).</li>
+  </ol>
+  <h3>Примеры</h3>
+  <ol class="pts">
+    <li>\(\displaystyle \mathcal L[1]=\int_0^\infty e^{-st}dt=\left[\frac{e^{-st}}{-s}\right]_0^\infty=0-\frac{1}{-s}=\frac1s\quad(s&gt;0).\)</li>
+    <li>\(\displaystyle \mathcal L[e^{at}]=\int_0^\infty e^{-st}e^{at}dt=\int_0^\infty e^{-(s-a)t}dt=\left[\frac{e^{-(s-a)t}}{-(s-a)}\right]_0^\infty=\frac{1}{s-a}\quad(s&gt;a).\)</li>
+  </ol>
+  <div class="src">Лекция 8.</div>
+</section>
+
+<!-- ================= 8 ================= -->
+<section class="q" id="q8">
+  <h2>8. Ряд Фурье: ортогональность синусов<small>Prove orthogonality of sin(nπx/L) and sin(mπx/L), derive the Fourier series</small></h2>
+  <p>Ряд Фурье на \([-L,L]\): \(\ f(x)=\dfrac{a_0}{2}+\sum\limits_{m=1}^{\infty}\left(a_m\cos\dfrac{m\pi x}{L}+b_m\sin\dfrac{m\pi x}{L}\right)\). Функции \(u,v\) <u class="k">ортогональны</u> на \([-L,L]\), если \(\int_{-L}^{L}u\,v\,dx=0\).</p>
+  <h3>Доказательство ортогональности синусов</h3>
+  <div class="fb">\[ \int_{-L}^{L}\sin\frac{m\pi x}{L}\sin\frac{n\pi x}{L}\,dx=\begin{cases}0,&amp;m\ne n\\L,&amp;m=n\end{cases} \]</div>
+  <ol class="pts">
+    <li>Формула: \(\sin A\sin B=\frac12\left[\cos(A-B)-\cos(A+B)\right]\). Значит
+      \[ \int_{-L}^{L}\sin\frac{m\pi x}{L}\sin\frac{n\pi x}{L}dx=\frac12\int_{-L}^{L}\left[\cos\frac{(m-n)\pi x}{L}-\cos\frac{(m+n)\pi x}{L}\right]dx. \]</li>
+    <li><b>\(m\ne n\).</b> Интегрируем:
+      \[ =\frac{L}{2\pi}\left[\frac{\sin\frac{(m-n)\pi x}{L}}{m-n}-\frac{\sin\frac{(m+n)\pi x}{L}}{m+n}\right]_{-L}^{L}=0, \]
+      потому что при \(x=\pm L\) получаем \(\sin(k\pi)=0\) для целого \(k\).</li>
+    <li><b>\(m=n\).</b> \(\sin^2\frac{n\pi x}{L}=\frac12\left(1-\cos\frac{2n\pi x}{L}\right)\), поэтому
+      \[ \int_{-L}^{L}\sin^2\frac{n\pi x}{L}dx=\frac12\left[x-\frac{L}{2n\pi}\sin\frac{2n\pi x}{L}\right]_{-L}^{L}=\frac12\cdot2L=L. \]</li>
+    <li>Ещё понадобится: \(\int_{-L}^{L}\cos\frac{m\pi x}{L}\sin\frac{n\pi x}{L}dx=0\) при всех \(m,n\) — функция нечётная, промежуток симметричный.</li>
+  </ol>
+  <h3>Вывод \(b_n\)</h3>
+  <div class="idea"><b>Идея.</b> Чтобы «вытащить» из ряда один коэффициент, умножаем ряд на ту же гармонику и интегрируем. Из-за ортогональности все остальные слагаемые дают 0, остаётся только нужное.</div>
+  <ol class="pts">
+    <li>Хотим найти \(b_n\). Умножаем обе части ряда на \(\sin\frac{n\pi x}{L}\) и интегрируем от \(-L\) до \(L\).</li>
+    <li>Смотрим на каждое слагаемое справа:
+      <ul>
+        <li>\(\frac{a_0}{2}\int_{-L}^{L}\sin\frac{n\pi x}{L}dx=0\);</li>
+        <li>\(a_m\int_{-L}^{L}\cos\frac{m\pi x}{L}\sin\frac{n\pi x}{L}dx=0\) для всех \(m\);</li>
+        <li>\(b_m\int_{-L}^{L}\sin\frac{m\pi x}{L}\sin\frac{n\pi x}{L}dx=0\), кроме \(m=n\): там \(b_n\cdot L\).</li>
+      </ul></li>
+    <li>Остаётся \(\int_{-L}^{L}f(x)\sin\frac{n\pi x}{L}dx=L\,b_n\). Делим на \(L\):
+      <div class="fb">\[ b_n=\frac1L\int_{-L}^{L}f(x)\sin\frac{n\pi x}{L}\,dx,\qquad n=1,2,\dots \]</div></li>
+  </ol>
+  <div class="src">Лекция 9.</div>
+</section>
+
+<!-- ================= 9 ================= -->
+<section class="q" id="q9">
+  <h2>9. Ряд Фурье: ортогональность косинусов<small>Prove orthogonality of cos(nπx/L) and cos(mπx/L), derive the Fourier series</small></h2>
+  <p>Ряд Фурье на \([-L,L]\): \(\ f(x)=\dfrac{a_0}{2}+\sum\limits_{m=1}^{\infty}\left(a_m\cos\dfrac{m\pi x}{L}+b_m\sin\dfrac{m\pi x}{L}\right)\).</p>
+  <h3>Доказательство ортогональности косинусов</h3>
+  <div class="fb">\[ \int_{-L}^{L}\cos\frac{m\pi x}{L}\cos\frac{n\pi x}{L}\,dx=\begin{cases}0,&amp;m\ne n\\L,&amp;m=n\end{cases} \]</div>
+  <ol class="pts">
+    <li>Формула: \(\cos A\cos B=\frac12\left[\cos(A-B)+\cos(A+B)\right]\). Значит
+      \[ \int_{-L}^{L}\cos\frac{m\pi x}{L}\cos\frac{n\pi x}{L}dx=\frac12\int_{-L}^{L}\left[\cos\frac{(m-n)\pi x}{L}+\cos\frac{(m+n)\pi x}{L}\right]dx. \]</li>
+    <li><b>\(m\ne n\).</b>
+      \[ =\frac{L}{2\pi}\left[\frac{\sin\frac{(m-n)\pi x}{L}}{m-n}+\frac{\sin\frac{(m+n)\pi x}{L}}{m+n}\right]_{-L}^{L}=0,\]
+      так как \(\sin(k\pi)=0\) для целого \(k\).</li>
+    <li><b>\(m=n\).</b> \(\cos^2\frac{n\pi x}{L}=\frac12\left(1+\cos\frac{2n\pi x}{L}\right)\), поэтому
+      \[ \int_{-L}^{L}\cos^2\frac{n\pi x}{L}dx=\frac12\left[x+\frac{L}{2n\pi}\sin\frac{2n\pi x}{L}\right]_{-L}^{L}=L. \]</li>
+    <li>Также \(\int_{-L}^{L}\sin\frac{m\pi x}{L}\cos\frac{n\pi x}{L}dx=0\) (нечётная функция) и \(\int_{-L}^{L}\cos\frac{n\pi x}{L}dx=0\) при \(n\ge1\).</li>
+  </ol>
+  <h3>Вывод \(a_n\) и \(a_0\)</h3>
+  <ol class="pts">
+    <li>Умножаем обе части ряда на \(\cos\frac{n\pi x}{L}\) (\(n\ge1\)) и интегрируем от \(-L\) до \(L\).</li>
+    <li>Справа: слагаемое с \(\frac{a_0}{2}\) даёт 0; все слагаемые с \(b_m\) дают 0 (sin·cos); из слагаемых с \(a_m\) остаётся только \(m=n\): \(a_n\cdot L\).</li>
+    <li>Получаем \(\int_{-L}^{L}f(x)\cos\frac{n\pi x}{L}dx=L\,a_n\), откуда
+      <div class="fb">\[ a_n=\frac1L\int_{-L}^{L}f(x)\cos\frac{n\pi x}{L}\,dx \]</div></li>
+    <li><b>\(a_0\):</b> просто интегрируем ряд от \(-L\) до \(L\). Все косинусы и синусы дают 0, остаётся \(\int_{-L}^{L}\frac{a_0}{2}dx=a_0L\). Значит
+      <div class="fb">\[ a_0=\frac1L\int_{-L}^{L}f(x)\,dx \]</div>
+      — та же формула \(a_n\) при \(n=0\); поэтому в ряде пишут \(\frac{a_0}{2}\).</li>
+  </ol>
+  <div class="src">Лекция 9.</div>
+</section>
+
+<!-- ================= 10 ================= -->
+<section class="q" id="q10">
+  <h2>10. Уравнение теплопроводности<small>Heat equation · solve initial–boundary value problem</small></h2>
+  <ol class="pts">
+    <li>Тонкий стержень длины \(L\) лежит на оси \(x\) от \(0\) до \(L\), его бока теплоизолированы. \(u(x,t)\) — <u class="k">температура</u> в точке \(x\) в момент времени \(t\).</li>
+    <li>Тепло распространяется по уравнению
+      <div class="fb">\[ u_t=a^2u_{xx},\qquad 0&lt;x&lt;L,\ t&gt;0 \]</div>
+      \(a^2\) — константа, зависит от материала.</li>
+    <li><u class="k">Начальное условие</u> — температура в момент \(t=0\): \(u(x,0)=f(x)\). <u class="k">Граничные условия</u> — концы стержня держат при нуле: \(u(0,t)=0,\ u(L,t)=0\).</li>
+  </ol>
+  <figure><svg id="g-bar" viewBox="0 0 640 110" role="img" aria-label="Стержень длины L, концы при нулевой температуре"></svg></figure>
+  <h3>Решение (разделение переменных)</h3>
+  <ol class="pts">
+    <li>Ищем решение в виде \(u=X(x)\,T(t)\). Подставляем: \(XT'=a^2X''T\), делим на \(a^2XT\):
+      \[ \frac{T'}{a^2T}=\frac{X''}{X}=-\lambda. \]
+      Левая часть зависит только от \(t\), правая — только от \(x\), поэтому обе равны константе \(-\lambda\).</li>
+    <li>Получаем два уравнения: \(X''+\lambda X=0\) и \(T'=-a^2\lambda T\). Из граничных условий: \(X(0)=0,\ X(L)=0\).</li>
+    <li>При \(\lambda\le0\) получается только \(X\equiv0\). При \(\lambda&gt;0\): \(X=c_1\cos\sqrt\lambda x+c_2\sin\sqrt\lambda x\); \(X(0)=0\Rightarrow c_1=0\); \(X(L)=0\Rightarrow\sin\sqrt\lambda L=0\Rightarrow\sqrt\lambda L=n\pi\):
+      <div class="fb">\[ \lambda_n=\frac{n^2\pi^2}{L^2},\qquad X_n=\sin\frac{n\pi x}{L},\qquad n=1,2,\dots \]</div></li>
+    <li>Тогда \(T'=-\frac{n^2\pi^2a^2}{L^2}T\), откуда \(T_n=e^{-n^2\pi^2a^2t/L^2}\).</li>
+    <li>Складываем все такие решения (уравнение линейное):
+      \[ u(x,t)=\sum_{n=1}^{\infty}\alpha_n\,e^{-n^2\pi^2a^2t/L^2}\sin\frac{n\pi x}{L}. \]</li>
+    <li>При \(t=0\) экспоненты равны 1: \(f(x)=\sum\alpha_n\sin\frac{n\pi x}{L}\) — это ряд Фурье по синусам на \([0,L]\). Его коэффициенты (здесь \(2/L\), потому что \(\int_0^L\sin^2\frac{n\pi x}{L}dx=\frac L2\)):
+      <div class="fb">\[ \alpha_n=\frac2L\int_0^Lf(x)\sin\frac{n\pi x}{L}\,dx \]</div></li>
+    <li class="thus">Ответ: \(u(x,t)=\sum\limits_{n=1}^{\infty}\alpha_n e^{-n^2\pi^2a^2t/L^2}\sin\dfrac{n\pi x}{L}\). Со временем все слагаемые затухают — стержень остывает до 0.</li>
+  </ol>
+  <div class="src">Лекция 10.</div>
+</section>
+
+<!-- ================= PART 2 ================= -->
+<div class="part" id="part2">Part 2 — практическая часть</div>
+
+<section class="q">
+  <h2>1. t-критерий Стьюдента</h2>
+  <dl class="sch">
+    <dt>Дано</dt><dd>Две независимые группы (\(n_1,n_2\)) или \(n\) пар «до/после». Истинное \(\sigma\) неизвестно → считаем выборочные \(S\).</dd>
+    <dt>H₀, H₁</dt><dd>\(H_0:\mu_1=\mu_2\); \(H_1:\mu_1\ne\mu_2\).</dd>
+    <dt>Формула</dt><dd>Независимые: \(S_p^2=\dfrac{(n_1-1)S_1^2+(n_2-1)S_2^2}{n_1+n_2-2}\), \(t=\dfrac{|\bar x_1-\bar x_2|}{S_p\sqrt{1/n_1+1/n_2}}\), \(df=n_1+n_2-2\). Зависимые: \(t=\dfrac{\bar d}{S_d/\sqrt n}\), \(df=n-1\).</dd>
+    <dt>Критическое</dt><dd>\(t_{кр}\) по таблице Стьюдента: \(\alpha=0{,}05\), двусторонний, \(df\).</dd>
+    <dt>Сравнение</dt><dd>\(|t|\) и \(t_{кр}\).</dd>
+    <dt>Вывод</dt><dd>\(|t|\ge t_{кр}\) — \(H_0\) отвергаем, средние различаются; \(|t|&lt;t_{кр}\) — \(H_0\) не отвергаем.</dd>
+  </dl>
+</section>
+
+<section class="q">
+  <h2>2. Хи-квадрат Пирсона</h2>
+  <dl class="sch">
+    <dt>Дано</dt><dd>Таблица наблюдаемых частот \(O\): \(r\) строк × \(c\) столбцов; \(R_i\), \(C_j\) — суммы строк и столбцов, \(N\) — всего.</dd>
+    <dt>H₀, H₁</dt><dd>\(H_0\): признаки независимы (связи нет); \(H_1\): признаки связаны.</dd>
+    <dt>Формула</dt><dd>\(E_{ij}=\dfrac{R_iC_j}{N}\) (нужно \(E&gt;5\)), \(\ \chi^2=\sum\dfrac{(O-E)^2}{E}\), \(\ df=(r-1)(c-1)\).</dd>
+    <dt>Критическое</dt><dd>\(\chi^2_{кр}(\alpha,df)\), правый хвост.</dd>
+    <dt>Сравнение</dt><dd>\(\chi^2\) и \(\chi^2_{кр}\).</dd>
+    <dt>Вывод</dt><dd>\(\chi^2\ge\chi^2_{кр}\) — \(H_0\) отвергаем, связь есть; иначе \(H_0\) не отвергаем.</dd>
+  </dl>
+</section>
+
+<section class="q">
+  <h2>3. Дисперсионный анализ (ANOVA)</h2>
+  <dl class="sch">
+    <dt>Дано</dt><dd>\(m\) групп, всего \(N\) наблюдений.</dd>
+    <dt>H₀, H₁</dt><dd>\(H_0:\mu_1=\dots=\mu_m\); \(H_1\): не все средние равны.</dd>
+    <dt>Формула</dt><dd>Средние групп \(\bar X_i\), общее \(\bar X\); \(SS_B=\sum n_i(\bar X_i-\bar X)^2\), \(SS_W=\sum\sum(X_{ij}-\bar X_i)^2\); \(F=\dfrac{SS_B/(m-1)}{SS_W/(N-m)}\).</dd>
+    <dt>Критическое</dt><dd>\(F_{кр}(\alpha;\ m-1;\ N-m)\) по таблице Фишера.</dd>
+    <dt>Сравнение</dt><dd>\(F\) и \(F_{кр}\).</dd>
+    <dt>Вывод</dt><dd>\(F\ge F_{кр}\) — \(H_0\) отвергаем; иначе \(H_0\) не отвергаем.</dd>
+  </dl>
+</section>
+
+<section class="q">
+  <h2>4. U-критерий Манна–Уитни <small>пример из лекции 7</small></h2>
+  <dl class="sch">
+    <dt>Дано</dt><dd>Размер выводка. Белые мыши (\(n_1=10\)): 8, 7, 4, 7, 9, 3, 5, 6, 9, 5. Чёрные (\(n_2=8\)): 4, 7, 8, 3, 3, 5, 4, 5.</dd>
+    <dt>H₀, H₁</dt><dd>\(H_0\): размер выводка не различается; \(H_1\): различается.</dd>
+    <dt>Формула</dt><dd>Общие ранги: \(R_1=111{,}5,\ R_2=59{,}5\). \(U_1=80+\frac{10\cdot11}{2}-111{,}5=23{,}5\); \(U_2=80+\frac{8\cdot9}{2}-59{,}5=56{,}5\); \(U=23{,}5\).</dd>
+    <dt>Критическое</dt><dd>\(U_{кр}(10;8)=17\) (\(\alpha=0{,}05\), двусторонний; на слайде — 20).</dd>
+    <dt>Сравнение</dt><dd>\(23{,}5&gt;U_{кр}\).</dd>
+    <dt>Вывод</dt><dd class="res">\(H_0\) не отвергаем: значимых различий нет.</dd>
+  </dl>
+</section>
+
+<section class="q">
+  <h2>5. T-критерий Уилкоксона <small>пример из лекции 7</small></h2>
+  <dl class="sch">
+    <dt>Дано</dt><dd>Тестостерон в 9 пробах, два метода.</dd>
+    <dt>H₀, H₁</dt><dd>\(H_0\): методы дают одинаковый результат; \(H_1\): результаты различаются.</dd>
+    <dt>Формула</dt><dd>
+      <div class="tw"><table>
+        <tr><th>d</th><td>0,09</td><td>0,10</td><td>0,12</td><td>0,06</td><td>−0,03</td><td>0,11</td><td>−0,01</td><td>0</td><td>0,06</td></tr>
+        <tr><th>ранг</th><td>5</td><td>6</td><td>8</td><td>3,5</td><td>−2</td><td>7</td><td>−1</td><td>—</td><td>3,5</td></tr>
+      </table></div>
+      Ноль исключаем → \(n=8\). \(T^-=1+2=3\), \(T^+=33\) (проверка \(3+33=36=\frac{8\cdot9}{2}\)); \(T=3\).</dd>
+    <dt>Критическое</dt><dd>\(T_{кр}(n=8)=3\) (\(\alpha=0{,}05\), двусторонний).</dd>
+    <dt>Сравнение</dt><dd>\(T=3\le T_{кр}=3\).</dd>
+    <dt>Вывод</dt><dd class="res">\(H_0\) отвергаем: различие между методами значимо.</dd>
+  </dl>
+</section>
+
+<section class="q">
+  <h2>6. Преобразование Лапласа <small>пример из лекции 8</small></h2>
+  <dl class="sch">
+    <dt>Дано</dt><dd>\(f(t)=\sin^2t\). Найти \(\mathcal L[f]\).</dd>
+    <dt>Шаг 1</dt><dd>Сводим к простым функциям: \(\sin^2t=\frac{1-\cos2t}{2}\).</dd>
+    <dt>Шаг 2</dt><dd>Линейность: \(\mathcal L[\sin^2t]=\frac12\left(\mathcal L[1]-\mathcal L[\cos2t]\right)\), где \(\mathcal L[1]=\frac1s\), \(\mathcal L[\cos at]=\frac{s}{s^2+a^2}\).</dd>
+    <dt>Ответ</dt><dd class="res">\(\mathcal L[\sin^2t]=\frac12\left(\frac1s-\frac{s}{s^2+4}\right)=\dfrac{2}{s(s^2+4)}\)</dd>
+  </dl>
+</section>
+
+<section class="q">
+  <h2>7. Ряд Фурье <small>пример 1 из лекции 9</small></h2>
+  <dl class="sch">
+    <dt>Дано</dt><dd>\(f(x)=-x\) при \(-2\le x&lt;0\), \(f(x)=x\) при \(0\le x&lt;2\), период 4.</dd>
+    <dt>Шаг 1</dt><dd>Период \(2L=4\Rightarrow L=2\). \(f\) чётная → \(b_n=0\).</dd>
+    <dt>Шаг 2</dt><dd>\(a_0=\frac12\int_{-2}^{0}(-x)dx+\frac12\int_0^2x\,dx=1+1=2\).</dd>
+    <dt>Шаг 3</dt><dd>\(a_n=\frac12\int_{-2}^{0}(-x)\cos\frac{n\pi x}{2}dx+\frac12\int_0^2x\cos\frac{n\pi x}{2}dx\) (по частям) \(=\dfrac{4}{(n\pi)^2}(\cos n\pi-1)\): \(-\dfrac{8}{(n\pi)^2}\) при нечётном \(n\), 0 при чётном.</dd>
+    <dt>Ответ</dt><dd class="res">\(f(x)=1-\dfrac{8}{\pi^2}\left(\cos\dfrac{\pi x}{2}+\dfrac{1}{3^2}\cos\dfrac{3\pi x}{2}+\dfrac{1}{5^2}\cos\dfrac{5\pi x}{2}+\dots\right)\)</dd>
+  </dl>
+</section>
+</main>
+
+<footer class="wrap">Mathematics for Data Science · конспект к финалу</footer>
+
+<script>
+(function(){
+  var NS='http://www.w3.org/2000/svg';
+  function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()||'#888';}
+  function el(t,a,p){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;}
+  function gamma(z){
+    if(z<0.5) return Math.PI/(Math.sin(Math.PI*z)*gamma(1-z));
+    z-=1;var c=[0.99999999999980993,676.5203681218851,-1259.1392167224028,771.32342877765313,-176.61502916214059,12.507343278686905,-0.13857109526572012,9.9843695780195716e-6,1.5056327351493116e-7];
+    var x=c[0];for(var i=1;i<9;i++)x+=c[i]/(z+i);var t=z+7.5;return Math.sqrt(2*Math.PI)*Math.pow(t,z+0.5)*Math.exp(-t)*x;
+  }
+  function plot(id,o){
+    var svg=document.getElementById(id); if(!svg) return;
+    var vb=svg.viewBox.baseVal,W=vb.width,H=vb.height,m={l:44,r:14,t:16,b:32};
+    var X=function(x){return m.l+(x-o.x0)/(o.x1-o.x0)*(W-m.l-m.r);};
+    var Y=function(y){return H-m.b-(y-o.y0)/(o.y1-o.y0)*(H-m.t-m.b);};
+    var ink=css('--muted'),grid=css('--grid');
+    (o.yt||[]).forEach(function(v){el('line',{x1:m.l,x2:W-m.r,y1:Y(v),y2:Y(v),stroke:grid},svg);el('text',{x:m.l-6,y:Y(v)+4,'text-anchor':'end','font-size':11,fill:ink},svg).textContent=String(v).replace('.',',');});
+    el('line',{x1:m.l,x2:W-m.r,y1:Y(0),y2:Y(0),stroke:ink},svg);
+    (o.xt||[]).forEach(function(t){var v=Array.isArray(t)?t[0]:t,lab=Array.isArray(t)?t[1]:String(t);
+      el('line',{x1:X(v),x2:X(v),y1:Y(0),y2:Y(0)+4,stroke:ink},svg);el('text',{x:X(v),y:H-m.b+18,'text-anchor':'middle','font-size':12,fill:ink},svg).textContent=lab;});
+    (o.fills||[]).forEach(function(f){var d='M'+X(f.a)+','+Y(0);for(var i=0;i<=200;i++){var x=f.a+(f.b-f.a)*i/200;d+=' L'+X(x)+','+Y(o.f0(x));}d+=' L'+X(f.b)+','+Y(0)+'Z';el('path',{d:d,fill:css(f.c),'fill-opacity':f.op},svg);});
+    (o.curves||[]).forEach(function(c){var d='',a=c.a!==undefined?c.a:o.x0,b=o.x1,s=false;
+      for(var i=0;i<=500;i++){var x=a+(b-a)*i/500,y=c.f(x);if(!isFinite(y)||y>o.y1*1.5){s=false;continue;}y=Math.min(y,o.y1*1.2);d+=(s?' L':'M')+X(x).toFixed(1)+','+Y(y).toFixed(1);s=true;}
+      el('path',{d:d,fill:'none',stroke:css(c.c),'stroke-width':c.w||2.4,'stroke-linejoin':'round'},svg);});
+    (o.labels||[]).forEach(function(l){el('text',{x:X(l.x),y:Y(l.y),'text-anchor':'middle','font-size':l.s||12,'font-weight':700,fill:css('--ink')},svg).textContent=l.t;});
+  }
+  var npdf=function(mu,s){return function(x){return Math.exp(-(x-mu)*(x-mu)/(2*s*s))/(s*Math.sqrt(2*Math.PI));};};
+  function draw(){
+    document.querySelectorAll('svg[id^="g-"]').forEach(function(s){while(s.firstChild)s.removeChild(s.firstChild);});
+    var n01=npdf(0,1);
+    plot('g-normal',{x0:-3.6,x1:3.6,y0:0,y1:0.45,f0:n01,
+      fills:[{a:-3,b:3,c:'--c1',op:.10},{a:-2,b:2,c:'--c1',op:.14},{a:-1,b:1,c:'--c1',op:.22}],
+      curves:[{f:n01,c:'--c1',w:2.8}],
+      xt:[[-3,'μ−3σ'],[-2,'μ−2σ'],[-1,'μ−σ'],[0,'μ'],[1,'μ+σ'],[2,'μ+2σ'],[3,'μ+3σ']],
+      labels:[{x:0,y:0.16,t:'68 %'},{x:1.5,y:0.05,t:'95 %',s:11},{x:-1.5,y:0.05,t:'95 %',s:11},{x:2.55,y:0.03,t:'99,7 %',s:10},{x:-2.55,y:0.03,t:'99,7 %',s:10}]});
+    var k3=gamma(2)/(Math.sqrt(3*Math.PI)*gamma(1.5));
+    plot('g-t',{x0:-5,x1:5,y0:0,y1:0.42,yt:[0.1,0.2,0.3,0.4],xt:[-4,-2,0,2,4],
+      curves:[{f:n01,c:'--c1'},{f:function(x){return k3*Math.pow(1+x*x/3,-2);},c:'--c2'}]});
+    var chi=function(k){var c=1/(Math.pow(2,k/2)*gamma(k/2));return function(x){return x<=0?NaN:c*Math.pow(x,k/2-1)*Math.exp(-x/2);};};
+    plot('g-chi',{x0:0,x1:16,y0:0,y1:0.5,yt:[0.1,0.2,0.3,0.4,0.5],xt:[0,2,4,6,8,10,12,14,16],
+      curves:[{f:chi(1),c:'--c1',a:0.02},{f:chi(2),c:'--c2',a:0.001},{f:chi(4),c:'--c3',a:0.001},{f:chi(8),c:'--c4',a:0.001}]});
+    var b=document.getElementById('g-bar');
+    if(b){var ink=css('--muted');
+      var gr=el('linearGradient',{id:'hb',x1:0,x2:1},el('defs',{},b));
+      [[0,css('--c1')],[0.5,css('--c2')],[1,css('--c1')]].forEach(function(s){el('stop',{offset:s[0],'stop-color':s[1]},gr);});
+      el('rect',{x:90,y:34,width:460,height:30,rx:15,fill:'url(#hb)',opacity:.85},b);
+      el('text',{x:90,y:92,'text-anchor':'middle','font-size':13,fill:ink},b).textContent='x = 0:  u = 0';
+      el('text',{x:550,y:92,'text-anchor':'middle','font-size':13,fill:ink},b).textContent='x = L:  u = 0';
+      el('text',{x:320,y:24,'text-anchor':'middle','font-size':13,fill:ink},b).textContent='при t = 0:  u(x, 0) = f(x)';
+    }
+  }
+  draw();
+  if(window.matchMedia) window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',draw);
+  new MutationObserver(draw).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+})();
+</script>
+</body>
+</html>
